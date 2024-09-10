@@ -17,8 +17,11 @@ Returns given area and children areas in a nested structure
 }
 \details{
 CVD Prevent API documentation:
-\link[=https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#/area/<area_id>/nestedSubSystems]{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2FnestedSubSystems}
+\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2FnestedSubSystems}{Area nested subsystems}
 }
 \examples{
 test <- cvd_area_nested_subsystems(area_id = 5)
+}
+\seealso{
+\code{\link[=cvd_area_list]{cvd_area_list()}}, \code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}
 }

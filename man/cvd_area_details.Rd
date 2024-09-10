@@ -19,8 +19,11 @@ Returns details of a specific area at a given time period, including details abo
 }
 \details{
 CVD Prevent API documentation:
-\link[=https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#/area/<area_id>/details]{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2Fdetails}
+\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2Fdetails}{Area details}
 }
 \examples{
 area_details <- cvd_area_details(area_id = 1, time_period_id = 17)
+}
+\seealso{
+\code{\link[=cvd_area_list]{cvd_area_list()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}
 }

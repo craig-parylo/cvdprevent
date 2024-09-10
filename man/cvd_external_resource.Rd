@@ -14,8 +14,11 @@ Returns a list of all external resources
 }
 \details{
 CVD Prevent API documentation:
-\link[=https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#/externalResource]{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FexternalResource}
+\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FexternalResource}{External resources}
 }
 \examples{
 test <- cvd_external_resource()
+}
+\seealso{
+\code{\link[=cvd_data_availability]{cvd_data_availability()}}
 }

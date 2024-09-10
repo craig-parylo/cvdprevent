@@ -17,7 +17,7 @@ Returns all available time periods
 }
 \details{
 CVD Prevent API documentation:
-\link[=https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#/timePeriod]{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FtimePeriod}
+\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FtimePeriod}{Time period}
 }
 \examples{
 cvd_time_periods <- cvd_time_period_list()

@@ -32,8 +32,11 @@ Response:
 }
 \details{
 CVD Prevent API documentation:
-\link[=https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#/dataAvailability]{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FdataAvailability}
+\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FdataAvailability}{Data availability}
 }
 \examples{
 test <- cvd_data_availability(time_period_id = 3, system_level_id = 5)
+}
+\seealso{
+\code{\link[=cvd_external_resource]{cvd_external_resource()}}
 }
