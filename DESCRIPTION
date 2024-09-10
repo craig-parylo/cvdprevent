@@ -1,11 +1,29 @@
 Package: cvdprevent
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Wrapper for the CVD Prevent API
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R:
+  person(
+    'Craig', 'Parylo', 
+    email = 'craig.parylo2@nhs.net', 
+    role = c('aut', 'cre', 'cph'),
+    comment = c(ORCID = '0000-0003-4297-7808')
+  )
+Maintainer: Craig Parylo <craig.parylo2@nhs.net>
+Description: Provides a wrapper to the CVD Prevent application programming 
+  interface (API).
+License: MIT + file LICENSE
 Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
 LazyData: true
+Imports: 
+    cli,
+    dplyr,
+    glue,
+    httr2,
+    jsonlite,
+    purrr,
+    stringr,
+    tidyr
+VignetteBuilder: knitr
+RoxygenNote: 7.3.1
