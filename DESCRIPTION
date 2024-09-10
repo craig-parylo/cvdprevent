@@ -29,5 +29,5 @@ Suggests:
     knitr
 VignetteBuilder: knitr
 RoxygenNote: 7.3.1
-URL: https://github.com/craig-parylo/cvdprevent
+URL: https://github.com/craig-parylo/cvdprevent, https://craig-parylo.github.io/cvdprevent/
 BugReports: https://github.com/craig-parylo/cvdprevent/issues
