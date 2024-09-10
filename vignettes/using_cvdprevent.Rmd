@@ -1,0 +1,130 @@
+---
+title: "using_cvdprevent"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{using_cvdprevent}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(cvdprevent)
+```
+
+# Time periods
+
+## Listing time periods
+
+The CVD Prevent audit outputs data around four times a year. To see which are the four latest available periods for standard indicators you can use the function `cvd_time_period_list():`
+
+```{r}
+cvd_time_period_list() |> 
+  dplyr::filter(IndicatorTypeName == 'Standard') |> 
+  dplyr::slice_max(order_by = TimePeriodID, n = 4) |> 
+  dplyr::select(TimePeriodID, TimePeriodName)
+```
+
+There are two main types of indicator reported; 'Standard' (ID1) and 'Outcomes' (ID2). Pass in an ID value for the optional parameter, `indicator_type_id` to get a list of time periods for which the indicator type was reported.
+
+```{r}
+cvd_time_period_list(indicator_type_id = 2) |> 
+  dplyr::slice_max(order_by = TimePeriodID, n = 4) |> 
+  dplyr::select(IndicatorTypeID, IndicatorTypeName, TimePeriodID, TimePeriodName)
+```
+
+## Listing system levels per period
+
+Data can be reported at different geographies (aka System Levels) in each period; typically ranging from individual GP practices to national level (England). To get the available system levels we can use the `cvd_time_period_system_levels()` function.
+
+```{r}
+cvd_time_period_system_levels() |> 
+  dplyr::slice_max(order_by = TimePeriodID) |> 
+  dplyr::select(TimePeriodID, TimePeriodName, SystemLevelID, SystemLevelName)
+```
+
+# Areas
+
+## List available areas for a given time period
+
+To find out which system levels are reported for a specific time period you can use the `cvd_area_system_level()` function, providing the required time_period_id, (NB, time_period_id defaults to the first time period if not supplied).
+
+```{r}
+cvd_area_system_level(time_period_id = 17) |> 
+  dplyr::select(SystemLevelID, SystemLevelName)
+```
+
+## List all available reporting periods for each system level
+
+Use the `cvd_area_system_level_time_periods()` function to show a list of all reporting periods for each system level. Here we show the latest four reporting periods at the GP practice system level.
+
+```{r}
+cvd_area_system_level_time_periods() |> 
+  dplyr::filter(SystemLevelName == 'Practice') |> 
+  dplyr::slice_max(order_by = TimePeriodID, n = 4) |> 
+  dplyr::select(SystemLevelID, SystemLevelName, TimePeriodID, TimePeriodName)
+```
+
+## List areas for a time period and system level or parent area
+
+To list four of the Primary Care Networks (PCN) (SystemLevelID = 4) for which data is available at time period 17 use the `cvd_area_list()` function.
+
+```{r}
+cvd_area_list(time_period_id = 17, system_level_id = 4) |> 
+  dplyr::select(SystemLevelName, AreaID, AreaCode, AreaName) |> 
+  dplyr::slice_head(n = 4)
+```
+
+## View details for a specific area
+
+To view details for a specific area use `cvd_area_details()` with the required parameters of 'time_period_id' and 'area_id'. The return from this function is a list of three named tibbles:
+
+-   `area_details`,
+
+-   `area_child_details` (where appropriate), and
+
+-   `area_parent_details` (where appropriate).
+
+The tibbles first need extracting from the returned list object, done here using the `list$object` notation:
+
+```{r}
+# get the list from the function
+returned_list <- cvd_area_details(time_period_id = 17, area_id = 1103)
+
+# view area details
+returned_list$area_details |> 
+  dplyr::select(AreaCode, AreaName, SystemLevelID)
+
+# view details for the parent of this area
+returned_list$area_parent_details |> 
+  dplyr::select(AreaID, AreaName, SystemLevelID)
+
+# view details for the children of this area
+returned_list$area_child_details |> 
+  dplyr::select(AreaID, AreaName, SystemLevelID)
+```
+
+## List areas without parent details
+
+Some areas do *not* have parent details but *do* have data reported in a given period, which may mean they are missed when searching for areas. This function provides a convenient way of accessing these details for a given 'time_period_id' and 'system_level_id'.
+
+Here we report four GP practices without any parent PCN:
+
+```{r}
+cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |> 
+  dplyr::slice_head(n = 4) |> 
+  dplyr::select(SystemLevelName, AreaID, AreaName)
+```
+
+The top system_level (England) does not have a parent either:
+
+```{r}
+cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |> 
+  dplyr::select(SystemLevelName, AreaID, AreaName)
+```
