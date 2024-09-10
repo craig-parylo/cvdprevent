@@ -31,7 +31,10 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea}{Area lists}
 }
 \examples{
-areas <- cvd_area_list(time_period_id = 17, system_level_id = 5)
+# list four PCNs with data available at time period 17
+cvd_area_list(time_period_id = 17, system_level_id = 4) |>
+  dplyr::select(SystemLevelName, AreaID, AreaCode, AreaName) |>
+  dplyr::slice_head(n = 4)
 }
 \seealso{
 \code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}

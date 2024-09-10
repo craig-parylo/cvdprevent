@@ -4,10 +4,10 @@
 \alias{cvd_time_period_list}
 \title{List time periods}
 \usage{
-cvd_time_period_list(opt_indicator_type_id)
+cvd_time_period_list(indicator_type_id)
 }
 \arguments{
-\item{opt_indicator_type_id}{integer - Indicator type ID, e.g. standard or outcome indicator type. If passed will show time periods containing data of the given type (optional)}
+\item{indicator_type_id}{integer - Indicator type ID, e.g. standard or outcome indicator type. If passed will show time periods containing data of the given type (optional)}
 }
 \value{
 Tibble of time period details
@@ -20,5 +20,15 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FtimePeriod}{Time period}
 }
 \examples{
+# get a tibble of all periods
 cvd_time_periods <- cvd_time_period_list()
+
+# filter for the latest four periods
+cvd_time_period_list() |>
+  dplyr::filter(IndicatorTypeName == 'Standard') |>
+  dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
+  dplyr::select(TimePeriodID, TimePeriodName)
+}
+\seealso{
+\code{\link[=cvd_time_period_system_levels]{cvd_time_period_system_levels()}}
 }

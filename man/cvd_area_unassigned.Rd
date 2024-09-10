@@ -23,8 +23,14 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2Funassigned}{Areas unassigned}
 }
 \examples{
-test <- cvd_area_unassigned(time_period_id = 1, system_level_id = 5)
-test <- cvd_area_unassigned(time_period_id = 1)
+# Report four GP practices (ID = 5) without parent PCN details:
+cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
+  dplyr::slice_head(n = 4) |>
+  dplyr::select(SystemLevelName, AreaID, AreaName)
+
+# England, as the highest system_level (ID = 1) does not have parent details
+cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>
+  dplyr::select(SystemLevelName, AreaID, AreaName)
 }
 \seealso{
 \code{\link[=cvd_area_list]{cvd_area_list()}}, \code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}

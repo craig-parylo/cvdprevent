@@ -22,7 +22,21 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2Fdetails}{Area details}
 }
 \examples{
-area_details <- cvd_area_details(area_id = 1, time_period_id = 17)
+# to see details for '3 Centres PCN' (area_id = 1103) use the following:
+# get the list of tibbles from the function
+returned_list <- cvd_area_details(time_period_id = 17, area_id = 1103)
+
+# view area details
+returned_list$area_details |>
+  dplyr::select(AreaCode, AreaName)
+
+# view details for the parent of this area
+returned_list$area_parent_details |>
+  dplyr::select(AreaID, AreaName, SystemLevelID)
+
+# view details for the children of this area
+returned_list$area_child_details |>
+  dplyr::select(AreaID, AreaName, SystemLevelID)
 }
 \seealso{
 \code{\link[=cvd_area_list]{cvd_area_list()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}
