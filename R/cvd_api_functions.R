@@ -18,19 +18,35 @@ globalVariables(
 #' CVD Prevent API documentation:
 #' [Time period](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FtimePeriod)
 #'
-#' @param opt_indicator_type_id integer - Indicator type ID, e.g. standard or outcome indicator type. If passed will show time periods containing data of the given type (optional)
+#' @param indicator_type_id integer - Indicator type ID, e.g. standard or outcome indicator type. If passed will show time periods containing data of the given type (optional)
 #'
 #' @return Tibble of time period details
 #' @export
+#' @seealso [cvd_time_period_system_levels()]
 #'
 #' @examples
+#' # get a tibble of all periods
 #' cvd_time_periods <- cvd_time_period_list()
-cvd_time_period_list <- function(opt_indicator_type_id) {
+#'
+#' # filter for the latest four periods
+#' cvd_time_period_list() |>
+#'   dplyr::filter(IndicatorTypeName == 'Standard') |>
+#'   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
+#'   dplyr::select(TimePeriodID, TimePeriodName)
+cvd_time_period_list <- function(indicator_type_id) {
 
   # compose the request
   req <-
     httr2::request(url_base) |>
     httr2::req_url_path_append('timePeriod')
+
+  if(!missing(indicator_type_id)) {
+    req <-
+      req |>
+      httr2::req_url_query(
+        `indicatorTypeID` = indicator_type_id
+      )
+  }
 
   # perform the request
   resp <- req |>
@@ -48,8 +64,127 @@ cvd_time_period_list <- function(opt_indicator_type_id) {
     )
 }
 
+#' Time periods and system levels
+#'
+#' Returns all available time periods along with the systems levels included
+#' in each time period.
+#'
+#' CVD Prevent API documentation:
+#' [Time period system levels](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*-%2FtimePeriod%2FsystemLevels)
+#'
+#' @return tibble of time periods and associated system levels
+#' @export
+#' @seealso [cvd_time_period_list()]
+#'
+#' @examples
+#' # get a tibble of all periods and levels
+#' periods_levels <- cvd_time_period_system_levels()
+#'
+#' # see which levels are available for the latest period
+#' periods_levels |>
+#'   dplyr::filter(TimePeriodID == max(TimePeriodID)) |>
+#'   dplyr::select(TimePeriodID, TimePeriodName, SystemLevelID, SystemLevelName)
+cvd_time_period_system_levels <- function() {
+
+  # compose the request
+  req <-
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('timePeriod/systemLevels')
+
+  # perform the request
+  resp <- req |>
+    httr2::req_perform() |>
+    httr2::resp_body_string()
+
+  # wrangle for output
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    dplyr::relocate(SystemLevels, .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = SystemLevels)
+
+}
 
 ## area ------------------------------------------------------------------------
+
+#' List system levels per time period
+#'
+#' Returns all available system levels for a specified time period.
+#'
+#' CVD Prevent API documentation:
+#' [System levels per time period](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2FsystemLevel)
+#'
+#' @param time_period_id integer - the time period to return data for (compulsory)
+#'
+#' @return tibble of system levels available for the time period
+#' @export
+#' @seealso [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
+#'
+#' @examples
+#' # list system levels for time period 4
+#' cvd_area_system_level(time_period_id = 4) |>
+#'   dplyr::select(SystemLevelID, SystemLevelName)
+cvd_area_system_level <- function(time_period_id = 1) {
+
+  # compose the request
+  req <-
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('area/systemLevel') |>
+    httr2::req_url_query(
+      `timePeriodID` = time_period_id
+    )
+
+  # perform the request
+  resp <- req |>
+    httr2::req_perform() |>
+    httr2::resp_body_string()
+
+  # wrangle for output
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
+    purrr::compact() |>
+    dplyr::as_tibble()
+
+}
+
+#' List all system levels and available time periods
+#'
+#' Returns all available system levels along with the time periods where the
+#' system levels occur.
+#'
+#' Note: this is the inverse of `cvd_time_period_system_levels()`.
+#'
+#' CVD Prevent API documentation:
+#' [All system levels and time periods](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Farea%2FsystemLevel%2FtimePeriods)
+#'
+#' @return tibble of system levels and reporting periods
+#' @export
+#' @seealso [cvd_time_period_system_levels()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
+#'
+#' @examples
+#' # list the latest four reporting periods at GP practice level
+#' cvd_area_system_level_time_periods() |>
+#'   dplyr::filter(SystemLevelName == 'Practice') |>
+#'   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
+#'   dplyr::select(SystemLevelName, TimePeriodID, TimePeriodName)
+cvd_area_system_level_time_periods <- function() {
+
+  # compose the request
+  req <-
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('area/systemLevel/timePeriods')
+
+  # perform the request
+  resp <- req |>
+    httr2::req_perform() |>
+    httr2::resp_body_string()
+
+  # wrangle for output
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    tidyr::unnest(TimePeriods)
+}
+
 
 #' List areas
 #'
@@ -71,11 +206,13 @@ cvd_time_period_list <- function(opt_indicator_type_id) {
 #'
 #' @return Tibble of area details
 #' @export
-#'
 #' @seealso [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
-#' areas <- cvd_area_list(time_period_id = 17, system_level_id = 5)
+#' # list four PCNs with data available at time period 17
+#' cvd_area_list(time_period_id = 17, system_level_id = 4) |>
+#'   dplyr::select(SystemLevelName, AreaID, AreaCode, AreaName) |>
+#'   dplyr::slice_head(n = 4)
 cvd_area_list <- function(time_period_id = 1, parent_area_id, system_level_id) {
 
   # compose the request
@@ -140,7 +277,21 @@ cvd_area_list <- function(time_period_id = 1, parent_area_id, system_level_id) {
 #' @seealso [cvd_area_list()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
-#' area_details <- cvd_area_details(area_id = 1, time_period_id = 17)
+#' # to see details for '3 Centres PCN' (area_id = 1103) use the following:
+#' # get the list of tibbles from the function
+#' returned_list <- cvd_area_details(time_period_id = 17, area_id = 1103)
+#'
+#' # view area details
+#' returned_list$area_details |>
+#'   dplyr::select(AreaCode, AreaName)
+#'
+#' # view details for the parent of this area
+#' returned_list$area_parent_details |>
+#'   dplyr::select(AreaID, AreaName, SystemLevelID)
+#'
+#' # view details for the children of this area
+#' returned_list$area_child_details |>
+#'   dplyr::select(AreaID, AreaName, SystemLevelID)
 cvd_area_details <- function(time_period_id = 1, area_id = 1) {
 
   # compose the request
@@ -181,7 +332,8 @@ cvd_area_details <- function(time_period_id = 1, area_id = 1) {
             dplyr::as_tibble() |>
             unique()
         }
-      )
+      ) |>
+      unique()
     return <- return |> append(list('area_parent_details' = area_parent_details))
   }
 
@@ -196,7 +348,8 @@ cvd_area_details <- function(time_period_id = 1, area_id = 1) {
             dplyr::as_tibble() |>
             unique()
         }
-      )
+      ) |>
+      unique()
     return <- return |> append(list('area_child_details' = area_child_details))
   }
 }
@@ -217,8 +370,14 @@ cvd_area_details <- function(time_period_id = 1, area_id = 1) {
 #' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
-#' test <- cvd_area_unassigned(time_period_id = 1, system_level_id = 5)
-#' test <- cvd_area_unassigned(time_period_id = 1)
+#' # Report four GP practices (ID = 5) without parent PCN details:
+#' cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
+#'   dplyr::slice_head(n = 4) |>
+#'   dplyr::select(SystemLevelName, AreaID, AreaName)
+#'
+#' # England, as the highest system_level (ID = 1) does not have parent details
+#' cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>
+#'   dplyr::select(SystemLevelName, AreaID, AreaName)
 cvd_area_unassigned <- function(time_period_id = 1, system_level_id) {
 
   # compose the request
