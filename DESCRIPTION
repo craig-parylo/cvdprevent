@@ -10,7 +10,7 @@ Authors@R:
     comment = c(ORCID = '0000-0003-4297-7808')
   )
 Maintainer: Craig Parylo <craig.parylo2@nhs.net>
-Description: Provides a wrapper to the CVD Prevent application programming 
+Description: Provides an R wrapper to the CVD Prevent application programming 
   interface (API).
 License: MIT + file LICENSE
 Encoding: UTF-8
