@@ -1,32 +1,22 @@
-#' -----------------------------------------------------------------------------
-#' CVD PREVENT API
-#'
-#' Using the API from the audit to gather data
-#'
-#' API documentation:
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation
-#' -----------------------------------------------------------------------------
-
-# libraries
-# .libPaths(new = "C:/Users/craig.parylo/AppData/Local/Programs/R/R-4.4.0/library")
-# library(dplyr)
-# library(tidyr)
-# library(purrr)
-# library(httr2)
-# library(glue)
-# library(jsonlite)
-# library(stringr)
-
+# setup ------------------------------------------------------------------------
 url_base <- 'https://api.cvdprevent.nhs.uk'
 
-
+globalVariables(
+  c(
+    'AreaData', 'Areas', 'Categories', 'Categories_MetricID', 'Categories_TimeSeries',
+    'CategoryData', 'Children', 'Children_Children', 'Children_Children_Children',
+    'ComparisonData', 'Data', 'IndicatorID', 'Indicators', 'InequalityMarkers', 'MetaData',
+    'MetricList', 'SubSystems', 'SystemLevels', 'TimeSeriesData'
+  )
+)
 
 ## time period -----------------------------------------------------------------
 #' List time periods
 #'
 #' Returns all available time periods
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FtimePeriod
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FtimePeriod]
 #'
 #' @param opt_indicator_type_id integer - Indicator type ID, e.g. standard or outcome indicator type. If passed will show time periods containing data of the given type (optional)
 #'
@@ -39,21 +29,21 @@ cvd_time_period_list <- function(opt_indicator_type_id) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append('timePeriod')
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('timePeriod')
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_json()
+    httr2::req_perform() |>
+    httr2::resp_body_json()
 
   # wrangle to tibble for output
   return <- resp$timePeriodList |>
-    map_dfr(
+    purrr::map_dfr(
       .f = \(.period_item) {
         .period_item |>
-          compact() |>
-          as_tibble()
+          purrr::compact() |>
+          dplyr::as_tibble()
       }
     )
 }
@@ -72,7 +62,8 @@ cvd_time_period_list <- function(opt_indicator_type_id) {
 #'
 #' Parent area takes precedence over system level - if parent area is specified, system level is ignored.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea]
 #'
 #' @param time_period_id integer - specifies time period for which to return areas (compulsory)
 #' @param parent_area_id integer - specifies the area of which children will be returned (optional)
@@ -87,26 +78,26 @@ cvd_area_list <- function(time_period_id = 1, parent_area_id, system_level_id) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append('area')
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('area')
 
-  if(missing(parent_area_id) & missing(system_level_id)) {
+  if(base::missing(parent_area_id) & base::missing(system_level_id)) {
     # both optional arguments are missing
     req <- req |>
-      req_url_query(
+      httr2::req_url_query(
         `timePeriodID` = time_period_id
       )
-  } else if(missing(parent_area_id)) {
+  } else if(base::missing(parent_area_id)) {
     # system level id provided
     req <- req |>
-      req_url_query(
+      httr2::req_url_query(
         `timePeriodID` = time_period_id,
         `systemLevelID` = system_level_id
       )
-  } else if(missing(system_level_id)) {
+  } else if(base::missing(system_level_id)) {
     # parent area id provided
     req <- req |>
-      req_url_query(
+      httr2::req_url_query(
         `timePeriodID` = time_period_id,
         `parentAreaID` = parent_area_id
       )
@@ -118,16 +109,16 @@ cvd_area_list <- function(time_period_id = 1, parent_area_id, system_level_id) {
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_json()
+    httr2::req_perform() |>
+    httr2::resp_body_json()
 
   # wrangle to tibble for output
   return <- resp$areaList |>
-    map_dfr(
+    purrr::map_dfr(
       .f = \(.area_item) {
         .area_item[!names(.area_item) %in% c('Parents')] |>
-          compact() |>
-          as_tibble()
+          purrr::compact() |>
+          dplyr::as_tibble()
       }
     )
 }
@@ -136,7 +127,8 @@ cvd_area_list <- function(time_period_id = 1, parent_area_id, system_level_id) {
 #'
 #' Returns details of a specific area at a given time period, including details about any parent and child areas.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2Fdetails
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2Fdetails]
 #'
 #' @param time_period_id integer - specified time period for which to return details for, i.e. population and participation rate (compulsory)
 #' @param area_id integer - specified area id for which to return details for.
@@ -150,25 +142,25 @@ cvd_area_details <- function(time_period_id = 1, area_id = 1) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('area/{area_id}/details')) |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('area/{area_id}/details')) |>
+    httr2::req_url_query(
       `timePeriodID` = time_period_id
     )
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_json()
+    httr2::req_perform() |>
+    httr2::resp_body_json()
 
   # wrangle to tibble for output
   data <- resp$areaDetails |>
-    compact() |>
-    as_tibble()
+    purrr::compact() |>
+    dplyr::as_tibble()
 
   # select the base fields, exclude any parent or child details
   area_details <- data |>
-    select(-any_of(c('ChildAreaList', 'ParentAreaList'))) |>
+    dplyr::select(-dplyr::any_of(c('ChildAreaList', 'ParentAreaList'))) |>
     unique()
 
   return <- list(
@@ -179,11 +171,11 @@ cvd_area_details <- function(time_period_id = 1, area_id = 1) {
   if('ParentAreaList' %in% names(data)) {
 
     area_parent_details <- data$ParentAreaList |>
-      map_dfr(
+      purrr::map_dfr(
         .f = \(.parent) {
           .parent |>
-            compact() |>
-            as_tibble() |>
+            purrr::compact() |>
+            dplyr::as_tibble() |>
             unique()
         }
       )
@@ -194,11 +186,11 @@ cvd_area_details <- function(time_period_id = 1, area_id = 1) {
   if('ChildAreaList' %in% names(data)) {
 
     area_child_details <- data$ChildAreaList |>
-      map_dfr(
+      purrr::map_dfr(
         .f = \(.child) {
           .child |>
-            compact() |>
-            as_tibble() |>
+            purrr::compact() |>
+            dplyr::as_tibble() |>
             unique()
         }
       )
@@ -211,7 +203,8 @@ cvd_area_details <- function(time_period_id = 1, area_id = 1) {
 #' Returns a list of all areas which have data in the selected time period,
 #' but do not have any parent areas assigned, and therefore are unreachable.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2Funassigned
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2Funassigned]
 #'
 #' @param time_period_id integer - time period for which Area must have data for (compulsory)
 #' @param system_level_id integer - system level of areas in the unassigned list (optional)
@@ -226,18 +219,18 @@ cvd_area_unassigned <- function(time_period_id = 1, system_level_id) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append('area/unassigned')
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('area/unassigned')
 
-  if(missing(system_level_id)) {
+  if(base::missing(system_level_id)) {
     # just use the time period
     req <- req |>
-      req_url_query(
+      httr2::req_url_query(
         `timePeriodID` = time_period_id
       )
   } else {
     req <- req |>
-      req_url_query(
+      httr2::req_url_query(
         `timePeriodID` = time_period_id,
         `systemLevelID` = system_level_id
       )
@@ -245,16 +238,16 @@ cvd_area_unassigned <- function(time_period_id = 1, system_level_id) {
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_json()
+    httr2::req_perform() |>
+    httr2::resp_body_json()
 
   # wrangle to tibble for output
   data <- resp$unassignedAreaList |>
-    map_dfr(
+    purrr::map_dfr(
       .f = \(.area) {
         .area |>
-          compact() |>
-          as_tibble() |>
+          purrr::compact() |>
+          dplyr::as_tibble() |>
           unique()
       }
     )
@@ -265,7 +258,8 @@ cvd_area_unassigned <- function(time_period_id = 1, system_level_id) {
 #' Returns a list of Areas that match a partial name for a given time period.
 #' Uses simple LIKE '%<partial_area_name>%' comparison.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2Fsearch
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2Fsearch]
 #'
 #' @param partial_area_name string - string to use to search for an Area (compulsory)
 #' @param time_period_id integer - limits the search to Areas which have data in specified time period (compulsory)
@@ -279,25 +273,25 @@ cvd_area_search <- function(partial_area_name = 'Surgery', time_period_id = 1) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append('area/search') |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('area/search') |>
+    httr2::req_url_query(
       `partialAreaName` = partial_area_name,
       `timePeriodID` = time_period_id
     )
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_json()
+    httr2::req_perform() |>
+    httr2::resp_body_json()
 
   # wrangle to tibble for output
   return <- resp$foundAreaList |>
-    map_dfr(
+    purrr::map_dfr(
       .f = \(.area_item) {
         .area_item |>
-          compact() |>
-          as_tibble()
+          purrr::compact() |>
+          dplyr::as_tibble()
       }
     )
 }
@@ -306,7 +300,8 @@ cvd_area_search <- function(partial_area_name = 'Surgery', time_period_id = 1) {
 #'
 #' Returns given area and children areas in a nested structure
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2FnestedSubSystems
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2FnestedSubSystems]
 #'
 #' @param area_id integer - the area to return data for (compulsory)
 #'
@@ -319,27 +314,24 @@ cvd_area_nested_subsystems <- function(area_id = 5) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('area/{area_id}/nestedSubSystems'))
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('area/{area_id}/nestedSubSystems'))
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[1]] |>
-    compact() |>
-    as_tibble() |>
-    relocate(Children, .after = last_col()) |>
-    unnest(cols = Children, names_sep = '_') |>
-    relocate(Children_Children, .after = last_col()) |>
-    unnest(cols = Children_Children, names_sep = '_') |>
-    relocate(Children_Children_Children, .after = last_col()) |>
-    unnest(cols = Children_Children_Children, names_sep = '_') #|>
-  #relocate(Children_Children_Children_Children, .after = last_col()) |>
-  #unnest(cols = Children_Children_Children_Children, names_sep = '_')
-  # nb - the tibble seems to stop working after the last calls
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    dplyr::relocate(Children, .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = Children, names_sep = '_') |>
+    dplyr::relocate(Children_Children, .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = Children_Children, names_sep = '_') |>
+    dplyr::relocate(Children_Children_Children, .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = Children_Children_Children, names_sep = '_')
 
 }
 
@@ -348,7 +340,8 @@ cvd_area_nested_subsystems <- function(area_id = 5) {
 #' Similar to `cvd_area_nested_subsystems()` but the sub-areas are grouped
 #' based on their system level.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2FflatSubSystems
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2FflatSubSystems]
 #'
 #' @param area_id integer - the area to return data for (compulsory)
 #'
@@ -361,20 +354,20 @@ cvd_area_flat_subsystems <- function(area_id = 5) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('area/{area_id}/flatSubSystems'))
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('area/{area_id}/flatSubSystems'))
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[1]] |>
-    compact() |>
-    as_tibble() |>
-    relocate(SubSystems, .after = last_col()) |>
-    unnest(cols = SubSystems, names_sep = '_')
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    dplyr::relocate(SubSystems, .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = SubSystems, names_sep = '_')
 }
 
 ## indicators ------------------------------------------------------------------
@@ -385,7 +378,8 @@ cvd_area_flat_subsystems <- function(area_id = 5) {
 #' Only returns indicators for which data exists in selected time period, and on
 #' selected system level. Used to populate available indicator list in Data Explorer.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2Flist
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2Flist]
 #'
 #' @param time_period_id integer - time period to reutrn data for (compulsory)
 #' @param system_level_id integer - system level to return data for (compulsory)
@@ -399,25 +393,25 @@ cvd_indicator_list <- function(time_period_id = 1, system_level_id = 2) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append('indicator/list') |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('indicator/list') |>
+    httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `systemLevelID` = system_level_id
     )
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_json()
+    httr2::req_perform() |>
+    httr2::resp_body_json()
 
   # wrangle to tibble for output
   return <- resp$indicatorList |>
-    map_dfr(
+    purrr::map_dfr(
       .f = \(.indicator_item) {
         .indicator_item |>
-          compact() |>
-          as_tibble()
+          purrr::compact() |>
+          dplyr::as_tibble()
       }
     )
 }
@@ -429,7 +423,8 @@ cvd_indicator_list <- function(time_period_id = 1, system_level_id = 2) {
 #' indicators for which data exists in selected time period, and on selected
 #' system level.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Findicator%2FmetricList
+#' CVD Prevent API documentation:
+#' [`https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Findicator%2FmetricList`]
 #'
 #' @param time_period_id integer - time period to return data for (compulsory)
 #' @param system_level_id integer - system level to return data for (compulsory)
@@ -443,47 +438,47 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append('indicator/metricList') |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('indicator/metricList') |>
+    httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `systemLevelID` = system_level_id
     )
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_json()
+    httr2::req_perform() |>
+    httr2::resp_body_json()
 
   # wrangle to tibble for output
   # 1. get the list of indicators
   indicators <- resp$indicatorList |>
-    map_dfr(
+    purrr::map_dfr(
       .f = \(.indicator_item) {
         .indicator_item |>
-          compact() |>
-          as_tibble()
+          purrr::compact() |>
+          dplyr::as_tibble()
       }
     ) |>
     unique()
 
   # 2. get the metrics
-  metrics <- map2_dfr(
+  metrics <- purrr::map2_dfr(
     .x = indicators$MetricList,
     .y = indicators$IndicatorID,
     .f = \(.metric_item, .indicator_id) {
       .metric_item |>
-        compact() |>
-        as_tibble() |>
-        bind_cols(IndicatorID = .indicator_id)
+        purrr::compact() |>
+        dplyr::as_tibble() |>
+        dplyr::bind_cols(IndicatorID = .indicator_id)
     }
   )
 
   # 3. combine ready for output
   return <-
     indicators |>
-    select(-MetricList) |>
-    left_join(
+    dplyr::select(-MetricList) |>
+    dplyr::left_join(
       y = metrics,
       by = 'IndicatorID',
       relationship = 'many-to-many'
@@ -497,7 +492,8 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
 #' time series data for all time periods available. If tags are specified, only
 #' indicators which have one of the specified tags will be returned.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator]
 #'
 #' @param time_period_id integer - time period to return data for (compulsory)
 #' @param area_id integer - area to return data for (compulsory)
@@ -512,18 +508,18 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
 cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
 
   # compose the request
-  if(missing(tag_id)) {
-    req <- request(url_base) |>
-      req_url_path_append('indicator') |>
-      req_url_query(
+  if(base::missing(tag_id)) {
+    req <- httr2::request(url_base) |>
+      httr2::req_url_path_append('indicator') |>
+      httr2::req_url_query(
         `timePeriodID` = time_period_id,
         `areaID` = area_id
       )
   } else {
     req <-
-      request(url_base) |>
-      req_url_path_append('indicator') |>
-      req_url_query(
+      httr2::request(url_base) |>
+      httr2::req_url_path_append('indicator') |>
+      httr2::req_url_query(
         `timePeriodID` = time_period_id,
         `areaID` = area_id,
         `tagID` = tag_id,
@@ -533,23 +529,23 @@ cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
   # 1. get the data from the response
-  df <- fromJSON(resp, flatten = T)
+  df <- jsonlite::fromJSON(resp, flatten = T)
   df <- df[['indicatorList']] |>
-    as_tibble()
+    dplyr::as_tibble()
 
   # 2. unnest the nested list data in 'Categories' and 'TimeSeries'
   df <- df |>
     # expand categories (and data)
-    relocate(Categories, .after = last_col()) |>
-    unnest(col = Categories, names_sep = '_') |>
+    dplyr::relocate(Categories, .after = dplyr::last_col()) |>
+    tidyr::unnest(col = Categories, names_sep = '_') |>
     # expand the timeseries
-    relocate(Categories_TimeSeries, .after = last_col()) |>
-    unnest(col = Categories_TimeSeries, names_sep = '_')
+    dplyr::relocate(Categories_TimeSeries, .after = dplyr::last_col()) |>
+    tidyr::unnest(col = Categories_TimeSeries, names_sep = '_')
 
   # 1. get indicator data
   # find out when the 'Categories_' columns begin
@@ -557,63 +553,61 @@ cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
 
   # select columns
   indicators <- df |>
-    select(1:min(index_categories) - 1) |>
+    dplyr::select(1:min(index_categories) - 1) |>
     unique()
 
   # 2. get categories
   categories <- df |>
     # select indicator ID and all category columns except Timeseries ones
-    select(
+    dplyr::select(
       c(
         IndicatorID,
-        starts_with('Categories_'),
-        -contains('_TimeSeries'),
-        -starts_with('.Data')
+        dplyr::starts_with('Categories_'),
+        -dplyr::contains('_TimeSeries'),
+        -dplyr::starts_with('.Data')
       )
     ) |>
     # remove 'Categories_' prefix
-    rename_with(
-      .fn = \(.col_name) {str_remove(.col_name, pattern = 'Categories_')},
-      .cols = starts_with('Categories')
+    dplyr::rename_with(
+      .fn = \(.col_name) {stringr::str_remove(.col_name, pattern = 'Categories_')},
+      .cols = dplyr::starts_with('Categories')
     ) |>
     unique()
 
   # 3. get categories_data
   category_data <- df |>
-    select(
+    dplyr::select(
       c(
         IndicatorID,
         MetrricID = Categories_MetricID,
-        starts_with('Categories_Data.')
+        dplyr::starts_with('Categories_Data.')
       )
     ) |>
     # remove the 'Categories_Data.' prefix
-    rename_with(
-      .f = \(.col_name) {str_remove(.col_name, pattern = 'Categories_Data.')},
-      .cols = starts_with('Categories_Data.')
+    dplyr::rename_with(
+      .f = \(.col_name) {stringr::str_remove(.col_name, pattern = 'Categories_Data.')},
+      .cols = dplyr::starts_with('Categories_Data.')
     ) |>
     unique()
 
   # 4. get timeseries
   timeseries_data <- df |>
-    select(
+    dplyr::select(
       c(
         IndicatorID,
         MetrricID = Categories_MetricID,
-        starts_with('Categories_TimeSeries')
+        dplyr::starts_with('Categories_TimeSeries')
       )
     ) |>
     # remove the 'Categories_TimeSeries_' prefix
-    rename_with(
-      .f = \(.col_name) {str_remove(.col_name, pattern = 'Categories_TimeSeries_')},
-      .cols = starts_with('Categories_TimeSeries_')
+    dplyr::rename_with(
+      .f = \(.col_name) {stringr::str_remove(.col_name, pattern = 'Categories_TimeSeries_')},
+      .cols = dplyr::starts_with('Categories_TimeSeries_')
     ) |>
     unique()
 
   # output as a named list for ease of checking
   return <- list(
-    #'raw' = resp,
-    #'df' = df,
     'indicators' = indicators,
     'categories' = categories,
     'category_data' = category_data,
@@ -625,6 +619,9 @@ cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
 #'
 #' Returns a list of all available tags, which can be used to filter indicators.
 #'
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2Ftags]
+#'
 #' @return tibble of tags
 #' @export
 #'
@@ -634,22 +631,25 @@ cvd_indicator_tags <- function() {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append('indicator/tags')
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('indicator/tags')
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle to tibble for output
-  data <- fromJSON(resp, flatten = T)$indicatorTagList |>
-    as_tibble()
+  data <- jsonlite::fromJSON(resp, flatten = T)$indicatorTagList |>
+    dplyr::as_tibble()
 }
 
 #' Indicator details
 #'
 #' Returns details of a single indicator
+#'
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_ID%3E%2Fdetails]
 #'
 #' @param indicator_id integer - the ID for the indicator (compulsory)
 #'
@@ -663,20 +663,20 @@ cvd_indicator_details <- function(indicator_id = 1) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('indicator/{indicator_id}/details'))
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('indicator/{indicator_id}/details'))
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)$indicatorDetails |>
-    compact() |>
-    as_tibble() |>
-    relocate(MetaData, .after = last_col()) |>
-    unnest(col = MetaData)
+  data <- jsonlite::fromJSON(resp, flatten = T)$indicatorDetails |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    dplyr::relocate(MetaData, .after = dplyr::last_col()) |>
+    tidyr::unnest(col = MetaData)
 
 }
 
@@ -686,13 +686,14 @@ cvd_indicator_details <- function(indicator_id = 1) {
 #' and metric. This endpoint is intended to only return data for selected metric,
 #' and not all metrics for a chosen indicator, hence the metric_id query parameter.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FsiblingData
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FsiblingData]
 #'
 #' @param time_period_id integer - time period for which to return data (compulsory)
 #' @param area_id integer - area for which all sibling data will be returned (compulsory)
 #' @param metric_id integer - metric for which to return data (compulsory)
 #'
-#' @return
+#' @return tibble of data
 #' @export
 #'
 #' @examples
@@ -701,9 +702,9 @@ cvd_indicator_sibling <- function(time_period_id = 17, area_id = 30, metric_id =
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append('indicator/siblingData') |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('indicator/siblingData') |>
+    httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `areaID` = area_id,
       `metricID` = metric_id
@@ -711,15 +712,15 @@ cvd_indicator_sibling <- function(time_period_id = 17, area_id = 30, metric_id =
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[2]] |>
-    compact() |>
-    as_tibble() |>
-    relocate(Data, .after = last_col()) |>
-    unnest(col = Data)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    dplyr::relocate(Data, .after = dplyr::last_col()) |>
+    tidyr::unnest(col = Data)
 
 }
 
@@ -730,7 +731,8 @@ cvd_indicator_sibling <- function(time_period_id = 17, area_id = 30, metric_id =
 #' metric, and not all metrics for indicators, hence the metricID query
 #' parameter.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FchildData
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FchildData]
 #'
 #' @param time_period_id integer - time period for which to return data (compulsory)
 #' @param area_id integer - area for which all children data will be returned (compulsory)
@@ -745,9 +747,9 @@ cvd_indicator_child_data <- function(time_period_id = 17, area_id = 74, metric_i
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append('indicator/childData') |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('indicator/childData') |>
+    httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `areaID` = area_id,
       `metricID` = metric_id
@@ -755,15 +757,15 @@ cvd_indicator_child_data <- function(time_period_id = 17, area_id = 74, metric_i
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[1]] |>
-    compact() |>
-    as_tibble() |>
-    relocate(Data, .after = last_col()) |>
-    unnest(col = Data)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    dplyr::relocate(Data, .after = dplyr::last_col()) |>
+    tidyr::unnest(col = Data)
 
 }
 
@@ -772,7 +774,8 @@ cvd_indicator_child_data <- function(time_period_id = 17, area_id = 74, metric_i
 #' Returns all metric data for a specified indicator. Data will include values
 #' for both selected area, and organisation at National Level (usually England).
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_id%3E%2Fdata
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_id%3E%2Fdata]
 #'
 #' @param indicator_id integer - indicator for which to return data (compulsory)
 #' @param time_period_id integer - time period for which to return data for (compulsory)
@@ -787,24 +790,24 @@ cvd_indicator_data <- function(indicator_id = 2, time_period_id = 1, area_id = 2
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('indicator/{indicator_id}/data')) |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('indicator/{indicator_id}/data')) |>
+    httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `areaID` = area_id
     )
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[2]] |>
-    compact() |>
-    as_tibble() |>
-    relocate(Categories, .after = last_col()) |>
-    unnest(col = Categories)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    dplyr::relocate(Categories, .after = dplyr::last_col()) |>
+    tidyr::unnest(col = Categories)
 }
 
 
@@ -813,7 +816,8 @@ cvd_indicator_data <- function(indicator_id = 2, time_period_id = 1, area_id = 2
 #' Returns all metric data for a specified metric. Data will include values
 #' for both selected area and organisation at National Level (usually England).
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Findicator%2Fmetric%2F%3Cmetric_id%3E%2Fdata
+#' CVD Prevent API documentation:
+#' [`https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Findicator%2Fmetric%2F%3Cmetric_id%3E%2Fdata`]
 #'
 #' @param metric_id integer - metric for which to return data for (compulsory)
 #' @param time_period_id integer - time period for which to return data for (compulsory)
@@ -823,28 +827,29 @@ cvd_indicator_data <- function(indicator_id = 2, time_period_id = 1, area_id = 2
 #' @export
 #'
 #' @examples
+#' test <- cvd_indicator_metric_data()
 cvd_indicator_metric_data <- function(metric_id = 7, time_period_id = 1, area_id = 2) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('indicator/metric/{metric_id}/data')) |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('indicator/metric/{metric_id}/data')) |>
+    httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `areaID` = area_id
     )
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[2]] |>
-    compact() |>
-    as_tibble() |>
-    relocate(Categories, .after = last_col()) |>
-    unnest(col = Categories)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    dplyr::relocate(Categories, .after = dplyr::last_col()) |>
+    tidyr::unnest(col = Categories)
 
 }
 
@@ -853,7 +858,8 @@ cvd_indicator_metric_data <- function(metric_id = 7, time_period_id = 1, area_id
 #' Returns all metric data for a specified indicator, system level and time
 #' period.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_ID%3E%2FrawDataJSON
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_ID%3E%2FrawDataJSON]
 #'
 #' @param indicator_id integer - indicator for which to return data for (compulsory)
 #' @param time_period_id integer - time period for which to return data for (compulsory)
@@ -868,22 +874,22 @@ cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('indicator/{indicator_id}/rawDataJSON')) |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('indicator/{indicator_id}/rawDataJSON')) |>
+    httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `systemLevelID` = system_level_id
     )
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[2]] |>
-    compact() |>
-    as_tibble()
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
+    purrr::compact() |>
+    dplyr::as_tibble()
 
 }
 
@@ -895,7 +901,8 @@ cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_
 #' the target percentage. If there is not data for both national and chosen
 #' area an error will be returned.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FnationalVsAreaMetricData%2F%3Cmetric_ID%3E
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FnationalVsAreaMetricData%2F%3Cmetric_ID%3E]
 #'
 #' @param metric_id integer - metric for which to return data (compulsory)
 #' @param time_period_id integer - time period for which to return data (compulsory)
@@ -905,27 +912,28 @@ cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_
 #' @export
 #'
 #' @examples
+#' test <- cvd_indicator_nationalarea_metric_data()
 cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id = 17, area_id = 739) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('indicator/nationalVsAreaMetricData/{metric_id}')) |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('indicator/nationalVsAreaMetricData/{metric_id}')) |>
+    httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `areaID` = area_id
     )
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[2]] |>
-    compact() |>
-    as_tibble() |>
-    unnest(cols = AreaData)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    tidyr::unnest(cols = AreaData)
 
 }
 
@@ -938,9 +946,10 @@ cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id
 #' indicates the order in whcih it should be displayed for the given Priority
 #' Group.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpriorityGroups
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpriorityGroups]
 #'
-#' @return
+#' @return tibble of data
 #' @export
 #'
 #' @examples
@@ -949,21 +958,21 @@ cvd_indicator_priority_groups <- function() {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('indicator/priorityGroups'))
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('indicator/priorityGroups'))
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[1]] |>
-    map_dfr(
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+    purrr::map_dfr(
       .f = \(.group_item) {
         .group_item |>
-          compact() |>
-          as_tibble()
+          purrr::compact() |>
+          dplyr::as_tibble()
       }
     )
 
@@ -977,7 +986,8 @@ cvd_indicator_priority_groups <- function() {
 #' with the given ID. For a valid request, Pathway Group ID and named are
 #' returned as key value pairs and the Indicators populate an array.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpathwayGroup%2F%3Cpathway_group_id%3E
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpathwayGroup%2F%3Cpathway_group_id%3E]
 #'
 #'
 #' @param pathway_group_id integer - the pathway to return data for (compulsory)
@@ -991,20 +1001,20 @@ cvd_indicator_pathway_group <- function(pathway_group_id = 10) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('indicator/pathwayGroup/{pathway_group_id}'))
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('indicator/pathwayGroup/{pathway_group_id}'))
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[1]] |>
-    compact() |>
-    as_tibble() |>
-    relocate(Indicators, .after = last_col()) |>
-    unnest(cols = Indicators)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    dplyr::relocate(Indicators, .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = Indicators)
 }
 
 #' Indicator group
@@ -1020,33 +1030,35 @@ cvd_indicator_pathway_group <- function(pathway_group_id = 10) {
 #' Finally, there is the array of indicators which are contained in this group,
 #' including display orders for the given group.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FindicatorGroup%2F%3Cindicator_group_ID%3E
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FindicatorGroup%2F%3Cindicator_group_ID%3E]
 #'
 #'
 #' @param indicator_group_id integer - the group to return data for (compulsory)
 #'
-#' @return
+#' @return tibble of data
 #' @export
 #'
 #' @examples
+#' test <- cvd_indicator_group()
 cvd_indicator_group <- function(indicator_group_id = 15) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('indicator/indicatorGroup/{indicator_group_id}'))
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('indicator/indicatorGroup/{indicator_group_id}'))
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[1]] |>
-    compact() |>
-    as_tibble() |>
-    relocate(Indicators, .after = last_col()) |>
-    unnest(cols = Indicators)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    dplyr::relocate(Indicators, .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = Indicators)
 }
 
 #' Indicator time series by metric
@@ -1056,7 +1068,8 @@ cvd_indicator_group <- function(indicator_group_id = 15) {
 #' with the other corresponding to the provided area ID. `TargetValue` is also
 #' returned in the `Data` dictionary.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FtimeSeriesByMetric%2F%3Cmetric_ID%3E
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FtimeSeriesByMetric%2F%3Cmetric_ID%3E]
 #'
 #' @param metric_id integer - the metric to return data for (compulsory)
 #' @param area_id integer - the area to return data for (compulsory)
@@ -1070,23 +1083,23 @@ cvd_indicator_metric_timeseries <- function(metric_id = 1, area_id = 50) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('indicator/timeSeriesByMetric/{metric_id}')) |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('indicator/timeSeriesByMetric/{metric_id}')) |>
+    httr2::req_url_query(
       `areaID` = area_id
     )
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[1]] |>
-    compact() |>
-    as_tibble() |>
-    unnest(cols = Areas) |>
-    unnest(cols = TimeSeriesData)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    tidyr::unnest(cols = Areas) |>
+    tidyr::unnest(cols = TimeSeriesData)
 
 }
 
@@ -1098,12 +1111,13 @@ cvd_indicator_metric_timeseries <- function(metric_id = 1, area_id = 50) {
 #' time series data grouped into metric category types e.g. age group,
 #' ethnicity, etc.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpersonsTimeSeriesByIndicator%2F%3Cindicator_ID%3E
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpersonsTimeSeriesByIndicator%2F%3Cindicator_ID%3E]
 #'
-#' @param indicator_id
-#' @param area_id
+#' @param indicator_id integer - the indicator to return data for (compulsory)
+#' @param area_id integer - the area to return data for (compulsory)
 #'
-#' @return
+#' @return tibble of data
 #' @export
 #'
 #' @examples
@@ -1112,23 +1126,23 @@ cvd_indicator_person_timeseries <- function(indicator_id = 1, area_id = 1) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('indicator/personsTimeSeriesByIndicator/{indicator_id}')) |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('indicator/personsTimeSeriesByIndicator/{indicator_id}')) |>
+    httr2::req_url_query(
       `areaID` = area_id
     )
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[1]] |>
-    compact() |>
-    as_tibble() |>
-    unnest(cols = InequalityMarkers) |>
-    unnest(cols = CategoryData)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    tidyr::unnest(cols = InequalityMarkers) |>
+    tidyr::unnest(cols = CategoryData)
 
 }
 
@@ -1138,7 +1152,8 @@ cvd_indicator_person_timeseries <- function(indicator_id = 1, area_id = 1) {
 #' and time period. `Data` contains the target value as well as an array
 #' `SystemLevels` which contains data grouped by system level.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FmetricSystemLevelComparison%2F%3Cmetric_ID%3E
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FmetricSystemLevelComparison%2F%3Cmetric_ID%3E]
 #'
 #'
 #' @param metric_id integer - the metric to return data for (compulsory)
@@ -1154,25 +1169,25 @@ cvd_indicator_metric_systemlevel_comparison <- function(metric_id = 1, time_peri
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('indicator/metricSystemLevelComparison/{metric_id}')) |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('indicator/metricSystemLevelComparison/{metric_id}')) |>
+    httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `areaID` = area_id
     )
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[1]] |>
-    compact() |>
-    as_tibble() |>
-    unnest(cols = SystemLevels) |>
-    relocate(ComparisonData, .after = last_col()) |>
-    unnest(cols = ComparisonData)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    tidyr::unnest(cols = SystemLevels) |>
+    dplyr::relocate(ComparisonData, .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = ComparisonData)
 }
 
 #' Indicator metric area breakdown
@@ -1181,7 +1196,8 @@ cvd_indicator_metric_systemlevel_comparison <- function(metric_id = 1, time_peri
 #' period. `Data` contains the target value as well as an array `SystemLevels`
 #' which contains data grouped by system level.
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FmetricAreaBreakdown%2F%3Cmetric_ID%3E
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FmetricAreaBreakdown%2F%3Cmetric_ID%3E]
 #'
 #'
 #' @param metric_id integer - the metric to return data for (compulsory)
@@ -1192,29 +1208,30 @@ cvd_indicator_metric_systemlevel_comparison <- function(metric_id = 1, time_peri
 #' @export
 #'
 #' @examples
+#' test <- cvd_indicator_metric_area_breakdown()
 cvd_indicator_metric_area_breakdown <- function(metric_id = 1, time_period_id = 1, area_id = 1) {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append(glue('indicator/metricAreaBreakdown/{metric_id}')) |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append(glue::glue('indicator/metricAreaBreakdown/{metric_id}')) |>
+    httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `areaID` = area_id
     )
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[1]] |>
-    compact() |>
-    as_tibble() |>
-    unnest(cols = SystemLevels) |>
-    relocate(ComparisonData, .after = last_col()) |>
-    unnest(cols = ComparisonData)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+    purrr::compact() |>
+    dplyr::as_tibble() |>
+    tidyr::unnest(cols = SystemLevels) |>
+    dplyr::relocate(ComparisonData, .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = ComparisonData)
 
 }
 
@@ -1223,28 +1240,30 @@ cvd_indicator_metric_area_breakdown <- function(metric_id = 1, time_period_id = 
 #'
 #' Returns a list of all external resources
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FexternalResource
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FexternalResource]
 #'
-#' @return
+#' @return tibble fo data
 #' @export
 #'
 #' @examples
+#' test <- cvd_external_resource()
 cvd_external_resource <- function() {
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append('externalResource')
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('externalResource')
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[2]] |>
-    compact() |>
-    as_tibble()
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
+    purrr::compact() |>
+    dplyr::as_tibble()
 }
 
 #' Data availability
@@ -1255,14 +1274,15 @@ cvd_external_resource <- function() {
 #' `DataAvailabilityName` - explanation for the data availability
 #' `IsAvailable` - `Y` for data is available, `N` for data is unavailable, and NULL for unknown data
 #'
-#' https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FdataAvailability
+#' CVD Prevent API documentation:
+#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FdataAvailability]
 #'
 #' @param time_period_id integer - the time period to return data for (compulsory)
 #' @param system_level_id integer - the system level to return data for (compulsory)
 #' @param indicator_id integer - the indicator to return data for (optional)
 #' @param metric_category_type_id integer - the metric category to return data for (optional)
 #'
-#' @return
+#' @return tibble of data
 #' @export
 #'
 #' @examples
@@ -1276,43 +1296,41 @@ cvd_data_availability <- function(
 
   # compose the request
   req <-
-    request(url_base) |>
-    req_url_path_append('dataAvailability') |>
-    req_url_query(
+    httr2::request(url_base) |>
+    httr2::req_url_path_append('dataAvailability') |>
+    httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `systemLevelID` = system_level_id
     )
 
-  if(!missing(indicator_id) & !missing(metric_category_type_id)) {
+  if(!base::missing(indicator_id) & !base::missing(metric_category_type_id)) {
     req <-
       req |>
-      req_url_query(
+      httr2::req_url_query(
         `indicatorID` = indicator_id,
         `metricCategoryTypeID` = metric_category_type_id
       )
-  } else if(!missing(indicator_id)) {
+  } else if(!base::missing(indicator_id)) {
     req <-
       req |>
-      req_url_query(
+      httr2::req_url_query(
         `indicatorID` = indicator_id
       )
-  } else if(!missing(metric_category_type_id)) {
+  } else if(!base::missing(metric_category_type_id)) {
     req <-
       req |>
-      req_url_query(
+      httr2::req_url_query(
         `metricCategoryTypeID` = metric_category_type_id
       )
   }
 
   # perform the request
   resp <- req |>
-    req_perform() |>
-    resp_body_string()
+    httr2::req_perform() |>
+    httr2::resp_body_string()
 
   # wrangle for output
-  data <- fromJSON(resp, flatten = T)[[1]] |>
-    compact() |>
-    as_tibble()
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+    purrr::compact() |>
+    dplyr::as_tibble()
 }
-
-
