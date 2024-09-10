@@ -8,3 +8,6 @@
 .quarto
 docs
 .secret
+inst/doc
+/doc/
+/Meta/
