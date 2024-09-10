@@ -21,6 +21,8 @@ knitr::opts_chunk$set(
 
 The goal of CVD Prevent is to provide an R wrapper to the CVD Prevent [application programming interface](https://www.cvdprevent.nhs.uk/home) (API). Users can make API requests through built-in R functions.
 
+The Cardiovascular Disease Prevention Audit (CVDPREVENT) is an England-wide primary care audit that automatically extracts routinely held GP data. The Data & Improvement Tool provides open access to the data, with clear, actionable insights for those tasked with improving cardiovascular health.
+
 ## Installation
 
 You can install the development version of cvdprevent from [GitHub](https://github.com/) with:
@@ -38,5 +40,6 @@ This is a basic example which shows you how to solve a common problem:
 library(cvdprevent)
 
 ## basic example code
-cvd_indicator_list()
+cvd_indicator_list() |> 
+  head(n = 4)
 ```
