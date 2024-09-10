@@ -33,6 +33,12 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/using_cvdprevent.html">using_cvdprevent</a></li>
+  </ul>
+</li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -55,6 +61,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 <p>The goal of CVD Prevent is to provide an R wrapper to the CVD Prevent <a href="https://www.cvdprevent.nhs.uk/home" class="external-link">application programming interface</a> (API). Users can make API requests through built-in R functions.</p>
+<p>The Cardiovascular Disease Prevention Audit (CVDPREVENT) is an England-wide primary care audit that automatically extracts routinely held GP data. The Data &amp; Improvement Tool provides open access to the data, with clear, actionable insights for those tasked with improving cardiovascular health.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -71,7 +78,17 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craig-parylo/cvdprevent" class="external-link">cvdprevent</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## basic example code</span></span>
-<span><span class="fu"><a href="reference/cvd_indicator_list.html">cvd_indicator_list</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/cvd_indicator_list.html">cvd_indicator_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 9</span></span>
+<span><span class="co">#&gt;   AxisCharacter FormatDisplayName IndicatorCode IndicatorFormatID IndicatorID</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;             &lt;chr&gt;                     &lt;int&gt;       &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1 %             Proportion %      CVDP001AF                     1           1</span></span>
+<span><span class="co">#&gt; 2 %             Proportion %      CVDP002AF                     1           7</span></span>
+<span><span class="co">#&gt; 3 %             Proportion %      CVDP001HYP                    1          11</span></span>
+<span><span class="co">#&gt; 4 %             Proportion %      CVDP004HYP                    1           4</span></span>
+<span><span class="co">#&gt; # ℹ 4 more variables: IndicatorName &lt;chr&gt;, IndicatorOrder &lt;int&gt;,</span></span>
+<span><span class="co">#&gt; #   IndicatorShortName &lt;chr&gt;, IndicatorStatus &lt;chr&gt;</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
