@@ -16,7 +16,7 @@ globalVariables(
 #' Returns all available time periods
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FtimePeriod]
+#' [Time period](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FtimePeriod)
 #'
 #' @param opt_indicator_type_id integer - Indicator type ID, e.g. standard or outcome indicator type. If passed will show time periods containing data of the given type (optional)
 #'
@@ -63,7 +63,7 @@ cvd_time_period_list <- function(opt_indicator_type_id) {
 #' Parent area takes precedence over system level - if parent area is specified, system level is ignored.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea]
+#' [Area lists](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea)
 #'
 #' @param time_period_id integer - specifies time period for which to return areas (compulsory)
 #' @param parent_area_id integer - specifies the area of which children will be returned (optional)
@@ -71,6 +71,8 @@ cvd_time_period_list <- function(opt_indicator_type_id) {
 #'
 #' @return Tibble of area details
 #' @export
+#'
+#' @seealso [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
 #' areas <- cvd_area_list(time_period_id = 17, system_level_id = 5)
@@ -128,13 +130,14 @@ cvd_area_list <- function(time_period_id = 1, parent_area_id, system_level_id) {
 #' Returns details of a specific area at a given time period, including details about any parent and child areas.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2Fdetails]
+#' [Area details](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2Fdetails)
 #'
 #' @param time_period_id integer - specified time period for which to return details for, i.e. population and participation rate (compulsory)
 #' @param area_id integer - specified area id for which to return details for.
 #'
 #' @return Named list of tibbles containing area 'area_details', child 'area_child_details' (where appropriate) and parent 'area_parent_details' (where appropriate)
 #' @export
+#' @seealso [cvd_area_list()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
 #' area_details <- cvd_area_details(area_id = 1, time_period_id = 17)
@@ -204,13 +207,14 @@ cvd_area_details <- function(time_period_id = 1, area_id = 1) {
 #' but do not have any parent areas assigned, and therefore are unreachable.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2Funassigned]
+#' [Areas unassigned](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2Funassigned)
 #'
 #' @param time_period_id integer - time period for which Area must have data for (compulsory)
 #' @param system_level_id integer - system level of areas in the unassigned list (optional)
 #'
 #' @return tibble
 #' @export
+#' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
 #' test <- cvd_area_unassigned(time_period_id = 1, system_level_id = 5)
@@ -259,13 +263,14 @@ cvd_area_unassigned <- function(time_period_id = 1, system_level_id) {
 #' Uses simple LIKE '%<partial_area_name>%' comparison.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2Fsearch]
+#' [Area search](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2Fsearch)
 #'
 #' @param partial_area_name string - string to use to search for an Area (compulsory)
 #' @param time_period_id integer - limits the search to Areas which have data in specified time period (compulsory)
 #'
 #' @return Tibble of matching areas
 #' @export
+#' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
 #' test <- cvd_area_search(partial_area_name = 'Station', time_period_id = 17)
@@ -301,12 +306,13 @@ cvd_area_search <- function(partial_area_name = 'Surgery', time_period_id = 1) {
 #' Returns given area and children areas in a nested structure
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2FnestedSubSystems]
+#' [Area nested subsystems](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2FnestedSubSystems)
 #'
 #' @param area_id integer - the area to return data for (compulsory)
 #'
 #' @return tibble of data
 #' @export
+#' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
 #' test <- cvd_area_nested_subsystems(area_id = 5)
@@ -341,12 +347,13 @@ cvd_area_nested_subsystems <- function(area_id = 5) {
 #' based on their system level.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2FflatSubSystems]
+#' [Area flat subsystems](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2FflatSubSystems)
 #'
 #' @param area_id integer - the area to return data for (compulsory)
 #'
 #' @return tibble of data
 #' @export
+#' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()]
 #'
 #' @examples
 #' test <- cvd_area_flat_subsystems(area_id = 5)
@@ -379,13 +386,21 @@ cvd_area_flat_subsystems <- function(area_id = 5) {
 #' selected system level. Used to populate available indicator list in Data Explorer.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2Flist]
+#' [Indicator list](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2Flist)
 #'
 #' @param time_period_id integer - time period to reutrn data for (compulsory)
 #' @param system_level_id integer - system level to return data for (compulsory)
 #'
 #' @return tibble of time period details
 #' @export
+#' @seealso [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' cvd_indicators <- cvd_indicator_list()
@@ -424,13 +439,21 @@ cvd_indicator_list <- function(time_period_id = 1, system_level_id = 2) {
 #' system level.
 #'
 #' CVD Prevent API documentation:
-#' [`https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Findicator%2FmetricList`]
+#' [Indicator metric list](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Findicator%2FmetricList)
 #'
 #' @param time_period_id integer - time period to return data for (compulsory)
 #' @param system_level_id integer - system level to return data for (compulsory)
 #'
 #' @return tibble of indicators left-joined with metrics
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_metric_list(time_period_id = 1, system_level_id = 1)
@@ -493,7 +516,7 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
 #' indicators which have one of the specified tags will be returned.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator]
+#' [Indicator](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator)
 #'
 #' @param time_period_id integer - time period to return data for (compulsory)
 #' @param area_id integer - area to return data for (compulsory)
@@ -501,6 +524,14 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
 #'
 #' @return list of tibbles
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator()
@@ -620,10 +651,18 @@ cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
 #' Returns a list of all available tags, which can be used to filter indicators.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2Ftags]
+#' [Indicator tags](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2Ftags)
 #'
 #' @return tibble of tags
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_tags()
@@ -649,12 +688,20 @@ cvd_indicator_tags <- function() {
 #' Returns details of a single indicator
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_ID%3E%2Fdetails]
+#' [Indicator details](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_ID%3E%2Fdetails)
 #'
 #' @param indicator_id integer - the ID for the indicator (compulsory)
 #'
 #' @return tibble
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_details()
@@ -687,7 +734,7 @@ cvd_indicator_details <- function(indicator_id = 1) {
 #' and not all metrics for a chosen indicator, hence the metric_id query parameter.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FsiblingData]
+#' [Indicator sibling data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FsiblingData)
 #'
 #' @param time_period_id integer - time period for which to return data (compulsory)
 #' @param area_id integer - area for which all sibling data will be returned (compulsory)
@@ -695,6 +742,14 @@ cvd_indicator_details <- function(indicator_id = 1) {
 #'
 #' @return tibble of data
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' est <- cvd_indicator_sibling()
@@ -732,7 +787,7 @@ cvd_indicator_sibling <- function(time_period_id = 17, area_id = 30, metric_id =
 #' parameter.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FchildData]
+#' [Indicator child data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FchildData)
 #'
 #' @param time_period_id integer - time period for which to return data (compulsory)
 #' @param area_id integer - area for which all children data will be returned (compulsory)
@@ -740,6 +795,14 @@ cvd_indicator_sibling <- function(time_period_id = 17, area_id = 30, metric_id =
 #'
 #' @return tibble of child indicator data
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_child_data()
@@ -775,7 +838,7 @@ cvd_indicator_child_data <- function(time_period_id = 17, area_id = 74, metric_i
 #' for both selected area, and organisation at National Level (usually England).
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_id%3E%2Fdata]
+#' [Indicator data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_id%3E%2Fdata)
 #'
 #' @param indicator_id integer - indicator for which to return data (compulsory)
 #' @param time_period_id integer - time period for which to return data for (compulsory)
@@ -783,6 +846,14 @@ cvd_indicator_child_data <- function(time_period_id = 17, area_id = 74, metric_i
 #'
 #' @return tibble of indicator data
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_data()
@@ -817,7 +888,7 @@ cvd_indicator_data <- function(indicator_id = 2, time_period_id = 1, area_id = 2
 #' for both selected area and organisation at National Level (usually England).
 #'
 #' CVD Prevent API documentation:
-#' [`https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Findicator%2Fmetric%2F%3Cmetric_id%3E%2Fdata`]
+#' [Indicator metric data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Findicator%2Fmetric%2F%3Cmetric_id%3E%2Fdata)
 #'
 #' @param metric_id integer - metric for which to return data for (compulsory)
 #' @param time_period_id integer - time period for which to return data for (compulsory)
@@ -825,6 +896,14 @@ cvd_indicator_data <- function(indicator_id = 2, time_period_id = 1, area_id = 2
 #'
 #' @return tibble of metric data
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_metric_data()
@@ -859,7 +938,7 @@ cvd_indicator_metric_data <- function(metric_id = 7, time_period_id = 1, area_id
 #' period.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_ID%3E%2FrawDataJSON]
+#' [Indicator raw data JSON](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_ID%3E%2FrawDataJSON)
 #'
 #' @param indicator_id integer - indicator for which to return data for (compulsory)
 #' @param time_period_id integer - time period for which to return data for (compulsory)
@@ -867,6 +946,14 @@ cvd_indicator_metric_data <- function(metric_id = 7, time_period_id = 1, area_id
 #'
 #' @return tibble of indicator data
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_raw_data()
@@ -902,7 +989,7 @@ cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_
 #' area an error will be returned.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FnationalVsAreaMetricData%2F%3Cmetric_ID%3E]
+#' [Indicator national vs area metric data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FnationalVsAreaMetricData%2F%3Cmetric_ID%3E)
 #'
 #' @param metric_id integer - metric for which to return data (compulsory)
 #' @param time_period_id integer - time period for which to return data (compulsory)
@@ -910,6 +997,14 @@ cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_
 #'
 #' @return tibble of data
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_nationalarea_metric_data()
@@ -947,10 +1042,18 @@ cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id
 #' Group.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpriorityGroups]
+#' [Indicator priority groups](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpriorityGroups)
 #'
 #' @return tibble of data
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_pathway_group()],
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_priority_groups()
@@ -987,13 +1090,21 @@ cvd_indicator_priority_groups <- function() {
 #' returned as key value pairs and the Indicators populate an array.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpathwayGroup%2F%3Cpathway_group_id%3E]
+#' [Indicator pathway group](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpathwayGroup%2F%3Cpathway_group_id%3E)
 #'
 #'
 #' @param pathway_group_id integer - the pathway to return data for (compulsory)
 #'
 #' @return tibble of data
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()],
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_pathway_group()
@@ -1031,13 +1142,21 @@ cvd_indicator_pathway_group <- function(pathway_group_id = 10) {
 #' including display orders for the given group.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FindicatorGroup%2F%3Cindicator_group_ID%3E]
+#' [Indicator group](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FindicatorGroup%2F%3Cindicator_group_ID%3E)
 #'
 #'
 #' @param indicator_group_id integer - the group to return data for (compulsory)
 #'
 #' @return tibble of data
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_group()
@@ -1069,13 +1188,21 @@ cvd_indicator_group <- function(indicator_group_id = 15) {
 #' returned in the `Data` dictionary.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FtimeSeriesByMetric%2F%3Cmetric_ID%3E]
+#' [Indicator time series metrics](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FtimeSeriesByMetric%2F%3Cmetric_ID%3E)
 #'
 #' @param metric_id integer - the metric to return data for (compulsory)
 #' @param area_id integer - the area to return data for (compulsory)
 #'
 #' @return tibble
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_metric_timeseries()
@@ -1112,13 +1239,21 @@ cvd_indicator_metric_timeseries <- function(metric_id = 1, area_id = 50) {
 #' ethnicity, etc.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpersonsTimeSeriesByIndicator%2F%3Cindicator_ID%3E]
+#' [Indicator person time series](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpersonsTimeSeriesByIndicator%2F%3Cindicator_ID%3E)
 #'
 #' @param indicator_id integer - the indicator to return data for (compulsory)
 #' @param area_id integer - the area to return data for (compulsory)
 #'
 #' @return tibble of data
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_metric_systemlevel_comparison()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_person_timeseries()
@@ -1153,7 +1288,7 @@ cvd_indicator_person_timeseries <- function(indicator_id = 1, area_id = 1) {
 #' `SystemLevels` which contains data grouped by system level.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FmetricSystemLevelComparison%2F%3Cmetric_ID%3E]
+#' [Indicator metric system level comparison](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FmetricSystemLevelComparison%2F%3Cmetric_ID%3E)
 #'
 #'
 #' @param metric_id integer - the metric to return data for (compulsory)
@@ -1162,6 +1297,14 @@ cvd_indicator_person_timeseries <- function(indicator_id = 1, area_id = 1) {
 #'
 #' @return tibble of data
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()],
+#' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' test <- cvd_indicator_metric_systemlevel_comparison()
@@ -1197,7 +1340,7 @@ cvd_indicator_metric_systemlevel_comparison <- function(metric_id = 1, time_peri
 #' which contains data grouped by system level.
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FmetricAreaBreakdown%2F%3Cmetric_ID%3E]
+#' [Indicator metric area breakdown](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FmetricAreaBreakdown%2F%3Cmetric_ID%3E)
 #'
 #'
 #' @param metric_id integer - the metric to return data for (compulsory)
@@ -1206,6 +1349,13 @@ cvd_indicator_metric_systemlevel_comparison <- function(metric_id = 1, time_peri
 #'
 #' @return tibble of data
 #' @export
+#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
+#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
+#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
+#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()]
 #'
 #' @examples
 #' test <- cvd_indicator_metric_area_breakdown()
@@ -1241,10 +1391,11 @@ cvd_indicator_metric_area_breakdown <- function(metric_id = 1, time_period_id = 
 #' Returns a list of all external resources
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FexternalResource]
+#' [External resources](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FexternalResource)
 #'
 #' @return tibble fo data
 #' @export
+#' @seealso [cvd_data_availability()]
 #'
 #' @examples
 #' test <- cvd_external_resource()
@@ -1275,7 +1426,7 @@ cvd_external_resource <- function() {
 #' `IsAvailable` - `Y` for data is available, `N` for data is unavailable, and NULL for unknown data
 #'
 #' CVD Prevent API documentation:
-#' [https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FdataAvailability]
+#' [Data availability](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FdataAvailability)
 #'
 #' @param time_period_id integer - the time period to return data for (compulsory)
 #' @param system_level_id integer - the system level to return data for (compulsory)
@@ -1284,6 +1435,7 @@ cvd_external_resource <- function() {
 #'
 #' @return tibble of data
 #' @export
+#' @seealso [cvd_external_resource()]
 #'
 #' @examples
 #' test <- cvd_data_availability(time_period_id = 3, system_level_id = 5)
