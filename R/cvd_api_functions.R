@@ -609,7 +609,7 @@ cvd_indicator_list <- function(time_period_id = 1, system_level_id = 2) {
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
 #' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
 #' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()],
 #' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
 #' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
 #' [cvd_indicator_metric_area_breakdown()]
@@ -617,7 +617,6 @@ cvd_indicator_list <- function(time_period_id = 1, system_level_id = 2) {
 #' @examples
 #' test <- cvd_indicator_metric_list(time_period_id = 1, system_level_id = 1)
 cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
-
   # compose the request
   req <-
     httr2::request(url_base) |>
@@ -630,43 +629,30 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
   # perform the request
   resp <- req |>
     httr2::req_perform() |>
-    httr2::resp_body_json()
+    httr2::resp_body_string()
 
-  # wrangle to tibble for output
-  # 1. get the list of indicators
-  indicators <- resp$indicatorList |>
-    purrr::map_dfr(
-      .f = \(.indicator_item) {
-        .indicator_item |>
-          purrr::compact() |>
-          dplyr::as_tibble()
-      }
-    ) |>
-    unique()
+  # wrangle for output
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
+    purrr::compact() |>
+    dplyr::as_tibble()
 
-  # 2. get the metrics
-  metrics <- purrr::map2_dfr(
-    .x = indicators$MetricList,
-    .y = indicators$IndicatorID,
-    .f = \(.metric_item, .indicator_id) {
-      .metric_item |>
-        purrr::compact() |>
-        dplyr::as_tibble() |>
-        dplyr::bind_cols(IndicatorID = .indicator_id)
-    }
-  )
+  if('MetricList' %in% names(data)) {
+    data <-
+      data |>
+      dplyr::relocate(dplyr::any_of(c('MetricList')), .after = dplyr::last_col()) |>
+      tidyr::unnest(cols = dplyr::any_of(c('MetricList')))
+  }
 
-  # 3. combine ready for output
-  return <-
-    indicators |>
-    dplyr::select(-MetricList) |>
-    dplyr::left_join(
-      y = metrics,
-      by = 'IndicatorID',
-      relationship = 'many-to-many'
+  if(length(data) == 0) {
+    cli::cli_alert(
+      text = 'No results returned'
     )
+  }
+
+  return(data)
 }
 
+test <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 2)
 
 #' Indicators
 #'
