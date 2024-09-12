@@ -1,5 +1,5 @@
 ---
-title: "using_cvdprevent"
+title: "Using CVD Prevent"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{using_cvdprevent}
@@ -127,4 +127,66 @@ The top system_level (England) does not have a parent either:
 ```{r}
 cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |> 
   dplyr::select(SystemLevelName, AreaID, AreaName)
+```
+
+## Search for area by keyword
+
+To find details for an area where you don't know its ID number you can perform a partial name search using `cvd_area_search()` and specify a time period to search.
+
+```{r}
+cvd_area_search(partial_area_name = 'foo', time_period_id = 17) |> 
+  dplyr::select(AreaID, AreaName, AreaCode)
+```
+
+## Area details
+
+To get details for all areas as a tibble including children areas (and subchildren up to 3 levels deep) you can use the function `cvd_area_nested_subsystems()` function. No parameters are required.
+
+```{r}
+cvd_area_nested_subsystems() |> 
+  dplyr::glimpse()
+```
+
+Alternatively, you can request a flat output grouped on system level using the `cvd_area_flat_subsystem()` function:
+
+```{r}
+cvd_area_flat_subsystems() |> 
+  dplyr::glimpse()
+```
+
+# Indicators
+
+An ***Indicator*** represents a cardiovascular disease health indicator as defined by NHS England. An example of an Indicator is CVDP001AF, 'Prevalence of GP recorded atrial fibrillation in patients aged 18 and over'. Indicators have unique Indicator IDs. Each indicator is further broken down into *Metrics*.
+
+A ***Metric*** represents a further breakdown of an indicator by inequality markers. An example of an inequality marker is 'Age Group - Male, 40-59'. Metrics have unique Metric IDs with each representing a combination of *Indicator* and *Metric Category*.
+
+A ***Metric Category*** describes the inequality markers which the *Metric* applies to. Each *Metric Category* has a unique ID for each combination of Name and *Metric Category Type*.
+
+A *Metric Category* belongs to a ***Metric Category Type*** which groups the *Metric Categories* into one entity. Each *Metric Category Type* has a unique ID.
+
+For example, 'Male - 40-59' is a *Metric Category* in the 'Age Group' *Metric Category Type*. Age Group will also contain categories for '18-39', '40-59', '60-79', '80+'. Assigning *Metric Categories* to *Metric Category Type* allows comparison of all metrics in one inequality marker (in this case Age Group), or displaying *Metric Categories* in the same *Metric Category Type* alongside each other.
+
+## Listing indicators
+
+To get a list of all available indicators for a given time period and system level you can use the `cvd_indicator_list()` function and specify which time period and system level you are interested in.
+
+Here we access the first four indicators for time point 17 and GP practice level (system level 5).
+
+```{r}
+cvd_indicator_list(time_period_id = 17, system_level_id = 5) |> 
+  dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |> 
+  dplyr::slice_head(n = 4)
+```
+
+## Listing metrics for each indicator
+
+To list all metrics for each indicator you can use the `cvd_indicator_metric_list()` function and specify which time period and system level you are interested in.
+
+Here we access the metrics for the prevalence of atrial fibrillation (Indicator ID 1) and focussing on just those metrics available for the 40-59 years age group:
+
+```{r}
+cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
+  dplyr::filter(IndicatorID == 1, MetricCategoryName == '40-59') |> 
+  dplyr::count(IndicatorID, IndicatorShortName, MetricID, MetricCategoryName, CategoryAttribute) |> 
+  dplyr::select(-n)
 ```
