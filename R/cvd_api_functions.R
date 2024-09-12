@@ -616,6 +616,7 @@ cvd_indicator_list <- function(time_period_id = 1, system_level_id = 2) {
 #'
 #' @examples
 #' test <- cvd_indicator_metric_list(time_period_id = 1, system_level_id = 1)
+#' test <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 2)
 cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
   # compose the request
   req <-
@@ -651,8 +652,6 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
 
   return(data)
 }
-
-test <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 2)
 
 #' Indicators
 #'
