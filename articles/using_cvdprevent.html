@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>using_cvdprevent • cvdprevent</title>
+<title>Using CVD Prevent • cvdprevent</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="using_cvdprevent">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Using CVD Prevent">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,7 +33,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/using_cvdprevent.html">using_cvdprevent</a></li>
+<li><a class="dropdown-item" href="../articles/using_cvdprevent.html">Using CVD Prevent</a></li>
   </ul>
 </li>
       </ul>
@@ -54,7 +54,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>using_cvdprevent</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Using CVD Prevent</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/vignettes/using_cvdprevent.Rmd" class="external-link"><code>vignettes/using_cvdprevent.Rmd</code></a></small>
@@ -258,6 +258,155 @@ accessing these details for a given ‘time_period_id’ and
 <span><span class="co">#&gt;   SystemLevelName AreaID AreaName</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> England              1 England</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="search-for-area-by-keyword">Search for area by keyword<a class="anchor" aria-label="anchor" href="#search-for-area-by-keyword"></a>
+</h3>
+<p>To find details for an area where you don’t know its ID number you
+can perform a partial name search using <code><a href="../reference/cvd_area_search.html">cvd_area_search()</a></code>
+and specify a time period to search.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_search.html">cvd_area_search</a></span><span class="op">(</span>partial_area_name <span class="op">=</span> <span class="st">'foo'</span>, time_period_id <span class="op">=</span> <span class="fl">17</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">AreaCode</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 3</span></span></span>
+<span><span class="co">#&gt;   AreaID AreaName                   AreaCode</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   <span style="text-decoration: underline;">7</span>327 HILLFOOT HEALTH            N82116  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   <span style="text-decoration: underline;">1</span>991 Hillfoot Surgery           B86011  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   <span style="text-decoration: underline;">6</span>155 Waterfoot Medical Practice P81132</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="area-details">Area details<a class="anchor" aria-label="anchor" href="#area-details"></a>
+</h3>
+<p>To get details for all areas as a tibble including children areas
+(and subchildren up to 3 levels deep) you can use the function
+<code><a href="../reference/cvd_area_nested_subsystems.html">cvd_area_nested_subsystems()</a></code> function. No parameters are
+required.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_nested_subsystems.html">cvd_area_nested_subsystems</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 61</span></span>
+<span><span class="co">#&gt; Columns: 29</span></span>
+<span><span class="co">#&gt; $ AreaCode                                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "E54000038", "E54000038", "…</span></span>
+<span><span class="co">#&gt; $ AreaID                                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span></span>
+<span><span class="co">#&gt; $ AreaName                                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Somerset", "Somerset", "So…</span></span>
+<span><span class="co">#&gt; $ AreaOdsCode                                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "QSL", "QSL", "QSL", "QSL",…</span></span>
+<span><span class="co">#&gt; $ ParentAreaID                               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 7670, 7670, 7670, 7670, 767…</span></span>
+<span><span class="co">#&gt; $ SystemLevelID                              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2, 2, 2, 2, 2, 2, 2, 2, 2, …</span></span>
+<span><span class="co">#&gt; $ SystemLevelName                            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "STP", "STP", "STP", "STP",…</span></span>
+<span><span class="co">#&gt; $ Children_AreaCode                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "E38000150", "E38000150", "…</span></span>
+<span><span class="co">#&gt; $ Children_AreaID                            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 105, 105, 105, 105, 105, 10…</span></span>
+<span><span class="co">#&gt; $ Children_AreaName                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "NHS Somerset CCG", "NHS So…</span></span>
+<span><span class="co">#&gt; $ Children_AreaOdsCode                       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "11X", "11X", "11X", "11X",…</span></span>
+<span><span class="co">#&gt; $ Children_ParentAreaID                      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span></span>
+<span><span class="co">#&gt; $ Children_SystemLevelID                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 3, 3, 3, 3, 3, 3, 3, 3, 3, …</span></span>
+<span><span class="co">#&gt; $ Children_SystemLevelName                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "CCG", "CCG", "CCG", "CCG",…</span></span>
+<span><span class="co">#&gt; $ Children_Children_AreaCode                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "U47425", "U47425", "U47425…</span></span>
+<span><span class="co">#&gt; $ Children_Children_AreaID                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 528, 528, 528, 528, 613, 61…</span></span>
+<span><span class="co">#&gt; $ Children_Children_AreaName                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "West Somerset PCN", "West …</span></span>
+<span><span class="co">#&gt; $ Children_Children_AreaOdsCode              <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span><span class="co">#&gt; $ Children_Children_ParentAreaID             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 105, 105, 105, 105, 105, 10…</span></span>
+<span><span class="co">#&gt; $ Children_Children_SystemLevelID            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 4, 4, 4, 4, 4, 4, 4, 4, 4, …</span></span>
+<span><span class="co">#&gt; $ Children_Children_SystemLevelName          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "PCN", "PCN", "PCN", "PCN",…</span></span>
+<span><span class="co">#&gt; $ Children_Children_Children_AreaCode        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "L85003", "L85009", "L85065…</span></span>
+<span><span class="co">#&gt; $ Children_Children_Children_AreaID          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5144, 5149, 5192, 7120, 514…</span></span>
+<span><span class="co">#&gt; $ Children_Children_Children_AreaName        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Exmoor Medical Centre", "W…</span></span>
+<span><span class="co">#&gt; $ Children_Children_Children_AreaOdsCode     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span><span class="co">#&gt; $ Children_Children_Children_Children        <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> [], [], [], [], [], [], []…</span></span>
+<span><span class="co">#&gt; $ Children_Children_Children_ParentAreaID    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 528, 528, 528, 528, 613, 61…</span></span>
+<span><span class="co">#&gt; $ Children_Children_Children_SystemLevelID   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span></span>
+<span><span class="co">#&gt; $ Children_Children_Children_SystemLevelName <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Practice", "Practice", "Pr…</span></span></code></pre></div>
+<p>Alternatively, you can request a flat output grouped on system level
+using the <code>cvd_area_flat_subsystem()</code> function:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_flat_subsystems.html">cvd_area_flat_subsystems</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 75</span></span>
+<span><span class="co">#&gt; Columns: 14</span></span>
+<span><span class="co">#&gt; $ AreaCode                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "E54000038", "E54000038", "E54000038", "E54…</span></span>
+<span><span class="co">#&gt; $ AreaID                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5…</span></span>
+<span><span class="co">#&gt; $ AreaName                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Somerset", "Somerset", "Somerset", "Somers…</span></span>
+<span><span class="co">#&gt; $ AreaOdsCode                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "QSL", "QSL", "QSL", "QSL", "QSL", "QSL", "…</span></span>
+<span><span class="co">#&gt; $ ParentAreaID               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 7670, 7670, 7670, 7670, 7670, 7670, 7670, 7…</span></span>
+<span><span class="co">#&gt; $ SystemLevelID              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…</span></span>
+<span><span class="co">#&gt; $ SystemLevelName            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "STP", "STP", "STP", "STP", "STP", "STP", "…</span></span>
+<span><span class="co">#&gt; $ SubSystems_AreaCode        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "E38000150", "U47425", "U17153", "U84175", …</span></span>
+<span><span class="co">#&gt; $ SubSystems_AreaID          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 105, 528, 613, 677, 688, 743, 786, 868, 963…</span></span>
+<span><span class="co">#&gt; $ SubSystems_AreaName        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "NHS Somerset CCG", "West Somerset PCN", "W…</span></span>
+<span><span class="co">#&gt; $ SubSystems_AreaOdsCode     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "11X", NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span><span class="co">#&gt; $ SubSystems_ParentAreaID    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 105, 105, 105, 105, 105, 105, 105, 105, …</span></span>
+<span><span class="co">#&gt; $ SubSystems_SystemLevelID   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5…</span></span>
+<span><span class="co">#&gt; $ SubSystems_SystemLevelName <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "CCG", "PCN", "PCN", "PCN", "PCN", "PCN", "…</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="indicators">Indicators<a class="anchor" aria-label="anchor" href="#indicators"></a>
+</h2>
+<p>An <strong><em>Indicator</em></strong> represents a cardiovascular
+disease health indicator as defined by NHS England. An example of an
+Indicator is CVDP001AF, ‘Prevalence of GP recorded atrial fibrillation
+in patients aged 18 and over’. Indicators have unique Indicator IDs.
+Each indicator is further broken down into <em>Metrics</em>.</p>
+<p>A <strong><em>Metric</em></strong> represents a further breakdown of
+an indicator by inequality markers. An example of an inequality marker
+is ‘Age Group - Male, 40-59’. Metrics have unique Metric IDs with each
+representing a combination of <em>Indicator</em> and <em>Metric
+Category</em>.</p>
+<p>A <strong><em>Metric Category</em></strong> describes the inequality
+markers which the <em>Metric</em> applies to. Each <em>Metric
+Category</em> has a unique ID for each combination of Name and
+<em>Metric Category Type</em>.</p>
+<p>A <em>Metric Category</em> belongs to a <strong><em>Metric Category
+Type</em></strong> which groups the <em>Metric Categories</em> into one
+entity. Each <em>Metric Category Type</em> has a unique ID.</p>
+<p>For example, ‘Male - 40-59’ is a <em>Metric Category</em> in the ‘Age
+Group’ <em>Metric Category Type</em>. Age Group will also contain
+categories for ‘18-39’, ‘40-59’, ‘60-79’, ‘80+’. Assigning <em>Metric
+Categories</em> to <em>Metric Category Type</em> allows comparison of
+all metrics in one inequality marker (in this case Age Group), or
+displaying <em>Metric Categories</em> in the same <em>Metric Category
+Type</em> alongside each other.</p>
+<div class="section level3">
+<h3 id="listing-indicators">Listing indicators<a class="anchor" aria-label="anchor" href="#listing-indicators"></a>
+</h3>
+<p>To get a list of all available indicators for a given time period and
+system level you can use the <code><a href="../reference/cvd_indicator_list.html">cvd_indicator_list()</a></code> function
+and specify which time period and system level you are interested
+in.</p>
+<p>Here we access the first four indicators for time point 17 and GP
+practice level (system level 5).</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_list.html">cvd_indicator_list</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">IndicatorCode</span>, <span class="va">IndicatorShortName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 3</span></span></span>
+<span><span class="co">#&gt;   IndicatorID IndicatorCode IndicatorShortName                 </span></span>
+<span><span class="co">#&gt;         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>          13 CVDP002CKD    CKD: uncoded case finder           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>          20 CVDP005HYP    Hypertension: high risk case finder</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>          23 CVDP010CHOL   Cholesterol: CKD treated with LLT  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>          24 CVDP001SMOK   Smoking: record of smoking status</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="listing-metrics-for-each-indicator">Listing metrics for each indicator<a class="anchor" aria-label="anchor" href="#listing-metrics-for-each-indicator"></a>
+</h3>
+<p>To list all metrics for each indicator you can use the
+<code><a href="../reference/cvd_indicator_metric_list.html">cvd_indicator_metric_list()</a></code> function and specify which time
+period and system level you are interested in.</p>
+<p>Here we access the metrics for the prevalence of atrial fibrillation
+(Indicator ID 1) and focussing on just those metrics available for the
+40-59 years age group:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_metric_list.html">cvd_indicator_metric_list</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorID</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">MetricCategoryName</span> <span class="op">==</span> <span class="st">'40-59'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">IndicatorShortName</span>, <span class="va">MetricID</span>, <span class="va">MetricCategoryName</span>, <span class="va">CategoryAttribute</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">n</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
+<span><span class="co">#&gt;   IndicatorID IndicatorShortName MetricID MetricCategoryName CategoryAttribute</span></span>
+<span><span class="co">#&gt;         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>           1 AF: prevalence          173 40-59              Female           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>           1 AF: prevalence          175 40-59              Male             </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>           1 AF: prevalence          187 40-59              Persons</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

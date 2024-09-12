@@ -3,7 +3,7 @@ pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   using_cvdprevent: using_cvdprevent.html
-last_built: 2024-09-10T19:02Z
+last_built: 2024-09-12T07:52Z
 urls:
   reference: https://craig-parylo.github.io/cvdprevent/reference
   article: https://craig-parylo.github.io/cvdprevent/articles
