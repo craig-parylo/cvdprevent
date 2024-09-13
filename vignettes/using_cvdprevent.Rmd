@@ -51,7 +51,7 @@ cvd_time_period_system_levels() |>
 
 # Areas
 
-## List available areas for a given time period
+## List available system levels for a given time period
 
 To find out which system levels are reported for a specific time period you can use the `cvd_area_system_level()` function, providing the required time_period_id, (NB, time_period_id defaults to the first time period if not supplied).
 
@@ -189,4 +189,68 @@ cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
   dplyr::filter(IndicatorID == 1, MetricCategoryName == '40-59') |> 
   dplyr::count(IndicatorID, IndicatorShortName, MetricID, MetricCategoryName, CategoryAttribute) |> 
   dplyr::select(-n)
+```
+
+## List all indicator data for a given area
+
+To access all indicator data for a given area and time period you can use the `cvd_indicator()` function. The return from the API includes four sets of data which are grouped together as four tibbles within a named list object. The four tibbles include:
+
+-   indicators,
+
+-   categories,
+
+-   category data,
+
+-   timeseries data,
+
+Here we look at '3 Centres PCN' (area ID 1103) for time period 17:
+
+```{r}
+return_list <- cvd_indicator(time_period_id = 17, area_id = 1103) 
+return_list |> summary()
+```
+
+We can extract the tibbles using the list\$object notation. To illustrate, we obtain the first four indicators from the `return_list$indicators` list item:
+
+```{r}
+return_list$indicators |> 
+  dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |> 
+  dplyr::arrange(IndicatorID) |> 
+  dplyr::slice_head(n = 4) |> 
+  gt::gt()
+```
+
+Here we access category data for:
+
+-   indicator 7: (AF: treatment with anticoagulants)
+
+-   metric categories 7 & 8 (people aged 40-59 years by gender)
+
+```{r}
+return_list$categories |> 
+  dplyr::filter(IndicatorID == 7, MetricCategoryID %in% c(7, 8)) |> 
+  dplyr::select(IndicatorID, MetricCategoryTypeName, CategoryAttribute, MetricCategoryName, MetricID) |> 
+  gt::gt()
+```
+
+Here we access the data for each of the above categories:
+
+```{r}
+return_list$category_data |> 
+  dplyr::filter(MetricID %in% c(126, 132)) |>
+  dplyr::select(IndicatorID, MetricID, Value, Numerator, Denominator) |> 
+  gt::gt()
+```
+
+```{r}
+return_list$timeseries_data |> 
+  dplyr::filter(MetricID %in% c(126, 132), !is.na(Value)) |> 
+  # prepare for plotting
+  dplyr::mutate(
+    EndDate = as.Date(EndDate, format = '%a, %d %b %Y 00:00:00 GMT'),
+    MetricID = MetricID |> as.factor()
+  ) |> 
+  ggplot2::ggplot(ggplot2::aes(x = EndDate, y = Value, group = MetricID , colour = MetricID)) +
+  ggplot2::geom_point() +
+  ggplot2::geom_line()
 ```
