@@ -739,7 +739,7 @@ cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
         IndicatorID,
         dplyr::starts_with('Categories_'),
         -dplyr::contains('_TimeSeries'),
-        -dplyr::starts_with('.Data')
+        -dplyr::starts_with('Data')
       )
     ) |>
     # remove 'Categories_' prefix
@@ -747,6 +747,7 @@ cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
       .fn = \(.col_name) {stringr::str_remove(.col_name, pattern = 'Categories_')},
       .cols = dplyr::starts_with('Categories')
     ) |>
+    dplyr::select(-dplyr::starts_with('Data.')) |>
     unique()
 
   # 3. get categories_data
