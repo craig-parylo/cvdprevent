@@ -26,6 +26,7 @@ Imports:
     stringr,
     tidyr
 Suggests: 
+    gt,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
