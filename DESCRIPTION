@@ -25,7 +25,8 @@ Imports:
     purrr,
     stringr,
     tidyr
-Suggests: 
+Suggests:
+    ggplot2,
     gt,
     knitr,
     rmarkdown
