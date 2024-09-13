@@ -755,7 +755,7 @@ cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
     dplyr::select(
       c(
         IndicatorID,
-        MetrricID = Categories_MetricID,
+        MetricID = Categories_MetricID,
         dplyr::starts_with('Categories_Data.')
       )
     ) |>
@@ -771,7 +771,7 @@ cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
     dplyr::select(
       c(
         IndicatorID,
-        MetrricID = Categories_MetricID,
+        MetricID = Categories_MetricID,
         dplyr::starts_with('Categories_TimeSeries')
       )
     ) |>
@@ -787,7 +787,8 @@ cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
     'indicators' = indicators,
     'categories' = categories,
     'category_data' = category_data,
-    'timeseries_data' = timeseries_data
+    'timeseries_data' = timeseries_data,
+    'all_data' = df
   )
 }
 
