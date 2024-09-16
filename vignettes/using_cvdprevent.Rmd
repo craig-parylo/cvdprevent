@@ -87,6 +87,8 @@ cvd_area_list(time_period_id = 17, system_level_id = 4) |>
   gt::gt()
 ```
 
+Either parent area or system level **must** be specified.
+
 ## View details for a specific area
 
 To view details for a specific area use `cvd_area_details()` with the required parameters of 'time_period_id' and 'area_id'. The return from this function is a list of three named tibbles:
@@ -106,8 +108,7 @@ The tibbles first need extracting from the returned list object, done here using
 
 ```{r}
 returned_list$area_details |> 
-  dplyr::select(AreaCode, AreaName, SystemLevelID) |> 
-  gt::gt()
+  dplyr::select(AreaCode, AreaName, SystemLevelID)
 ```
 
 View details for the parent of this area:
@@ -159,20 +160,22 @@ cvd_area_search(partial_area_name = 'foo', time_period_id = 17) |>
 
 ## Area details
 
-To get details for all areas as a tibble including children areas (and subchildren up to 3 levels deep) you can use the function `cvd_area_nested_subsystems()` function. No parameters are required.
+### Nested
+
+To get details for areas as a tibble including children areas (and sub-children up to 3 levels deep) you can use the function `cvd_area_nested_subsystems()` function. An area ID is a required parameter. Here we return details for Somerset STP:
 
 ```{r}
-cvd_area_nested_subsystems() |> 
-  dplyr::glimpse() |> 
-  gt::gt()
+cvd_area_nested_subsystems(area_id = 5) |> 
+  dplyr::glimpse()
 ```
+
+### Flat
 
 Alternatively, you can request a flat output grouped on system level using the `cvd_area_flat_subsystem()` function:
 
 ```{r}
-cvd_area_flat_subsystems() |> 
-  dplyr::glimpse() |> 
-  gt::gt()
+cvd_area_flat_subsystems(area_id = 5) |> 
+  dplyr::glimpse()
 ```
 
 # Indicators
@@ -355,5 +358,54 @@ Here we get data for Metric 126 (relating to indicator 17 - Hypertension treatme
 ```{r}
 cvd_indicator_child_data(time_period_id = 17, area_id = 74, metric_id = 126) |> 
   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit) |> 
+  gt::gt()
+```
+
+## All indicator data for a given time and area
+
+Use function `cvd_indicator_data()` along with the indicator ID and specifying the time period and area to get all metric data. The return includes national level data as comparison.
+
+Here we look at 'AF: treatment with anticoagulants' (indicator ID 7) in time period 17 for 'Leicester Central PCN' (area_id 701) focussed on metrics by gender:
+
+```{r}
+cvd_indicator_data(time_period_id = 17, indicator_id = 7, area_id = 701) |> 
+  dplyr::filter(MetricCategoryTypeName == 'Sex') |> 
+  dplyr::select(MetricID, MetricCategoryName, AreaData.AreaName, AreaData.Value, NationalData.AreaName, NationalData.Value) |> 
+  gt::gt()
+```
+
+## All metric data for a given time and area
+
+Use function `cvd_indicator_metric_data()` along with the metric ID and specifying the time period and area to get all data. The return includes national level data as comparison.
+
+Here we retrieve metric data for AF: treatment with anticoagulants for 'Alliance PCN' (area ID 399) in time period 1 for metric 126 (breakdown by age group- males aged 40-59):
+
+```{r}
+cvd_indicator_metric_data(metric_id = 126, time_period_id = 1, area_id = 399) |> 
+  dplyr::select(IndicatorShortName, CategoryAttribute, MetricCategoryName, AreaData.Value, NationalData.Value) |> 
+  gt::gt()
+```
+
+## All indicator metric data for system level and time period
+
+Perhaps one of the most useful functions when looking to do a cross-sectional system-wide analysis, `cvd_indicator_raw_data()` returns all metric data for a specified indicator system level and time period.
+
+Here we return all metric data for indicator 'AF: treatment with anticoagulants' (indicator ID 7) in time period 17 at GP practice level (system level ID 5):
+
+```{r}
+cvd_indicator_raw_data(indicator_id = 7, time_period_id = 17, system_level_id = 5) |> 
+  dplyr::slice_head(n = 5) |> 
+  dplyr::select(AreaCode, AreaName, Value) |> 
+  gt::gt()
+```
+
+## Benchmark metric data with national results
+
+To return metric data for a given area and time period along with national results to compare against use function `cvd_indicator_nationalarea_metric_data()`.
+
+Here we compare performance against metric 150 (AF: treatment with anticoagulants - all people) in 'Chester South PCN' (area ID 553) with national performance:
+
+```{r}
+cvd_indicator_nationalarea_metric_data(metric_id = 150, time_period_id = 17, area_id = 553) |> 
   gt::gt()
 ```
