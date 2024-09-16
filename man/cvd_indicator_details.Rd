@@ -20,8 +20,9 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2F\%3Cindicator_ID\%3E\%2Fdetails}{Indicator details}
 }
 \examples{
-test <- cvd_indicator_details()
-test <- cvd_indicator_details(indicator_id = 7)
+cvd_indicator_details(indicator_id = 7) |>
+  dplyr::select(IndicatorID, MetaDataTitle, MetaData) |>
+  dplyr::slice_head(n=5)
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},

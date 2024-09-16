@@ -14,7 +14,7 @@ cvd_indicator(time_period_id = 1, area_id = 1, tag_id)
 \item{tag_id}{numeric vector - allows filtering indicators by one or more tags (optional, array)}
 }
 \value{
-list of tibbles
+List of named tibbles (indicators, categories, category_data, timeseries_data, all_data)
 }
 \description{
 Returns all indicators and data for a given time period and area. Also returns
@@ -26,8 +26,40 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator}{Indicator}
 }
 \examples{
-test <- cvd_indicator()
-test <- cvd_indicator(time_period_id = 17, area_id = 55, tag_id = c(12, 13))
+# Returns a list of named tibbles. To use we need to unpack the list:
+return_list <- cvd_indicator(time_period_id = 17, area_id = 1103)
+
+# See what the list contains
+return_list |> summary()
+
+# extract the indicators
+indicators <- return_list$indicators
+indicators |>
+  dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
+  dplyr::arrange(IndicatorID) |>
+  dplyr::slice_head(n = 4)
+
+# extract the categories
+categories <- return_list$categories
+categories |>
+  dplyr::filter(IndicatorID == 7, MetricCategoryID \%in\% c(7, 8)) |>
+  dplyr::select(IndicatorID, MetricCategoryTypeName,
+  CategoryAttribute, MetricCategoryName, MetricID)
+
+# extract category data
+category_data <- return_list$category_data
+category_data |>
+  dplyr::filter(MetricID \%in\% c(126, 132)) |>
+  dplyr::select(IndicatorID, MetricID, Value, Numerator, Denominator)
+
+# extract the time series data
+timeseries_data <- return_list$timeseries_data
+timeseries_data |>
+  dplyr::filter(MetricID \%in\% c(126, 132), !is.na(Value))
+
+# indicators are searcheable by one or more Tag.
+return_list <-
+  cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}},

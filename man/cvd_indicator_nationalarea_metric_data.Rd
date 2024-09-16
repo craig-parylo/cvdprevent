@@ -32,7 +32,11 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FnationalVsAreaMetricData\%2F\%3Cmetric_ID\%3E}{Indicator national vs area metric data}
 }
 \examples{
-test <- cvd_indicator_nationalarea_metric_data()
+# Compare performance against metric 150  (AF: treatment with anticoagulants
+# - all people) in 'Chester South PCN' (area ID 553) with national
+# performance:
+cvd_indicator_nationalarea_metric_data(metric_id = 150, time_period_id = 17, area_id = 553) |>
+dplyr::slice_head(n=5)
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},

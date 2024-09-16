@@ -17,7 +17,9 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2Ftags}{Indicator tags}
 }
 \examples{
-test <- cvd_indicator_tags()
+cvd_indicator_tags() |>
+  dplyr::arrange(IndicatorTagID) |>
+  dplyr::slice_head(n = 5)
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},

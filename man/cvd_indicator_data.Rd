@@ -25,7 +25,13 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2F\%3Cindicator_id\%3E\%2Fdata}{Indicator data}
 }
 \examples{
-test <- cvd_indicator_data()
+# Look at 'AF: treatment with anticoagulants' (indicator ID 7) in time
+# period 17 for  'Leicester Central PCN' (area_id 701) focussed on metrics
+# by gender:
+cvd_indicator_data(time_period_id = 17, indicator_id = 7, area_id = 701) |>
+  dplyr::filter(MetricCategoryTypeName == 'Sex') |>
+  dplyr::select(MetricID, MetricCategoryName, AreaData.AreaName,
+  AreaData.Value, NationalData.AreaName, NationalData.Value)
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},

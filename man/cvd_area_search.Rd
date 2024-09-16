@@ -23,7 +23,13 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2Fsearch}{Area search}
 }
 \examples{
-test <- cvd_area_search(partial_area_name = 'Station', time_period_id = 17)
+# search for areas matching the term 'practice'
+cvd_area_search(partial_area_name = 'practice', time_period_id = 17) |>
+  dplyr::select(AreaID, AreaName, AreaCode)
+
+# search for areas matching the term 'PCN'
+cvd_area_search(partial_area_name = 'PCN', time_period_id = 17) |>
+  dplyr::select(AreaID, AreaName, AreaCode)
 }
 \seealso{
 \code{\link[=cvd_area_list]{cvd_area_list()}}, \code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}

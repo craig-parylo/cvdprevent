@@ -24,7 +24,10 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2Flist}{Indicator list}
 }
 \examples{
-cvd_indicators <- cvd_indicator_list()
+# List four indicators for time point 17 and GP practice level (system level 5)
+cvd_indicator_list(time_period_id = 17, system_level_id = 5) |>
+  dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
+  dplyr::slice_head(n = 4)
 }
 \seealso{
 \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},

@@ -25,7 +25,12 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*\%2Findicator\%2Fmetric\%2F\%3Cmetric_id\%3E\%2Fdata}{Indicator metric data}
 }
 \examples{
-test <- cvd_indicator_metric_data()
+# Retrieve metric data for AF: treatment with anticoagulants for 'Alliance
+# PCN' (area ID 399) in time period 1 for metric 126 (breakdown by age group:
+# males aged 40-59):
+cvd_indicator_metric_data(metric_id = 126, time_period_id = 1, area_id = 399) |>
+  dplyr::select(IndicatorShortName, CategoryAttribute, MetricCategoryName,
+  AreaData.Value, NationalData.Value)
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},

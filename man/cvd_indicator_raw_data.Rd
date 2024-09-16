@@ -29,7 +29,11 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2F\%3Cindicator_ID\%3E\%2FrawDataJSON}{Indicator raw data JSON}
 }
 \examples{
-test <- cvd_indicator_raw_data()
+# return all metric data for indicator 'AF: treatment with anticoagulants'
+# (indicator ID 7) in time period 17 at GP practice level (system level ID 5):
+cvd_indicator_raw_data(indicator_id = 7, time_period_id = 17, system_level_id = 5) |>
+  dplyr::slice_head(n = 5) |>
+  dplyr::select(AreaCode, AreaName, Value)
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
