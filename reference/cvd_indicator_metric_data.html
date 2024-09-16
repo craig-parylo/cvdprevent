@@ -86,7 +86,17 @@ for both selected area and organisation at National Level (usually England).</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu">cvd_indicator_metric_data</span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Retrieve metric data for AF: treatment with anticoagulants for 'Alliance</span></span></span>
+<span class="r-in"><span><span class="co"># PCN' (area ID 399) in time period 1 for metric 126 (breakdown by age group:</span></span></span>
+<span class="r-in"><span><span class="co"># males aged 40-59):</span></span></span>
+<span class="r-in"><span><span class="fu">cvd_indicator_metric_data</span><span class="op">(</span>metric_id <span class="op">=</span> <span class="fl">126</span>, time_period_id <span class="op">=</span> <span class="fl">1</span>, area_id <span class="op">=</span> <span class="fl">399</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorShortName</span>, <span class="va">CategoryAttribute</span>, <span class="va">MetricCategoryName</span>,</span></span>
+<span class="r-in"><span>  <span class="va">AreaData.Value</span>, <span class="va">NationalData.Value</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   IndicatorShortName         CategoryAttribute MetricCategoryName AreaData.Value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> AF: treatment with antico… Male              40-59              <span style="color: #BB0000;">NA</span>            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: NationalData.Value &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

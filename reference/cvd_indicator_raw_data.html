@@ -90,7 +90,19 @@ period.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu">cvd_indicator_raw_data</span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># return all metric data for indicator 'AF: treatment with anticoagulants'</span></span></span>
+<span class="r-in"><span><span class="co"># (indicator ID 7) in time period 17 at GP practice level (system level ID 5):</span></span></span>
+<span class="r-in"><span><span class="fu">cvd_indicator_raw_data</span><span class="op">(</span>indicator_id <span class="op">=</span> <span class="fl">7</span>, time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaCode</span>, <span class="va">AreaName</span>, <span class="va">Value</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   AreaCode AreaName                                 Value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> P87657   (IRLAM) SALFORD CARE CTRS MEDICAL PRACTI  97.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P87620   1/Monton Medical Practice                 92.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> P87004   1/SALFORD MEDICAL PRACTICE                97.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> N84035   15 Sefton Road                            87.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> L81051   168 Medical Group                         91.8</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -92,7 +92,19 @@ parameter.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu">cvd_indicator_child_data</span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">cvd_indicator_child_data</span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">74</span>, metric_id <span class="op">=</span> <span class="fl">126</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">Value</span>, <span class="va">LowerConfidenceLimit</span>, <span class="va">UpperConfidenceLimit</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   AreaID AreaName                Value LowerConfidenceLimit UpperConfidenceLimit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    226 Wrekin PCN              100                   80                  100  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    899 Se Shropshire PCN       100                   88                  100  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    435 Newport And Central PCN  93.3                 72.2                100  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>   <span style="text-decoration: underline;">1</span>373 Shrewsbury PCN           92.3                 75.9                 96.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>   <span style="text-decoration: underline;">1</span>201 North Shropshire PCN     91.3                 73.1                 96.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>    848 Sw Shropshire PCN        90.9                 64.3                100  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span>   <span style="text-decoration: underline;">1</span>338 Teldoc PCN               80                   60.7                 89.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span>    731 South East Telford PCN   77.8                 57.1                 90.5</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

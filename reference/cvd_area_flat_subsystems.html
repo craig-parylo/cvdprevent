@@ -71,7 +71,44 @@ based on their system level.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu">cvd_area_flat_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># View details for for Somerset STP</span></span></span>
+<span class="r-in"><span><span class="fu">cvd_area_flat_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaCode                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "E54000038", "E54000038", "E54000038", "E54…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaID                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaName                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Somerset", "Somerset", "Somerset", "Somers…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaOdsCode                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "QSL", "QSL", "QSL", "QSL", "QSL", "QSL", "…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ ParentAreaID               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 7670, 7670, 7670, 7670, 7670, 7670, 7670, 7…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelID              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelName            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "STP", "STP", "STP", "STP", "STP", "STP", "…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_AreaCode        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "E38000150", "U47425", "U17153", "U84175", …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_AreaID          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 105, 528, 613, 677, 688, 743, 786, 868, 963…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_AreaName        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "NHS Somerset CCG", "West Somerset PCN", "W…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_AreaOdsCode     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "11X", NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_ParentAreaID    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 105, 105, 105, 105, 105, 105, 105, 105, …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_SystemLevelID   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_SystemLevelName <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "CCG", "PCN", "PCN", "PCN", "PCN", "PCN", "…</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># View details for Leicester Central PCN</span></span></span>
+<span class="r-in"><span><span class="fu">cvd_area_flat_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">701</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaCode                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "U77315", "U77315", "U77315", "U77315", "U7…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaID                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 701, 701, 701, 701, 701</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaName                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Leicester Central PCN", "Leicester Central…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ ParentAreaID               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 8009, 8009, 8009, 8009, 8009</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelID              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 4, 4, 4, 4, 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelName            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "PCN", "PCN", "PCN", "PCN", "PCN"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_AreaCode        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "C82642", "C82643", "Y02469", "Y02686", "C8…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_AreaID          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2278, 2279, 6621, 6653, 7323</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_AreaName        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Highfields Medical Centre", "Community Hea…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_AreaOdsCode     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> NA, NA, NA, NA, NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_ParentAreaID    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 701, 701, 701, 701, 701</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_SystemLevelID   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 5, 5, 5, 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_SystemLevelName <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Practice", "Practice", "Practice", "Practi…</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

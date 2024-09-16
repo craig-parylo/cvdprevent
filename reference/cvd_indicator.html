@@ -68,7 +68,7 @@ indicators which have one of the specified tags will be returned.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>list of tibbles</p>
+    <p>List of named tibbles (indicators, categories, category_data, timeseries_data, all_data)</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -89,8 +89,87 @@ indicators which have one of the specified tags will be returned.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu">cvd_indicator</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu">cvd_indicator</span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">55</span>, tag_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">13</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Returns a list of named tibbles. To use we need to unpack the list:</span></span></span>
+<span class="r-in"><span><span class="va">return_list</span> <span class="op">&lt;-</span> <span class="fu">cvd_indicator</span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">1103</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># See what the list contains</span></span></span>
+<span class="r-in"><span><span class="va">return_list</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 Length Class  Mode</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> indicators      12     tbl_df list</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> categories       7     tbl_df list</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> category_data   20     tbl_df list</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> timeseries_data  8     tbl_df list</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> all_data        42     tbl_df list</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># extract the indicators</span></span></span>
+<span class="r-in"><span><span class="va">indicators</span> <span class="op">&lt;-</span> <span class="va">return_list</span><span class="op">$</span><span class="va">indicators</span></span></span>
+<span class="r-in"><span><span class="va">indicators</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">IndicatorCode</span>, <span class="va">IndicatorShortName</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">IndicatorID</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   IndicatorID IndicatorCode IndicatorShortName                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>           2 CVDP002HYP    Hypertension: treatment to recommended age specific…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>           3 CVDP003HYP    Hypertension: treatment to recommended age specific…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>           4 CVDP004HYP    Hypertension: BP monitoring                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>           7 CVDP002AF     AF: treatment with anticoagulants                   </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># extract the categories</span></span></span>
+<span class="r-in"><span><span class="va">categories</span> <span class="op">&lt;-</span> <span class="va">return_list</span><span class="op">$</span><span class="va">categories</span></span></span>
+<span class="r-in"><span><span class="va">categories</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorID</span> <span class="op">==</span> <span class="fl">7</span>, <span class="va">MetricCategoryID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">MetricCategoryTypeName</span>,</span></span>
+<span class="r-in"><span>  <span class="va">CategoryAttribute</span>, <span class="va">MetricCategoryName</span>, <span class="va">MetricID</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   IndicatorID MetricCategoryTypeName CategoryAttribute MetricCategoryName</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>           7 Age group              Male              40-59             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>           7 Age group              Female            40-59             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: MetricID &lt;int&gt;</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># extract category data</span></span></span>
+<span class="r-in"><span><span class="va">category_data</span> <span class="op">&lt;-</span> <span class="va">return_list</span><span class="op">$</span><span class="va">category_data</span></span></span>
+<span class="r-in"><span><span class="va">category_data</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">MetricID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">126</span>, <span class="fl">132</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">MetricID</span>, <span class="va">Value</span>, <span class="va">Numerator</span>, <span class="va">Denominator</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   IndicatorID MetricID Value Numerator Denominator</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>           7      126   100        15          15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>           7      132   100        10          10</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># extract the time series data</span></span></span>
+<span class="r-in"><span><span class="va">timeseries_data</span> <span class="op">&lt;-</span> <span class="va">return_list</span><span class="op">$</span><span class="va">timeseries_data</span></span></span>
+<span class="r-in"><span><span class="va">timeseries_data</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">MetricID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">126</span>, <span class="fl">132</span><span class="op">)</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 19 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    IndicatorID MetricID EndDate     Median StartDate TimePeriodID TimePeriodName</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>           7      126 Tue, 31 Ma…   84.6 Mon, 01 …            1 To March 2020 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>           7      126 Wed, 31 Ma…   85.7 Mon, 01 …            2 To March 2021 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>           7      126 Thu, 30 Se…   86.7 Mon, 01 …            3 To September …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>           7      126 Thu, 31 Ma…   87.0 Mon, 01 …            4 To March 2022 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>           7      126 Thu, 30 Ju…   86.7 Mon, 01 …            5 To June 2022  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>           7      126 Fri, 30 Se…   87.5 Mon, 01 …            6 To September …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>           7      126 Sat, 31 De…   88.2 Mon, 01 …            7 To December 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>           7      126 Fri, 31 Ma…   89.5 Mon, 01 …            8 To March 2023 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>           7      126 Fri, 30 Ju…   89.2 Mon, 01 …            9 To June 2023  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>           7      126 Sun, 31 De…   90   Mon, 01 …           15 To December 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>           7      126 Sun, 31 Ma…   90.9 Mon, 01 …           17 To March 2024 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span>           7      132 Thu, 31 Ma…   81.8 Mon, 01 …            4 To March 2022 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span>           7      132 Thu, 30 Ju…   81.8 Mon, 01 …            5 To June 2022  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span>           7      132 Fri, 30 Se…   81.8 Mon, 01 …            6 To September …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span>           7      132 Sat, 31 De…   83.3 Mon, 01 …            7 To December 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span>           7      132 Fri, 31 Ma…   83.3 Mon, 01 …            8 To March 2023 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span>           7      132 Fri, 30 Ju…   84.6 Mon, 01 …            9 To June 2023  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span>           7      132 Sun, 31 De…   84.6 Mon, 01 …           15 To December 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span>           7      132 Sun, 31 Ma…   88.1 Mon, 01 …           17 To March 2024 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: Value &lt;dbl&gt;</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># indicators are searcheable by one or more Tag.</span></span></span>
+<span class="r-in"><span><span class="va">return_list</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fu">cvd_indicator</span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">3</span>, tag_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

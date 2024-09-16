@@ -86,7 +86,20 @@ for both selected area, and organisation at National Level (usually England).</p
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu">cvd_indicator_data</span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Look at 'AF: treatment with anticoagulants' (indicator ID 7) in time</span></span></span>
+<span class="r-in"><span><span class="co"># period 17 for  'Leicester Central PCN' (area_id 701) focussed on metrics</span></span></span>
+<span class="r-in"><span><span class="co"># by gender:</span></span></span>
+<span class="r-in"><span><span class="fu">cvd_indicator_data</span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, indicator_id <span class="op">=</span> <span class="fl">7</span>, area_id <span class="op">=</span> <span class="fl">701</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">MetricCategoryTypeName</span> <span class="op">==</span> <span class="st">'Sex'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">MetricID</span>, <span class="va">MetricCategoryName</span>, <span class="va">AreaData.AreaName</span>,</span></span>
+<span class="r-in"><span>  <span class="va">AreaData.Value</span>, <span class="va">NationalData.AreaName</span>, <span class="va">NationalData.Value</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   MetricID MetricCategoryName AreaData.AreaName     AreaData.Value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>      150 Persons            Leicester Central PCN           95.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>      125 Female             Leicester Central PCN           94.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>      124 Male               Leicester Central PCN           96.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: NationalData.AreaName &lt;chr&gt;, NationalData.Value &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

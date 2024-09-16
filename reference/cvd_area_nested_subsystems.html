@@ -68,7 +68,46 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu">cvd_area_nested_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># View details for for Somerset STP</span></span></span>
+<span class="r-in"><span><span class="fu">cvd_area_nested_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 61</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaCode                                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "E54000038", "E54000038", "…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaID                                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaName                                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Somerset", "Somerset", "So…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaOdsCode                                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "QSL", "QSL", "QSL", "QSL",…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ ParentAreaID                               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 7670, 7670, 7670, 7670, 767…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelID                              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2, 2, 2, 2, 2, 2, 2, 2, 2, …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelName                            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "STP", "STP", "STP", "STP",…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaCode                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "E38000150", "E38000150", "…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaID                            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 105, 105, 105, 105, 105, 10…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaName                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "NHS Somerset CCG", "NHS So…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaOdsCode                       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "11X", "11X", "11X", "11X",…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_ParentAreaID                      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_SystemLevelID                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 3, 3, 3, 3, 3, 3, 3, 3, 3, …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_SystemLevelName                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "CCG", "CCG", "CCG", "CCG",…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_AreaCode                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "U47425", "U47425", "U47425…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_AreaID                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 528, 528, 528, 528, 613, 61…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_AreaName                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "West Somerset PCN", "West …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_AreaOdsCode              <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> NA, NA, NA, NA, NA, NA, NA,…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_ParentAreaID             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 105, 105, 105, 105, 105, 10…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_SystemLevelID            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 4, 4, 4, 4, 4, 4, 4, 4, 4, …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_SystemLevelName          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "PCN", "PCN", "PCN", "PCN",…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_AreaCode        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "L85003", "L85009", "L85065…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_AreaID          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5144, 5149, 5192, 7120, 514…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_AreaName        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Exmoor Medical Centre", "W…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_AreaOdsCode     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> NA, NA, NA, NA, NA, NA, NA,…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_Children        <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> [], [], [], [], [], [], []…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_ParentAreaID    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 528, 528, 528, 528, 613, 61…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_SystemLevelID   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_SystemLevelName <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Practice", "Practice", "Pr…</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># View details for Leicester Central PCN</span></span></span>
+<span class="r-in"><span><span class="fu">cvd_area_nested_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">701</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dplyr::relocate(tidyr::unnest(dplyr::relocate(tidyr::unnest(dplyr::relocate(dplyr::as_tibble(purrr::compact(jsonlite::fromJSON(resp,     flatten = T)[[1]])), Children, .after = dplyr::last_col()),     cols = Children, names_sep = "_"), Children_Children, .after = dplyr::last_col()),     cols = Children_Children, names_sep = "_"), Children_Children_Children,     .after = dplyr::last_col()):</span> Can't select columns that don't exist.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Column `Children_Children_Children` doesn't exist.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
