@@ -666,7 +666,7 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
 #' @param area_id integer - area to return data for (compulsory)
 #' @param tag_id numeric vector - allows filtering indicators by one or more tags (optional, array)
 #'
-#' @return list of tibbles
+#' @return List of named tibbles (indicators, categories, category_data, timeseries_data, all_data)
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
