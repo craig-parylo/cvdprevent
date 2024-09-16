@@ -432,7 +432,13 @@ cvd_area_unassigned <- function(time_period_id = 1, system_level_id) {
 #' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
-#' test <- cvd_area_search(partial_area_name = 'Station', time_period_id = 17)
+#' # search for areas matching the term 'practice'
+#' cvd_area_search(partial_area_name = 'practice', time_period_id = 17) |>
+#'   dplyr::select(AreaID, AreaName, AreaCode)
+#'
+#' # search for areas matching the term 'PCN'
+#' cvd_area_search(partial_area_name = 'PCN', time_period_id = 17) |>
+#'   dplyr::select(AreaID, AreaName, AreaCode)
 cvd_area_search <- function(partial_area_name = 'Surgery', time_period_id = 1) {
 
   # compose the request
@@ -474,7 +480,13 @@ cvd_area_search <- function(partial_area_name = 'Surgery', time_period_id = 1) {
 #' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
-#' test <- cvd_area_nested_subsystems(area_id = 5)
+#' # View details for for Somerset STP
+#' cvd_area_nested_subsystems(area_id = 5) |>
+#'   dplyr::glimpse()
+#'
+#' # View details for Leicester Central PCN
+#' cvd_area_nested_subsystems(area_id = 701) |>
+#'   dplyr::glimpse()
 cvd_area_nested_subsystems <- function(area_id = 5) {
 
   # compose the request
@@ -515,7 +527,13 @@ cvd_area_nested_subsystems <- function(area_id = 5) {
 #' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()]
 #'
 #' @examples
-#' test <- cvd_area_flat_subsystems(area_id = 5)
+#' # View details for for Somerset STP
+#' cvd_area_flat_subsystems(area_id = 5) |>
+#'   dplyr::glimpse()
+#'
+#' # View details for Leicester Central PCN
+#' cvd_area_flat_subsystems(area_id = 701) |>
+#'   dplyr::glimpse()
 cvd_area_flat_subsystems <- function(area_id = 5) {
 
   # compose the request
@@ -562,7 +580,10 @@ cvd_area_flat_subsystems <- function(area_id = 5) {
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' cvd_indicators <- cvd_indicator_list()
+#' # List four indicators for time point 17 and GP practice level (system level 5)
+#' cvd_indicator_list(time_period_id = 17, system_level_id = 5) |>
+#'   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
+#'   dplyr::slice_head(n = 4)
 cvd_indicator_list <- function(time_period_id = 1, system_level_id = 2) {
 
   # compose the request
@@ -615,8 +636,12 @@ cvd_indicator_list <- function(time_period_id = 1, system_level_id = 2) {
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_metric_list(time_period_id = 1, system_level_id = 1)
-#' test <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 2)
+#' # List metrics for the prevalence of atrial fibrillation (indicator ID 1),
+#' # focussing on just those metrics for the 40-59 years age group:
+#' cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
+#'   dplyr::filter(IndicatorID == 1, MetricCategoryName == '40-59') |>
+#'   dplyr::count(IndicatorID, IndicatorShortName, MetricID, MetricCategoryName, CategoryAttribute) |>
+#'   dplyr::select(-n)
 cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
   # compose the request
   req <-
@@ -678,8 +703,40 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator()
-#' test <- cvd_indicator(time_period_id = 17, area_id = 55, tag_id = c(12, 13))
+#' # Returns a list of named tibbles. To use we need to unpack the list:
+#' return_list <- cvd_indicator(time_period_id = 17, area_id = 1103)
+#'
+#' # See what the list contains
+#' return_list |> summary()
+#'
+#' # extract the indicators
+#' indicators <- return_list$indicators
+#' indicators |>
+#'   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
+#'   dplyr::arrange(IndicatorID) |>
+#'   dplyr::slice_head(n = 4)
+#'
+#' # extract the categories
+#' categories <- return_list$categories
+#' categories |>
+#'   dplyr::filter(IndicatorID == 7, MetricCategoryID %in% c(7, 8)) |>
+#'   dplyr::select(IndicatorID, MetricCategoryTypeName,
+#'   CategoryAttribute, MetricCategoryName, MetricID)
+#'
+#' # extract category data
+#' category_data <- return_list$category_data
+#' category_data |>
+#'   dplyr::filter(MetricID %in% c(126, 132)) |>
+#'   dplyr::select(IndicatorID, MetricID, Value, Numerator, Denominator)
+#'
+#' # extract the time series data
+#' timeseries_data <- return_list$timeseries_data
+#' timeseries_data |>
+#'   dplyr::filter(MetricID %in% c(126, 132), !is.na(Value))
+#'
+#' # indicators are searcheable by one or more Tag.
+#' return_list <-
+#'   cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
 cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
 
   # compose the request
@@ -811,7 +868,9 @@ cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_tags()
+#' cvd_indicator_tags() |>
+#'   dplyr::arrange(IndicatorTagID) |>
+#'   dplyr::slice_head(n = 5)
 cvd_indicator_tags <- function() {
 
   # compose the request
@@ -850,8 +909,9 @@ cvd_indicator_tags <- function() {
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_details()
-#' test <- cvd_indicator_details(indicator_id = 7)
+#' cvd_indicator_details(indicator_id = 7) |>
+#'   dplyr::select(IndicatorID, MetaDataTitle, MetaData) |>
+#'   dplyr::slice_head(n=5)
 cvd_indicator_details <- function(indicator_id = 1) {
 
   # compose the request
@@ -898,7 +958,8 @@ cvd_indicator_details <- function(indicator_id = 1) {
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' est <- cvd_indicator_sibling()
+#' cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = 126) |>
+#'   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit)
 cvd_indicator_sibling <- function(time_period_id = 17, area_id = 30, metric_id = 1) {
 
   # compose the request
@@ -951,7 +1012,8 @@ cvd_indicator_sibling <- function(time_period_id = 17, area_id = 30, metric_id =
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_child_data()
+#' cvd_indicator_child_data(time_period_id = 17, area_id = 74, metric_id = 126) |>
+#'   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit)
 cvd_indicator_child_data <- function(time_period_id = 17, area_id = 74, metric_id = 1) {
 
   # compose the request
@@ -1002,7 +1064,13 @@ cvd_indicator_child_data <- function(time_period_id = 17, area_id = 74, metric_i
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_data()
+#' # Look at 'AF: treatment with anticoagulants' (indicator ID 7) in time
+#' # period 17 for  'Leicester Central PCN' (area_id 701) focussed on metrics
+#' # by gender:
+#' cvd_indicator_data(time_period_id = 17, indicator_id = 7, area_id = 701) |>
+#'   dplyr::filter(MetricCategoryTypeName == 'Sex') |>
+#'   dplyr::select(MetricID, MetricCategoryName, AreaData.AreaName,
+#'   AreaData.Value, NationalData.AreaName, NationalData.Value)
 cvd_indicator_data <- function(indicator_id = 2, time_period_id = 1, area_id = 2) {
 
   # compose the request
@@ -1052,7 +1120,12 @@ cvd_indicator_data <- function(indicator_id = 2, time_period_id = 1, area_id = 2
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_metric_data()
+#' # Retrieve metric data for AF: treatment with anticoagulants for 'Alliance
+#' # PCN' (area ID 399) in time period 1 for metric 126 (breakdown by age group:
+#' # males aged 40-59):
+#' cvd_indicator_metric_data(metric_id = 126, time_period_id = 1, area_id = 399) |>
+#'   dplyr::select(IndicatorShortName, CategoryAttribute, MetricCategoryName,
+#'   AreaData.Value, NationalData.Value)
 cvd_indicator_metric_data <- function(metric_id = 7, time_period_id = 1, area_id = 2) {
 
   # compose the request
@@ -1102,7 +1175,11 @@ cvd_indicator_metric_data <- function(metric_id = 7, time_period_id = 1, area_id
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_raw_data()
+#' # return all metric data for indicator 'AF: treatment with anticoagulants'
+#' # (indicator ID 7) in time period 17 at GP practice level (system level ID 5):
+#' cvd_indicator_raw_data(indicator_id = 7, time_period_id = 17, system_level_id = 5) |>
+#'   dplyr::slice_head(n = 5) |>
+#'   dplyr::select(AreaCode, AreaName, Value)
 cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_level_id = 1) {
 
   # compose the request
@@ -1153,7 +1230,11 @@ cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_nationalarea_metric_data()
+#' # Compare performance against metric 150  (AF: treatment with anticoagulants
+#' # - all people) in 'Chester South PCN' (area ID 553) with national
+#' # performance:
+#' cvd_indicator_nationalarea_metric_data(metric_id = 150, time_period_id = 17, area_id = 553) |>
+#' dplyr::slice_head(n=5)
 cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id = 17, area_id = 739) {
 
   # compose the request
