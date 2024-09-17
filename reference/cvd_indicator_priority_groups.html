@@ -3,12 +3,12 @@
 Regional &amp;amp; ICS Insights page. Returns a dictionary called 'PriorityGroups'
 with each key being a Priority Group name, and each value being the array of
 indicators contained in that group. The 'PriorityGroupDisplayOrder'
-indicates the order in whcih it should be displayed for the given Priority
+indicates the order in which it should be displayed for the given Priority
 Group."><meta property="og:description" content="Returns the list of top-level groupings (Priority Groups) displayed in the
 Regional &amp;amp; ICS Insights page. Returns a dictionary called 'PriorityGroups'
 with each key being a Priority Group name, and each value being the array of
 indicators contained in that group. The 'PriorityGroupDisplayOrder'
-indicates the order in whcih it should be displayed for the given Priority
+indicates the order in which it should be displayed for the given Priority
 Group."><meta property="og:image" content="https://craig-parylo.github.io/cvdprevent/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -50,7 +50,7 @@ Group."><meta property="og:image" content="https://craig-parylo.github.io/cvdpre
 Regional &amp; ICS Insights page. Returns a dictionary called 'PriorityGroups'
 with each key being a Priority Group name, and each value being the array of
 indicators contained in that group. The 'PriorityGroupDisplayOrder'
-indicates the order in whcih it should be displayed for the given Priority
+indicates the order in which it should be displayed for the given Priority
 Group.</p>
     </div>
 
@@ -82,7 +82,17 @@ Group.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu">cvd_indicator_priority_groups</span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Return the indicators in the Chronic Kidney Disease (CKD) priority group:</span></span></span>
+<span class="r-in"><span><span class="fu">cvd_indicator_priority_groups</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PriorityGroup</span> <span class="op">==</span> <span class="st">'CKD'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">PathwayGroupName</span>, <span class="va">IndicatorCode</span>, <span class="va">IndicatorID</span>, <span class="va">IndicatorName</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   PathwayGroupName       IndicatorCode IndicatorID IndicatorName                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Chronic Kidney Disease CVDP006CKD             29 Percentage of patients aged …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Chronic Kidney Disease CVDP005CKD             19 Percentage of patients aged …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Chronic Kidney Disease CVDP007CKD             31 Percentage of patients aged …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Chronic Kidney Disease CVDP010CHOL            23 Percentage of patients aged …</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
