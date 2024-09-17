@@ -409,3 +409,17 @@ Here we compare performance against metric 150 (AF: treatment with anticoagulant
 cvd_indicator_nationalarea_metric_data(metric_id = 150, time_period_id = 17, area_id = 553) |> 
   gt::gt()
 ```
+
+## List priority groups
+
+Priority groups are collections of *Indicators* which are displayed in the [Regional & ICS insights](https://data.cvdprevent.nhs.uk/insights) page of the CVD PREVENT website.
+
+Here we return the indicators in the Chronic Kidney Disease (CKD) priority group:
+
+```{r}
+cvd_indicator_priority_groups() |> 
+  dplyr::filter(PriorityGroup == 'CKD') |> 
+  dplyr::select(PathwayGroupName, IndicatorCode, IndicatorID, IndicatorName) |>
+  dplyr::group_by(PathwayGroupName) |> 
+  gt::gt(row_group_as_column = T)
+```
