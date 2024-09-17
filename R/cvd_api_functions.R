@@ -1265,7 +1265,7 @@ cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id
 #' Regional & ICS Insights page. Returns a dictionary called 'PriorityGroups'
 #' with each key being a Priority Group name, and each value being the array of
 #' indicators contained in that group. The 'PriorityGroupDisplayOrder'
-#' indicates the order in whcih it should be displayed for the given Priority
+#' indicates the order in which it should be displayed for the given Priority
 #' Group.
 #'
 #' CVD Prevent API documentation:
@@ -1283,7 +1283,10 @@ cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_priority_groups()
+#' # Return the indicators in the Chronic Kidney Disease (CKD) priority group:
+#' cvd_indicator_priority_groups() |>
+#'   dplyr::filter(PriorityGroup == 'CKD') |>
+#'   dplyr::select(PathwayGroupName, IndicatorCode, IndicatorID, IndicatorName)
 cvd_indicator_priority_groups <- function() {
 
   # compose the request
@@ -1297,15 +1300,12 @@ cvd_indicator_priority_groups <- function() {
     httr2::resp_body_string()
 
   # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-    purrr::map_dfr(
-      .f = \(.group_item) {
-        .group_item |>
-          purrr::compact() |>
-          dplyr::as_tibble()
-      }
-    )
-
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+  data <- data |>
+    dplyr::tibble() |>
+    dplyr::mutate(PriorityGroup = names(data)) |>
+    purrr::compact() |>
+    tidyr::unnest(cols = data)
 }
 
 #' Pathway groups

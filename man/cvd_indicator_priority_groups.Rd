@@ -14,7 +14,7 @@ Returns the list of top-level groupings (Priority Groups) displayed in the
 Regional & ICS Insights page. Returns a dictionary called 'PriorityGroups'
 with each key being a Priority Group name, and each value being the array of
 indicators contained in that group. The 'PriorityGroupDisplayOrder'
-indicates the order in whcih it should be displayed for the given Priority
+indicates the order in which it should be displayed for the given Priority
 Group.
 }
 \details{
@@ -22,7 +22,10 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FpriorityGroups}{Indicator priority groups}
 }
 \examples{
-test <- cvd_indicator_priority_groups()
+# Return the indicators in the Chronic Kidney Disease (CKD) priority group:
+cvd_indicator_priority_groups() |>
+  dplyr::filter(PriorityGroup == 'CKD') |>
+  dplyr::select(PathwayGroupName, IndicatorCode, IndicatorID, IndicatorName)
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
