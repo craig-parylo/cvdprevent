@@ -26,7 +26,19 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FpersonsTimeSeriesByIndicator\%2F\%3Cindicator_ID\%3E}{Indicator person time series}
 }
 \examples{
-test <- cvd_indicator_person_timeseries()
+# View the details of the time-series performance for indicator 'AF:
+# treatment with anticoagulants' (ID 7) in Salford South East PCN (area ID
+# 705), focussed just on the age group inequalities metrics:
+cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
+  dplyr::filter(
+    MetricCategoryTypeName == 'Age group',
+    !is.na(Value)
+  ) |>
+  dplyr::select(MetricCategoryName, TimePeriodName, TimePeriodID, Value) |>
+  tidyr::pivot_wider(
+    names_from = MetricCategoryName,
+    values_from = Value
+  )
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},

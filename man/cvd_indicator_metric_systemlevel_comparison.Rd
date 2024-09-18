@@ -30,7 +30,13 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FmetricSystemLevelComparison\%2F\%3Cmetric_ID\%3E}{Indicator metric system level comparison}
 }
 \examples{
-test <- cvd_indicator_metric_systemlevel_comparison()
+# return performance for metric 'AF: DOAC & VitK' in people aged 40-59 years
+# (metric ID 1270) in time period 17 for Salford South East PCN (area ID 705)
+# and all other PCNs - truncated to a sample of four PCN performances:
+cvd_indicator_metric_systemlevel_comparison(metric_id = 1270,
+time_period_id = 17, area_id = 705) |>
+  dplyr::filter(AreaID \%in\% c(705:709), !is.na(Value)) |>
+  dplyr::select(SystemLevelName, AreaID, AreaName, Value)
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},

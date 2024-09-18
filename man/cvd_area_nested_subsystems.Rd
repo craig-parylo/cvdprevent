@@ -2,7 +2,7 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_area_nested_subsystems}
 \alias{cvd_area_nested_subsystems}
-\title{Area neested sub systems}
+\title{Area nested sub systems}
 \usage{
 cvd_area_nested_subsystems(area_id = 5)
 }

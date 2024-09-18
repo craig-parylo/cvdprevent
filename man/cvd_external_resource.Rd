@@ -17,7 +17,11 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FexternalResource}{External resources}
 }
 \examples{
-test <- cvd_external_resource()
+# Here we show the first five external resources:
+cvd_external_resource() |>
+  dplyr::filter(ExternalResourceID < 10) |>
+  dplyr::select(ExternalResourceCategory, ExternalResourceSource, ExternalResourceTitle) |>
+  dplyr::group_by(ExternalResourceCategory)
 }
 \seealso{
 \code{\link[=cvd_data_availability]{cvd_data_availability()}}

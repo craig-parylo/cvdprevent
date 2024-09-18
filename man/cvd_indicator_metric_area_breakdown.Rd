@@ -30,7 +30,11 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FmetricAreaBreakdown\%2F\%3Cmetric_ID\%3E}{Indicator metric area breakdown}
 }
 \examples{
-test <- cvd_indicator_metric_area_breakdown()
+# Return performance for metric 'AF: DOAC & VitK' in men aged 60-79 years
+# (metric ID 128) in time period 17 for Salford South East PCN (area ID 705):
+cvd_indicator_metric_area_breakdown(metric_id = 128, time_period_id = 17,
+  area_id = 705) |>
+  dplyr::select(SystemLevelName, AreaID, AreaName, Value)
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},

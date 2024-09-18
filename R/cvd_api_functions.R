@@ -466,7 +466,7 @@ cvd_area_search <- function(partial_area_name = 'Surgery', time_period_id = 1) {
     )
 }
 
-#' Area neested sub systems
+#' Area nested sub systems
 #'
 #' Returns given area and children areas in a nested structure
 #'
@@ -1496,7 +1496,19 @@ cvd_indicator_metric_timeseries <- function(metric_id = 1, area_id = 50) {
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_person_timeseries()
+#' # View the details of the time-series performance for indicator 'AF:
+#' # treatment with anticoagulants' (ID 7) in Salford South East PCN (area ID
+#' # 705), focussed just on the age group inequalities metrics:
+#' cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
+#'   dplyr::filter(
+#'     MetricCategoryTypeName == 'Age group',
+#'     !is.na(Value)
+#'   ) |>
+#'   dplyr::select(MetricCategoryName, TimePeriodName, TimePeriodID, Value) |>
+#'   tidyr::pivot_wider(
+#'     names_from = MetricCategoryName,
+#'     values_from = Value
+#'   )
 cvd_indicator_person_timeseries <- function(indicator_id = 1, area_id = 1) {
 
   # compose the request
@@ -1547,7 +1559,13 @@ cvd_indicator_person_timeseries <- function(indicator_id = 1, area_id = 1) {
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_metric_systemlevel_comparison()
+#' # return performance for metric 'AF: DOAC & VitK' in people aged 40-59 years
+#' # (metric ID 1270) in time period 17 for Salford South East PCN (area ID 705)
+#' # and all other PCNs - truncated to a sample of four PCN performances:
+#' cvd_indicator_metric_systemlevel_comparison(metric_id = 1270,
+#' time_period_id = 17, area_id = 705) |>
+#'   dplyr::filter(AreaID %in% c(705:709), !is.na(Value)) |>
+#'   dplyr::select(SystemLevelName, AreaID, AreaName, Value)
 cvd_indicator_metric_systemlevel_comparison <- function(metric_id = 1, time_period_id = 1, area_id = 50) {
 
   # compose the request
@@ -1598,7 +1616,11 @@ cvd_indicator_metric_systemlevel_comparison <- function(metric_id = 1, time_peri
 #' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()]
 #'
 #' @examples
-#' test <- cvd_indicator_metric_area_breakdown()
+#' # Return performance for metric 'AF: DOAC & VitK' in men aged 60-79 years
+#' # (metric ID 128) in time period 17 for Salford South East PCN (area ID 705):
+#' cvd_indicator_metric_area_breakdown(metric_id = 128, time_period_id = 17,
+#'   area_id = 705) |>
+#'   dplyr::select(SystemLevelName, AreaID, AreaName, Value)
 cvd_indicator_metric_area_breakdown <- function(metric_id = 1, time_period_id = 1, area_id = 1) {
 
   # compose the request
@@ -1638,7 +1660,11 @@ cvd_indicator_metric_area_breakdown <- function(metric_id = 1, time_period_id = 
 #' @seealso [cvd_data_availability()]
 #'
 #' @examples
-#' test <- cvd_external_resource()
+#' # Here we show the first five external resources:
+#' cvd_external_resource() |>
+#'   dplyr::filter(ExternalResourceID < 10) |>
+#'   dplyr::select(ExternalResourceCategory, ExternalResourceSource, ExternalResourceTitle) |>
+#'   dplyr::group_by(ExternalResourceCategory)
 cvd_external_resource <- function() {
 
   # compose the request
@@ -1678,7 +1704,7 @@ cvd_external_resource <- function() {
 #' @seealso [cvd_external_resource()]
 #'
 #' @examples
-#' test <- cvd_data_availability(time_period_id = 3, system_level_id = 5)
+#' cvd_data_availability(time_period_id = 3, system_level_id = 5)
 cvd_data_availability <- function(
     time_period_id = 1,
     system_level_id = 1,
