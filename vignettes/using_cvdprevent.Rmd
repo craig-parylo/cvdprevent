@@ -108,7 +108,8 @@ The tibbles first need extracting from the returned list object, done here using
 
 ```{r}
 returned_list$area_details |> 
-  dplyr::select(AreaCode, AreaName, SystemLevelID)
+  dplyr::select(AreaCode, AreaName, SystemLevelID) |> 
+  gt::gt()
 ```
 
 View details for the parent of this area:
@@ -579,3 +580,4 @@ cvd_data_availability(time_period_id = 6, system_level_id = 5) |>
   dplyr::slice_head(n = 5) |> 
   gt::gt()
 ```
+
