@@ -418,7 +418,7 @@ Here we return one indicator from each of the priority groups:
 
 ```{r}
 cvd_indicator_priority_groups() |>
-  dplyr::select(PriorityGroup, PathwayGroupName, PathwayGroupID, IndicatorCode, IndicatorID, IndicatorName) |>
+  dplyr::select(PriorityGroup, PathwayGroupName, PathwayGroupID, IndicatorID, IndicatorName) |>
   dplyr::slice_head(by = PathwayGroupID) |> 
   gt::gt(row_group_as_column = T)
 ```
@@ -471,11 +471,111 @@ cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
   )
 ```
 
+Or we can view the details of the time-series performance for this metric:
+
 ```{r}
 cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
   dplyr::select(AreaName, TimePeriodName, TimePeriodID, Value) |> 
   tidyr::pivot_wider(
     names_from = AreaName,
     values_from = Value
+  ) |> 
+  gt::gt()
+```
+
+## Return time series data for an indicator and area - inequalities
+
+To see time series data for all metric breakdowns for an indicator use the `cvd_indicator_person_timeseries()` function along with the indicator ID and specify an area.
+
+Here we view time-series metric data for indicator 'AF: treatment with anticoagulants' (ID 7) in Salford South East PCN (area ID 705), focussed just on the age group inequalities metrics:
+
+```{r}
+cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |> 
+  dplyr::filter(
+    MetricCategoryTypeName == 'Age group',
+    !is.na(Value)
+  ) |> 
+  dplyr::mutate(TimePeriodName = stats::reorder(TimePeriodName, TimePeriodID)) |>
+  ggplot2::ggplot(
+    ggplot2::aes(
+      x = TimePeriodName,
+      y = Value,
+      group = MetricCategoryName,
+      colour = MetricCategoryName
+    )
+  ) +
+  ggplot2::geom_point() +
+  ggplot2::geom_line() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
   )
+```
+
+Or we can view the details of the time-series performance for these metrics:
+
+```{r}
+cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |> 
+  dplyr::filter(
+    MetricCategoryTypeName == 'Age group',
+    !is.na(Value)
+  ) |> 
+  dplyr::select(MetricCategoryName, TimePeriodName, TimePeriodID, 
+                Value) |>
+  tidyr::pivot_wider(
+    names_from = MetricCategoryName,
+    values_from = Value
+  ) |> 
+  gt::gt()
+```
+
+## Return system level comparisons for a metric
+
+Use the `cvd_indicator_metric_systemlevel_comparison()` function to return metric performance for a specified time period for all organisations in the same system level, for example for all GP practices or for all PCNs.
+
+Here we return performance for metric 'AF: DOAC & VitK' in people aged 40-59 years (metric ID 1270) in time period 17 for Salford South East PCN (area ID 705) *and all other* PCNs - truncated to a sample of four PCN performances:
+
+```{r}
+cvd_indicator_metric_systemlevel_comparison(metric_id = 1270, time_period_id = 17, area_id = 705) |> 
+  dplyr::filter(AreaID %in% c(705:709), !is.na(Value)) |> 
+  dplyr::select(SystemLevelName, AreaID, AreaName, Value) |> 
+  gt::gt()
+```
+
+## Metric area breakdown
+
+Use `cvd_indicator_metric_area_breakdown()` function to return the data Area Breakdown chart.
+
+Here we return performance for metric 'AF: DOAC & VitK' in men aged 60-79 years (metric ID 128) in time period 17 for Salford South East PCN (area ID 705):
+
+```{r}
+cvd_indicator_metric_area_breakdown(metric_id = 128, time_period_id = 17, area_id = 705) |> 
+  dplyr::select(SystemLevelName, AreaID, AreaName, Value) |> 
+  gt::gt()
+```
+
+# Misc
+
+## List external resources
+
+To return a list of all external resources used by the API use function `cvd_external_resource()`. Here we show the first five external resources:
+
+```{r}
+cvd_external_resource() |> 
+  dplyr::filter(ExternalResourceID < 10) |> 
+  dplyr::select(ExternalResourceCategory, ExternalResourceSource, ExternalResourceTitle) |> 
+  dplyr::group_by(ExternalResourceCategory) |> 
+  gt::gt(row_group_as_column = T)
+```
+
+## Show data availability
+
+To show data availability for a given system level in a given time period then use the `cvd_data_availability()` function.
+
+NB, data appears to be only available up to time period 6 (to September 2022).
+
+```{r}
+cvd_data_availability(time_period_id = 6, system_level_id = 5) |>
+  dplyr::select(IndicatorShortName, IsAvailable, SystemLevelName, MetricCategoryTypeID) |> 
+  dplyr::slice_head(n = 5) |> 
+  gt::gt()
 ```
