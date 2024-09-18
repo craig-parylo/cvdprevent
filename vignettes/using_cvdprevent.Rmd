@@ -410,16 +410,72 @@ cvd_indicator_nationalarea_metric_data(metric_id = 150, time_period_id = 17, are
   gt::gt()
 ```
 
-## List priority groups
+## List priority group indicators
 
-Priority groups are collections of *Indicators* which are displayed in the [Regional & ICS insights](https://data.cvdprevent.nhs.uk/insights) page of the CVD PREVENT website.
+Priority groups are collections of *Indicators* which are displayed in the [Regional & ICS insights](https://data.cvdprevent.nhs.uk/insights) page of the CVD PREVENT website and can be accessed from the API using the `cvd_indicator_priority_groups()` function.
 
-Here we return the indicators in the Chronic Kidney Disease (CKD) priority group:
+Here we return one indicator from each of the priority groups:
 
 ```{r}
-cvd_indicator_priority_groups() |> 
-  dplyr::filter(PriorityGroup == 'CKD') |> 
-  dplyr::select(PathwayGroupName, IndicatorCode, IndicatorID, IndicatorName) |>
+cvd_indicator_priority_groups() |>
+  dplyr::select(PriorityGroup, PathwayGroupName, PathwayGroupID, IndicatorCode, IndicatorID, IndicatorName) |>
+  dplyr::slice_head(by = PathwayGroupID) |> 
+  gt::gt(row_group_as_column = T)
+```
+
+## List pathway group indicators
+
+Pathway groups are sub-groupings of Priority Groups visible in the [Regional & ICS insights](https://data.cvdprevent.nhs.uk/insights) page of the CVD PREVENT website and can be accessed from the API using the `cvd_indicator_pathway_group()` function.
+
+Here we return the indicators within the 'Chronic Kidney Disease' pathway group (ID 9):
+
+```{r}
+cvd_indicator_pathway_group(pathway_group_id = 9) |> 
+  dplyr::select(PathwayGroupName, PathwayGroupID, IndicatorCode, IndicatorID, IndicatorName) |>
   dplyr::group_by(PathwayGroupName) |> 
   gt::gt(row_group_as_column = T)
+```
+
+## List Indicator Group indicators
+
+Indicator Groups are further groups of indicators which are classified by `IndicatorGroupTypeID` which indicates what *type* of indicator, e.g. Priority Group.
+
+Here we list the indicators under Indicator Group ID 13 (Monitoring) which lists 'Key Question' Indicator Group indicators:
+
+```{r}
+cvd_indicator_group(indicator_group_id = 13) |> 
+  dplyr::select(IndicatorGroupID, IndicatorGroupName, IndicatorGroupTypeName, IndicatorID, IndicatorName) |> 
+  dplyr::group_by(IndicatorGroupID, IndicatorGroupName) |> 
+  gt::gt()
+```
+
+## Return time series data for a metric and area
+
+To get data over all available time points for a given metric use the `cvd_indicator_metric_timeseries()` function whilst specifying an area ID.
+
+Here we visualise data for Salford South East PCN (area ID 705) for 'AF: treatment with anticoagulants' for women people aged 60-79 years (metric ID 130):
+
+```{r}
+cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |> 
+   # prepare for plotting
+  dplyr::mutate(TimePeriodName = stats::reorder(TimePeriodName, TimePeriodID)) |>  
+  ggplot2::ggplot(ggplot2::aes(
+    x = TimePeriodName,
+    y = Value, 
+    group = AreaName , 
+    colour = AreaName)) +
+  ggplot2::geom_point() +
+  ggplot2::geom_line() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
+  )
+```
+
+```{r}
+cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
+  dplyr::select(AreaName, TimePeriodName, TimePeriodID, Value) |> 
+  tidyr::pivot_wider(
+    names_from = AreaName,
+    values_from = Value
+  )
 ```
