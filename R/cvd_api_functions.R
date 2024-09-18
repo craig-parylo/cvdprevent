@@ -1283,10 +1283,10 @@ cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' # Return the indicators in the Chronic Kidney Disease (CKD) priority group:
+#' # Return one indicator from each of the priority groups:
 #' cvd_indicator_priority_groups() |>
-#'   dplyr::filter(PriorityGroup == 'CKD') |>
-#'   dplyr::select(PathwayGroupName, IndicatorCode, IndicatorID, IndicatorName)
+#'   dplyr::select(PriorityGroup, PathwayGroupName, PathwayGroupID, IndicatorCode, IndicatorID, IndicatorName) |>
+#'   dplyr::slice_head(by = PathwayGroupID)
 cvd_indicator_priority_groups <- function() {
 
   # compose the request
@@ -1334,7 +1334,9 @@ cvd_indicator_priority_groups <- function() {
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_pathway_group()
+#' # Return indicators for the 'Chronic Kidney Disease' Pathway Group (ID 9):
+#' cvd_indicator_pathway_group(pathway_group_id = 9) |>
+#'   dplyr::select(PathwayGroupName, PathwayGroupID, IndicatorCode, IndicatorID, IndicatorName)
 cvd_indicator_pathway_group <- function(pathway_group_id = 10) {
 
   # compose the request
@@ -1386,7 +1388,11 @@ cvd_indicator_pathway_group <- function(pathway_group_id = 10) {
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_group()
+#' #  list the indicators under Indicator Group ID 13 (Monitoring) which lists
+#' # 'Key Question' Indicator Group indicators:
+#' cvd_indicator_group(indicator_group_id = 13) |>
+#'   dplyr::select(IndicatorGroupID, IndicatorGroupName, IndicatorGroupTypeName,
+#'   IndicatorID, IndicatorName)
 cvd_indicator_group <- function(indicator_group_id = 15) {
 
   # compose the request
@@ -1432,7 +1438,14 @@ cvd_indicator_group <- function(indicator_group_id = 15) {
 #' [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' test <- cvd_indicator_metric_timeseries()
+#' # List data for Salford South East PCN (area ID 705) for 'AF: treatment with
+#' # anticoagulants' for women people aged 60-79 years (metric ID 130):
+#' cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
+#'   dplyr::select(AreaName, TimePeriodName, TimePeriodID, Value) |>
+#'   tidyr::pivot_wider(
+#'     names_from = AreaName,
+#'     values_from = Value
+#'   )
 cvd_indicator_metric_timeseries <- function(metric_id = 1, area_id = 50) {
 
   # compose the request

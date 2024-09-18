@@ -29,7 +29,11 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FindicatorGroup\%2F\%3Cindicator_group_ID\%3E}{Indicator group}
 }
 \examples{
-test <- cvd_indicator_group()
+#  list the indicators under Indicator Group ID 13 (Monitoring) which lists
+# 'Key Question' Indicator Group indicators:
+cvd_indicator_group(indicator_group_id = 13) |>
+  dplyr::select(IndicatorGroupID, IndicatorGroupName, IndicatorGroupTypeName,
+  IndicatorID, IndicatorName)
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},

@@ -22,10 +22,10 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FpriorityGroups}{Indicator priority groups}
 }
 \examples{
-# Return the indicators in the Chronic Kidney Disease (CKD) priority group:
+# Return one indicator from each of the priority groups:
 cvd_indicator_priority_groups() |>
-  dplyr::filter(PriorityGroup == 'CKD') |>
-  dplyr::select(PathwayGroupName, IndicatorCode, IndicatorID, IndicatorName)
+  dplyr::select(PriorityGroup, PathwayGroupName, PathwayGroupID, IndicatorCode, IndicatorID, IndicatorName) |>
+  dplyr::slice_head(by = PathwayGroupID)
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
