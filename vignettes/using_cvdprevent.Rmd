@@ -580,4 +580,3 @@ cvd_data_availability(time_period_id = 6, system_level_id = 5) |>
   dplyr::slice_head(n = 5) |> 
   gt::gt()
 ```
-
