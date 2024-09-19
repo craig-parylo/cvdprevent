@@ -6,11 +6,34 @@ globalVariables(
     'AreaData', 'Areas', 'Categories', 'Categories_MetricID', 'Categories_TimeSeries',
     'CategoryData', 'Children', 'Children_Children', 'Children_Children_Children',
     'ComparisonData', 'Data', 'IndicatorID', 'Indicators', 'InequalityMarkers', 'MetaData',
-    'MetricList', 'SubSystems', 'SystemLevels', 'TimeSeriesData'
+    'MetricList', 'SubSystems', 'SystemLevels', 'TimeSeriesData', 'IndicatorTypeID',
+    'IndicatorTypeName', 'TimePeriodID', 'SystemLevelID'
   )
 )
 
 ## time period -----------------------------------------------------------------
+
+#' List indicator types
+#'
+#' Returns IDs and descriptions for indicator types.
+#' This is a helper function for the `cvd_time_period_list()` which permits the
+#' optional parameter of `indicator_type_id`.
+#'
+#' @return Tibble of indicator types
+#' @export
+#' @seealso [cvd_time_period_list()]
+#'
+#' @examples
+#' # List available indicator types
+#' cvd_indicator_types()
+cvd_indicator_types <- function() {
+
+  # get the data from the function - no parameters to return all types
+  data <- cvd_time_period_list() |>
+    dplyr::select(IndicatorTypeID, IndicatorTypeName) |>
+    dplyr::distinct()
+}
+
 #' List time periods
 #'
 #' Returns all available time periods
@@ -22,7 +45,7 @@ globalVariables(
 #'
 #' @return Tibble of time period details
 #' @export
-#' @seealso [cvd_time_period_system_levels()]
+#' @seealso [cvd_indicator_types()], [cvd_time_period_system_levels()]
 #'
 #' @examples
 #' # get a tibble of all periods
@@ -51,17 +74,21 @@ cvd_time_period_list <- function(indicator_type_id) {
   # perform the request
   resp <- req |>
     httr2::req_perform() |>
-    httr2::resp_body_json()
+    httr2::resp_body_string()
 
-  # wrangle to tibble for output
-  return <- resp$timePeriodList |>
-    purrr::map_dfr(
-      .f = \(.period_item) {
-        .period_item |>
-          purrr::compact() |>
-          dplyr::as_tibble()
-      }
-    )
+  # wrangle for output
+  data <- jsonlite::fromJSON(resp, flatten = T)$timePeriodList
+
+  if (length(data) == 0) {
+    cli::cli_alert_danger('No time periods returned')
+    return(dplyr::tibble(result = 'No time periods returned'))
+
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      dplyr::arrange(TimePeriodID)
+  }
 }
 
 #' Time periods and system levels
@@ -100,8 +127,9 @@ cvd_time_period_system_levels <- function() {
   data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
     purrr::compact() |>
     dplyr::as_tibble() |>
-    dplyr::relocate(SystemLevels, .after = dplyr::last_col()) |>
-    tidyr::unnest(cols = SystemLevels)
+    dplyr::relocate(dplyr::any_of(c('SystemLevels')), .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = dplyr::any_of(c('SystemLevels'))) |>
+    dplyr::arrange(TimePeriodID, SystemLevelID)
 
 }
 
@@ -182,7 +210,7 @@ cvd_area_system_level_time_periods <- function() {
   data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
     purrr::compact() |>
     dplyr::as_tibble() |>
-    tidyr::unnest(TimePeriods)
+    tidyr::unnest(cols = dplyr::any_of(c('TimePeriods')))
 }
 
 
@@ -249,18 +277,24 @@ cvd_area_list <- function(time_period_id = 1, parent_area_id, system_level_id) {
   # perform the request
   resp <- req |>
     httr2::req_perform() |>
-    httr2::resp_body_json()
+    httr2::resp_body_string()
 
-  # wrangle to tibble for output
-  return <- resp$areaList |>
-    purrr::map_dfr(
-      .f = \(.area_item) {
-        .area_item[!names(.area_item) %in% c('Parents')] |>
-          purrr::compact() |>
-          dplyr::as_tibble()
-      }
-    )
+  # wrangle for output
+  data <- jsonlite::fromJSON(resp, flatten = T)$areaList
+  if (length(data) == 0) {
+    cli::cli_alert_danger('No areas returned')
+    return(dplyr::tibble(result = 'No areas returned'))
+
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      dplyr::relocate(dplyr::any_of(c('Parents')), .after = dplyr::last_col()) |>
+      tidyr::unnest(col = dplyr::any_of(c('Parents')))
+  }
+
 }
+#test <- cvd_area_list(time_period_id = 17, system_level_id = 4)
 
 #' Area details
 #'
@@ -305,53 +339,54 @@ cvd_area_details <- function(time_period_id = 1, area_id = 1) {
   # perform the request
   resp <- req |>
     httr2::req_perform() |>
-    httr2::resp_body_json()
+    httr2::resp_body_string()
 
   # wrangle to tibble for output
-  data <- resp$areaDetails |>
+  data <- jsonlite::fromJSON(resp, flatten = T)$areaDetails |>
     purrr::compact() |>
     dplyr::as_tibble()
+
+  # prepare the return object
+  return <- list()
 
   # select the base fields, exclude any parent or child details
   area_details <- data |>
     dplyr::select(-dplyr::any_of(c('ChildAreaList', 'ParentAreaList'))) |>
     unique()
 
-  return <- list(
-    'area_details' = area_details
-  )
+  return <- return |>
+    append(list('area_details' = area_details))
 
   # extract any parent details
   if('ParentAreaList' %in% names(data)) {
 
     area_parent_details <- data$ParentAreaList |>
-      purrr::map_dfr(
-        .f = \(.parent) {
-          .parent |>
-            purrr::compact() |>
-            dplyr::as_tibble() |>
-            unique()
-        }
-      ) |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
       unique()
-    return <- return |> append(list('area_parent_details' = area_parent_details))
+
+    return <- return |>
+      append(list('area_parent_details' = area_parent_details))
   }
 
   # extract any child details
   if('ChildAreaList' %in% names(data)) {
 
     area_child_details <- data$ChildAreaList |>
-      purrr::map_dfr(
-        .f = \(.child) {
-          .child |>
-            purrr::compact() |>
-            dplyr::as_tibble() |>
-            unique()
-        }
-      ) |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
       unique()
-    return <- return |> append(list('area_child_details' = area_child_details))
+
+    return <- return |>
+      append(list('area_child_details' = area_child_details))
   }
+
+  # add the full data return (for debugging)
+  return <- return |>
+    append(list('all_data' = data))
+
+  # return the result
+  return(return)
 }
 
 #' Unassigned areas
@@ -503,12 +538,12 @@ cvd_area_nested_subsystems <- function(area_id = 5) {
   data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
     purrr::compact() |>
     dplyr::as_tibble() |>
-    dplyr::relocate(Children, .after = dplyr::last_col()) |>
-    tidyr::unnest(cols = Children, names_sep = '_') |>
-    dplyr::relocate(Children_Children, .after = dplyr::last_col()) |>
-    tidyr::unnest(cols = Children_Children, names_sep = '_') |>
-    dplyr::relocate(Children_Children_Children, .after = dplyr::last_col()) |>
-    tidyr::unnest(cols = Children_Children_Children, names_sep = '_')
+    dplyr::relocate(dplyr::any_of(c('Children')), .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = dplyr::any_of(c('Children')), names_sep = '_') |>
+    dplyr::relocate(dplyr::any_of(c('Children_Children')), .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = dplyr::any_of(c('Children_Children')), names_sep = '_') |>
+    dplyr::relocate(dplyr::any_of(c('Children_Children_Children')), .after = dplyr::last_col()) |>
+    tidyr::unnest(cols = dplyr::any_of(c('Children_Children_Children')), names_sep = '_')
 
 }
 
@@ -1285,7 +1320,8 @@ cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id
 #' @examples
 #' # Return one indicator from each of the priority groups:
 #' cvd_indicator_priority_groups() |>
-#'   dplyr::select(PriorityGroup, PathwayGroupName, PathwayGroupID, IndicatorCode, IndicatorID, IndicatorName) |>
+#'   dplyr::select(PriorityGroup, PathwayGroupName, PathwayGroupID,
+#'   IndicatorCode, IndicatorID, IndicatorName) |>
 #'   dplyr::slice_head(by = PathwayGroupID)
 cvd_indicator_priority_groups <- function() {
 
