@@ -30,5 +30,5 @@ cvd_time_period_list() |>
   dplyr::select(TimePeriodID, TimePeriodName)
 }
 \seealso{
-\code{\link[=cvd_time_period_system_levels]{cvd_time_period_system_levels()}}
+\code{\link[=cvd_indicator_types]{cvd_indicator_types()}}, \code{\link[=cvd_time_period_system_levels]{cvd_time_period_system_levels()}}
 }
