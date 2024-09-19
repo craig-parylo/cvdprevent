@@ -46,3 +46,6 @@ cvd_indicator_list() |>
 #> # ℹ 4 more variables: IndicatorName <chr>, IndicatorOrder <int>,
 #> #   IndicatorShortName <chr>, IndicatorStatus <chr>
 ```
+
+See `vignette('using_cvdprevent', package = 'cvdprevent')` for more
+guidance on use.
