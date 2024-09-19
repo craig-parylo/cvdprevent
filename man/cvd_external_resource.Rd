@@ -7,7 +7,7 @@
 cvd_external_resource()
 }
 \value{
-tibble fo data
+Tibble of details for external resources
 }
 \description{
 Returns a list of all external resources

@@ -10,7 +10,7 @@ cvd_indicator_pathway_group(pathway_group_id = 10)
 \item{pathway_group_id}{integer - the pathway to return data for (compulsory)}
 }
 \value{
-tibble of data
+Tibble of indicators grouped by pathway groups
 }
 \description{
 Pathway groups are sub-groupings of Priority Groups, visible in the Regional

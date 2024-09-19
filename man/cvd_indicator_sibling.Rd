@@ -14,7 +14,7 @@ cvd_indicator_sibling(time_period_id = 17, area_id = 30, metric_id = 1)
 \item{metric_id}{integer - metric for which to return data (compulsory)}
 }
 \value{
-tibble of data
+Tibble of data for indicators for the area and its siblings in the time period
 }
 \description{
 Returns all sibling areas and their data for specified time period, area

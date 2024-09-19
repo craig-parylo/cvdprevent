@@ -10,7 +10,7 @@ cvd_indicator_group(indicator_group_id = 15)
 \item{indicator_group_id}{integer - the group to return data for (compulsory)}
 }
 \value{
-tibble of data
+Tibble of indicators grouped by indicator group
 }
 \description{
 Returns a single indicator group for a given group ID. An error will be

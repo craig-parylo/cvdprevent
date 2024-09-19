@@ -365,7 +365,7 @@ cvd_area_details <- function(time_period_id = 1, area_id = 1) {
 #' @param time_period_id integer - time period for which Area must have data for (compulsory)
 #' @param system_level_id integer - system level of areas in the unassigned list (optional)
 #'
-#' @return tibble
+#' @return Tibble of details for areas without parent details
 #' @export
 #' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
@@ -427,7 +427,7 @@ cvd_area_unassigned <- function(time_period_id = 1, system_level_id) {
 #' @param partial_area_name string - string to use to search for an Area (compulsory)
 #' @param time_period_id integer - limits the search to Areas which have data in specified time period (compulsory)
 #'
-#' @return Tibble of matching areas
+#' @return Tibble of details for areas matching the search term
 #' @export
 #' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
@@ -475,7 +475,7 @@ cvd_area_search <- function(partial_area_name = 'Surgery', time_period_id = 1) {
 #'
 #' @param area_id integer - the area to return data for (compulsory)
 #'
-#' @return tibble of data
+#' @return Tibble of details for the area and its child areas (where applicable)
 #' @export
 #' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_flat_subsystems()]
 #'
@@ -522,7 +522,7 @@ cvd_area_nested_subsystems <- function(area_id = 5) {
 #'
 #' @param area_id integer - the area to return data for (compulsory)
 #'
-#' @return tibble of data
+#' @return Tibble of details for the area and its child areas (where applicable)
 #' @export
 #' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()]
 #'
@@ -568,7 +568,7 @@ cvd_area_flat_subsystems <- function(area_id = 5) {
 #' @param time_period_id integer - time period to reutrn data for (compulsory)
 #' @param system_level_id integer - system level to return data for (compulsory)
 #'
-#' @return tibble of time period details
+#' @return Tibble of details for indicators for the time period and system level
 #' @export
 #' @seealso [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -624,7 +624,7 @@ cvd_indicator_list <- function(time_period_id = 1, system_level_id = 2) {
 #' @param time_period_id integer - time period to return data for (compulsory)
 #' @param system_level_id integer - system level to return data for (compulsory)
 #'
-#' @return tibble of indicators left-joined with metrics
+#' @return Tibble of details for indicators and associated metrics
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -856,7 +856,7 @@ cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
 #' CVD Prevent API documentation:
 #' [Indicator tags](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2Ftags)
 #'
-#' @return tibble of tags
+#' @return Tibble of details for indicator tags
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -897,7 +897,7 @@ cvd_indicator_tags <- function() {
 #'
 #' @param indicator_id integer - the ID for the indicator (compulsory)
 #'
-#' @return tibble
+#' @return Tibble of details for the specified indicator
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_sibling()],
@@ -946,7 +946,7 @@ cvd_indicator_details <- function(indicator_id = 1) {
 #' @param area_id integer - area for which all sibling data will be returned (compulsory)
 #' @param metric_id integer - metric for which to return data (compulsory)
 #'
-#' @return tibble of data
+#' @return Tibble of data for indicators for the area and its siblings in the time period
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()],
@@ -1000,7 +1000,7 @@ cvd_indicator_sibling <- function(time_period_id = 17, area_id = 30, metric_id =
 #' @param area_id integer - area for which all children data will be returned (compulsory)
 #' @param metric_id integer - metric for which to return data (compulsory)
 #'
-#' @return tibble of child indicator data
+#' @return Tibble of details for the specified metric in the child areas of the specified area
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -1052,7 +1052,7 @@ cvd_indicator_child_data <- function(time_period_id = 17, area_id = 74, metric_i
 #' @param time_period_id integer - time period for which to return data for (compulsory)
 #' @param area_id integer - area for which to return data for (compulsory)
 #'
-#' @return tibble of indicator data
+#' @return Tibble of details for the indicator in the area and a national comparison
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -1108,7 +1108,7 @@ cvd_indicator_data <- function(indicator_id = 2, time_period_id = 1, area_id = 2
 #' @param time_period_id integer - time period for which to return data for (compulsory)
 #' @param area_id integer - area for which to return data for (compulsory)
 #'
-#' @return tibble of metric data
+#' @return Tibble of details for metric performance in the area and time period
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -1163,7 +1163,7 @@ cvd_indicator_metric_data <- function(metric_id = 7, time_period_id = 1, area_id
 #' @param time_period_id integer - time period for which to return data for (compulsory)
 #' @param system_level_id integer - system level for which to return data for (compulsory)
 #'
-#' @return tibble of indicator data
+#' @return Tibble of metric performance details for a specified indicator across the system level
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -1218,7 +1218,7 @@ cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_
 #' @param time_period_id integer - time period for which to return data (compulsory)
 #' @param area_id integer - area for which to return data (compulsory)
 #'
-#' @return tibble of data
+#' @return Tibble of performance against the specified metric in the area as compared with national level
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -1271,7 +1271,7 @@ cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id
 #' CVD Prevent API documentation:
 #' [Indicator priority groups](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpriorityGroups)
 #'
-#' @return tibble of data
+#' @return Tibble of indicators grouped by priority group
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -1322,7 +1322,7 @@ cvd_indicator_priority_groups <- function() {
 #'
 #' @param pathway_group_id integer - the pathway to return data for (compulsory)
 #'
-#' @return tibble of data
+#' @return Tibble of indicators grouped by pathway groups
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -1376,7 +1376,7 @@ cvd_indicator_pathway_group <- function(pathway_group_id = 10) {
 #'
 #' @param indicator_group_id integer - the group to return data for (compulsory)
 #'
-#' @return tibble of data
+#' @return Tibble of indicators grouped by indicator group
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -1426,7 +1426,7 @@ cvd_indicator_group <- function(indicator_group_id = 15) {
 #' @param metric_id integer - the metric to return data for (compulsory)
 #' @param area_id integer - the area to return data for (compulsory)
 #'
-#' @return tibble
+#' @return Tibble of time-series data for the specified metric in the area
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -1484,7 +1484,7 @@ cvd_indicator_metric_timeseries <- function(metric_id = 1, area_id = 50) {
 #' @param indicator_id integer - the indicator to return data for (compulsory)
 #' @param area_id integer - the area to return data for (compulsory)
 #'
-#' @return tibble of data
+#' @return Tibble of metric performance for the specified indicator in the area
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -1547,7 +1547,7 @@ cvd_indicator_person_timeseries <- function(indicator_id = 1, area_id = 1) {
 #' @param time_period_id integer - the time period to return data for (compulsory)
 #' @param area_id integer - the area to return data for (compulsory)
 #'
-#' @return tibble of data
+#' @return Tibble of metric performance for the specified area and all other areas in the same system level in the time period
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -1605,7 +1605,7 @@ cvd_indicator_metric_systemlevel_comparison <- function(metric_id = 1, time_peri
 #' @param time_period_id integer - the time period to return data for (compulsory)
 #' @param area_id integer - the area to return data for (compulsory)
 #'
-#' @return tibble of data
+#' @return Tibble of metric performance for the specified area compared with National level
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
@@ -1655,7 +1655,7 @@ cvd_indicator_metric_area_breakdown <- function(metric_id = 1, time_period_id = 
 #' CVD Prevent API documentation:
 #' [External resources](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FexternalResource)
 #'
-#' @return tibble fo data
+#' @return Tibble of details for external resources
 #' @export
 #' @seealso [cvd_data_availability()]
 #'
@@ -1699,7 +1699,7 @@ cvd_external_resource <- function() {
 #' @param indicator_id integer - the indicator to return data for (optional)
 #' @param metric_category_type_id integer - the metric category to return data for (optional)
 #'
-#' @return tibble of data
+#' @return Tibble of data availability
 #' @export
 #' @seealso [cvd_external_resource()]
 #'

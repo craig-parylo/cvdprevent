@@ -14,7 +14,7 @@ cvd_indicator_data(indicator_id = 2, time_period_id = 1, area_id = 2)
 \item{area_id}{integer - area for which to return data for (compulsory)}
 }
 \value{
-tibble of indicator data
+Tibble of details for the indicator in the area and a national comparison
 }
 \description{
 Returns all metric data for a specified indicator. Data will include values

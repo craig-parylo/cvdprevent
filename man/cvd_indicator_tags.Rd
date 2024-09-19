@@ -7,7 +7,7 @@
 cvd_indicator_tags()
 }
 \value{
-tibble of tags
+Tibble of details for indicator tags
 }
 \description{
 Returns a list of all available tags, which can be used to filter indicators.

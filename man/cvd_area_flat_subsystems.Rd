@@ -10,7 +10,7 @@ cvd_area_flat_subsystems(area_id = 5)
 \item{area_id}{integer - the area to return data for (compulsory)}
 }
 \value{
-tibble of data
+Tibble of details for the area and its child areas (where applicable)
 }
 \description{
 Similar to \code{cvd_area_nested_subsystems()} but the sub-areas are grouped

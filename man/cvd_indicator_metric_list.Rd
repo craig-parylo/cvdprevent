@@ -12,7 +12,7 @@ cvd_indicator_metric_list(time_period_id = 1, system_level_id = 1)
 \item{system_level_id}{integer - system level to return data for (compulsory)}
 }
 \value{
-tibble of indicators left-joined with metrics
+Tibble of details for indicators and associated metrics
 }
 \description{
 Returns same data as cvd_indicator_list() but adds a 'MetricList' array for

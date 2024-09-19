@@ -21,7 +21,7 @@ cvd_data_availability(
 \item{metric_category_type_id}{integer - the metric category to return data for (optional)}
 }
 \value{
-tibble of data
+Tibble of data availability
 }
 \description{
 Returns the data availability.

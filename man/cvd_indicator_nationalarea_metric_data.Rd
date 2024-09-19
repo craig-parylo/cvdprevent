@@ -18,7 +18,7 @@ cvd_indicator_nationalarea_metric_data(
 \item{area_id}{integer - area for which to return data (compulsory)}
 }
 \value{
-tibble of data
+Tibble of performance against the specified metric in the area as compared with national level
 }
 \description{
 Returns national and area data for provided metric, area and time period.

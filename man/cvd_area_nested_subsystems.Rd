@@ -10,7 +10,7 @@ cvd_area_nested_subsystems(area_id = 5)
 \item{area_id}{integer - the area to return data for (compulsory)}
 }
 \value{
-tibble of data
+Tibble of details for the area and its child areas (where applicable)
 }
 \description{
 Returns given area and children areas in a nested structure

@@ -12,7 +12,7 @@ cvd_indicator_person_timeseries(indicator_id = 1, area_id = 1)
 \item{area_id}{integer - the area to return data for (compulsory)}
 }
 \value{
-tibble of data
+Tibble of metric performance for the specified indicator in the area
 }
 \description{
 Returns data for the Inequalities Markers Time Series chart for the provided

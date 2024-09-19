@@ -7,7 +7,7 @@
 cvd_indicator_priority_groups()
 }
 \value{
-tibble of data
+Tibble of indicators grouped by priority group
 }
 \description{
 Returns the list of top-level groupings (Priority Groups) displayed in the

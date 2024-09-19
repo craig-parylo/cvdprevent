@@ -18,7 +18,7 @@ cvd_indicator_raw_data(
 \item{system_level_id}{integer - system level for which to return data for (compulsory)}
 }
 \value{
-tibble of indicator data
+Tibble of metric performance details for a specified indicator across the system level
 }
 \description{
 Returns all metric data for a specified indicator, system level and time

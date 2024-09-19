@@ -12,7 +12,7 @@ cvd_indicator_list(time_period_id = 1, system_level_id = 2)
 \item{system_level_id}{integer - system level to return data for (compulsory)}
 }
 \value{
-tibble of time period details
+Tibble of details for indicators for the time period and system level
 }
 \description{
 Returns basic details of all indicators for a given system level and time period.

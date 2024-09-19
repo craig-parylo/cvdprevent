@@ -12,7 +12,7 @@ cvd_area_search(partial_area_name = "Surgery", time_period_id = 1)
 \item{time_period_id}{integer - limits the search to Areas which have data in specified time period (compulsory)}
 }
 \value{
-Tibble of matching areas
+Tibble of details for areas matching the search term
 }
 \description{
 Returns a list of Areas that match a partial name for a given time period.

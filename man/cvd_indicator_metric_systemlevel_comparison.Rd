@@ -18,7 +18,7 @@ cvd_indicator_metric_systemlevel_comparison(
 \item{area_id}{integer - the area to return data for (compulsory)}
 }
 \value{
-tibble of data
+Tibble of metric performance for the specified area and all other areas in the same system level in the time period
 }
 \description{
 Returns data for the SystemLevel Comparison chart for provided metric, area

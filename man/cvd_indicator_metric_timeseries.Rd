@@ -12,7 +12,7 @@ cvd_indicator_metric_timeseries(metric_id = 1, area_id = 50)
 \item{area_id}{integer - the area to return data for (compulsory)}
 }
 \value{
-tibble
+Tibble of time-series data for the specified metric in the area
 }
 \description{
 Returns data for the time series chart for specified metric ID and area ID.

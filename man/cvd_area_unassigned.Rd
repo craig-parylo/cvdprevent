@@ -12,7 +12,7 @@ cvd_area_unassigned(time_period_id = 1, system_level_id)
 \item{system_level_id}{integer - system level of areas in the unassigned list (optional)}
 }
 \value{
-tibble
+Tibble of details for areas without parent details
 }
 \description{
 Returns a list of all areas which have data in the selected time period,

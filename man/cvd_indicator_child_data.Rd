@@ -14,7 +14,7 @@ cvd_indicator_child_data(time_period_id = 17, area_id = 74, metric_id = 1)
 \item{metric_id}{integer - metric for which to return data (compulsory)}
 }
 \value{
-tibble of child indicator data
+Tibble of details for the specified metric in the child areas of the specified area
 }
 \description{
 Returns all children areas and their data for specified time period, area

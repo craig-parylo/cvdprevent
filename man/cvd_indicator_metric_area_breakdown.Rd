@@ -18,7 +18,7 @@ cvd_indicator_metric_area_breakdown(
 \item{area_id}{integer - the area to return data for (compulsory)}
 }
 \value{
-tibble of data
+Tibble of metric performance for the specified area compared with National level
 }
 \description{
 Returns data for the Area Breakdown chart for provided metric, area and time
