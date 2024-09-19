@@ -437,18 +437,22 @@ cvd_area_unassigned <- function(time_period_id = 1, system_level_id) {
   # perform the request
   resp <- req |>
     httr2::req_perform() |>
-    httr2::resp_body_json()
+    httr2::resp_body_string()
 
   # wrangle to tibble for output
-  data <- resp$unassignedAreaList |>
-    purrr::map_dfr(
-      .f = \(.area) {
-        .area |>
-          purrr::compact() |>
-          dplyr::as_tibble() |>
-          unique()
-      }
-    )
+  data <- jsonlite::fromJSON(resp, flatten = T)$unassignedAreaList
+
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No unassigned areas returned')
+    return(dplyr::tibble(result = 'No unassigned areas returned'))
+
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble()
+
+    return(data)
+  }
 }
 
 #' Search for matching areas
