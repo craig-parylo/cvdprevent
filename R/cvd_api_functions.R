@@ -492,17 +492,37 @@ cvd_area_search <- function(partial_area_name = 'Surgery', time_period_id = 1) {
   # perform the request
   resp <- req |>
     httr2::req_perform() |>
-    httr2::resp_body_json()
+    httr2::resp_body_string()
 
   # wrangle to tibble for output
-  return <- resp$foundAreaList |>
-    purrr::map_dfr(
-      .f = \(.area_item) {
-        .area_item |>
-          purrr::compact() |>
-          dplyr::as_tibble()
-      }
-    )
+  data <- jsonlite::fromJSON(resp, flatten = T)$foundAreaList
+
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No found areas returned')
+    return(dplyr::tibble(result = 'No found areas returned'))
+
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble()
+
+    return(data)
+  }
+
+  # # perform the request
+  # resp <- req |>
+  #   httr2::req_perform() |>
+  #   httr2::resp_body_json()
+
+  # # wrangle to tibble for output
+  # return <- resp$foundAreaList |>
+  #   purrr::map_dfr(
+  #     .f = \(.area_item) {
+  #       .area_item |>
+  #         purrr::compact() |>
+  #         dplyr::as_tibble()
+  #     }
+  #   )
 }
 
 #' Area nested sub systems
