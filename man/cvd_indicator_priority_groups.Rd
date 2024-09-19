@@ -24,7 +24,8 @@ CVD Prevent API documentation:
 \examples{
 # Return one indicator from each of the priority groups:
 cvd_indicator_priority_groups() |>
-  dplyr::select(PriorityGroup, PathwayGroupName, PathwayGroupID, IndicatorCode, IndicatorID, IndicatorName) |>
+  dplyr::select(PriorityGroup, PathwayGroupName, PathwayGroupID,
+  IndicatorCode, IndicatorID, IndicatorName) |>
   dplyr::slice_head(by = PathwayGroupID)
 }
 \seealso{
