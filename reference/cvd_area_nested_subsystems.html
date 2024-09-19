@@ -106,8 +106,22 @@
 <span class="r-in"><span><span class="co"># View details for Leicester Central PCN</span></span></span>
 <span class="r-in"><span><span class="fu">cvd_area_nested_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">701</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dplyr::relocate(tidyr::unnest(dplyr::relocate(tidyr::unnest(dplyr::relocate(dplyr::as_tibble(purrr::compact(jsonlite::fromJSON(resp,     flatten = T)[[1]])), Children, .after = dplyr::last_col()),     cols = Children, names_sep = "_"), Children_Children, .after = dplyr::last_col()),     cols = Children_Children, names_sep = "_"), Children_Children_Children,     .after = dplyr::last_col()):</span> Can't select columns that don't exist.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Column `Children_Children_Children` doesn't exist.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaCode                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaID                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaName                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ ParentAreaID             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelID            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelName          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaCode        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaID          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaName        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaOdsCode     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_ParentAreaID    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_SystemLevelID   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_SystemLevelName <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children        <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> list()</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
