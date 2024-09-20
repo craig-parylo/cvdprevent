@@ -703,20 +703,17 @@ cvd_indicator_list <- function(time_period_id = 1, system_level_id = 2) {
   # wrangle to tibble for output
   data <- jsonlite::fromJSON(resp, flatten = T)$indicatorList
 
-  # # perform the request
-  # resp <- req |>
-  #   httr2::req_perform() |>
-  #   httr2::resp_body_json()
-  #
-  # # wrangle to tibble for output
-  # return <- resp$indicatorList |>
-  #   purrr::map_dfr(
-  #     .f = \(.indicator_item) {
-  #       .indicator_item |>
-  #         purrr::compact() |>
-  #         dplyr::as_tibble()
-  #     }
-  #   )
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No indicators returned')
+    return(dplyr::tibble(result = 'No indicators returned'))
+
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble()
+
+    return(data)
+  }
 }
 
 #' List metrics for indicators
