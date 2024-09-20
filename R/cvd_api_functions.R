@@ -762,25 +762,27 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
     httr2::req_perform() |>
     httr2::resp_body_string()
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
-    purrr::compact() |>
-    dplyr::as_tibble()
-
-  if('MetricList' %in% names(data)) {
-    data <-
-      data |>
-      dplyr::relocate(dplyr::any_of(c('MetricList')), .after = dplyr::last_col()) |>
-      tidyr::unnest(cols = dplyr::any_of(c('MetricList')))
-  }
+  # wrangle to tibble for output
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
 
   if(length(data) == 0) {
-    cli::cli_alert(
-      text = 'No results returned'
-    )
-  }
+    cli::cli_alert_danger('No indicators returned')
+    return(dplyr::tibble(result = 'No indicators returned'))
 
-  return(data)
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble()
+
+    if('MetricList' %in% names(data)) {
+      data <-
+        data |>
+        dplyr::relocate(dplyr::any_of(c('MetricList')), .after = dplyr::last_col()) |>
+        tidyr::unnest(cols = dplyr::any_of(c('MetricList')))
+    }
+
+    return(data)
+  }
 }
 
 #' Indicators
@@ -821,8 +823,8 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
 #'   dplyr::arrange(IndicatorID) |>
 #'   dplyr::slice_head(n = 4)
 #'
-#' # extract the categories
-#' categories <- return_list$categories
+#' # extract the metric categories
+#' categories <- return_list$metric_categories
 #' categories |>
 #'   dplyr::filter(IndicatorID == 7, MetricCategoryID %in% c(7, 8)) |>
 #'   dplyr::select(IndicatorID, MetricCategoryTypeName,
@@ -832,7 +834,7 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
 #' category_data <- return_list$category_data
 #' category_data |>
 #'   dplyr::filter(MetricID %in% c(126, 132)) |>
-#'   dplyr::select(IndicatorID, MetricID, Value, Numerator, Denominator)
+#'   dplyr::select(MetricID, Value, Numerator, Denominator)
 #'
 #' # extract the time series data
 #' timeseries_data <- return_list$timeseries_data
@@ -870,88 +872,71 @@ cvd_indicator <- function(time_period_id = 1, area_id = 1, tag_id) {
     httr2::resp_body_string()
 
   # wrangle for output
-  # 1. get the data from the response
-  df <- jsonlite::fromJSON(resp, flatten = T)
-  df <- df[['indicatorList']] |>
-    dplyr::as_tibble()
+  data <- jsonlite::fromJSON(resp, flatten = T)$indicatorList
 
-  # 2. unnest the nested list data in 'Categories' and 'TimeSeries'
-  df <- df |>
-    # expand categories (and data)
-    dplyr::relocate(Categories, .after = dplyr::last_col()) |>
-    tidyr::unnest(col = Categories, names_sep = '_') |>
-    # expand the timeseries
-    dplyr::relocate(Categories_TimeSeries, .after = dplyr::last_col()) |>
-    tidyr::unnest(col = Categories_TimeSeries, names_sep = '_')
 
-  # 1. get indicator data
-  # find out when the 'Categories_' columns begin
-  index_categories <- grep(pattern = 'Categories_', colnames(df)) |> min()
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No indicators returned')
+    return(dplyr::tibble(result = 'No indicators returned'))
 
-  # select columns
-  indicators <- df |>
-    dplyr::select(1:min(index_categories) - 1) |>
-    unique()
+  } else {
 
-  # 2. get categories
-  categories <- df |>
-    # select indicator ID and all category columns except Timeseries ones
-    dplyr::select(
-      c(
-        IndicatorID,
-        dplyr::starts_with('Categories_'),
-        -dplyr::contains('_TimeSeries'),
-        -dplyr::starts_with('Data')
-      )
-    ) |>
-    # remove 'Categories_' prefix
-    dplyr::rename_with(
-      .fn = \(.col_name) {stringr::str_remove(.col_name, pattern = 'Categories_')},
-      .cols = dplyr::starts_with('Categories')
-    ) |>
-    dplyr::select(-dplyr::starts_with('Data.')) |>
-    unique()
+    # compose the return list
+    return <- list()
 
-  # 3. get categories_data
-  category_data <- df |>
-    dplyr::select(
-      c(
-        IndicatorID,
-        MetricID = Categories_MetricID,
-        dplyr::starts_with('Categories_Data.')
-      )
-    ) |>
-    # remove the 'Categories_Data.' prefix
-    dplyr::rename_with(
-      .f = \(.col_name) {stringr::str_remove(.col_name, pattern = 'Categories_Data.')},
-      .cols = dplyr::starts_with('Categories_Data.')
-    ) |>
-    unique()
+    # prepare data as tibble
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble()
 
-  # 4. get timeseries
-  timeseries_data <- df |>
-    dplyr::select(
-      c(
-        IndicatorID,
-        MetricID = Categories_MetricID,
-        dplyr::starts_with('Categories_TimeSeries')
-      )
-    ) |>
-    # remove the 'Categories_TimeSeries_' prefix
-    dplyr::rename_with(
-      .f = \(.col_name) {stringr::str_remove(.col_name, pattern = 'Categories_TimeSeries_')},
-      .cols = dplyr::starts_with('Categories_TimeSeries_')
-    ) |>
-    unique()
+    # Indicator data
+    indicators <- data |>
+      dplyr::select(-dplyr::any_of('Categories')) |>
+      dplyr::distinct()
 
-  # output as a named list for ease of checking
-  return <- list(
-    'indicators' = indicators,
-    'categories' = categories,
-    'category_data' = category_data,
-    'timeseries_data' = timeseries_data,
-    'all_data' = df
-  )
+    return <- return |>
+      append(list('indicators' = indicators))
+
+    # Metric categories
+    if('Categories' %in% names(data)) {
+      # extract metric data
+      metrics <- data |>
+        dplyr::select(c(IndicatorID, dplyr::any_of('Categories'))) |>
+        tidyr::unnest(cols = dplyr::any_of(c('Categories')))
+
+      # extract metric categories
+      metric_categories <- metrics |>
+        dplyr::select(-c(dplyr::any_of(c('TimeSeries')), dplyr::starts_with('Data.'))) |>
+        dplyr::distinct()
+
+      return <- return |>
+        append(list('metric_categories' = metric_categories))
+
+      # extract metric data
+      metric_data <- metrics |>
+        dplyr::select(c(MetricID, dplyr::starts_with('Data.'))) |>
+        tidyr::unnest(cols = dplyr::any_of('Data')) |>
+        dplyr::rename_with(
+          .cols = dplyr::starts_with('Data.'),
+          ~ base::gsub(pattern = 'Data.', replacement = '', x = .x, fixed = T)
+        ) |>
+        dplyr::distinct()
+
+      return <- return |>
+        append(list('metric_data' = metric_data))
+
+      # extract timeseries data
+      timeseries <- metrics |>
+        dplyr::select(c(MetricID, dplyr::any_of('TimeSeries'))) |>
+        tidyr::unnest(cols = dplyr::any_of('TimeSeries')) |>
+        dplyr::distinct()
+
+      return <- return |>
+        append(list('timeseries_data' = timeseries))
+    }
+
+    return(return)
+  }
 }
 
 #' Indicator tags

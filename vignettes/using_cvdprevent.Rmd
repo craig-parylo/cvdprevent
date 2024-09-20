@@ -240,9 +240,9 @@ To access all indicator data for a given area and time period you can use the `c
 
 -   indicators,
 
--   categories,
+-   metric categories,
 
--   category data,
+-   metric data,
 
 -   time-series data,
 
@@ -274,7 +274,7 @@ Here we access category details for:
 -   metric categories 7 & 8 (people aged 40-59 years by gender)
 
 ```{r}
-return_list$categories |> 
+return_list$metric_categories |> 
   dplyr::filter(IndicatorID == 7, MetricCategoryID %in% c(7, 8)) |> 
   dplyr::select(IndicatorID, MetricCategoryTypeName, 
                 CategoryAttribute, MetricCategoryName, MetricID) |> 
@@ -286,9 +286,9 @@ return_list$categories |>
 Here we access the data for each of the above categories:
 
 ```{r}
-return_list$category_data |> 
+return_list$metric_data |> 
   dplyr::filter(MetricID %in% c(126, 132)) |>
-  dplyr::select(IndicatorID, MetricID, Value, Numerator, Denominator) |> 
+  dplyr::select(MetricID, Value, Numerator, Denominator) |> 
   gt::gt()
 ```
 
