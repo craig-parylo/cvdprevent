@@ -1481,12 +1481,6 @@ cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id
     httr2::req_perform() |>
     httr2::resp_body_string()
 
-  # # wrangle for output
-  # data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
-  #   purrr::compact() |>
-  #   dplyr::as_tibble() |>
-  #   tidyr::unnest(cols = AreaData)
-
   # wrangle for output
   data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
 
@@ -1548,11 +1542,20 @@ cvd_indicator_priority_groups <- function() {
 
   # wrangle for output
   data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
-  data <- data |>
-    dplyr::tibble() |>
-    dplyr::mutate(PriorityGroup = names(data)) |>
-    purrr::compact() |>
-    tidyr::unnest(cols = data)
+
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No indicator priority groups returned')
+    return(dplyr::tibble(result = 'No indicator priority groups returned'))
+
+  } else {
+    data <- data |>
+      dplyr::tibble() |>
+      dplyr::mutate(PriorityGroup = names(data)) |>
+      purrr::compact() |>
+      tidyr::unnest(cols = data)
+
+    return(data)
+  }
 }
 
 #' Pathway groups
