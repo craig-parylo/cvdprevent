@@ -163,12 +163,28 @@ cvd_area_search(partial_area_name = 'foo', time_period_id = 17) |>
 
 ### Nested
 
-To get details for areas as a tibble including children areas (and sub-children up to 3 levels deep) you can use the function `cvd_area_nested_subsystems()` function. An area ID is a required parameter. Here we return details for Somerset STP:
+To get details for areas, including all system areas within the area, you can use the function `cvd_area_nested_subsystems()` . An area ID is a required parameter. Here we request details for North West NHS Region which returns a named list:
 
 ```{r}
-cvd_area_nested_subsystems(area_id = 5) |> 
-  dplyr::glimpse()
+return_list <- cvd_area_nested_subsystems(area_id = 7665) 
+return_list |> summary()
 ```
+
+The named tibble `level_1` provides details about our requested area, which can be accessed using the `return_list$indicators`:
+
+```{r}
+return_list$level_1 |> 
+  gt::gt()
+```
+
+The next level down are areas that are children of the region:
+
+```{r}
+return_list$level_2 |> 
+  gt::gt()
+```
+
+The next level down are the children of these areas ... and so on.
 
 ### Flat
 
