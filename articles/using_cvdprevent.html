@@ -8010,8 +8010,8 @@ includes four sets of data which are grouped together as four tibbles
 within a named list object. The four tibbles include:</p>
 <ul>
 <li><p>indicators,</p></li>
-<li><p>categories,</p></li>
-<li><p>category data,</p></li>
+<li><p>metric categories,</p></li>
+<li><p>metric data,</p></li>
 <li><p>time-series data,</p></li>
 </ul>
 <p>Here we look at ‘3 Centres PCN’ (area ID 1103) for time period
@@ -8019,12 +8019,11 @@ within a named list object. The four tibbles include:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">return_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cvd_indicator.html">cvd_indicator</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">1103</span><span class="op">)</span> </span>
 <span><span class="va">return_list</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                 Length Class  Mode</span></span>
-<span><span class="co">#&gt; indicators      12     tbl_df list</span></span>
-<span><span class="co">#&gt; categories       7     tbl_df list</span></span>
-<span><span class="co">#&gt; category_data   20     tbl_df list</span></span>
-<span><span class="co">#&gt; timeseries_data  8     tbl_df list</span></span>
-<span><span class="co">#&gt; all_data        42     tbl_df list</span></span></code></pre></div>
+<span><span class="co">#&gt;                   Length Class  Mode</span></span>
+<span><span class="co">#&gt; indicators        12     tbl_df list</span></span>
+<span><span class="co">#&gt; metric_categories  7     tbl_df list</span></span>
+<span><span class="co">#&gt; metric_data       19     tbl_df list</span></span>
+<span><span class="co">#&gt; timeseries_data    7     tbl_df list</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="indicators-1">Indicators<a class="anchor" aria-label="anchor" href="#indicators-1"></a>
 </h4>
@@ -8527,7 +8526,7 @@ illustrate, we obtain the first four indicators from the
 gender)</p></li>
 </ul>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">categories</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">metric_categories</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorID</span> <span class="op">==</span> <span class="fl">7</span>, <span class="va">MetricCategoryID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">MetricCategoryTypeName</span>, </span>
 <span>                <span class="va">CategoryAttribute</span>, <span class="va">MetricCategoryName</span>, <span class="va">MetricID</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -9013,9 +9012,9 @@ gender)</p></li>
 </h4>
 <p>Here we access the data for each of the above categories:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">category_data</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">metric_data</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">MetricID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">126</span>, <span class="fl">132</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">MetricID</span>, <span class="va">Value</span>, <span class="va">Numerator</span>, <span class="va">Denominator</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">MetricID</span>, <span class="va">Value</span>, <span class="va">Numerator</span>, <span class="va">Denominator</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="yqwtxjxwiy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#yqwtxjxwiy table {
@@ -9468,22 +9467,19 @@ gender)</p></li>
 </style>
 <table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings">
-<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="IndicatorID">IndicatorID</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="MetricID">MetricID</th>
+<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="MetricID">MetricID</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Value">Value</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Numerator">Numerator</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Denominator">Denominator</th>
     </tr></thead>
 <tbody class="gt_table_body">
 <tr>
-<td headers="IndicatorID" class="gt_row gt_right">7</td>
 <td headers="MetricID" class="gt_row gt_right">126</td>
 <td headers="Value" class="gt_row gt_right">100</td>
 <td headers="Numerator" class="gt_row gt_right">15</td>
 <td headers="Denominator" class="gt_row gt_right">15</td>
 </tr>
 <tr>
-<td headers="IndicatorID" class="gt_row gt_right">7</td>
 <td headers="MetricID" class="gt_row gt_right">132</td>
 <td headers="Value" class="gt_row gt_right">100</td>
 <td headers="Numerator" class="gt_row gt_right">10</td>
