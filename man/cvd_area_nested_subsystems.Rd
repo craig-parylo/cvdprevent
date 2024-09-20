@@ -10,7 +10,7 @@ cvd_area_nested_subsystems(area_id = 5)
 \item{area_id}{integer - the area to return data for (compulsory)}
 }
 \value{
-Tibble of details for the area and its child areas (where applicable)
+List of named tibbles containing details for the area and each sub-level areas
 }
 \description{
 Returns given area and children areas in a nested structure
@@ -21,12 +21,19 @@ CVD Prevent API documentation:
 }
 \examples{
 # View details for for Somerset STP
-cvd_area_nested_subsystems(area_id = 5) |>
-  dplyr::glimpse()
+returned_list <- cvd_area_nested_subsystems(area_id = 5)
+returned_list |> summary()
+
+# see details for five of the immediate children of Somerset STP
+returned_list$level_2 |>
+  dplyr::slice_head(n = 5)
 
 # View details for Leicester Central PCN
-cvd_area_nested_subsystems(area_id = 701) |>
-  dplyr::glimpse()
+returned_list <- cvd_area_nested_subsystems(area_id = 701)
+returned_list |> summary()
+
+# see details for the GP practice children of the PCN
+returned_list$level_2
 }
 \seealso{
 \code{\link[=cvd_area_list]{cvd_area_list()}}, \code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}

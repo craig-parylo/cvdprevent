@@ -508,21 +508,6 @@ cvd_area_search <- function(partial_area_name = 'Surgery', time_period_id = 1) {
 
     return(data)
   }
-
-  # # perform the request
-  # resp <- req |>
-  #   httr2::req_perform() |>
-  #   httr2::resp_body_json()
-
-  # # wrangle to tibble for output
-  # return <- resp$foundAreaList |>
-  #   purrr::map_dfr(
-  #     .f = \(.area_item) {
-  #       .area_item |>
-  #         purrr::compact() |>
-  #         dplyr::as_tibble()
-  #     }
-  #   )
 }
 
 #' Area nested sub systems
@@ -534,18 +519,25 @@ cvd_area_search <- function(partial_area_name = 'Surgery', time_period_id = 1) {
 #'
 #' @param area_id integer - the area to return data for (compulsory)
 #'
-#' @return Tibble of details for the area and its child areas (where applicable)
+#' @return List of named tibbles containing details for the area and each sub-level areas
 #' @export
 #' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
 #' # View details for for Somerset STP
-#' cvd_area_nested_subsystems(area_id = 5) |>
-#'   dplyr::glimpse()
+#' returned_list <- cvd_area_nested_subsystems(area_id = 5)
+#' returned_list |> summary()
+#'
+#' # see details for five of the immediate children of Somerset STP
+#' returned_list$level_2 |>
+#'   dplyr::slice_head(n = 5)
 #'
 #' # View details for Leicester Central PCN
-#' cvd_area_nested_subsystems(area_id = 701) |>
-#'   dplyr::glimpse()
+#' returned_list <- cvd_area_nested_subsystems(area_id = 701)
+#' returned_list |> summary()
+#'
+#' # see details for the GP practice children of the PCN
+#' returned_list$level_2
 cvd_area_nested_subsystems <- function(area_id = 5) {
 
   # compose the request
@@ -561,14 +553,53 @@ cvd_area_nested_subsystems <- function(area_id = 5) {
   # wrangle for output
   data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
     purrr::compact() |>
-    dplyr::as_tibble() |>
-    dplyr::relocate(dplyr::any_of(c('Children')), .after = dplyr::last_col()) |>
-    tidyr::unnest(cols = dplyr::any_of(c('Children')), names_sep = '_') |>
-    dplyr::relocate(dplyr::any_of(c('Children_Children')), .after = dplyr::last_col()) |>
-    tidyr::unnest(cols = dplyr::any_of(c('Children_Children')), names_sep = '_') |>
-    dplyr::relocate(dplyr::any_of(c('Children_Children_Children')), .after = dplyr::last_col()) |>
-    tidyr::unnest(cols = dplyr::any_of(c('Children_Children_Children')), names_sep = '_')
+    dplyr::as_tibble()
 
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No area returned')
+    return(dplyr::tibble(result = 'No area returned'))
+
+  } else {
+
+    # set up the return
+    return <- list()
+
+    # extract any children in a loop and add them to the return as named object
+    iter <- 0
+    while(length(data) > 0) {
+
+      # count iterations
+      iter <- iter + 1
+      iter_name <- glue::glue('level_{iter}')
+
+      # ensure data is a tibble
+      data <- data |>
+        purrr::compact() |>
+        dplyr::as_tibble()
+
+      # extract the details for the current level excluding children
+      level <- data |>
+        dplyr::select(-dplyr::any_of('Children')) |>
+        dplyr::distinct()
+
+      # get the children details
+      child <- data |>
+        dplyr::select(dplyr::any_of('Children')) |>
+        tidyr::unnest(cols = dplyr::any_of('Children'))
+
+      # add current level details to the return object if contains data
+      if (length(data) > 0) {
+        return <- return |>
+          append(setNames(list(level), iter_name))
+      }
+
+      # set data to be children (for the loop)
+      data <- child
+
+    }
+
+    return(return)
+  }
 }
 
 #' Area flat subsystems
