@@ -1117,11 +1117,21 @@ cvd_indicator_sibling <- function(time_period_id = 17, area_id = 30, metric_id =
     httr2::resp_body_string()
 
   # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    dplyr::relocate(Data, .after = dplyr::last_col()) |>
-    tidyr::unnest(col = Data)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
+
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No sibling details returned')
+    return(dplyr::tibble(result = 'No sibling details returned'))
+
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      dplyr::relocate(Data, .after = dplyr::last_col()) |>
+      tidyr::unnest(col = Data)
+
+    return(data)
+  }
 
 }
 
@@ -1171,11 +1181,21 @@ cvd_indicator_child_data <- function(time_period_id = 17, area_id = 74, metric_i
     httr2::resp_body_string()
 
   # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    dplyr::relocate(Data, .after = dplyr::last_col()) |>
-    tidyr::unnest(col = Data)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No child details returned')
+    return(dplyr::tibble(result = 'No child details returned'))
+
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      dplyr::relocate(Data, .after = dplyr::last_col()) |>
+      tidyr::unnest(col = Data)
+
+    return(data)
+  }
 
 }
 
@@ -1210,7 +1230,13 @@ cvd_indicator_child_data <- function(time_period_id = 17, area_id = 74, metric_i
 #'   dplyr::filter(MetricCategoryTypeName == 'Sex') |>
 #'   dplyr::select(MetricID, MetricCategoryName, AreaData.AreaName,
 #'   AreaData.Value, NationalData.AreaName, NationalData.Value)
-cvd_indicator_data <- function(indicator_id = 2, time_period_id = 1, area_id = 2) {
+cvd_indicator_data <- function(indicator_id = 1, time_period_id = 1, area_id = 1) {
+
+  # check the indicator is valid
+  if (as.numeric(indicator_id) > max(internal_list_indicator_ids())) {
+    cli::cli_alert_danger('Indicator ID is not valid')
+    return(dplyr::tibble(result = 'Indicator ID is not valid'))
+  }
 
   # compose the request
   req <-
@@ -1227,13 +1253,41 @@ cvd_indicator_data <- function(indicator_id = 2, time_period_id = 1, area_id = 2
     httr2::resp_body_string()
 
   # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    dplyr::relocate(Categories, .after = dplyr::last_col()) |>
-    tidyr::unnest(col = Categories)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
+
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No indicator details returned')
+    return(dplyr::tibble(result = 'No indicator details returned'))
+
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      dplyr::relocate(Categories, .after = dplyr::last_col()) |>
+      tidyr::unnest(col = Categories)
+
+    return(data)
+  }
 }
 
+#' INTERNAL FUNCTION - List available metric IDs
+#'
+#' Returns a list of indicator IDs for the latest time period at GP practice level.
+#' To be used as part of a check of valid indicator IDs
+#'
+#' @return Vector of indicator IDs
+internal_list_metric_ids <- function(time_period_id = 1) {
+
+
+  # list indicators for the latest time period
+  metric_list <-
+    cvd_indicator_metric_list(time_period_id = {{time_period_id}}, system_level_id = 5) |>
+    dplyr::arrange(MetricID) |>
+    dplyr::pull(MetricID) |>
+    base::unique()
+
+  return(metric_list)
+}
 
 #' Metric data
 #'
@@ -1267,6 +1321,12 @@ cvd_indicator_data <- function(indicator_id = 2, time_period_id = 1, area_id = 2
 #'   AreaData.Value, NationalData.Value)
 cvd_indicator_metric_data <- function(metric_id = 7, time_period_id = 1, area_id = 2) {
 
+  # check the metric is valid
+  if (as.numeric(metric_id) > max(internal_list_metric_ids())) {
+    cli::cli_alert_danger('Metric ID is not valid')
+    return(dplyr::tibble(result = 'Metric ID is not valid'))
+  }
+
   # compose the request
   req <-
     httr2::request(url_base) |>
@@ -1282,11 +1342,21 @@ cvd_indicator_metric_data <- function(metric_id = 7, time_period_id = 1, area_id
     httr2::resp_body_string()
 
   # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    dplyr::relocate(Categories, .after = dplyr::last_col()) |>
-    tidyr::unnest(col = Categories)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
+
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No indicator details returned')
+    return(dplyr::tibble(result = 'No indicator details returned'))
+
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      dplyr::relocate(Categories, .after = dplyr::last_col()) |>
+      tidyr::unnest(col = Categories)
+
+    return(data)
+  }
 
 }
 
