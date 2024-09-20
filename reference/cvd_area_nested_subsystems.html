@@ -54,7 +54,7 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Tibble of details for the area and its child areas (where applicable)</p>
+    <p>List of named tibbles containing details for the area and each sub-level areas</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -69,59 +69,41 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># View details for for Somerset STP</span></span></span>
-<span class="r-in"><span><span class="fu">cvd_area_nested_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 29</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaCode                                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "E54000038", "E54000038", "…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaID                                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaName                                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Somerset", "Somerset", "So…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaOdsCode                                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "QSL", "QSL", "QSL", "QSL",…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ ParentAreaID                               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 7670, 7670, 7670, 7670, 767…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelID                              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2, 2, 2, 2, 2, 2, 2, 2, 2, …</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelName                            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "STP", "STP", "STP", "STP",…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaCode                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "E38000150", "E38000150", "…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaID                            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 105, 105, 105, 105, 105, 10…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaName                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "NHS Somerset CCG", "NHS So…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaOdsCode                       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "11X", "11X", "11X", "11X",…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_ParentAreaID                      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_SystemLevelID                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 3, 3, 3, 3, 3, 3, 3, 3, 3, …</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_SystemLevelName                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "CCG", "CCG", "CCG", "CCG",…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_AreaCode                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "U47425", "U47425", "U47425…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_AreaID                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 528, 528, 528, 528, 613, 61…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_AreaName                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "West Somerset PCN", "West …</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_AreaOdsCode              <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> NA, NA, NA, NA, NA, NA, NA,…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_ParentAreaID             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 105, 105, 105, 105, 105, 10…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_SystemLevelID            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 4, 4, 4, 4, 4, 4, 4, 4, 4, …</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_SystemLevelName          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "PCN", "PCN", "PCN", "PCN",…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_AreaCode        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "L85003", "L85009", "L85065…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_AreaID          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5144, 5149, 5192, 7120, 514…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_AreaName        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Exmoor Medical Centre", "W…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_AreaOdsCode     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> NA, NA, NA, NA, NA, NA, NA,…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_Children        <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> [], [], [], [], [], [], []…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_ParentAreaID    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 528, 528, 528, 528, 613, 61…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_SystemLevelID   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children_Children_SystemLevelName <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Practice", "Practice", "Pr…</span>
+<span class="r-in"><span><span class="va">returned_list</span> <span class="op">&lt;-</span> <span class="fu">cvd_area_nested_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">returned_list</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Length Class  Mode</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> level_1 7      tbl_df list</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> level_2 7      tbl_df list</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> level_3 7      tbl_df list</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> level_4 7      tbl_df list</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># see details for five of the immediate children of Somerset STP</span></span></span>
+<span class="r-in"><span><span class="va">returned_list</span><span class="op">$</span><span class="va">level_2</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   AreaCode  AreaID AreaName         AreaOdsCode ParentAreaID SystemLevelID</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> E38000150    105 NHS Somerset CCG 11X                    5             3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: SystemLevelName &lt;chr&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># View details for Leicester Central PCN</span></span></span>
-<span class="r-in"><span><span class="fu">cvd_area_nested_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">701</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaCode                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaID                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ AreaName                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ ParentAreaID             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelID            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelName          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaCode        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaID          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaName        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_AreaOdsCode     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_ParentAreaID    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_SystemLevelID   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_SystemLevelName <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ Children_Children        <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> list()</span>
+<span class="r-in"><span><span class="va">returned_list</span> <span class="op">&lt;-</span> <span class="fu">cvd_area_nested_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">701</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">returned_list</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Length Class  Mode</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> level_1 6      tbl_df list</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> level_2 7      tbl_df list</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># see details for the GP practice children of the PCN</span></span></span>
+<span class="r-in"><span><span class="va">returned_list</span><span class="op">$</span><span class="va">level_2</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   AreaCode AreaID AreaName                AreaOdsCode ParentAreaID SystemLevelID</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> C82642     <span style="text-decoration: underline;">2</span>278 Highfields Medical Cen… <span style="color: #BB0000;">NA</span>                   701             5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> C82643     <span style="text-decoration: underline;">2</span>279 Community Health Centr… <span style="color: #BB0000;">NA</span>                   701             5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Y02469     <span style="text-decoration: underline;">6</span>621 Heron Gp Practice       <span style="color: #BB0000;">NA</span>                   701             5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Y02686     <span style="text-decoration: underline;">6</span>653 Bowling Green Street S… <span style="color: #BB0000;">NA</span>                   701             5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> C82080     <span style="text-decoration: underline;">7</span>323 SHEFA MEDICAL PRACTICE  <span style="color: #BB0000;">NA</span>                   701             5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: SystemLevelName &lt;chr&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
