@@ -1345,8 +1345,8 @@ cvd_indicator_metric_data <- function(metric_id = 7, time_period_id = 1, area_id
   data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
 
   if(length(data) == 0) {
-    cli::cli_alert_danger('No indicator details returned')
-    return(dplyr::tibble(result = 'No indicator details returned'))
+    cli::cli_alert_danger('No metric details returned')
+    return(dplyr::tibble(result = 'No metric details returned'))
 
   } else {
     data <- data |>
@@ -1391,6 +1391,12 @@ cvd_indicator_metric_data <- function(metric_id = 7, time_period_id = 1, area_id
 #'   dplyr::select(AreaCode, AreaName, Value)
 cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_level_id = 1) {
 
+  # check the indicator is valid
+  if (as.numeric(indicator_id) > max(internal_list_indicator_ids())) {
+    cli::cli_alert_danger('Indicator ID is not valid')
+    return(dplyr::tibble(result = 'Indicator ID is not valid'))
+  }
+
   # compose the request
   req <-
     httr2::request(url_base) |>
@@ -1406,10 +1412,19 @@ cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_
     httr2::resp_body_string()
 
   # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
-    purrr::compact() |>
-    dplyr::as_tibble()
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
 
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No indicator details returned')
+    return(dplyr::tibble(result = 'No indicator details returned'))
+
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble()
+
+    return(data)
+  }
 }
 
 #' Indicator national vs area metric data
@@ -1446,6 +1461,12 @@ cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_
 #' dplyr::slice_head(n=5)
 cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id = 17, area_id = 739) {
 
+  # check the metric is valid
+  if (as.numeric(metric_id) > max(internal_list_metric_ids())) {
+    cli::cli_alert_danger('Metric ID is not valid')
+    return(dplyr::tibble(result = 'Metric ID is not valid'))
+  }
+
   # compose the request
   req <-
     httr2::request(url_base) |>
@@ -1460,11 +1481,27 @@ cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id
     httr2::req_perform() |>
     httr2::resp_body_string()
 
+  # # wrangle for output
+  # data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
+  #   purrr::compact() |>
+  #   dplyr::as_tibble() |>
+  #   tidyr::unnest(cols = AreaData)
+
   # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    tidyr::unnest(cols = AreaData)
+  data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
+
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No metric details returned')
+    return(dplyr::tibble(result = 'No metric details returned'))
+
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      tidyr::unnest(cols = AreaData)
+
+    return(data)
+  }
 
 }
 
