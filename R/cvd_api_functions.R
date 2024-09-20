@@ -382,8 +382,8 @@ cvd_area_details <- function(time_period_id = 1, area_id = 1) {
   }
 
   # add the full data return (for debugging)
-  return <- return |>
-    append(list('all_data' = data))
+  # return <- return |>
+  #   append(list('all_data' = data))
 
   # return the result
   return(return)
@@ -974,8 +974,20 @@ cvd_indicator_tags <- function() {
     httr2::resp_body_string()
 
   # wrangle to tibble for output
-  data <- jsonlite::fromJSON(resp, flatten = T)$indicatorTagList |>
-    dplyr::as_tibble()
+  data <- jsonlite::fromJSON(resp, flatten = T)$indicatorTagList
+
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No indicators tags returned')
+    return(dplyr::tibble(result = 'No indicator tags returned'))
+
+  } else {
+    data <- data |>
+      dplyr::as_tibble() |>
+      dplyr::distinct() |>
+      dplyr::arrange(IndicatorTagID)
+
+    return(data)
+  }
 }
 
 #' Indicator details
@@ -1009,18 +1021,55 @@ cvd_indicator_details <- function(indicator_id = 1) {
     httr2::request(url_base) |>
     httr2::req_url_path_append(glue::glue('indicator/{indicator_id}/details'))
 
+  # check the indicator is valid
+  if (as.numeric(indicator_id) > max(internal_list_indicator_ids())) {
+    cli::cli_alert_danger('Indicator ID is not valid')
+    return(dplyr::tibble(result = 'Indicator ID is not valid'))
+  }
+
   # perform the request
   resp <- req |>
     httr2::req_perform() |>
     httr2::resp_body_string()
 
   # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)$indicatorDetails |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    dplyr::relocate(MetaData, .after = dplyr::last_col()) |>
-    tidyr::unnest(col = MetaData)
+  data <- jsonlite::fromJSON(resp, flatten = T)$indicatorDetails
 
+  if(length(data) == 0) {
+    cli::cli_alert_danger('No indicators details returned')
+    return(dplyr::tibble(result = 'No indicator details returned'))
+
+  } else {
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      dplyr::relocate(MetaData, .after = dplyr::last_col()) |>
+      tidyr::unnest(col = MetaData)
+
+    return(data)
+  }
+}
+
+#' INTERNAL FUNCTION - List available indicator IDs
+#'
+#' Returns a list of indicator IDs for the latest time period at GP practice level.
+#' To be used as part of a check of valid indicator IDs
+#'
+#' @return Vector of indicator IDs
+internal_list_indicator_ids <- function() {
+  # get latest time period
+  latest_time_id <- cvd_time_period_list() |>
+    dplyr::slice_max(order_by = TimePeriodID) |>
+    dplyr::pull(TimePeriodID)
+
+  # list indicators for the latest time period
+  indicator_list <-
+    cvd_indicator_list(time_period_id = latest_time_id, system_level_id = 5) |>
+    dplyr::arrange(IndicatorID) |>
+    dplyr::pull(IndicatorID) |>
+    base::unique()
+
+  return(indicator_list)
 }
 
 #' Indicator sibling data
