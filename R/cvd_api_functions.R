@@ -1558,6 +1558,19 @@ cvd_indicator_priority_groups <- function() {
   }
 }
 
+#' INTERNAL FUNCTION - List available metric IDs
+#'
+#' Returns a list of indicator IDs for the latest time period at GP practice level.
+#' To be used as part of a check of valid indicator IDs
+#'
+#' @return Tibble containing the error message
+internal_try_catch_html500 <- function(error, msg) {
+
+  cli::cli_alert_danger(msg)
+  return(dplyr::tibble(result = msg))
+
+}
+
 #' Pathway groups
 #'
 #' Pathway groups are sub-groupings of Priority Groups, visible in the Regional
@@ -1595,8 +1608,7 @@ cvd_indicator_pathway_group <- function(pathway_group_id = 10) {
     httr2::req_url_path_append(glue::glue('indicator/pathwayGroup/{pathway_group_id}'))
 
   # catch errors caused by bad url - because pathway group id is invalid
-  tryCatch(
-    {
+  tryCatch({
       # perform the request
       # extract the response as string (this bit is most likely to fail)
       resp <- req |>
@@ -1619,13 +1631,8 @@ cvd_indicator_pathway_group <- function(pathway_group_id = 10) {
 
         return(data)
       }
-
     },
-    error = \(e) {
-      cli::cli_alert_danger('Pathway Group ID is invalid')
-      return(dplyr::tibble(result = 'Pathway Group ID is invalid'))
-    }
-
+    httr2_error = function(e) internal_try_catch_html500(error = e, msg = 'Pathway Group ID is invalid')
   )
 }
 
@@ -1672,17 +1679,39 @@ cvd_indicator_group <- function(indicator_group_id = 15) {
     httr2::request(url_base) |>
     httr2::req_url_path_append(glue::glue('indicator/indicatorGroup/{indicator_group_id}'))
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # # perform the request
+  # resp <- req |>
+  #   httr2::req_perform() |>
+  #   httr2::resp_body_string()
+  #
+  # # wrangle for output
+  # data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+  #   purrr::compact() |>
+  #   dplyr::as_tibble() |>
+  #   dplyr::relocate(Indicators, .after = dplyr::last_col()) |>
+  #   tidyr::unnest(cols = Indicators)
+  #
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    dplyr::relocate(Indicators, .after = dplyr::last_col()) |>
-    tidyr::unnest(cols = Indicators)
+  # catch errors caused by bad url - because pathway group id is invalid
+  tryCatch({
+      # perform the request
+      # extract the response as string (this bit is most likely to fail)
+      resp <- req |>
+        httr2::req_perform() |>
+        httr2::resp_body_string()
+
+      # wrangle for output
+      data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+      data <- data |>
+        purrr::compact() |>
+        dplyr::as_tibble() |>
+        dplyr::relocate(Indicators, .after = dplyr::last_col()) |>
+        tidyr::unnest(cols = Indicators)
+
+        return(data)
+    },
+    httr2_error = function(e) internal_try_catch_html500(error = e, msg = 'Indicator Group ID is invalid')
+  )
 }
 
 #' Indicator time series by metric
