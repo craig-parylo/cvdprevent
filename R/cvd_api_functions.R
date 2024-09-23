@@ -7,7 +7,8 @@ globalVariables(
     'CategoryData', 'Children', 'Children_Children', 'Children_Children_Children',
     'ComparisonData', 'Data', 'IndicatorID', 'Indicators', 'InequalityMarkers', 'MetaData',
     'MetricList', 'SubSystems', 'SystemLevels', 'TimeSeriesData', 'IndicatorTypeID',
-    'IndicatorTypeName', 'TimePeriodID', 'SystemLevelID'
+    'IndicatorTypeName', 'TimePeriodID', 'SystemLevelID', 'IndicatorTagID',
+    'MetricID', 'setNames'
   )
 )
 
@@ -830,9 +831,9 @@ cvd_indicator_metric_list <- function(time_period_id = 1, system_level_id = 1) {
 #'   dplyr::select(IndicatorID, MetricCategoryTypeName,
 #'   CategoryAttribute, MetricCategoryName, MetricID)
 #'
-#' # extract category data
-#' category_data <- return_list$category_data
-#' category_data |>
+#' # extract metric data
+#' metric_data <- return_list$metric_data
+#' metric_data |>
 #'   dplyr::filter(MetricID %in% c(126, 132)) |>
 #'   dplyr::select(MetricID, Value, Numerator, Denominator)
 #'
@@ -2014,16 +2015,6 @@ cvd_data_availability <- function(
       )
   }
 
-  # # perform the request
-  # resp <- req |>
-  #   httr2::req_perform() |>
-  #   httr2::resp_body_string()
-  #
-  # # wrangle for output
-  # data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-  #   purrr::compact() |>
-  #   dplyr::as_tibble()
-
   # catch errors caused by bad url - because pathway group id is invalid
   tryCatch({
     # perform the request
@@ -2039,7 +2030,7 @@ cvd_data_availability <- function(
 
     return(data)
   },
-  httr2_error = function(e) internal_try_catch_html500(error = e, msg = 'HTTPS error - please check either Time Period ID, System Level ID, Indicator ID (if supplied) and Metric Category Type ID (if supplied)')
+  httr2_error = function(e) internal_try_catch_html500(error = e, msg = 'HTTPS error - please check either Time Period ID, Indicator ID (if supplied) and Metric Category Type ID (if supplied)')
   )
 }
 
@@ -2051,6 +2042,7 @@ cvd_data_availability <- function(
 #' To be used as part of a check of valid indicator IDs
 #'
 #' @return Vector of indicator IDs
+#' @noRd
 internal_list_indicator_ids <- function() {
   # get latest time period
   latest_time_id <- cvd_time_period_list() |>
