@@ -114,20 +114,29 @@ indicators which have one of the specified tags will be returned.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>           4 CVDP004HYP    Hypertension: BP monitoring                         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>           7 CVDP002AF     AF: treatment with anticoagulants                   </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># extract the categories</span></span></span>
-<span class="r-in"><span><span class="va">categories</span> <span class="op">&lt;-</span> <span class="va">return_list</span><span class="op">$</span><span class="va">categories</span></span></span>
+<span class="r-in"><span><span class="co"># extract the metric categories</span></span></span>
+<span class="r-in"><span><span class="va">categories</span> <span class="op">&lt;-</span> <span class="va">return_list</span><span class="op">$</span><span class="va">metric_categories</span></span></span>
 <span class="r-in"><span><span class="va">categories</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorID</span> <span class="op">==</span> <span class="fl">7</span>, <span class="va">MetricCategoryID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">MetricCategoryTypeName</span>,</span></span>
 <span class="r-in"><span>  <span class="va">CategoryAttribute</span>, <span class="va">MetricCategoryName</span>, <span class="va">MetricID</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in UseMethod("filter"):</span> no applicable method for 'filter' applied to an object of class "NULL"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   IndicatorID MetricCategoryTypeName CategoryAttribute MetricCategoryName</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>           7 Age group              Male              40-59             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>           7 Age group              Female            40-59             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: MetricID &lt;int&gt;</span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># extract category data</span></span></span>
-<span class="r-in"><span><span class="va">category_data</span> <span class="op">&lt;-</span> <span class="va">return_list</span><span class="op">$</span><span class="va">category_data</span></span></span>
-<span class="r-in"><span><span class="va">category_data</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="co"># extract metric data</span></span></span>
+<span class="r-in"><span><span class="va">metric_data</span> <span class="op">&lt;-</span> <span class="va">return_list</span><span class="op">$</span><span class="va">metric_data</span></span></span>
+<span class="r-in"><span><span class="va">metric_data</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">MetricID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">126</span>, <span class="fl">132</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">MetricID</span>, <span class="va">Value</span>, <span class="va">Numerator</span>, <span class="va">Denominator</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in UseMethod("filter"):</span> no applicable method for 'filter' applied to an object of class "NULL"</span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">MetricID</span>, <span class="va">Value</span>, <span class="va">Numerator</span>, <span class="va">Denominator</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   MetricID Value Numerator Denominator</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>      126   100        15          15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>      132   100        10          10</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># extract the time series data</span></span></span>
 <span class="r-in"><span><span class="va">timeseries_data</span> <span class="op">&lt;-</span> <span class="va">return_list</span><span class="op">$</span><span class="va">timeseries_data</span></span></span>
