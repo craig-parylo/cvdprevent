@@ -4,7 +4,7 @@
 \alias{cvd_indicator_data}
 \title{Indicator data}
 \usage{
-cvd_indicator_data(indicator_id = 2, time_period_id = 1, area_id = 2)
+cvd_indicator_data(indicator_id = 1, time_period_id = 1, area_id = 1)
 }
 \arguments{
 \item{indicator_id}{integer - indicator for which to return data (compulsory)}

@@ -39,18 +39,18 @@ indicators |>
   dplyr::arrange(IndicatorID) |>
   dplyr::slice_head(n = 4)
 
-# extract the categories
-categories <- return_list$categories
+# extract the metric categories
+categories <- return_list$metric_categories
 categories |>
   dplyr::filter(IndicatorID == 7, MetricCategoryID \%in\% c(7, 8)) |>
   dplyr::select(IndicatorID, MetricCategoryTypeName,
   CategoryAttribute, MetricCategoryName, MetricID)
 
-# extract category data
-category_data <- return_list$category_data
-category_data |>
+# extract metric data
+metric_data <- return_list$metric_data
+metric_data |>
   dplyr::filter(MetricID \%in\% c(126, 132)) |>
-  dplyr::select(IndicatorID, MetricID, Value, Numerator, Denominator)
+  dplyr::select(MetricID, Value, Numerator, Denominator)
 
 # extract the time series data
 timeseries_data <- return_list$timeseries_data
