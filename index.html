@@ -39,6 +39,7 @@
 <li><a class="dropdown-item" href="articles/using_cvdprevent.html">Using CVD Prevent</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -59,7 +60,7 @@
 </h1>
 </div>
 <!-- badges: start -->
-<!-- badges: end -->
+
 <p>The goal of CVD Prevent is to provide an R wrapper to the CVD Prevent <a href="https://www.cvdprevent.nhs.uk/home" class="external-link">application programming interface</a> (API). Users can make API requests through built-in R functions.</p>
 <p>The Cardiovascular Disease Prevention Audit (CVDPREVENT) is an England-wide primary care audit that automatically extracts routinely held GP data. The Data &amp; Improvement Tool provides open access to the data, with clear, actionable insights for those tasked with improving cardiovascular health.</p>
 <div class="section level2">
@@ -69,12 +70,15 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"craig-parylo/cvdprevent"</span><span class="op">)</span></span></code></pre></div>
+<p>Alternatively, install the latest stable release from <a href="https://cran.r-project.org/" class="external-link">CRAN</a> with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"cvdprevent"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
 <p>This is a basic example which shows you how to solve a common problem:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craig-parylo/cvdprevent" class="external-link">cvdprevent</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## basic example code</span></span>
@@ -125,7 +129,12 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://CRAN.R-project.org/package=cvdprevent" class="external-link"><img src="https://www.r-pkg.org/badges/version/cvdprevent" alt="CRAN status"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
