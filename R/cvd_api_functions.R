@@ -1833,18 +1833,26 @@ cvd_indicator_metric_systemlevel_comparison <- function(metric_id = 1, time_peri
       `areaID` = area_id
     )
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # catch errors caused by bad url - because pathway group id is invalid
+  tryCatch({
+    # perform the request
+    resp <- req |>
+      httr2::req_perform() |>
+      httr2::resp_body_string()
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    tidyr::unnest(cols = SystemLevels) |>
-    dplyr::relocate(ComparisonData, .after = dplyr::last_col()) |>
-    tidyr::unnest(cols = ComparisonData)
+    # wrangle for output
+    data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      tidyr::unnest(cols = SystemLevels) |>
+      dplyr::relocate(ComparisonData, .after = dplyr::last_col()) |>
+      tidyr::unnest(cols = ComparisonData)
+
+    return(data)
+  },
+  httr2_error = function(e) internal_try_catch_html500(error = e, msg = 'Either Metric ID, Area ID or Time Period ID are invalid')
+  )
 }
 
 #' Indicator metric area breakdown
@@ -1888,18 +1896,26 @@ cvd_indicator_metric_area_breakdown <- function(metric_id = 1, time_period_id = 
       `areaID` = area_id
     )
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # catch errors caused by bad url - because pathway group id is invalid
+  tryCatch({
+    # perform the request
+    resp <- req |>
+      httr2::req_perform() |>
+      httr2::resp_body_string()
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    tidyr::unnest(cols = SystemLevels) |>
-    dplyr::relocate(ComparisonData, .after = dplyr::last_col()) |>
-    tidyr::unnest(cols = ComparisonData)
+    # wrangle for output
+    data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      tidyr::unnest(cols = SystemLevels) |>
+      dplyr::relocate(ComparisonData, .after = dplyr::last_col()) |>
+      tidyr::unnest(cols = ComparisonData)
+
+    return(data)
+  },
+  httr2_error = function(e) internal_try_catch_html500(error = e, msg = 'Either Metric ID or Time Period ID are invalid')
+  )
 
 }
 
@@ -1998,15 +2014,33 @@ cvd_data_availability <- function(
       )
   }
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # # perform the request
+  # resp <- req |>
+  #   httr2::req_perform() |>
+  #   httr2::resp_body_string()
+  #
+  # # wrangle for output
+  # data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+  #   purrr::compact() |>
+  #   dplyr::as_tibble()
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-    purrr::compact() |>
-    dplyr::as_tibble()
+  # catch errors caused by bad url - because pathway group id is invalid
+  tryCatch({
+    # perform the request
+    resp <- req |>
+      httr2::req_perform() |>
+      httr2::resp_body_string()
+
+    # wrangle for output
+    data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble()
+
+    return(data)
+  },
+  httr2_error = function(e) internal_try_catch_html500(error = e, msg = 'HTTPS error - please check either Time Period ID, System Level ID, Indicator ID (if supplied) and Metric Category Type ID (if supplied)')
+  )
 }
 
 # Internal functions -----------------------------------------------------------
@@ -2040,6 +2074,7 @@ internal_list_indicator_ids <- function() {
 #' To be used as part of a check of valid indicator IDs
 #'
 #' @return Vector of indicator IDs
+#' @noRd
 internal_list_metric_ids <- function(time_period_id = 1) {
 
 
@@ -2058,6 +2093,7 @@ internal_list_metric_ids <- function(time_period_id = 1) {
 #' Outputs a console message and returns a Tibble containing the error message
 #'
 #' @return Tibble containing the error message
+#' @noRd
 internal_try_catch_html500 <- function(error, msg) {
 
   cli::cli_alert_danger(msg)
