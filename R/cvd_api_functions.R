@@ -1050,27 +1050,7 @@ cvd_indicator_details <- function(indicator_id = 1) {
   }
 }
 
-#' INTERNAL FUNCTION - List available indicator IDs
-#'
-#' Returns a list of indicator IDs for the latest time period at GP practice level.
-#' To be used as part of a check of valid indicator IDs
-#'
-#' @return Vector of indicator IDs
-internal_list_indicator_ids <- function() {
-  # get latest time period
-  latest_time_id <- cvd_time_period_list() |>
-    dplyr::slice_max(order_by = TimePeriodID) |>
-    dplyr::pull(TimePeriodID)
 
-  # list indicators for the latest time period
-  indicator_list <-
-    cvd_indicator_list(time_period_id = latest_time_id, system_level_id = 5) |>
-    dplyr::arrange(IndicatorID) |>
-    dplyr::pull(IndicatorID) |>
-    base::unique()
-
-  return(indicator_list)
-}
 
 #' Indicator sibling data
 #'
@@ -1270,24 +1250,7 @@ cvd_indicator_data <- function(indicator_id = 1, time_period_id = 1, area_id = 1
   }
 }
 
-#' INTERNAL FUNCTION - List available metric IDs
-#'
-#' Returns a list of indicator IDs for the latest time period at GP practice level.
-#' To be used as part of a check of valid indicator IDs
-#'
-#' @return Vector of indicator IDs
-internal_list_metric_ids <- function(time_period_id = 1) {
 
-
-  # list indicators for the latest time period
-  metric_list <-
-    cvd_indicator_metric_list(time_period_id = {{time_period_id}}, system_level_id = 5) |>
-    dplyr::arrange(MetricID) |>
-    dplyr::pull(MetricID) |>
-    base::unique()
-
-  return(metric_list)
-}
 
 #' Metric data
 #'
@@ -1558,18 +1521,7 @@ cvd_indicator_priority_groups <- function() {
   }
 }
 
-#' INTERNAL FUNCTION - List available metric IDs
-#'
-#' Returns a list of indicator IDs for the latest time period at GP practice level.
-#' To be used as part of a check of valid indicator IDs
-#'
-#' @return Tibble containing the error message
-internal_try_catch_html500 <- function(error, msg) {
 
-  cli::cli_alert_danger(msg)
-  return(dplyr::tibble(result = msg))
-
-}
 
 #' Pathway groups
 #'
@@ -1744,19 +1696,6 @@ cvd_indicator_metric_timeseries <- function(metric_id = 1, area_id = 50) {
       `areaID` = area_id
     )
 
-  # # perform the request
-  # resp <- req |>
-  #   httr2::req_perform() |>
-  #   httr2::resp_body_string()
-  #
-  # # wrangle for output
-  # data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-  #   purrr::compact() |>
-  #   dplyr::as_tibble() |>
-  #   tidyr::unnest(cols = Areas) |>
-  #   tidyr::unnest(cols = TimeSeriesData)
-
-
   # catch errors caused by bad url - because pathway group id is invalid
   tryCatch({
     # perform the request
@@ -1828,17 +1767,25 @@ cvd_indicator_person_timeseries <- function(indicator_id = 1, area_id = 1) {
       `areaID` = area_id
     )
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # catch errors caused by bad url - because pathway group id is invalid
+  tryCatch({
+    # perform the request
+    resp <- req |>
+      httr2::req_perform() |>
+      httr2::resp_body_string()
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    tidyr::unnest(cols = InequalityMarkers) |>
-    tidyr::unnest(cols = CategoryData)
+    # wrangle for output
+    data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      tidyr::unnest(cols = InequalityMarkers) |>
+      tidyr::unnest(cols = CategoryData)
+
+    return(data)
+  },
+  httr2_error = function(e) internal_try_catch_html500(error = e, msg = 'Either Metric ID or Area ID is invalid')
+  )
 
 }
 
@@ -2060,4 +2007,60 @@ cvd_data_availability <- function(
   data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
     purrr::compact() |>
     dplyr::as_tibble()
+}
+
+# Internal functions -----------------------------------------------------------
+
+#' INTERNAL FUNCTION - List available indicator IDs
+#'
+#' Returns a list of indicator IDs for the latest time period at GP practice level.
+#' To be used as part of a check of valid indicator IDs
+#'
+#' @return Vector of indicator IDs
+internal_list_indicator_ids <- function() {
+  # get latest time period
+  latest_time_id <- cvd_time_period_list() |>
+    dplyr::slice_max(order_by = TimePeriodID) |>
+    dplyr::pull(TimePeriodID)
+
+  # list indicators for the latest time period
+  indicator_list <-
+    cvd_indicator_list(time_period_id = latest_time_id, system_level_id = 5) |>
+    dplyr::arrange(IndicatorID) |>
+    dplyr::pull(IndicatorID) |>
+    base::unique()
+
+  return(indicator_list)
+}
+
+
+#' INTERNAL FUNCTION - List available metric IDs
+#'
+#' Returns a list of indicator IDs for the latest time period at GP practice level.
+#' To be used as part of a check of valid indicator IDs
+#'
+#' @return Vector of indicator IDs
+internal_list_metric_ids <- function(time_period_id = 1) {
+
+
+  # list indicators for the latest time period
+  metric_list <-
+    cvd_indicator_metric_list(time_period_id = {{time_period_id}}, system_level_id = 5) |>
+    dplyr::arrange(MetricID) |>
+    dplyr::pull(MetricID) |>
+    base::unique()
+
+  return(metric_list)
+}
+
+#' INTERNAL FUNCTION - Catch html 500 errors
+#'
+#' Outputs a console message and returns a Tibble containing the error message
+#'
+#' @return Tibble containing the error message
+internal_try_catch_html500 <- function(error, msg) {
+
+  cli::cli_alert_danger(msg)
+  return(dplyr::tibble(result = msg))
+
 }
