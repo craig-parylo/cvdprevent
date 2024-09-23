@@ -43,4 +43,4 @@ library(cvdprevent)
 cvd_indicator_list() |> 
   head(n = 4)
 ```
-See `vignette('using_cvdprevent', package = 'cvdprevent')` for more guidance on use.
+See `vignette('using_cvdprevent', package = 'cvdprevent')` for more guidance on use
