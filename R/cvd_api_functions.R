@@ -1594,17 +1594,39 @@ cvd_indicator_pathway_group <- function(pathway_group_id = 10) {
     httr2::request(url_base) |>
     httr2::req_url_path_append(glue::glue('indicator/pathwayGroup/{pathway_group_id}'))
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # catch errors caused by bad url - because pathway group id is invalid
+  tryCatch(
+    {
+      # perform the request
+      # extract the response as string (this bit is most likely to fail)
+      resp <- req |>
+        httr2::req_perform() |>
+        httr2::resp_body_string()
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    dplyr::relocate(Indicators, .after = dplyr::last_col()) |>
-    tidyr::unnest(cols = Indicators)
+      # wrangle for output
+      data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+
+      if(length(data) == 0) {
+        cli::cli_alert_danger('No indicator pathway groups returned')
+        return(dplyr::tibble(result = 'No indicator pathway groups returned'))
+
+      } else {
+        data <- data |>
+          purrr::compact() |>
+          dplyr::as_tibble() |>
+          dplyr::relocate(Indicators, .after = dplyr::last_col()) |>
+          tidyr::unnest(cols = Indicators)
+
+        return(data)
+      }
+
+    },
+    error = \(e) {
+      cli::cli_alert_danger('Pathway Group ID is invalid')
+      return(dplyr::tibble(result = 'Pathway Group ID is invalid'))
+    }
+
+  )
 }
 
 #' Indicator group
