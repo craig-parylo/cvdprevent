@@ -1679,19 +1679,6 @@ cvd_indicator_group <- function(indicator_group_id = 15) {
     httr2::request(url_base) |>
     httr2::req_url_path_append(glue::glue('indicator/indicatorGroup/{indicator_group_id}'))
 
-  # # perform the request
-  # resp <- req |>
-  #   httr2::req_perform() |>
-  #   httr2::resp_body_string()
-  #
-  # # wrangle for output
-  # data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-  #   purrr::compact() |>
-  #   dplyr::as_tibble() |>
-  #   dplyr::relocate(Indicators, .after = dplyr::last_col()) |>
-  #   tidyr::unnest(cols = Indicators)
-  #
-
   # catch errors caused by bad url - because pathway group id is invalid
   tryCatch({
       # perform the request
@@ -1757,17 +1744,38 @@ cvd_indicator_metric_timeseries <- function(metric_id = 1, area_id = 50) {
       `areaID` = area_id
     )
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # # perform the request
+  # resp <- req |>
+  #   httr2::req_perform() |>
+  #   httr2::resp_body_string()
+  #
+  # # wrangle for output
+  # data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
+  #   purrr::compact() |>
+  #   dplyr::as_tibble() |>
+  #   tidyr::unnest(cols = Areas) |>
+  #   tidyr::unnest(cols = TimeSeriesData)
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    tidyr::unnest(cols = Areas) |>
-    tidyr::unnest(cols = TimeSeriesData)
+
+  # catch errors caused by bad url - because pathway group id is invalid
+  tryCatch({
+    # perform the request
+    resp <- req |>
+      httr2::req_perform() |>
+      httr2::resp_body_string()
+
+    # wrangle for output
+    data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+    data <- data |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      tidyr::unnest(cols = Areas) |>
+      tidyr::unnest(cols = TimeSeriesData)
+
+    return(data)
+  },
+  httr2_error = function(e) internal_try_catch_html500(error = e, msg = 'Metric ID is invalid')
+  )
 
 }
 
