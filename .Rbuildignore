@@ -9,3 +9,4 @@
 ^doc$
 ^Meta$
 ^\.secret
+^cran-comments\.md$
