@@ -4,6 +4,9 @@
 # CVD Prevent <a href="https://craig-parylo.github.io/cvdprevent/"><img src="man/figures/logo.png" align="right" height="136" alt="cvdprevent website" /></a>
 
 <!-- badges: start -->
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/cvdprevent)](https://CRAN.R-project.org/package=cvdprevent)
 <!-- badges: end -->
 
 The goal of CVD Prevent is to provide an R wrapper to the CVD Prevent
@@ -24,6 +27,13 @@ You can install the development version of cvdprevent from
 ``` r
 # install.packages("devtools")
 devtools::install_github("craig-parylo/cvdprevent")
+```
+
+Alternatively, install the latest stable release from
+[CRAN](https://cran.r-project.org/) with:
+
+``` r
+utils::install.packages("cvdprevent")
 ```
 
 ## Example

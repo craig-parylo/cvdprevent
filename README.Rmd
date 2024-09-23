@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
+[![CRAN status](https://www.r-pkg.org/badges/version/cvdprevent)](https://CRAN.R-project.org/package=cvdprevent)
 <!-- badges: end -->
 
 The goal of CVD Prevent is to provide an R wrapper to the CVD Prevent [application programming interface](https://www.cvdprevent.nhs.uk/home) (API). Users can make API requests through built-in R functions.
@@ -30,6 +31,12 @@ You can install the development version of cvdprevent from [GitHub](https://gith
 ``` r
 # install.packages("devtools")
 devtools::install_github("craig-parylo/cvdprevent")
+```
+
+Alternatively, install the latest stable release from [CRAN](https://cran.r-project.org/) with:
+
+``` r
+utils::install.packages("cvdprevent")
 ```
 
 ## Example
