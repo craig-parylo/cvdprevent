@@ -24,7 +24,6 @@ Imports:
     httr2,
     jsonlite,
     purrr,
-    stringr,
     tidyr
 Suggests:
     ggplot2,
