@@ -10,3 +10,4 @@
 ^Meta$
 ^\.secret
 ^cran-comments\.md$
+^CRAN-SUBMISSION$
