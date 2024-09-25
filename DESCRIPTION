@@ -12,7 +12,6 @@ Description: Provides an R wrapper to the 'CVD Prevent' application
     programming interface (API). Users can make API requests through
     built-in R functions.
     <https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation>
-    
     The Cardiovascular Disease Prevention Audit (CVDPREVENT) is an England-wide 
     primary care audit that automatically extracts routinely held GP health 
     data. 
