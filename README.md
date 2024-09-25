@@ -7,6 +7,8 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/cvdprevent)](https://CRAN.R-project.org/package=cvdprevent)
+
+[![](https://cranlogs.r-pkg.org/badges/cvdprevent)](https://cran.r-project.org/package=cvdprevent)
 <!-- badges: end -->
 
 The goal of CVD Prevent is to provide an R wrapper to the CVD Prevent
