@@ -128,6 +128,7 @@ cvd_time_period_system_levels <- function() {
   data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
     purrr::compact() |>
     dplyr::as_tibble() |>
+    dplyr::select(-dplyr::any_of(c('NotificationCount'))) |> # prevents conflicts with column of same name in nested data
     dplyr::relocate(dplyr::any_of(c('SystemLevels')), .after = dplyr::last_col()) |>
     tidyr::unnest(cols = dplyr::any_of(c('SystemLevels'))) |>
     dplyr::arrange(TimePeriodID, SystemLevelID)
