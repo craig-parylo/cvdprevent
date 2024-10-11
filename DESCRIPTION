@@ -2,7 +2,7 @@ Type: Package
 Package: cvdprevent
 Title: Wrapper for the 'CVD Prevent' Application Programming Interface
 Version: 0.1.0
-Authors@R:c(
+Authors@R: c(
     person("Craig", "Parylo", , "craig.parylo2@nhs.net", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0003-4297-7808")),
     person("Cardiovascular Disease Prevention Audit (CVDPREVENT)", role = "ant")
@@ -30,10 +30,12 @@ Suggests:
     ggplot2,
     gt,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
+Config/testthat/edition: 3
