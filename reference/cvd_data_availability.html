@@ -99,24 +99,25 @@ Response:
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">cvd_data_availability</span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">3</span>, system_level_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 132 × 13</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    DataAvailabilityID DataAvailabilityName             IndicatorCode IndicatorID</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>                 93 Inequality breakdowns are not p… CVDP001AF               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>                 94 Inequality breakdowns are not p… CVDP001AF               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>                 95 Inequality breakdowns are not p… CVDP001AF               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>                 96 Inequality breakdowns are not p… CVDP001AF               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>                237 Inequality breakdowns are not p… CVDP001HYP             11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>                238 Inequality breakdowns are not p… CVDP001HYP             11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>                239 Inequality breakdowns are not p… CVDP001HYP             11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>                240 Inequality breakdowns are not p… CVDP001HYP             11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>                381 Inequality breakdowns are not p… CVDP001CKD              8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>                382 Inequality breakdowns are not p… CVDP001CKD              8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 132 × 15</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    DataAvailabilityID DataAvailabilityName  HighestPriorityNotif…¹ IndicatorCode</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>                 93 Inequality breakdown… <span style="color: #BB0000;">NA</span>                     CVDP001AF    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>                 94 Inequality breakdown… <span style="color: #BB0000;">NA</span>                     CVDP001AF    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>                 95 Inequality breakdown… <span style="color: #BB0000;">NA</span>                     CVDP001AF    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>                 96 Inequality breakdown… <span style="color: #BB0000;">NA</span>                     CVDP001AF    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>               <span style="text-decoration: underline;">1</span>245 Indicators not avail… <span style="color: #BB0000;">NA</span>                     CVDP002HYP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>               <span style="text-decoration: underline;">1</span>246 Indicators not avail… <span style="color: #BB0000;">NA</span>                     CVDP002HYP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>               <span style="text-decoration: underline;">1</span>247 Indicators not avail… <span style="color: #BB0000;">NA</span>                     CVDP002HYP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>               <span style="text-decoration: underline;">1</span>248 Indicators not avail… <span style="color: #BB0000;">NA</span>                     CVDP002HYP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>               <span style="text-decoration: underline;">1</span>389 Indicators not avail… <span style="color: #BB0000;">NA</span>                     CVDP003HYP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>               <span style="text-decoration: underline;">1</span>390 Indicators not avail… <span style="color: #BB0000;">NA</span>                     CVDP003HYP   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 122 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 9 more variables: IndicatorName &lt;chr&gt;, IndicatorOrder &lt;int&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   IndicatorShortName &lt;chr&gt;, IsAvailable &lt;chr&gt;, MetricCategoryTypeID &lt;int&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   SystemLevelID &lt;int&gt;, SystemLevelName &lt;chr&gt;, TimePeriodID &lt;int&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TimePeriodName &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ abbreviated name: ¹​HighestPriorityNotificationType</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 11 more variables: IndicatorID &lt;int&gt;, IndicatorName &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   IndicatorOrder &lt;int&gt;, IndicatorShortName &lt;chr&gt;, IsAvailable &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MetricCategoryTypeID &lt;int&gt;, NotificationCount &lt;int&gt;, SystemLevelID &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   SystemLevelName &lt;chr&gt;, TimePeriodID &lt;int&gt;, TimePeriodName &lt;chr&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

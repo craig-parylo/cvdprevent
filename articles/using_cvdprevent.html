@@ -541,16 +541,16 @@ can use the function <code>cvd_time_period_list():</code></p>
 <td headers="TimePeriodName" class="gt_row gt_left">To March 2024</td>
 </tr>
 <tr>
+<td headers="TimePeriodID" class="gt_row gt_right">17</td>
+<td headers="TimePeriodName" class="gt_row gt_left">To March 2024</td>
+</tr>
+<tr>
 <td headers="TimePeriodID" class="gt_row gt_right">15</td>
 <td headers="TimePeriodName" class="gt_row gt_left">To December 2023</td>
 </tr>
 <tr>
 <td headers="TimePeriodID" class="gt_row gt_right">10</td>
 <td headers="TimePeriodName" class="gt_row gt_left">To September 2023</td>
-</tr>
-<tr>
-<td headers="TimePeriodID" class="gt_row gt_right">9</td>
-<td headers="TimePeriodName" class="gt_row gt_left">To June 2023</td>
 </tr>
 </tbody>
 </table>
@@ -8021,7 +8021,7 @@ within a named list object. The four tibbles include:</p>
 <code class="sourceCode R"><span><span class="va">return_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cvd_indicator.html">cvd_indicator</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">1103</span><span class="op">)</span> </span>
 <span><span class="va">return_list</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                   Length Class  Mode</span></span>
-<span><span class="co">#&gt; indicators        12     tbl_df list</span></span>
+<span><span class="co">#&gt; indicators        14     tbl_df list</span></span>
 <span><span class="co">#&gt; metric_categories  7     tbl_df list</span></span>
 <span><span class="co">#&gt; metric_data       19     tbl_df list</span></span>
 <span><span class="co">#&gt; timeseries_data    7     tbl_df list</span></span></code></pre></div>
@@ -11519,15 +11519,15 @@ Hypertension treatment) for siblings to ‘3 Centres PCN’ (ID 1103):</p>
 <td headers="UpperConfidenceLimit" class="gt_row gt_right">100.00</td>
 </tr>
 <tr>
-<td headers="AreaID" class="gt_row gt_right">606</td>
-<td headers="AreaName" class="gt_row gt_left">Batley Birstall PCN</td>
+<td headers="AreaID" class="gt_row gt_right">1055</td>
+<td headers="AreaName" class="gt_row gt_left">Greenwood PCN</td>
 <td headers="Value" class="gt_row gt_right">86.67</td>
 <td headers="LowerConfidenceLimit" class="gt_row gt_right">61.11</td>
 <td headers="UpperConfidenceLimit" class="gt_row gt_right">94.44</td>
 </tr>
 <tr>
-<td headers="AreaID" class="gt_row gt_right">1055</td>
-<td headers="AreaName" class="gt_row gt_left">Greenwood PCN</td>
+<td headers="AreaID" class="gt_row gt_right">606</td>
+<td headers="AreaName" class="gt_row gt_left">Batley Birstall PCN</td>
 <td headers="Value" class="gt_row gt_right">86.67</td>
 <td headers="LowerConfidenceLimit" class="gt_row gt_right">61.11</td>
 <td headers="UpperConfidenceLimit" class="gt_row gt_right">94.44</td>
@@ -15037,7 +15037,7 @@ pathway group (ID 9):</p>
 </style>
 <table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings">
-<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=""></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="a::stub"></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="PathwayGroupID">PathwayGroupID</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="IndicatorCode">IndicatorCode</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="IndicatorID">IndicatorID</th>
@@ -16059,7 +16059,7 @@ metric:</p>
 <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="TimePeriodName">TimePeriodName</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="TimePeriodID">TimePeriodID</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="England">England</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Salford South East PCN">Salford South East PCN</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Salford-South-East-PCN">Salford South East PCN</th>
     </tr></thead>
 <tbody class="gt_table_body">
 <tr>
@@ -16631,9 +16631,9 @@ metrics:</p>
 <thead><tr class="gt_col_headings">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="TimePeriodName">TimePeriodName</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="TimePeriodID">TimePeriodID</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="40-59">40-59</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="60-79">60-79</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="80+">80+</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a40-59">40-59</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a60-79">60-79</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a80+">80+</th>
     </tr></thead>
 <tbody class="gt_table_body">
 <tr>
@@ -18170,7 +18170,7 @@ five external resources:</p>
 </style>
 <table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings">
-<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=""></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="a::stub"></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="ExternalResourceSource">ExternalResourceSource</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="ExternalResourceTitle">ExternalResourceTitle</th>
     </tr></thead>
@@ -18696,8 +18696,8 @@ September 2022).</p>
 <td headers="MetricCategoryTypeID" class="gt_row gt_right">3</td>
 </tr>
 <tr>
-<td headers="IndicatorShortName" class="gt_row gt_left">Hypertension: prevalence</td>
-<td headers="IsAvailable" class="gt_row gt_left">N</td>
+<td headers="IndicatorShortName" class="gt_row gt_left">Hypertension: treatment to recommended age specific (79 and under) threshold</td>
+<td headers="IsAvailable" class="gt_row gt_left">Y</td>
 <td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
 <td headers="MetricCategoryTypeID" class="gt_row gt_right">4</td>
 </tr>
