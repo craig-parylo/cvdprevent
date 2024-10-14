@@ -25,8 +25,11 @@ globalVariables(
 #' @seealso [cvd_time_period_list()]
 #'
 #' @examples
+#' # NB, the following example is not tested because it takes longer than
+#' # expected to return the results
+#'
 #' # List available indicator types
-#' cvd_indicator_types()
+#' \donttest{cvd_indicator_types()}
 cvd_indicator_types <- function() {
 
   # get the data from the function - no parameters to return all types
@@ -48,15 +51,19 @@ cvd_indicator_types <- function() {
 #' @export
 #' @seealso [cvd_indicator_types()], [cvd_time_period_system_levels()]
 #'
+#'
 #' @examples
+#' # NB, the following examples are not tested because they take longer than
+#' # expected to return the results
+#'
 #' # get a tibble of all periods
-#' cvd_time_periods <- cvd_time_period_list()
+#' \donttest{cvd_time_periods <- cvd_time_period_list()}
 #'
 #' # filter for the latest four periods
-#' cvd_time_period_list() |>
+#' \donttest{cvd_time_period_list() |>
 #'   dplyr::filter(IndicatorTypeName == 'Standard') |>
 #'   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
-#'   dplyr::select(TimePeriodID, TimePeriodName)
+#'   dplyr::select(TimePeriodID, TimePeriodName)}
 cvd_time_period_list <- function(indicator_type_id) {
 
   # compose the request
@@ -473,13 +480,16 @@ cvd_area_unassigned <- function(time_period_id = 1, system_level_id) {
 #' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
+#' # NB, the following examples are not tested because they take longer than
+#' # expected to return the results
+#'
 #' # search for areas matching the term 'practice'
-#' cvd_area_search(partial_area_name = 'practice', time_period_id = 17) |>
-#'   dplyr::select(AreaID, AreaName, AreaCode)
+#' \donttest{cvd_area_search(partial_area_name = 'practice', time_period_id = 17) |>
+#'   dplyr::select(AreaID, AreaName, AreaCode)}
 #'
 #' # search for areas matching the term 'PCN'
-#' cvd_area_search(partial_area_name = 'PCN', time_period_id = 17) |>
-#'   dplyr::select(AreaID, AreaName, AreaCode)
+#' \donttest{cvd_area_search(partial_area_name = 'PCN', time_period_id = 17) |>
+#'   dplyr::select(AreaID, AreaName, AreaCode)}
 cvd_area_search <- function(partial_area_name = 'Surgery', time_period_id = 1) {
 
   # compose the request

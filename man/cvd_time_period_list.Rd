@@ -20,14 +20,17 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FtimePeriod}{Time period}
 }
 \examples{
+# NB, the following examples are not tested because they take longer than
+# expected to return the results
+
 # get a tibble of all periods
-cvd_time_periods <- cvd_time_period_list()
+\donttest{cvd_time_periods <- cvd_time_period_list()}
 
 # filter for the latest four periods
-cvd_time_period_list() |>
+\donttest{cvd_time_period_list() |>
   dplyr::filter(IndicatorTypeName == 'Standard') |>
   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
-  dplyr::select(TimePeriodID, TimePeriodName)
+  dplyr::select(TimePeriodID, TimePeriodName)}
 }
 \seealso{
 \code{\link[=cvd_indicator_types]{cvd_indicator_types()}}, \code{\link[=cvd_time_period_system_levels]{cvd_time_period_system_levels()}}

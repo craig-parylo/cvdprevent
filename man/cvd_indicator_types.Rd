@@ -15,8 +15,11 @@ This is a helper function for the \code{cvd_time_period_list()} which permits th
 optional parameter of \code{indicator_type_id}.
 }
 \examples{
+# NB, the following example is not tested because it takes longer than
+# expected to return the results
+
 # List available indicator types
-cvd_indicator_types()
+\donttest{cvd_indicator_types()}
 }
 \seealso{
 \code{\link[=cvd_time_period_list]{cvd_time_period_list()}}
