@@ -13,7 +13,7 @@ Description: Provides an R wrapper to the 'CVD Prevent' application
     built-in R functions. The Cardiovascular Disease Prevention Audit 
     (CVDPREVENT) is an England-wide primary care audit that automatically 
     extracts routinely held GP health data. 
-    <https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation>
+    <https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation>.
 License: MIT + file LICENSE
 URL: https://github.com/craig-parylo/cvdprevent,
     https://craig-parylo.github.io/cvdprevent/
