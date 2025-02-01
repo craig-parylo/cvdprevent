@@ -8,7 +8,7 @@ test_that('cvd_time_period_list works', {
   testthat::expect_no_error(test <- cvd_time_period_list())
 
   # expecting at least 17 time periods
-  testthat::expect_lte(test$TimePeriodID |> max(), 17)
+  testthat::expect_gte(test$TimePeriodID |> max(), 17)
 })
 
 test_that('cvd_time_period_system_levels works', {
