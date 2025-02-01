@@ -1,7 +1,7 @@
 Type: Package
 Package: cvdprevent
 Title: Wrapper for the 'CVD Prevent' Application Programming Interface
-Version: 0.1.0
+Version: 0.2.1
 Authors@R: c(
     person("Craig", "Parylo", , "craig.parylo2@nhs.net", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0003-4297-7808")),
