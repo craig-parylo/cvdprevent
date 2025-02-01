@@ -163,10 +163,10 @@ cvd_area_search(partial_area_name = 'foo', time_period_id = 17) |>
 
 ### Nested
 
-To get details for areas, including all system areas within the area, you can use the function `cvd_area_nested_subsystems()` . An area ID is a required parameter. Here we request details for North West NHS Region which returns a named list:
+To get details for areas, including all system areas within the area, you can use the function `cvd_area_nested_subsystems()`. An area ID is a required parameter. Here we request details for North West NHS Region which returns a named list:
 
 ```{r}
-return_list <- cvd_area_nested_subsystems(area_id = 7665) 
+return_list <- cvd_area_nested_subsystems(area_id = 8152) 
 return_list |> summary()
 ```
 
