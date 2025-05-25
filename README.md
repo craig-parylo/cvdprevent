@@ -48,16 +48,17 @@ library(cvdprevent)
 ## basic example code
 cvd_indicator_list() |> 
   head(n = 4)
-#> # A tibble: 4 × 10
-#>   AxisCharacter DataUpdateInterval FormatDisplayName IndicatorCode
-#>   <chr>         <lgl>              <chr>             <chr>        
-#> 1 %             NA                 Proportion %      CVDP001AF    
-#> 2 %             NA                 Proportion %      CVDP002AF    
-#> 3 %             NA                 Proportion %      CVDP001HYP   
-#> 4 %             NA                 Proportion %      CVDP004HYP   
-#> # ℹ 6 more variables: IndicatorFormatID <int>, IndicatorID <int>,
-#> #   IndicatorName <chr>, IndicatorOrder <int>, IndicatorShortName <chr>,
-#> #   IndicatorStatus <chr>
+#> # A tibble: 4 × 12
+#>   AxisCharacter DataUpdateInterval FormatDisplayName HighestPriorityNotificati…¹
+#>   <chr>         <lgl>              <chr>             <chr>                      
+#> 1 %             NA                 Proportion %      <NA>                       
+#> 2 %             NA                 Proportion %      <NA>                       
+#> 3 %             NA                 Proportion %      <NA>                       
+#> 4 %             NA                 Proportion %      <NA>                       
+#> # ℹ abbreviated name: ¹​HighestPriorityNotificationType
+#> # ℹ 8 more variables: IndicatorCode <chr>, IndicatorFormatID <int>,
+#> #   IndicatorID <int>, IndicatorName <chr>, IndicatorOrder <int>,
+#> #   IndicatorShortName <chr>, IndicatorStatus <chr>, NotificationCount <int>
 ```
 
 See `vignette('using_cvdprevent', package = 'cvdprevent')` for more

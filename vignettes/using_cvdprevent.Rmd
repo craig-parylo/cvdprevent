@@ -420,12 +420,51 @@ cvd_indicator_raw_data(indicator_id = 7, time_period_id = 17, system_level_id = 
 
 To return metric data for a given area and time period along with national results to compare against use function `cvd_indicator_nationalarea_metric_data()`.
 
+The output is a list of named tibbles. The two possible tibbles are:
+
+-   `area`: contains metric data for the specified area in comparison with national metric data.
+
+-   `target`: contains details on how to reach target values, including:
+
+    -   target value as a percentage (stored as a whole number up to 100)
+
+    -   target patients (the number of additional patients needed to reach the target percentage)
+
+Note that the `target` tibble is only provided if data is available for both national and the chosen area.
+
 Here we compare performance against metric 150 (AF: treatment with anticoagulants - all people) in 'Chester South PCN' (area ID 553) with national performance:
 
 ```{r}
-cvd_indicator_nationalarea_metric_data(metric_id = 150, time_period_id = 17, area_id = 553) |> 
-  gt::gt()
+return_list <- cvd_indicator_nationalarea_metric_data(
+  metric_id = 150, 
+  time_period_id = 17, 
+  area_id = 553
+)
+
+return_list |> summary()
 ```
+
+### Area data
+
+We can extract the tibbles using the `list$object` notation. Here we extract the area metric comparison with national data:
+
+```{r}
+area_data <- return_list$area
+area_data |> gt::gt()
+```
+
+### Target data
+
+Here we extract the target details:
+
+```{r}
+target_data <- return_list$target
+target_data |> gt::gt()
+```
+
+`Target value` is a percentage figure indicating the national target for this metric. `Target patients` is the number of additional patients needed by Chester South PCN to reach the target value.
+
+NB, `target` data is only provided where there are data for both national and the specified area.
 
 ## List priority group indicators
 

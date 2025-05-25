@@ -1399,11 +1399,18 @@ cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_
 
 #' Indicator national vs area metric data
 #'
-#' Returns national and area data for provided metric, area and time period.
-#' Target data contains the target value as a percentage stored as whole number
-#' up to 100; target patients is the number of patients more needed to reach
-#' the target percentage. If there is not data for both national and chosen
-#' area an error will be returned.
+#' Returns national and area data for the provided metric, area, and time period.
+#'
+#' The returned object is a list containing named tibbles. The two possible
+#' tibbles are:
+#' * `area`: contains metric data for the specified area in comparison with national metric data.
+#'
+#' * `target`: contains details on how to reach target values, including:
+#'     * target value as a percentage (stored as a whole number up to 100)
+#'     * target patients (the number of additional patients needed to reach the target percentage)
+#'
+#' Note that the `target` tibble is only provided if data is available for both
+#' national and the chosen area.
 #'
 #' CVD Prevent API documentation:
 #' [Indicator national vs area metric data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FnationalVsAreaMetricData%2F%3Cmetric_ID%3E)
@@ -1412,13 +1419,13 @@ cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_
 #' @param time_period_id integer - time period for which to return data (compulsory)
 #' @param area_id integer - area for which to return data (compulsory)
 #'
-#' @return Tibble of performance against the specified metric in the area as compared with national level
+#' @return List of named tibbles (`area`, `target`) where `target` is only provided if data is available.
 #' @export
 #' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
 #' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
 #' [cvd_indicator_raw_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
+#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()],
 #' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
 #' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
 #' [cvd_indicator_metric_area_breakdown()]
@@ -1427,8 +1434,22 @@ cvd_indicator_raw_data <- function(indicator_id = 1, time_period_id = 1, system_
 #' # Compare performance against metric 150  (AF: treatment with anticoagulants
 #' # - all people) in 'Chester South PCN' (area ID 553) with national
 #' # performance:
-#' cvd_indicator_nationalarea_metric_data(metric_id = 150, time_period_id = 17, area_id = 553) |>
-#' dplyr::slice_head(n=5)
+#' return_list <- cvd_indicator_nationalarea_metric_data(
+#'     metric_id = 150,
+#'     time_period_id = 17,
+#'     area_id = 553
+#' )
+#'
+#' # See what the list contains
+#' return_list |> summary()
+#'
+#' # Extract the `area` details
+#' area_data <- return_list$area
+#' area_data |> gt::gt()
+#'
+#' # Extract `target` details
+#' target_data <- return_list$target
+#' target_data |> gt::gt()
 cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id = 17, area_id = 739) {
 
   # compose the request
@@ -1448,19 +1469,62 @@ cvd_indicator_nationalarea_metric_data <- function(metric_id = 1, time_period_id
       httr2::resp_body_string()
 
     # wrangle for output
-    data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
+    data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
+      purrr::compact()
 
     if(length(data) == 0) {
       cli::cli_alert_danger('No metric details returned')
       return(dplyr::tibble(result = 'No metric details returned'))
 
     } else {
-      data <- data |>
-        purrr::compact() |>
-        dplyr::as_tibble() |>
-        tidyr::unnest(cols = AreaData)
 
-      return(data)
+      # compose the return list
+      return <- list()
+
+      # handle area data
+      if('AreaData' %in% names(data)) {
+
+        # extract area data - the first element
+        area_data <-
+          data |>
+          dplyr::nth(1) |>
+          tibble::as_tibble()
+
+        # add to return list
+        return <-
+          return |>
+          append(list('area' = area_data))
+      }
+
+      # handle target data
+      if('TargetData' %in% names(data)) {
+
+        # extract target data - the second element
+        target_data <-
+          data |>
+          dplyr::nth(2)
+
+        # only output if not NULL
+        if(target_data |> dplyr::nth(1) |> is.null()) {
+
+          # do nothing as the first element is null
+
+        } else {
+
+          # convert to tibble
+          target_data <-
+            target_data |>
+            tibble::as_tibble()
+
+          # add to return list
+          return <-
+            return |>
+            append(list('target' = target_data))
+        }
+      }
+
+      # return the result
+      return(return)
     }
   },
   httr2_error = function(e) internal_try_catch_html500(error = e, msg = 'Metric ID is invalid')

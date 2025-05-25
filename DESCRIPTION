@@ -25,6 +25,7 @@ Imports:
     httr2,
     jsonlite,
     purrr,
+    tibble,
     tidyr
 Suggests:
     ggplot2,
