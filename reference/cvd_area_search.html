@@ -34,7 +34,7 @@ Uses simple LIKE '%&amp;lt;partial_area_name&amp;gt;%' comparison."><meta proper
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Search for matching areas</h1>
-      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/v0.2.1/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
       <div class="d-none name"><code>cvd_area_search.Rd</code></div>
     </div>
 
@@ -82,7 +82,7 @@ Uses simple LIKE '%&lt;partial_area_name&gt;%' comparison.</p>
 <span class="r-in"><span><span class="co"># search for areas matching the term 'practice'</span></span></span>
 <span class="r-in"><span><span class="fu">cvd_area_search</span><span class="op">(</span>partial_area_name <span class="op">=</span> <span class="st">'practice'</span>, time_period_id <span class="op">=</span> <span class="fl">17</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">AreaCode</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,451 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,454 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    AreaID AreaName                             AreaCode</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   <span style="text-decoration: underline;">7</span>735 1/Monton Medical Practice            P87620  </span>
@@ -90,17 +90,17 @@ Uses simple LIKE '%&lt;partial_area_name&gt;%' comparison.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>   <span style="text-decoration: underline;">6</span>396 3/Springfield House Medical Practice P87024  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>   <span style="text-decoration: underline;">6</span>794 ABBEY GRANGE MEDICAL PRACTICE        B86068  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>   <span style="text-decoration: underline;">4</span>804 Abbey House Medical Practice         K83032  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>   <span style="text-decoration: underline;">2</span>327 Abbey Medical Practice               C83051  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>   <span style="text-decoration: underline;">4</span>814 Abbey Medical Practice               K83047  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>   <span style="text-decoration: underline;">5</span>262 Abbey Medical Practice               M81094  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>   <span style="text-decoration: underline;">5</span>262 Abbey Medical Practice               M81094  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>   <span style="text-decoration: underline;">2</span>327 Abbey Medical Practice               C83051  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>   <span style="text-decoration: underline;">4</span>814 Abbey Medical Practice               K83047  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>   <span style="text-decoration: underline;">3</span>607 Abbey Road Medical Practice          F84111  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>   <span style="text-decoration: underline;">5</span>927 Abercromby Family Practice           N82054  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,441 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,444 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># search for areas matching the term 'PCN'</span></span></span>
 <span class="r-in"><span><span class="fu">cvd_area_search</span><span class="op">(</span>partial_area_name <span class="op">=</span> <span class="st">'PCN'</span>, time_period_id <span class="op">=</span> <span class="fl">17</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">AreaCode</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,272 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,275 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    AreaID AreaName                  AreaCode</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   <span style="text-decoration: underline;">1</span>103 3 Centres PCN             U60176  </span>
@@ -113,7 +113,7 @@ Uses simple LIKE '%&lt;partial_area_name&gt;%' comparison.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    174 Abc PCN                   U47228  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    889 Abingdon And District PCN U57321  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>   <span style="text-decoration: underline;">1</span>074 Abingdon Central PCN      U15230  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,262 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,265 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -125,7 +125,7 @@ Uses simple LIKE '%&lt;partial_area_name&gt;%' comparison.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer></div>

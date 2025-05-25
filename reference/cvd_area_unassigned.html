@@ -34,7 +34,7 @@ but do not have any parent areas assigned, and therefore are unreachable."><meta
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Unassigned areas</h1>
-      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/v0.2.1/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
       <div class="d-none name"><code>cvd_area_unassigned.Rd</code></div>
     </div>
 
@@ -81,12 +81,12 @@ but do not have any parent areas assigned, and therefore are unreachable.</p>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelName</span>, <span class="va">AreaID</span>, <span class="va">AreaName</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   SystemLevelName AreaID AreaName                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Practice          <span style="text-decoration: underline;">6</span>037 15 Sefton Road            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Practice          <span style="text-decoration: underline;">4</span>877 27@Northgate              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Practice          <span style="text-decoration: underline;">2</span>893 Baldwins Lane Surgery     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Practice          <span style="text-decoration: underline;">2</span>569 Beauchief Medical Practice</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   SystemLevelName AreaID AreaName                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Practice          <span style="text-decoration: underline;">6</span>037 15 Sefton Road               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Practice          <span style="text-decoration: underline;">4</span>877 27@Northgate                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Practice          <span style="text-decoration: underline;">3</span>343 Ambrose Avenue Group Practice</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Practice          <span style="text-decoration: underline;">2</span>841 Asplands Medical Centre      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># England, as the highest system_level (ID = 1) does not have parent details</span></span></span>
 <span class="r-in"><span><span class="fu">cvd_area_unassigned</span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -106,7 +106,7 @@ but do not have any parent areas assigned, and therefore are unreachable.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer></div>

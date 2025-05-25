@@ -85,16 +85,17 @@
 <span><span class="co">## basic example code</span></span>
 <span><span class="fu"><a href="reference/cvd_indicator_list.html">cvd_indicator_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 4 × 10</span></span>
-<span><span class="co">#&gt;   AxisCharacter DataUpdateInterval FormatDisplayName IndicatorCode</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;         &lt;lgl&gt;              &lt;chr&gt;             &lt;chr&gt;        </span></span>
-<span><span class="co">#&gt; 1 %             NA                 Proportion %      CVDP001AF    </span></span>
-<span><span class="co">#&gt; 2 %             NA                 Proportion %      CVDP002AF    </span></span>
-<span><span class="co">#&gt; 3 %             NA                 Proportion %      CVDP001HYP   </span></span>
-<span><span class="co">#&gt; 4 %             NA                 Proportion %      CVDP004HYP   </span></span>
-<span><span class="co">#&gt; # ℹ 6 more variables: IndicatorFormatID &lt;int&gt;, IndicatorID &lt;int&gt;,</span></span>
-<span><span class="co">#&gt; #   IndicatorName &lt;chr&gt;, IndicatorOrder &lt;int&gt;, IndicatorShortName &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   IndicatorStatus &lt;chr&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 4 × 12</span></span>
+<span><span class="co">#&gt;   AxisCharacter DataUpdateInterval FormatDisplayName HighestPriorityNotificati…¹</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;         &lt;lgl&gt;              &lt;chr&gt;             &lt;chr&gt;                      </span></span>
+<span><span class="co">#&gt; 1 %             NA                 Proportion %      &lt;NA&gt;                       </span></span>
+<span><span class="co">#&gt; 2 %             NA                 Proportion %      &lt;NA&gt;                       </span></span>
+<span><span class="co">#&gt; 3 %             NA                 Proportion %      &lt;NA&gt;                       </span></span>
+<span><span class="co">#&gt; 4 %             NA                 Proportion %      &lt;NA&gt;                       </span></span>
+<span><span class="co">#&gt; # ℹ abbreviated name: ¹​HighestPriorityNotificationType</span></span>
+<span><span class="co">#&gt; # ℹ 8 more variables: IndicatorCode &lt;chr&gt;, IndicatorFormatID &lt;int&gt;,</span></span>
+<span><span class="co">#&gt; #   IndicatorID &lt;int&gt;, IndicatorName &lt;chr&gt;, IndicatorOrder &lt;int&gt;,</span></span>
+<span><span class="co">#&gt; #   IndicatorShortName &lt;chr&gt;, IndicatorStatus &lt;chr&gt;, NotificationCount &lt;int&gt;</span></span></code></pre></div>
 <p>See <code><a href="articles/using_cvdprevent.html">vignette('using_cvdprevent', package = 'cvdprevent')</a></code> for more guidance on use</p>
 </div>
 </div>
@@ -126,7 +127,7 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Craig Parylo <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0003-4297-7808" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Craig Parylo <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0003-4297-7808" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
@@ -147,7 +148,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer>
