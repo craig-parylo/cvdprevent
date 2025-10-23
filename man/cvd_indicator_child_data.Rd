@@ -4,7 +4,7 @@
 \alias{cvd_indicator_child_data}
 \title{Indicator child data}
 \usage{
-cvd_indicator_child_data(time_period_id = 17, area_id = 74, metric_id = 1)
+cvd_indicator_child_data(time_period_id, area_id, metric_id)
 }
 \arguments{
 \item{time_period_id}{integer - time period for which to return data (compulsory)}

@@ -4,7 +4,7 @@
 \alias{cvd_indicator_group}
 \title{Indicator group}
 \usage{
-cvd_indicator_group(indicator_group_id = 15)
+cvd_indicator_group(indicator_group_id)
 }
 \arguments{
 \item{indicator_group_id}{integer - the group to return data for (compulsory)}

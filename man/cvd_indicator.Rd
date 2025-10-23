@@ -4,14 +4,14 @@
 \alias{cvd_indicator}
 \title{Indicators}
 \usage{
-cvd_indicator(time_period_id = 1, area_id = 1, tag_id)
+cvd_indicator(time_period_id, area_id, tag_id)
 }
 \arguments{
 \item{time_period_id}{integer - time period to return data for (compulsory)}
 
 \item{area_id}{integer - area to return data for (compulsory)}
 
-\item{tag_id}{numeric vector - allows filtering indicators by one or more tags (optional, array)}
+\item{tag_id}{numeric vector - allows filtering indicators by one or more tags (optional)}
 }
 \value{
 List of named tibbles (indicators, categories, category_data, timeseries_data, all_data)

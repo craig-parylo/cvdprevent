@@ -4,7 +4,7 @@
 \alias{cvd_indicator_details}
 \title{Indicator details}
 \usage{
-cvd_indicator_details(indicator_id = 1)
+cvd_indicator_details(indicator_id)
 }
 \arguments{
 \item{indicator_id}{integer - the ID for the indicator (compulsory)}

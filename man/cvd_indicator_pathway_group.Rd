@@ -4,7 +4,7 @@
 \alias{cvd_indicator_pathway_group}
 \title{Pathway groups}
 \usage{
-cvd_indicator_pathway_group(pathway_group_id = 10)
+cvd_indicator_pathway_group(pathway_group_id)
 }
 \arguments{
 \item{pathway_group_id}{integer - the pathway to return data for (compulsory)}

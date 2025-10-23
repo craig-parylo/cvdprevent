@@ -4,7 +4,7 @@
 \alias{cvd_indicator_metric_data}
 \title{Metric data}
 \usage{
-cvd_indicator_metric_data(metric_id = 7, time_period_id = 1, area_id = 2)
+cvd_indicator_metric_data(metric_id, time_period_id, area_id)
 }
 \arguments{
 \item{metric_id}{integer - metric for which to return data for (compulsory)}

@@ -4,11 +4,7 @@
 \alias{cvd_indicator_raw_data}
 \title{Indicator raw data (JSON)}
 \usage{
-cvd_indicator_raw_data(
-  indicator_id = 1,
-  time_period_id = 1,
-  system_level_id = 1
-)
+cvd_indicator_raw_data(indicator_id, time_period_id, system_level_id)
 }
 \arguments{
 \item{indicator_id}{integer - indicator for which to return data for (compulsory)}

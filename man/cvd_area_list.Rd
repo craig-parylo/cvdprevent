@@ -4,7 +4,7 @@
 \alias{cvd_area_list}
 \title{List areas}
 \usage{
-cvd_area_list(time_period_id = 1, parent_area_id, system_level_id)
+cvd_area_list(time_period_id, parent_area_id, system_level_id)
 }
 \arguments{
 \item{time_period_id}{integer - specifies time period for which to return areas (compulsory)}

@@ -4,7 +4,7 @@
 \alias{cvd_area_system_level}
 \title{List system levels per time period}
 \usage{
-cvd_area_system_level(time_period_id = 1)
+cvd_area_system_level(time_period_id)
 }
 \arguments{
 \item{time_period_id}{integer - the time period to return data for (compulsory)}

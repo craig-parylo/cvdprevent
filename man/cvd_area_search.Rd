@@ -4,7 +4,7 @@
 \alias{cvd_area_search}
 \title{Search for matching areas}
 \usage{
-cvd_area_search(partial_area_name = "Surgery", time_period_id = 1)
+cvd_area_search(partial_area_name, time_period_id)
 }
 \arguments{
 \item{partial_area_name}{string - string to use to search for an Area (compulsory)}
