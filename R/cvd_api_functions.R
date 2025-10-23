@@ -28,7 +28,8 @@ globalVariables(
     'SystemLevelID',
     'IndicatorTagID',
     'MetricID',
-    'setNames'
+    'setNames',
+    ".data"
   )
 )
 
@@ -83,6 +84,13 @@ cvd_indicator_types <- function() {
 #'   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
 #'   dplyr::select(TimePeriodID, TimePeriodName)}
 cvd_time_period_list <- function(indicator_type_id) {
+  # validate input
+  validate_input_id(
+    id = indicator_type_id,
+    param_name = "indicator_type_id",
+    required = FALSE
+  )
+
   # compose the request
   req <-
     httr2::request(url_base) |>
