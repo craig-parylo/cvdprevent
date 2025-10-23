@@ -167,13 +167,6 @@ get_valid_time_period_ids <- function() {
   return(ids)
 }
 
-# #' Memoised version of `get_valid_time_period_ids()`
-# #' @noRd
-# m_get_valid_time_period_ids <- memoise::memoise(
-#   get_valid_time_period_ids,
-#   cache = m_cache
-# )
-
 #' Get one or more random valid time period IDs
 #'
 #' @description
@@ -230,13 +223,6 @@ get_valid_tag_ids <- function() {
   # return the result
   return(ids)
 }
-
-# #' Memoised version of `get_valid_tag_ids()`
-# #' @noRd
-# m_get_valid_tag_ids <- memoise::memoise(
-#   get_valid_tag_ids,
-#   cache = m_cache
-# )
 
 #' Get one or more random indicator tag IDs
 #'
@@ -303,13 +289,6 @@ get_valid_system_level_id_for_time_period_id <- function(time_period_id) {
   # return the result
   return(ids)
 }
-
-# #' Memoised version of `get_valid_system_level_id_for_time_period_id()`
-# #' @noRd
-# m_get_valid_system_level_id_for_time_period_id <- memoise::memoise(
-#   get_valid_system_level_id_for_time_period_id,
-#   cache = m_cache
-# )
 
 #' Get one or more random indicator tag IDs
 #'
@@ -495,6 +474,7 @@ validate_input_id_vector <- function(
 }
 
 # API handling ----------------------------------------------------------------
+
 #' INTERNAL FUNCTION - Catch html 500 errors
 #'
 #' Outputs a console message and returns a Tibble containing the error message
