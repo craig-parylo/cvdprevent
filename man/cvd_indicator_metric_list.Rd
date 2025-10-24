@@ -4,7 +4,7 @@
 \alias{cvd_indicator_metric_list}
 \title{List metrics for indicators}
 \usage{
-cvd_indicator_metric_list(time_period_id = 1, system_level_id = 1)
+cvd_indicator_metric_list(time_period_id, system_level_id)
 }
 \arguments{
 \item{time_period_id}{integer - time period to return data for (compulsory)}

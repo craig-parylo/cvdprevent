@@ -4,7 +4,7 @@
 \alias{cvd_indicator_person_timeseries}
 \title{Indicator persons time series by indicator}
 \usage{
-cvd_indicator_person_timeseries(indicator_id = 1, area_id = 1)
+cvd_indicator_person_timeseries(indicator_id, area_id)
 }
 \arguments{
 \item{indicator_id}{integer - the indicator to return data for (compulsory)}

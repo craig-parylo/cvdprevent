@@ -4,7 +4,7 @@
 \alias{cvd_area_details}
 \title{Area details}
 \usage{
-cvd_area_details(time_period_id = 1, area_id = 1)
+cvd_area_details(time_period_id, area_id)
 }
 \arguments{
 \item{time_period_id}{integer - specified time period for which to return details for, i.e. population and participation rate (compulsory)}
@@ -22,9 +22,9 @@ CVD Prevent API documentation:
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2Fdetails}{Area details}
 }
 \examples{
-# to see details for '3 Centres PCN' (area_id = 1103) use the following:
+# to see details for 'Leicester, Leicestershire and Rutland ICB' (area_id = 8037) use the following:
 # get the list of tibbles from the function
-returned_list <- cvd_area_details(time_period_id = 17, area_id = 1103)
+returned_list <- cvd_area_details(time_period_id = 17, area_id = 8037)
 
 # view area details
 returned_list$area_details |>

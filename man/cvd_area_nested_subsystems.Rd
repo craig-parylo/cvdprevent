@@ -4,7 +4,7 @@
 \alias{cvd_area_nested_subsystems}
 \title{Area nested sub systems}
 \usage{
-cvd_area_nested_subsystems(area_id = 5)
+cvd_area_nested_subsystems(area_id)
 }
 \arguments{
 \item{area_id}{integer - the area to return data for (compulsory)}

@@ -4,7 +4,7 @@
 \alias{cvd_area_unassigned}
 \title{Unassigned areas}
 \usage{
-cvd_area_unassigned(time_period_id = 1, system_level_id)
+cvd_area_unassigned(time_period_id, system_level_id)
 }
 \arguments{
 \item{time_period_id}{integer - time period for which Area must have data for (compulsory)}

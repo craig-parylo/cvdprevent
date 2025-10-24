@@ -4,7 +4,7 @@
 \alias{cvd_indicator_metric_timeseries}
 \title{Indicator time series by metric}
 \usage{
-cvd_indicator_metric_timeseries(metric_id = 1, area_id = 50)
+cvd_indicator_metric_timeseries(metric_id, area_id)
 }
 \arguments{
 \item{metric_id}{integer - the metric to return data for (compulsory)}

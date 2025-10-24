@@ -4,7 +4,7 @@
 \alias{cvd_area_flat_subsystems}
 \title{Area flat subsystems}
 \usage{
-cvd_area_flat_subsystems(area_id = 5)
+cvd_area_flat_subsystems(area_id)
 }
 \arguments{
 \item{area_id}{integer - the area to return data for (compulsory)}
@@ -25,8 +25,8 @@ CVD Prevent API documentation:
 cvd_area_flat_subsystems(area_id = 5) |>
   dplyr::glimpse()
 
-# View details for Leicester Central PCN
-cvd_area_flat_subsystems(area_id = 701) |>
+# View details for Lincolnshire ICB
+cvd_area_flat_subsystems(area_id = 8042) |>
   dplyr::glimpse()
 }
 \seealso{

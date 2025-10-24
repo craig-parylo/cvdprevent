@@ -5,8 +5,8 @@
 \title{Data availability}
 \usage{
 cvd_data_availability(
-  time_period_id = 1,
-  system_level_id = 1,
+  time_period_id,
+  system_level_id,
   indicator_id,
   metric_category_type_id
 )

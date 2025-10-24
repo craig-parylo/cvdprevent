@@ -11,3 +11,4 @@
 ^\.secret
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+^scratchpad\.R$

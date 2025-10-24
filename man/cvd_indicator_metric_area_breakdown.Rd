@@ -4,11 +4,7 @@
 \alias{cvd_indicator_metric_area_breakdown}
 \title{Indicator metric area breakdown}
 \usage{
-cvd_indicator_metric_area_breakdown(
-  metric_id = 1,
-  time_period_id = 1,
-  area_id = 1
-)
+cvd_indicator_metric_area_breakdown(metric_id, time_period_id, area_id)
 }
 \arguments{
 \item{metric_id}{integer - the metric to return data for (compulsory)}

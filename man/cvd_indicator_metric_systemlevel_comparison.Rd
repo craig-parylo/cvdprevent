@@ -4,11 +4,7 @@
 \alias{cvd_indicator_metric_systemlevel_comparison}
 \title{Indicator metric system level comparison}
 \usage{
-cvd_indicator_metric_systemlevel_comparison(
-  metric_id = 1,
-  time_period_id = 1,
-  area_id = 50
-)
+cvd_indicator_metric_systemlevel_comparison(metric_id, time_period_id, area_id)
 }
 \arguments{
 \item{metric_id}{integer - the metric to return data for (compulsory)}
