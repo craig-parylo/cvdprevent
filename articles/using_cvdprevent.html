@@ -58,28 +58,33 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using CVD Prevent</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/v0.2.2/vignettes/using_cvdprevent.Rmd" class="external-link"><code>vignettes/using_cvdprevent.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/vignettes/using_cvdprevent.Rmd" class="external-link"><code>vignettes/using_cvdprevent.Rmd</code></a></small>
       <div class="d-none name"><code>using_cvdprevent.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craig-parylo/cvdprevent" class="external-link">cvdprevent</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># avoid warnings about the different heading</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>rmarkdown.html_vignette.check_title <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># load the package library</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craig-parylo/cvdprevent" class="external-link">cvdprevent</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="time-periods">Time periods<a class="anchor" aria-label="anchor" href="#time-periods"></a>
 </h2>
 <div class="section level3">
-<h3 id="listing-time-periods">Listing time periods<a class="anchor" aria-label="anchor" href="#listing-time-periods"></a>
+<h3 id="listing-available-time-periods">Listing available time periods<a class="anchor" aria-label="anchor" href="#listing-available-time-periods"></a>
 </h3>
-<p>The CVD Prevent audit outputs data around four times a year. To see
-which are the four latest available periods for standard indicators you
-can use the function <code>cvd_time_period_list():</code></p>
+<p>The CVD Prevent audit publishes data approximately four times per
+year. To view the four most recent reporting periods for
+<strong>standard indicators</strong>, use the
+<code><a href="../reference/cvd_time_period_list.html">cvd_time_period_list()</a></code> function:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_time_period_list.html">cvd_time_period_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorTypeName</span> <span class="op">==</span> <span class="st">'Standard'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>order_by <span class="op">=</span> <span class="va">TimePeriodID</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">TimePeriodID</span>, <span class="va">TimePeriodName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_time_period_list.html">cvd_time_period_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorTypeName</span> <span class="op">==</span> <span class="st">'Standard'</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>order_by <span class="op">=</span> <span class="va">TimePeriodID</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">TimePeriodID</span>, <span class="va">TimePeriodName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="mwlefoodfi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#mwlefoodfi table {
@@ -537,6 +542,14 @@ can use the function <code>cvd_time_period_list():</code></p>
     </tr></thead>
 <tbody class="gt_table_body">
 <tr>
+<td headers="TimePeriodID" class="gt_row gt_right">26</td>
+<td headers="TimePeriodName" class="gt_row gt_left">To June 2025</td>
+</tr>
+<tr>
+<td headers="TimePeriodID" class="gt_row gt_right">24</td>
+<td headers="TimePeriodName" class="gt_row gt_left">To March 2025</td>
+</tr>
+<tr>
 <td headers="TimePeriodID" class="gt_row gt_right">22</td>
 <td headers="TimePeriodName" class="gt_row gt_left">To December 2024</td>
 </tr>
@@ -544,25 +557,26 @@ can use the function <code>cvd_time_period_list():</code></p>
 <td headers="TimePeriodID" class="gt_row gt_right">20</td>
 <td headers="TimePeriodName" class="gt_row gt_left">To September 2024</td>
 </tr>
-<tr>
-<td headers="TimePeriodID" class="gt_row gt_right">18</td>
-<td headers="TimePeriodName" class="gt_row gt_left">To June 2024</td>
-</tr>
-<tr>
-<td headers="TimePeriodID" class="gt_row gt_right">17</td>
-<td headers="TimePeriodName" class="gt_row gt_left">To March 2024</td>
-</tr>
 </tbody>
 </table>
 </div>
-<p>There are two main types of indicator reported; ‘Standard’ (ID1) and
-‘Outcomes’ (ID2). Pass in an ID value for the optional parameter,
-<code>indicator_type_id</code> to get a list of time periods for which
-the indicator type was reported.</p>
+<p>There are two main types of indicator reported: - “Standard”
+(IndicatorTypeID = 1)</p>
+<ul>
+<li>“Outcomes” (IndicatorTypeID = 2)</li>
+</ul>
+<p>To retrieve time periods specific to an indicator type, pass the
+relevant ID to the optional <code>indicator_type_id</code>
+parameter:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_time_period_list.html">cvd_time_period_list</a></span><span class="op">(</span>indicator_type_id <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>order_by <span class="op">=</span> <span class="va">TimePeriodID</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorTypeID</span>, <span class="va">IndicatorTypeName</span>, <span class="va">TimePeriodID</span>, <span class="va">TimePeriodName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_time_period_list.html">cvd_time_period_list</a></span><span class="op">(</span>indicator_type_id <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>order_by <span class="op">=</span> <span class="va">TimePeriodID</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">IndicatorTypeID</span>,</span>
+<span>    <span class="va">IndicatorTypeName</span>,</span>
+<span>    <span class="va">TimePeriodID</span>,</span>
+<span>    <span class="va">TimePeriodName</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="eexombwkke" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#eexombwkke table {
@@ -1024,6 +1038,18 @@ the indicator type was reported.</p>
 <tr>
 <td headers="IndicatorTypeID" class="gt_row gt_right">2</td>
 <td headers="IndicatorTypeName" class="gt_row gt_left">Outcomes</td>
+<td headers="TimePeriodID" class="gt_row gt_right">27</td>
+<td headers="TimePeriodName" class="gt_row gt_left">Apr 2024 - Mar 2025</td>
+</tr>
+<tr>
+<td headers="IndicatorTypeID" class="gt_row gt_right">2</td>
+<td headers="IndicatorTypeName" class="gt_row gt_left">Outcomes</td>
+<td headers="TimePeriodID" class="gt_row gt_right">25</td>
+<td headers="TimePeriodName" class="gt_row gt_left">Jan 2024 - Dec 2024</td>
+</tr>
+<tr>
+<td headers="IndicatorTypeID" class="gt_row gt_right">2</td>
+<td headers="IndicatorTypeName" class="gt_row gt_left">Outcomes</td>
 <td headers="TimePeriodID" class="gt_row gt_right">23</td>
 <td headers="TimePeriodName" class="gt_row gt_left">Oct 2023 - Sep 2024</td>
 </tr>
@@ -1033,33 +1059,22 @@ the indicator type was reported.</p>
 <td headers="TimePeriodID" class="gt_row gt_right">21</td>
 <td headers="TimePeriodName" class="gt_row gt_left">Jul 2023 - Jun 2024</td>
 </tr>
-<tr>
-<td headers="IndicatorTypeID" class="gt_row gt_right">2</td>
-<td headers="IndicatorTypeName" class="gt_row gt_left">Outcomes</td>
-<td headers="TimePeriodID" class="gt_row gt_right">19</td>
-<td headers="TimePeriodName" class="gt_row gt_left">Apr 2023 - Mar 2024</td>
-</tr>
-<tr>
-<td headers="IndicatorTypeID" class="gt_row gt_right">2</td>
-<td headers="IndicatorTypeName" class="gt_row gt_left">Outcomes</td>
-<td headers="TimePeriodID" class="gt_row gt_right">16</td>
-<td headers="TimePeriodName" class="gt_row gt_left">Jan 2023 - Dec 2023</td>
-</tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section level3">
-<h3 id="listing-system-levels-per-period">Listing system levels per period<a class="anchor" aria-label="anchor" href="#listing-system-levels-per-period"></a>
+<h3 id="listing-system-levels-by-time-period">Listing system levels by time period<a class="anchor" aria-label="anchor" href="#listing-system-levels-by-time-period"></a>
 </h3>
-<p>Data can be reported at different geographies (aka System Levels) in
-each period; typically ranging from individual GP practices to national
-level (England). To get the available system levels we can use the
-<code><a href="../reference/cvd_time_period_system_levels.html">cvd_time_period_system_levels()</a></code> function.</p>
+<p>Audit data is reported across multiple geographic levels (referred to
+as <strong>System Levels</strong>), ranging from individual GP practices
+to national-level aggregates (e.g., England). To view which system
+levels are available for each time period, use the
+<code><a href="../reference/cvd_time_period_system_levels.html">cvd_time_period_system_levels()</a></code> function:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_time_period_system_levels.html">cvd_time_period_system_levels</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>order_by <span class="op">=</span> <span class="va">TimePeriodID</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">TimePeriodID</span>, <span class="va">TimePeriodName</span>, <span class="va">SystemLevelID</span>, <span class="va">SystemLevelName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_time_period_system_levels.html">cvd_time_period_system_levels</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>order_by <span class="op">=</span> <span class="va">TimePeriodID</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">TimePeriodID</span>, <span class="va">TimePeriodName</span>, <span class="va">SystemLevelID</span>, <span class="va">SystemLevelName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="ulbfdpbcyv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ulbfdpbcyv table {
@@ -1519,20 +1534,20 @@ level (England). To get the available system levels we can use the
     </tr></thead>
 <tbody class="gt_table_body">
 <tr>
-<td headers="TimePeriodID" class="gt_row gt_right">23</td>
-<td headers="TimePeriodName" class="gt_row gt_left">Oct 2023 - Sep 2024</td>
+<td headers="TimePeriodID" class="gt_row gt_right">27</td>
+<td headers="TimePeriodName" class="gt_row gt_left">Apr 2024 - Mar 2025</td>
 <td headers="SystemLevelID" class="gt_row gt_right">1</td>
 <td headers="SystemLevelName" class="gt_row gt_left">England</td>
 </tr>
 <tr>
-<td headers="TimePeriodID" class="gt_row gt_right">23</td>
-<td headers="TimePeriodName" class="gt_row gt_left">Oct 2023 - Sep 2024</td>
+<td headers="TimePeriodID" class="gt_row gt_right">27</td>
+<td headers="TimePeriodName" class="gt_row gt_left">Apr 2024 - Mar 2025</td>
 <td headers="SystemLevelID" class="gt_row gt_right">6</td>
 <td headers="SystemLevelName" class="gt_row gt_left">Region</td>
 </tr>
 <tr>
-<td headers="TimePeriodID" class="gt_row gt_right">23</td>
-<td headers="TimePeriodName" class="gt_row gt_left">Oct 2023 - Sep 2024</td>
+<td headers="TimePeriodID" class="gt_row gt_right">27</td>
+<td headers="TimePeriodName" class="gt_row gt_left">Apr 2024 - Mar 2025</td>
 <td headers="SystemLevelID" class="gt_row gt_right">7</td>
 <td headers="SystemLevelName" class="gt_row gt_left">ICB</td>
 </tr>
@@ -1552,8 +1567,8 @@ period you can use the <code><a href="../reference/cvd_area_system_level.html">c
 providing the required time_period_id, (NB, time_period_id defaults to
 the first time period if not supplied).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_system_level.html">cvd_area_system_level</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelID</span>, <span class="va">SystemLevelName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_system_level.html">cvd_area_system_level</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelID</span>, <span class="va">SystemLevelName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="kgufivjubq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#kgufivjubq table {
@@ -2045,10 +2060,10 @@ the first time period if not supplied).</p>
 show a list of all reporting periods for each system level. Here we show
 the latest four reporting periods at the GP practice system level.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_system_level_time_periods.html">cvd_area_system_level_time_periods</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">SystemLevelName</span> <span class="op">==</span> <span class="st">'Practice'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>order_by <span class="op">=</span> <span class="va">TimePeriodID</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelID</span>, <span class="va">SystemLevelName</span>, <span class="va">TimePeriodID</span>, <span class="va">TimePeriodName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_system_level_time_periods.html">cvd_area_system_level_time_periods</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">SystemLevelName</span> <span class="op">==</span> <span class="st">'Practice'</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>order_by <span class="op">=</span> <span class="va">TimePeriodID</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelID</span>, <span class="va">SystemLevelName</span>, <span class="va">TimePeriodID</span>, <span class="va">TimePeriodName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="txvafbsnay" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#txvafbsnay table {
@@ -2510,6 +2525,18 @@ the latest four reporting periods at the GP practice system level.</p>
 <tr>
 <td headers="SystemLevelID" class="gt_row gt_right">5</td>
 <td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
+<td headers="TimePeriodID" class="gt_row gt_right">26</td>
+<td headers="TimePeriodName" class="gt_row gt_left">To June 2025</td>
+</tr>
+<tr>
+<td headers="SystemLevelID" class="gt_row gt_right">5</td>
+<td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
+<td headers="TimePeriodID" class="gt_row gt_right">24</td>
+<td headers="TimePeriodName" class="gt_row gt_left">To March 2025</td>
+</tr>
+<tr>
+<td headers="SystemLevelID" class="gt_row gt_right">5</td>
+<td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
 <td headers="TimePeriodID" class="gt_row gt_right">22</td>
 <td headers="TimePeriodName" class="gt_row gt_left">To December 2024</td>
 </tr>
@@ -2518,18 +2545,6 @@ the latest four reporting periods at the GP practice system level.</p>
 <td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
 <td headers="TimePeriodID" class="gt_row gt_right">20</td>
 <td headers="TimePeriodName" class="gt_row gt_left">To September 2024</td>
-</tr>
-<tr>
-<td headers="SystemLevelID" class="gt_row gt_right">5</td>
-<td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
-<td headers="TimePeriodID" class="gt_row gt_right">18</td>
-<td headers="TimePeriodName" class="gt_row gt_left">To June 2024</td>
-</tr>
-<tr>
-<td headers="SystemLevelID" class="gt_row gt_right">5</td>
-<td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
-<td headers="TimePeriodID" class="gt_row gt_right">17</td>
-<td headers="TimePeriodName" class="gt_row gt_left">To March 2024</td>
 </tr>
 </tbody>
 </table>
@@ -2542,9 +2557,9 @@ the latest four reporting periods at the GP practice system level.</p>
 for which data is available at time period 17 use the
 <code><a href="../reference/cvd_area_list.html">cvd_area_list()</a></code> function.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_list.html">cvd_area_list</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelName</span>, <span class="va">AreaID</span>, <span class="va">AreaCode</span>, <span class="va">AreaName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_list.html">cvd_area_list</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelName</span>, <span class="va">AreaID</span>, <span class="va">AreaCode</span>, <span class="va">AreaName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="orehalspkz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#orehalspkz table {
@@ -3023,9 +3038,9 @@ for which data is available at time period 17 use the
 </tr>
 <tr>
 <td headers="SystemLevelName" class="gt_row gt_left">PCN</td>
-<td headers="AreaID" class="gt_row gt_right">920</td>
-<td headers="AreaCode" class="gt_row gt_left">U72999</td>
-<td headers="AreaName" class="gt_row gt_left">4 Doncaster PCN</td>
+<td headers="AreaID" class="gt_row gt_right">1066</td>
+<td headers="AreaCode" class="gt_row gt_left">U16600</td>
+<td headers="AreaName" class="gt_row gt_left">4PCN (Bnssg) PCN</td>
 </tr>
 </tbody>
 </table>
@@ -3047,13 +3062,13 @@ of three named tibbles:</p>
 </ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get the list from the function</span></span>
-<span><span class="va">returned_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cvd_area_details.html">cvd_area_details</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">1103</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">returned_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cvd_area_details.html">cvd_area_details</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">7922</span><span class="op">)</span></span></code></pre></div>
 <p>The tibbles first need extracting from the returned list object, done
 here using the <code>list$object</code> notation. To view area
 details:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">returned_list</span><span class="op">$</span><span class="va">area_details</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaCode</span>, <span class="va">AreaName</span>, <span class="va">SystemLevelID</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">returned_list</span><span class="op">$</span><span class="va">area_details</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaCode</span>, <span class="va">AreaName</span>, <span class="va">SystemLevelID</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="cbwjcfdjag" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#cbwjcfdjag table {
@@ -3511,16 +3526,16 @@ details:</p>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="SystemLevelID">SystemLevelID</th>
     </tr></thead>
 <tbody class="gt_table_body"><tr>
-<td headers="AreaCode" class="gt_row gt_left">U60176</td>
-<td headers="AreaName" class="gt_row gt_left">3 Centres PCN</td>
-<td headers="SystemLevelID" class="gt_row gt_right">4</td>
+<td headers="AreaCode" class="gt_row gt_left">E40000011</td>
+<td headers="AreaName" class="gt_row gt_left">Midlands</td>
+<td headers="SystemLevelID" class="gt_row gt_right">6</td>
 </tr></tbody>
 </table>
 </div>
 <p>View details for the parent of this area:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">returned_list</span><span class="op">$</span><span class="va">area_parent_details</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">SystemLevelID</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">returned_list</span><span class="op">$</span><span class="va">area_parent_details</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">SystemLevelID</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="fvsybhaagl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#fvsybhaagl table {
@@ -3978,16 +3993,16 @@ details:</p>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="SystemLevelID">SystemLevelID</th>
     </tr></thead>
 <tbody class="gt_table_body"><tr>
-<td headers="AreaID" class="gt_row gt_right">7959</td>
-<td headers="AreaName" class="gt_row gt_left">NHS West Yorkshire ICB - X2C4Y</td>
-<td headers="SystemLevelID" class="gt_row gt_right">8</td>
+<td headers="AreaID" class="gt_row gt_right">1</td>
+<td headers="AreaName" class="gt_row gt_left">England</td>
+<td headers="SystemLevelID" class="gt_row gt_right">1</td>
 </tr></tbody>
 </table>
 </div>
 <p>View details for the children of this area:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">returned_list</span><span class="op">$</span><span class="va">area_child_details</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">SystemLevelID</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">returned_list</span><span class="op">$</span><span class="va">area_child_details</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">SystemLevelID</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="vijbfglzvn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#vijbfglzvn table {
@@ -4446,29 +4461,59 @@ details:</p>
     </tr></thead>
 <tbody class="gt_table_body">
 <tr>
-<td headers="AreaID" class="gt_row gt_right">1929</td>
-<td headers="AreaName" class="gt_row gt_left">Calder View Surgery</td>
-<td headers="SystemLevelID" class="gt_row gt_right">5</td>
+<td headers="AreaID" class="gt_row gt_right">8032</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Herefordshire and Worcestershire Integrated Care Board</td>
+<td headers="SystemLevelID" class="gt_row gt_right">7</td>
 </tr>
 <tr>
-<td headers="AreaID" class="gt_row gt_right">1932</td>
-<td headers="AreaName" class="gt_row gt_left">North Road Suite,Ravensthorpe Health Ctr</td>
-<td headers="SystemLevelID" class="gt_row gt_right">5</td>
+<td headers="AreaID" class="gt_row gt_right">8033</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Staffordshire and Stoke-on-Trent Integrated Care Board</td>
+<td headers="SystemLevelID" class="gt_row gt_right">7</td>
 </tr>
 <tr>
-<td headers="AreaID" class="gt_row gt_right">1938</td>
-<td headers="AreaName" class="gt_row gt_left">Mirfield Health Centre</td>
-<td headers="SystemLevelID" class="gt_row gt_right">5</td>
+<td headers="AreaID" class="gt_row gt_right">8037</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Leicester, Leicestershire and Rutland Integrated Care Board</td>
+<td headers="SystemLevelID" class="gt_row gt_right">7</td>
 </tr>
 <tr>
-<td headers="AreaID" class="gt_row gt_right">1939</td>
-<td headers="AreaName" class="gt_row gt_left">Eightlands Surgery</td>
-<td headers="SystemLevelID" class="gt_row gt_right">5</td>
+<td headers="AreaID" class="gt_row gt_right">8039</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Shropshire, Telford and Wrekin Integrated Care Board</td>
+<td headers="SystemLevelID" class="gt_row gt_right">7</td>
 </tr>
 <tr>
-<td headers="AreaID" class="gt_row gt_right">1978</td>
-<td headers="AreaName" class="gt_row gt_left">Dr Mahmood &amp; Partners</td>
-<td headers="SystemLevelID" class="gt_row gt_right">5</td>
+<td headers="AreaID" class="gt_row gt_right">8042</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Lincolnshire Integrated Care Board</td>
+<td headers="SystemLevelID" class="gt_row gt_right">7</td>
+</tr>
+<tr>
+<td headers="AreaID" class="gt_row gt_right">8043</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Nottingham and Nottinghamshire Integrated Care Board</td>
+<td headers="SystemLevelID" class="gt_row gt_right">7</td>
+</tr>
+<tr>
+<td headers="AreaID" class="gt_row gt_right">8044</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Coventry and Warwickshire Integrated Care Board</td>
+<td headers="SystemLevelID" class="gt_row gt_right">7</td>
+</tr>
+<tr>
+<td headers="AreaID" class="gt_row gt_right">8045</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Northamptonshire Integrated Care Board</td>
+<td headers="SystemLevelID" class="gt_row gt_right">7</td>
+</tr>
+<tr>
+<td headers="AreaID" class="gt_row gt_right">8052</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Birmingham and Solihull Integrated Care Board</td>
+<td headers="SystemLevelID" class="gt_row gt_right">7</td>
+</tr>
+<tr>
+<td headers="AreaID" class="gt_row gt_right">8053</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Derby and Derbyshire Integrated Care Board</td>
+<td headers="SystemLevelID" class="gt_row gt_right">7</td>
+</tr>
+<tr>
+<td headers="AreaID" class="gt_row gt_right">8056</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Black Country Integrated Care Board</td>
+<td headers="SystemLevelID" class="gt_row gt_right">7</td>
 </tr>
 </tbody>
 </table>
@@ -4484,9 +4529,9 @@ accessing these details for a given ‘time_period_id’ and
 ‘system_level_id’.</p>
 <p>Here we report four GP practices without any parent PCN:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_unassigned.html">cvd_area_unassigned</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelName</span>, <span class="va">AreaID</span>, <span class="va">AreaName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_unassigned.html">cvd_area_unassigned</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelName</span>, <span class="va">AreaID</span>, <span class="va">AreaName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="egslqeqmfa" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#egslqeqmfa table {
@@ -4946,31 +4991,31 @@ accessing these details for a given ‘time_period_id’ and
 <tbody class="gt_table_body">
 <tr>
 <td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
+<td headers="AreaID" class="gt_row gt_right">7714</td>
+<td headers="AreaName" class="gt_row gt_left">(IRLAM) SALFORD CARE CTRS MEDICAL PRACTI</td>
+</tr>
+<tr>
+<td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
+<td headers="AreaID" class="gt_row gt_right">7735</td>
+<td headers="AreaName" class="gt_row gt_left">1/Monton Medical Practice</td>
+</tr>
+<tr>
+<td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
+<td headers="AreaID" class="gt_row gt_right">7788</td>
+<td headers="AreaName" class="gt_row gt_left">1/SALFORD MEDICAL PRACTICE</td>
+</tr>
+<tr>
+<td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
 <td headers="AreaID" class="gt_row gt_right">6037</td>
 <td headers="AreaName" class="gt_row gt_left">15 Sefton Road</td>
-</tr>
-<tr>
-<td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
-<td headers="AreaID" class="gt_row gt_right">4877</td>
-<td headers="AreaName" class="gt_row gt_left">27@Northgate</td>
-</tr>
-<tr>
-<td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
-<td headers="AreaID" class="gt_row gt_right">3343</td>
-<td headers="AreaName" class="gt_row gt_left">Ambrose Avenue Group Practice</td>
-</tr>
-<tr>
-<td headers="SystemLevelName" class="gt_row gt_left">Practice</td>
-<td headers="AreaID" class="gt_row gt_right">2841</td>
-<td headers="AreaName" class="gt_row gt_left">Asplands Medical Centre</td>
 </tr>
 </tbody>
 </table>
 </div>
 <p>The top system_level (England) does not have a parent either:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_unassigned.html">cvd_area_unassigned</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelName</span>, <span class="va">AreaID</span>, <span class="va">AreaName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_unassigned.html">cvd_area_unassigned</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelName</span>, <span class="va">AreaID</span>, <span class="va">AreaName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="amrewkadgw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#amrewkadgw table {
@@ -5442,8 +5487,8 @@ accessing these details for a given ‘time_period_id’ and
 can perform a partial name search using <code><a href="../reference/cvd_area_search.html">cvd_area_search()</a></code>
 and specify a time period to search.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_search.html">cvd_area_search</a></span><span class="op">(</span>partial_area_name <span class="op">=</span> <span class="st">'foo'</span>, time_period_id <span class="op">=</span> <span class="fl">17</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">AreaCode</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_search.html">cvd_area_search</a></span><span class="op">(</span>partial_area_name <span class="op">=</span> <span class="st">'foo'</span>, time_period_id <span class="op">=</span> <span class="fl">17</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">AreaCode</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="xbhisifmmy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#xbhisifmmy table {
@@ -5926,24 +5971,24 @@ and specify a time period to search.</p>
 <div class="section level4">
 <h4 id="nested">Nested<a class="anchor" aria-label="anchor" href="#nested"></a>
 </h4>
-<p>To get details for areas, including all system areas within the area,
-you can use the function <code><a href="../reference/cvd_area_nested_subsystems.html">cvd_area_nested_subsystems()</a></code>. An
-area ID is a required parameter. Here we request details for North West
-NHS Region which returns a named list:</p>
+<p>To retrieve details for a specific area, including all nested system
+areas within it, you can use the function
+<code><a href="../reference/cvd_area_nested_subsystems.html">cvd_area_nested_subsystems()</a></code>. This function requires an
+<code>area_id</code> as input.</p>
+<p>In the example below, we request details for Greater Manchester ICB
+(<code>area_id = 8030</code>), which returns a named list of tibbles
+representing heirarchical levels:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">return_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cvd_area_nested_subsystems.html">cvd_area_nested_subsystems</a></span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">8152</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">return_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cvd_area_nested_subsystems.html">cvd_area_nested_subsystems</a></span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">8030</span><span class="op">)</span></span>
 <span><span class="va">return_list</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         Length Class  Mode</span></span>
-<span><span class="co">#&gt; level_1 6      tbl_df list</span></span>
+<span><span class="co">#&gt; level_1 7      tbl_df list</span></span>
 <span><span class="co">#&gt; level_2 7      tbl_df list</span></span>
-<span><span class="co">#&gt; level_3 7      tbl_df list</span></span>
-<span><span class="co">#&gt; level_4 7      tbl_df list</span></span>
-<span><span class="co">#&gt; level_5 7      tbl_df list</span></span></code></pre></div>
-<p>The named tibble <code>level_1</code> provides details about our
-requested area, which can be accessed using the
-<code>return_list$indicators</code>:</p>
+<span><span class="co">#&gt; level_3 7      tbl_df list</span></span></code></pre></div>
+<p>The tibble <code>level_1</code> provides details about our requested
+area itself. you can view it using:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">level_1</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">level_1</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="ucmrwtkdbi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ucmrwtkdbi table {
@@ -6399,23 +6444,28 @@ requested area, which can be accessed using the
 <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="AreaCode">AreaCode</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="AreaID">AreaID</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="AreaName">AreaName</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="AreaOdsCode">AreaOdsCode</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="ParentAreaID">ParentAreaID</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="SystemLevelID">SystemLevelID</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="SystemLevelName">SystemLevelName</th>
     </tr></thead>
 <tbody class="gt_table_body"><tr>
-<td headers="AreaCode" class="gt_row gt_left">E40000014</td>
-<td headers="AreaID" class="gt_row gt_right">8152</td>
-<td headers="AreaName" class="gt_row gt_left">North West</td>
-<td headers="ParentAreaID" class="gt_row gt_right">1</td>
-<td headers="SystemLevelID" class="gt_row gt_right">6</td>
-<td headers="SystemLevelName" class="gt_row gt_left">Region</td>
+<td headers="AreaCode" class="gt_row gt_left">E54000057</td>
+<td headers="AreaID" class="gt_row gt_right">8030</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Greater Manchester Integrated Care Board</td>
+<td headers="AreaOdsCode" class="gt_row gt_left">QOP</td>
+<td headers="ParentAreaID" class="gt_row gt_right">7665</td>
+<td headers="SystemLevelID" class="gt_row gt_right">7</td>
+<td headers="SystemLevelName" class="gt_row gt_left">ICB</td>
 </tr></tbody>
 </table>
 </div>
-<p>The next level down are areas that are children of the region:</p>
+<p>The next level, <code>level_2</code>, contains areas that are direct
+children of the requested area. Here, we display hte first four
+entries:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">level_2</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">level_2</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="rslsqjlmpg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#rslsqjlmpg table {
@@ -6878,36 +6928,47 @@ requested area, which can be accessed using the
     </tr></thead>
 <tbody class="gt_table_body">
 <tr>
-<td headers="AreaCode" class="gt_row gt_left">E54000057</td>
-<td headers="AreaID" class="gt_row gt_right">8030</td>
-<td headers="AreaName" class="gt_row gt_left">NHS Greater Manchester Integrated Care Board</td>
-<td headers="AreaOdsCode" class="gt_row gt_left">QOP</td>
-<td headers="ParentAreaID" class="gt_row gt_right">8152</td>
-<td headers="SystemLevelID" class="gt_row gt_right">7</td>
-<td headers="SystemLevelName" class="gt_row gt_left">ICB</td>
+<td headers="AreaCode" class="gt_row gt_left">E38000174</td>
+<td headers="AreaID" class="gt_row gt_right">58</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Stockport CCG</td>
+<td headers="AreaOdsCode" class="gt_row gt_left">01W</td>
+<td headers="ParentAreaID" class="gt_row gt_right">8030</td>
+<td headers="SystemLevelID" class="gt_row gt_right">3</td>
+<td headers="SystemLevelName" class="gt_row gt_left">CCG</td>
 </tr>
 <tr>
-<td headers="AreaCode" class="gt_row gt_left">E54000048</td>
-<td headers="AreaID" class="gt_row gt_right">8034</td>
-<td headers="AreaName" class="gt_row gt_left">NHS Lancashire and South Cumbria Integrated Care Board</td>
-<td headers="AreaOdsCode" class="gt_row gt_left">QE1</td>
-<td headers="ParentAreaID" class="gt_row gt_right">8152</td>
-<td headers="SystemLevelID" class="gt_row gt_right">7</td>
-<td headers="SystemLevelName" class="gt_row gt_left">ICB</td>
+<td headers="AreaCode" class="gt_row gt_left">E38000135</td>
+<td headers="AreaID" class="gt_row gt_right">60</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Oldham CCG</td>
+<td headers="AreaOdsCode" class="gt_row gt_left">00Y</td>
+<td headers="ParentAreaID" class="gt_row gt_right">8030</td>
+<td headers="SystemLevelID" class="gt_row gt_right">3</td>
+<td headers="SystemLevelName" class="gt_row gt_left">CCG</td>
 </tr>
 <tr>
-<td headers="AreaCode" class="gt_row gt_left">E54000008</td>
-<td headers="AreaID" class="gt_row gt_right">8068</td>
-<td headers="AreaName" class="gt_row gt_left">NHS Cheshire and Merseyside Integrated Care Board</td>
-<td headers="AreaOdsCode" class="gt_row gt_left">QYG</td>
-<td headers="ParentAreaID" class="gt_row gt_right">8152</td>
-<td headers="SystemLevelID" class="gt_row gt_right">7</td>
-<td headers="SystemLevelName" class="gt_row gt_left">ICB</td>
+<td headers="AreaCode" class="gt_row gt_left">E38000187</td>
+<td headers="AreaID" class="gt_row gt_right">71</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Trafford CCG</td>
+<td headers="AreaOdsCode" class="gt_row gt_left">02A</td>
+<td headers="ParentAreaID" class="gt_row gt_right">8030</td>
+<td headers="SystemLevelID" class="gt_row gt_right">3</td>
+<td headers="SystemLevelName" class="gt_row gt_left">CCG</td>
+</tr>
+<tr>
+<td headers="AreaCode" class="gt_row gt_left">E38000143</td>
+<td headers="AreaID" class="gt_row gt_right">73</td>
+<td headers="AreaName" class="gt_row gt_left">NHS Salford CCG</td>
+<td headers="AreaOdsCode" class="gt_row gt_left">01G</td>
+<td headers="ParentAreaID" class="gt_row gt_right">8030</td>
+<td headers="SystemLevelID" class="gt_row gt_right">3</td>
+<td headers="SystemLevelName" class="gt_row gt_left">CCG</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>The next level down are the children of these areas … and so on.</p>
+<p>Subsequent levels (<code>level_3</code>, <code>level_4</code>, etc.)
+represent further nested areas - children of children - and can be
+explored in the same way.</p>
 </div>
 <div class="section level4">
 <h4 id="flat">Flat<a class="anchor" aria-label="anchor" href="#flat"></a>
@@ -6915,23 +6976,23 @@ requested area, which can be accessed using the
 <p>Alternatively, you can request a flat output grouped on system level
 using the <code>cvd_area_flat_subsystem()</code> function:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_flat_subsystems.html">cvd_area_flat_subsystems</a></span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_area_flat_subsystems.html">cvd_area_flat_subsystems</a></span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 75</span></span>
+<span><span class="co">#&gt; Rows: 14</span></span>
 <span><span class="co">#&gt; Columns: 14</span></span>
 <span><span class="co">#&gt; $ AreaCode                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "E54000038"<span style="color: #949494;">, </span>"E54000038"<span style="color: #949494;">, </span>"E54000038"<span style="color: #949494;">, </span>"E54…</span></span>
-<span><span class="co">#&gt; $ AreaID                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5…</span></span>
+<span><span class="co">#&gt; $ AreaID                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>5</span></span>
 <span><span class="co">#&gt; $ AreaName                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Somerset"<span style="color: #949494;">, </span>"Somerset"<span style="color: #949494;">, </span>"Somerset"<span style="color: #949494;">, </span>"Somers…</span></span>
 <span><span class="co">#&gt; $ AreaOdsCode                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "QSL"<span style="color: #949494;">, </span>"QSL"<span style="color: #949494;">, </span>"QSL"<span style="color: #949494;">, </span>"QSL"<span style="color: #949494;">, </span>"QSL"<span style="color: #949494;">, </span>"QSL"<span style="color: #949494;">, </span>"…</span></span>
 <span><span class="co">#&gt; $ ParentAreaID               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 7670<span style="color: #949494;">, </span>7670<span style="color: #949494;">, </span>7670<span style="color: #949494;">, </span>7670<span style="color: #949494;">, </span>7670<span style="color: #949494;">, </span>7670<span style="color: #949494;">, </span>7670<span style="color: #949494;">, </span>7…</span></span>
-<span><span class="co">#&gt; $ SystemLevelID              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2…</span></span>
+<span><span class="co">#&gt; $ SystemLevelID              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2</span></span>
 <span><span class="co">#&gt; $ SystemLevelName            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "STP"<span style="color: #949494;">, </span>"STP"<span style="color: #949494;">, </span>"STP"<span style="color: #949494;">, </span>"STP"<span style="color: #949494;">, </span>"STP"<span style="color: #949494;">, </span>"STP"<span style="color: #949494;">, </span>"…</span></span>
 <span><span class="co">#&gt; $ SubSystems_AreaCode        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "E38000150"<span style="color: #949494;">, </span>"U47425"<span style="color: #949494;">, </span>"U17153"<span style="color: #949494;">, </span>"U84175"<span style="color: #949494;">, </span>…</span></span>
 <span><span class="co">#&gt; $ SubSystems_AreaID          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 105<span style="color: #949494;">, </span>528<span style="color: #949494;">, </span>613<span style="color: #949494;">, </span>677<span style="color: #949494;">, </span>688<span style="color: #949494;">, </span>743<span style="color: #949494;">, </span>786<span style="color: #949494;">, </span>868<span style="color: #949494;">, </span>963…</span></span>
 <span><span class="co">#&gt; $ SubSystems_AreaName        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "NHS Somerset CCG"<span style="color: #949494;">, </span>"West Somerset PCN"<span style="color: #949494;">, </span>"W…</span></span>
 <span><span class="co">#&gt; $ SubSystems_AreaOdsCode     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "11X"<span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span>
 <span><span class="co">#&gt; $ SubSystems_ParentAreaID    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5<span style="color: #949494;">, </span>105<span style="color: #949494;">, </span>105<span style="color: #949494;">, </span>105<span style="color: #949494;">, </span>105<span style="color: #949494;">, </span>105<span style="color: #949494;">, </span>105<span style="color: #949494;">, </span>105<span style="color: #949494;">, </span>105<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ SubSystems_SystemLevelID   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 3<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>5…</span></span>
+<span><span class="co">#&gt; $ SubSystems_SystemLevelID   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 3<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4</span></span>
 <span><span class="co">#&gt; $ SubSystems_SystemLevelName <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "CCG"<span style="color: #949494;">, </span>"PCN"<span style="color: #949494;">, </span>"PCN"<span style="color: #949494;">, </span>"PCN"<span style="color: #949494;">, </span>"PCN"<span style="color: #949494;">, </span>"PCN"<span style="color: #949494;">, </span>"…</span></span></code></pre></div>
 </div>
 </div>
@@ -6973,9 +7034,9 @@ in.</p>
 <p>Here we access the first four indicators for time point 17 and GP
 practice level (system level 5).</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_list.html">cvd_indicator_list</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">IndicatorCode</span>, <span class="va">IndicatorShortName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_list.html">cvd_indicator_list</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">IndicatorCode</span>, <span class="va">IndicatorShortName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="udacgqflgk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#udacgqflgk table {
@@ -7468,9 +7529,15 @@ period and system level you are interested in.</p>
 40-59 years age group:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_metric_list.html">cvd_indicator_metric_list</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorID</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">MetricCategoryName</span> <span class="op">==</span> <span class="st">'40-59'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">IndicatorShortName</span>, <span class="va">MetricID</span>, <span class="va">MetricCategoryName</span>, <span class="va">CategoryAttribute</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorID</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">MetricCategoryName</span> <span class="op">==</span> <span class="st">'40-59'</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span></span>
+<span>    <span class="va">IndicatorID</span>,</span>
+<span>    <span class="va">IndicatorShortName</span>,</span>
+<span>    <span class="va">MetricID</span>,</span>
+<span>    <span class="va">MetricCategoryName</span>,</span>
+<span>    <span class="va">CategoryAttribute</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="jhvqltorlv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#jhvqltorlv table {
@@ -7971,7 +8038,7 @@ within a named list object. The four tibbles include:</p>
 <p>Here we look at ‘3 Centres PCN’ (area ID 1103) for time period
 17:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">return_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cvd_indicator.html">cvd_indicator</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">1103</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">return_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cvd_indicator.html">cvd_indicator</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">1103</span><span class="op">)</span></span>
 <span><span class="va">return_list</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                   Length Class  Mode</span></span>
 <span><span class="co">#&gt; indicators        14     tbl_df list</span></span>
@@ -7985,10 +8052,10 @@ within a named list object. The four tibbles include:</p>
 illustrate, we obtain the first four indicators from the
 <code>return_list$indicators</code> list item:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">indicators</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">IndicatorCode</span>, <span class="va">IndicatorShortName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">IndicatorID</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">indicators</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">IndicatorCode</span>, <span class="va">IndicatorShortName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">IndicatorID</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="uzjcdmfnby" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#uzjcdmfnby table {
@@ -8480,10 +8547,15 @@ illustrate, we obtain the first four indicators from the
 gender)</p></li>
 </ul>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">metric_categories</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorID</span> <span class="op">==</span> <span class="fl">7</span>, <span class="va">MetricCategoryID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">MetricCategoryTypeName</span>, </span>
-<span>                <span class="va">CategoryAttribute</span>, <span class="va">MetricCategoryName</span>, <span class="va">MetricID</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">metric_categories</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorID</span> <span class="op">==</span> <span class="fl">7</span>, <span class="va">MetricCategoryID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">IndicatorID</span>,</span>
+<span>    <span class="va">MetricCategoryTypeName</span>,</span>
+<span>    <span class="va">CategoryAttribute</span>,</span>
+<span>    <span class="va">MetricCategoryName</span>,</span>
+<span>    <span class="va">MetricID</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="esrejldsxt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#esrejldsxt table {
@@ -8966,9 +9038,9 @@ gender)</p></li>
 </h4>
 <p>Here we access the data for each of the above categories:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">metric_data</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">metric_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">MetricID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">126</span>, <span class="fl">132</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">MetricID</span>, <span class="va">Value</span>, <span class="va">Numerator</span>, <span class="va">Denominator</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">MetricID</span>, <span class="va">Value</span>, <span class="va">Numerator</span>, <span class="va">Denominator</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="yqwtxjxwiy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#yqwtxjxwiy table {
@@ -9452,21 +9524,22 @@ accessible from the <code>timeseries_data</code> object.</p>
 <p>Here we show the time-series for the two categories of metric shown
 above as a plot.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">timeseries_data</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">MetricID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">126</span>, <span class="fl">132</span><span class="op">)</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">return_list</span><span class="op">$</span><span class="va">timeseries_data</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">MetricID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">126</span>, <span class="fl">132</span><span class="op">)</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># prepare for plotting</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    EndDate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="va">EndDate</span>, format <span class="op">=</span> <span class="st">'%a, %d %b %Y 00:00:00 GMT'</span><span class="op">)</span>,</span>
 <span>    MetricID <span class="op">=</span> <span class="va">MetricID</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="va">EndDate</span>, </span>
-<span>    y <span class="op">=</span> <span class="va">Value</span>, </span>
-<span>    group <span class="op">=</span> <span class="va">MetricID</span> , </span>
-<span>    colour <span class="op">=</span> <span class="va">MetricID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    x <span class="op">=</span> <span class="va">EndDate</span>,</span>
+<span>    y <span class="op">=</span> <span class="va">Value</span>,</span>
+<span>    group <span class="op">=</span> <span class="va">MetricID</span>,</span>
+<span>    colour <span class="op">=</span> <span class="va">MetricID</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="using_cvdprevent_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>
+<p><img src="using_cvdprevent_files/figure-html/time%20series-1.png" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="tags">Tags<a class="anchor" aria-label="anchor" href="#tags"></a>
@@ -9476,13 +9549,13 @@ the optional argument tag_id. Tag ID can be a single ID number or a
 vector or IDs, shown here as a vector of IDs 12 and 13 (hypertension and
 blood pressure measures).</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">return_list</span> <span class="op">&lt;-</span> </span>
+<code class="sourceCode R"><span><span class="va">return_list</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/cvd_indicator.html">cvd_indicator</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">3</span>, tag_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">return_list</span><span class="op">$</span><span class="va">indicators</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">IndicatorCode</span>, <span class="va">IndicatorShortName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">IndicatorID</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">return_list</span><span class="op">$</span><span class="va">indicators</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">IndicatorCode</span>, <span class="va">IndicatorShortName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">IndicatorID</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="jisysoqowe" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#jisysoqowe table {
@@ -9973,9 +10046,9 @@ blood pressure measures).</p>
 indicators. To get a list of these tags you can use the
 <code><a href="../reference/cvd_indicator_tags.html">cvd_indicator_tags()</a></code> function</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_tags.html">cvd_indicator_tags</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">IndicatorTagID</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_tags.html">cvd_indicator_tags</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">IndicatorTagID</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="ytkovhgshl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ytkovhgshl table {
@@ -10466,8 +10539,8 @@ information, source of the data, definitions and method of calculating
 confidence intervals.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_details.html">cvd_indicator_details</a></span><span class="op">(</span>indicator_id <span class="op">=</span> <span class="fl">7</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">MetaDataTitle</span>, <span class="va">MetaData</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">MetaDataTitle</span>, <span class="va">MetaData</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="cphlxbgrza" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#cphlxbgrza table {
@@ -10969,7 +11042,13 @@ specifying a time period, area and metric.</p>
 Hypertension treatment) for siblings to ‘3 Centres PCN’ (ID 1103):</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_sibling.html">cvd_indicator_sibling</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">1103</span>, metric_id <span class="op">=</span> <span class="fl">126</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">Value</span>, <span class="va">LowerConfidenceLimit</span>, <span class="va">UpperConfidenceLimit</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">AreaID</span>,</span>
+<span>    <span class="va">AreaName</span>,</span>
+<span>    <span class="va">Value</span>,</span>
+<span>    <span class="va">LowerConfidenceLimit</span>,</span>
+<span>    <span class="va">UpperConfidenceLimit</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="uzbiykapwo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#uzbiykapwo table {
@@ -11428,71 +11507,13 @@ Hypertension treatment) for siblings to ‘3 Centres PCN’ (ID 1103):</p>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="LowerConfidenceLimit">LowerConfidenceLimit</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="UpperConfidenceLimit">UpperConfidenceLimit</th>
     </tr></thead>
-<tbody class="gt_table_body">
-<tr>
+<tbody class="gt_table_body"><tr>
 <td headers="AreaID" class="gt_row gt_right">1103</td>
 <td headers="AreaName" class="gt_row gt_left">3 Centres PCN</td>
-<td headers="Value" class="gt_row gt_right">100.00</td>
+<td headers="Value" class="gt_row gt_right">100</td>
 <td headers="LowerConfidenceLimit" class="gt_row gt_right">84.21</td>
-<td headers="UpperConfidenceLimit" class="gt_row gt_right">100.00</td>
-</tr>
-<tr>
-<td headers="AreaID" class="gt_row gt_right">1023</td>
-<td headers="AreaName" class="gt_row gt_left">The Valleys Health &amp; Social Care PCN</td>
-<td headers="Value" class="gt_row gt_right">93.75</td>
-<td headers="LowerConfidenceLimit" class="gt_row gt_right">73.68</td>
-<td headers="UpperConfidenceLimit" class="gt_row gt_right">100.00</td>
-</tr>
-<tr>
-<td headers="AreaID" class="gt_row gt_right">315</td>
-<td headers="AreaName" class="gt_row gt_left">Tolson Care Partnership PCN</td>
-<td headers="Value" class="gt_row gt_right">90.91</td>
-<td headers="LowerConfidenceLimit" class="gt_row gt_right">64.29</td>
-<td headers="UpperConfidenceLimit" class="gt_row gt_right">100.00</td>
-</tr>
-<tr>
-<td headers="AreaID" class="gt_row gt_right">709</td>
-<td headers="AreaName" class="gt_row gt_left">Spen Health &amp; Wellbeing PCN</td>
-<td headers="Value" class="gt_row gt_right">90.91</td>
-<td headers="LowerConfidenceLimit" class="gt_row gt_right">72.00</td>
-<td headers="UpperConfidenceLimit" class="gt_row gt_right">96.00</td>
-</tr>
-<tr>
-<td headers="AreaID" class="gt_row gt_right">523</td>
-<td headers="AreaName" class="gt_row gt_left">Dewsbury &amp; Thornhill PCN</td>
-<td headers="Value" class="gt_row gt_right">88.89</td>
-<td headers="LowerConfidenceLimit" class="gt_row gt_right">58.33</td>
-<td headers="UpperConfidenceLimit" class="gt_row gt_right">100.00</td>
-</tr>
-<tr>
-<td headers="AreaID" class="gt_row gt_right">607</td>
-<td headers="AreaName" class="gt_row gt_left">The Mast PCN</td>
-<td headers="Value" class="gt_row gt_right">88.89</td>
-<td headers="LowerConfidenceLimit" class="gt_row gt_right">58.33</td>
-<td headers="UpperConfidenceLimit" class="gt_row gt_right">100.00</td>
-</tr>
-<tr>
-<td headers="AreaID" class="gt_row gt_right">606</td>
-<td headers="AreaName" class="gt_row gt_left">Batley Birstall PCN</td>
-<td headers="Value" class="gt_row gt_right">86.67</td>
-<td headers="LowerConfidenceLimit" class="gt_row gt_right">61.11</td>
-<td headers="UpperConfidenceLimit" class="gt_row gt_right">94.44</td>
-</tr>
-<tr>
-<td headers="AreaID" class="gt_row gt_right">1055</td>
-<td headers="AreaName" class="gt_row gt_left">Greenwood PCN</td>
-<td headers="Value" class="gt_row gt_right">86.67</td>
-<td headers="LowerConfidenceLimit" class="gt_row gt_right">61.11</td>
-<td headers="UpperConfidenceLimit" class="gt_row gt_right">94.44</td>
-</tr>
-<tr>
-<td headers="AreaID" class="gt_row gt_right">1334</td>
-<td headers="AreaName" class="gt_row gt_left">Viaduct Care PCN</td>
-<td headers="Value" class="gt_row gt_right">69.23</td>
-<td headers="LowerConfidenceLimit" class="gt_row gt_right">43.75</td>
-<td headers="UpperConfidenceLimit" class="gt_row gt_right">87.50</td>
-</tr>
-</tbody>
+<td headers="UpperConfidenceLimit" class="gt_row gt_right">100</td>
+</tr></tbody>
 </table>
 </div>
 </div>
@@ -11507,8 +11528,14 @@ period, area and metric.</p>
 Hypertension treatment) for the children of ‘NHS Shropshire, Telford and
 Wrekin CCG’ (ID 126):</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_child_data.html">cvd_indicator_child_data</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">74</span>, metric_id <span class="op">=</span> <span class="fl">126</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">Value</span>, <span class="va">LowerConfidenceLimit</span>, <span class="va">UpperConfidenceLimit</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_child_data.html">cvd_indicator_child_data</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">74</span>, metric_id <span class="op">=</span> <span class="fl">126</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">AreaID</span>,</span>
+<span>    <span class="va">AreaName</span>,</span>
+<span>    <span class="va">Value</span>,</span>
+<span>    <span class="va">LowerConfidenceLimit</span>,</span>
+<span>    <span class="va">UpperConfidenceLimit</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="ktayyjktvo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ktayyjktvo table {
@@ -12038,9 +12065,16 @@ data. The return includes national level data as comparison.</p>
 in time period 17 for ‘Leicester Central PCN’ (area_id 701) focussed on
 metrics by gender:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_data.html">cvd_indicator_data</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, indicator_id <span class="op">=</span> <span class="fl">7</span>, area_id <span class="op">=</span> <span class="fl">701</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">MetricCategoryTypeName</span> <span class="op">==</span> <span class="st">'Sex'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">MetricID</span>, <span class="va">MetricCategoryName</span>, <span class="va">AreaData.AreaName</span>, <span class="va">AreaData.Value</span>, <span class="va">NationalData.AreaName</span>, <span class="va">NationalData.Value</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_data.html">cvd_indicator_data</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, indicator_id <span class="op">=</span> <span class="fl">7</span>, area_id <span class="op">=</span> <span class="fl">701</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">MetricCategoryTypeName</span> <span class="op">==</span> <span class="st">'Sex'</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">MetricID</span>,</span>
+<span>    <span class="va">MetricCategoryName</span>,</span>
+<span>    <span class="va">AreaData.AreaName</span>,</span>
+<span>    <span class="va">AreaData.Value</span>,</span>
+<span>    <span class="va">NationalData.AreaName</span>,</span>
+<span>    <span class="va">NationalData.Value</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="rzbzjrestn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#rzbzjrestn table {
@@ -12539,8 +12573,14 @@ return includes national level data as comparison.</p>
 for ‘Alliance PCN’ (area ID 399) in time period 1 for metric 126
 (breakdown by age group- males aged 40-59):</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_metric_data.html">cvd_indicator_metric_data</a></span><span class="op">(</span>metric_id <span class="op">=</span> <span class="fl">126</span>, time_period_id <span class="op">=</span> <span class="fl">1</span>, area_id <span class="op">=</span> <span class="fl">399</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorShortName</span>, <span class="va">CategoryAttribute</span>, <span class="va">MetricCategoryName</span>, <span class="va">AreaData.Value</span>, <span class="va">NationalData.Value</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_metric_data.html">cvd_indicator_metric_data</a></span><span class="op">(</span>metric_id <span class="op">=</span> <span class="fl">126</span>, time_period_id <span class="op">=</span> <span class="fl">1</span>, area_id <span class="op">=</span> <span class="fl">399</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">IndicatorShortName</span>,</span>
+<span>    <span class="va">CategoryAttribute</span>,</span>
+<span>    <span class="va">MetricCategoryName</span>,</span>
+<span>    <span class="va">AreaData.Value</span>,</span>
+<span>    <span class="va">NationalData.Value</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="buefsqxhvh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#buefsqxhvh table {
@@ -13020,9 +13060,13 @@ specified indicator system level and time period.</p>
 anticoagulants’ (indicator ID 7) in time period 17 at GP practice level
 (system level ID 5):</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_raw_data.html">cvd_indicator_raw_data</a></span><span class="op">(</span>indicator_id <span class="op">=</span> <span class="fl">7</span>, time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaCode</span>, <span class="va">AreaName</span>, <span class="va">Value</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_raw_data.html">cvd_indicator_raw_data</a></span><span class="op">(</span></span>
+<span>  indicator_id <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>  time_period_id <span class="op">=</span> <span class="fl">17</span>,</span>
+<span>  system_level_id <span class="op">=</span> <span class="fl">5</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaCode</span>, <span class="va">AreaName</span>, <span class="va">Value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="ncrookxgzu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ncrookxgzu table {
@@ -13538,8 +13582,8 @@ anticoagulants - all people) in ‘Chester South PCN’ (area ID 553) with
 national performance:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">return_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cvd_indicator_nationalarea_metric_data.html">cvd_indicator_nationalarea_metric_data</a></span><span class="op">(</span></span>
-<span>  metric_id <span class="op">=</span> <span class="fl">150</span>, </span>
-<span>  time_period_id <span class="op">=</span> <span class="fl">17</span>, </span>
+<span>  metric_id <span class="op">=</span> <span class="fl">150</span>,</span>
+<span>  time_period_id <span class="op">=</span> <span class="fl">17</span>,</span>
 <span>  area_id <span class="op">=</span> <span class="fl">553</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -14526,8 +14570,14 @@ function.</p>
 <p>Here we return one indicator from each of the priority groups:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_priority_groups.html">cvd_indicator_priority_groups</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">PriorityGroup</span>, <span class="va">PathwayGroupName</span>, <span class="va">PathwayGroupID</span>, <span class="va">IndicatorID</span>, <span class="va">IndicatorName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">PathwayGroupID</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">PriorityGroup</span>,</span>
+<span>    <span class="va">PathwayGroupName</span>,</span>
+<span>    <span class="va">PathwayGroupID</span>,</span>
+<span>    <span class="va">IndicatorID</span>,</span>
+<span>    <span class="va">IndicatorName</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">PathwayGroupID</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span>row_group_as_column <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <div id="pjjkurjxbt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#pjjkurjxbt table {
@@ -15027,7 +15077,7 @@ function.</p>
 <td headers="PathwayGroupName" class="gt_row gt_left">Familial Hypercholesterolaemia</td>
 <td headers="PathwayGroupID" class="gt_row gt_right">8</td>
 <td headers="IndicatorID" class="gt_row gt_right">9</td>
-<td headers="IndicatorName" class="gt_row gt_left">Prevalence of GP recorded possible, probable or genetically confirmed familial hypercholesterolaemia, in patients all ages,  calculated as a crude rate per 1,000 patients.  </td>
+<td headers="IndicatorName" class="gt_row gt_left">Prevalence of GP recorded possible, probable or genetically confirmed familial hypercholesterolaemia, in patients all ages,  calculated as a crude rate per 10,000 patients.  </td>
 </tr>
 <tr>
 <td headers="PriorityGroup" class="gt_row gt_left">Smoking and BMI</td>
@@ -15050,9 +15100,15 @@ function.</p>
 <p>Here we return the indicators within the ‘Chronic Kidney Disease’
 pathway group (ID 9):</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_pathway_group.html">cvd_indicator_pathway_group</a></span><span class="op">(</span>pathway_group_id <span class="op">=</span> <span class="fl">9</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">PathwayGroupName</span>, <span class="va">PathwayGroupID</span>, <span class="va">IndicatorCode</span>, <span class="va">IndicatorID</span>, <span class="va">IndicatorName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">PathwayGroupName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_pathway_group.html">cvd_indicator_pathway_group</a></span><span class="op">(</span>pathway_group_id <span class="op">=</span> <span class="fl">9</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">PathwayGroupName</span>,</span>
+<span>    <span class="va">PathwayGroupID</span>,</span>
+<span>    <span class="va">IndicatorCode</span>,</span>
+<span>    <span class="va">IndicatorID</span>,</span>
+<span>    <span class="va">IndicatorName</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">PathwayGroupName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span>row_group_as_column <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <div id="ellwmttdsu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ellwmttdsu table {
@@ -15513,41 +15569,41 @@ pathway group (ID 9):</p>
     </tr></thead>
 <tbody class="gt_table_body">
 <tr class="gt_row_group_first">
-<td headers="Chronic Kidney Disease stub_1_1 stub_1" rowspan="6" class="gt_row gt_left gt_stub_row_group">Chronic Kidney Disease</td>
-<td headers="Chronic Kidney Disease stub_1_1 PathwayGroupID" class="gt_row gt_right">9</td>
-<td headers="Chronic Kidney Disease stub_1_1 IndicatorCode" class="gt_row gt_left">CVDP002CKD</td>
-<td headers="Chronic Kidney Disease stub_1_1 IndicatorID" class="gt_row gt_right">13</td>
-<td headers="Chronic Kidney Disease stub_1_1 IndicatorName" class="gt_row gt_left">Patients whose last two eGFRs are less than 60ml/min/1.73m2 (uncoded CKD), who do not have a record of GP recorded CKD (G3a to G5) </td>
+<td headers="Chronic Kidney Disease stub_2_1 stub_1" rowspan="6" class="gt_row gt_left gt_stub_row_group">Chronic Kidney Disease</td>
+<td headers="Chronic Kidney Disease stub_2_1 PathwayGroupID" class="gt_row gt_right">9</td>
+<td headers="Chronic Kidney Disease stub_2_1 IndicatorCode" class="gt_row gt_left">CVDP002CKD</td>
+<td headers="Chronic Kidney Disease stub_2_1 IndicatorID" class="gt_row gt_right">13</td>
+<td headers="Chronic Kidney Disease stub_2_1 IndicatorName" class="gt_row gt_left">Patients whose last two eGFRs are less than 60ml/min/1.73m2 (uncoded CKD), who do not have a record of GP recorded CKD (G3a to G5) </td>
 </tr>
 <tr>
-<td headers="Chronic Kidney Disease PathwayGroupID_2 PathwayGroupID" class="gt_row gt_right">9</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_2 IndicatorCode" class="gt_row gt_left">CVDP001CKD</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_2 IndicatorID" class="gt_row gt_right">8</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_2 IndicatorName" class="gt_row gt_left">Prevalence of GP recorded CKD (G3a to G5) </td>
+<td headers="Chronic Kidney Disease stub_2_2 PathwayGroupID" class="gt_row gt_right">9</td>
+<td headers="Chronic Kidney Disease stub_2_2 IndicatorCode" class="gt_row gt_left">CVDP001CKD</td>
+<td headers="Chronic Kidney Disease stub_2_2 IndicatorID" class="gt_row gt_right">8</td>
+<td headers="Chronic Kidney Disease stub_2_2 IndicatorName" class="gt_row gt_left">Prevalence of GP recorded CKD (G3a to G5) </td>
 </tr>
 <tr>
-<td headers="Chronic Kidney Disease PathwayGroupID_3 PathwayGroupID" class="gt_row gt_right">9</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_3 IndicatorCode" class="gt_row gt_left">CVDP006CKD</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_3 IndicatorID" class="gt_row gt_right">29</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_3 IndicatorName" class="gt_row gt_left">Patients with GP recorded CKD (G3a to G5), with a record of an eGFR test in the preceding 12 months.</td>
+<td headers="Chronic Kidney Disease stub_2_3 PathwayGroupID" class="gt_row gt_right">9</td>
+<td headers="Chronic Kidney Disease stub_2_3 IndicatorCode" class="gt_row gt_left">CVDP006CKD</td>
+<td headers="Chronic Kidney Disease stub_2_3 IndicatorID" class="gt_row gt_right">29</td>
+<td headers="Chronic Kidney Disease stub_2_3 IndicatorName" class="gt_row gt_left">Patients with GP recorded CKD (G3a to G5), with a record of an eGFR test in the preceding 12 months.</td>
 </tr>
 <tr>
-<td headers="Chronic Kidney Disease PathwayGroupID_4 PathwayGroupID" class="gt_row gt_right">9</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_4 IndicatorCode" class="gt_row gt_left">CVDP005CKD</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_4 IndicatorID" class="gt_row gt_right">19</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_4 IndicatorName" class="gt_row gt_left">Patients with GP recorded CKD (G3a to G5) and hypertension and proteinuria, who are currently treated with renin-angiotensin system antagonists</td>
+<td headers="Chronic Kidney Disease stub_2_4 PathwayGroupID" class="gt_row gt_right">9</td>
+<td headers="Chronic Kidney Disease stub_2_4 IndicatorCode" class="gt_row gt_left">CVDP005CKD</td>
+<td headers="Chronic Kidney Disease stub_2_4 IndicatorID" class="gt_row gt_right">19</td>
+<td headers="Chronic Kidney Disease stub_2_4 IndicatorName" class="gt_row gt_left">Patients with GP recorded CKD (G3a to G5) and hypertension and proteinuria, who are currently treated with renin-angiotensin system antagonists</td>
 </tr>
 <tr>
-<td headers="Chronic Kidney Disease PathwayGroupID_5 PathwayGroupID" class="gt_row gt_right">9</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_5 IndicatorCode" class="gt_row gt_left">CVDP007CKD</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_5 IndicatorID" class="gt_row gt_right">31</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_5 IndicatorName" class="gt_row gt_left">Patients with GP recorded CKD (G3a to G5) with an ACR of less than 70 mg/mmol, whose last blood pressure reading is to the appropriate treatment threshold.</td>
+<td headers="Chronic Kidney Disease stub_2_5 PathwayGroupID" class="gt_row gt_right">9</td>
+<td headers="Chronic Kidney Disease stub_2_5 IndicatorCode" class="gt_row gt_left">CVDP007CKD</td>
+<td headers="Chronic Kidney Disease stub_2_5 IndicatorID" class="gt_row gt_right">31</td>
+<td headers="Chronic Kidney Disease stub_2_5 IndicatorName" class="gt_row gt_left">Patients with GP recorded CKD (G3a to G5) with an ACR of less than 70 mg/mmol, whose last blood pressure reading is to the appropriate treatment threshold.</td>
 </tr>
 <tr>
-<td headers="Chronic Kidney Disease PathwayGroupID_6 PathwayGroupID" class="gt_row gt_right">9</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_6 IndicatorCode" class="gt_row gt_left">CVDP010CHOL</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_6 IndicatorID" class="gt_row gt_right">23</td>
-<td headers="Chronic Kidney Disease PathwayGroupID_6 IndicatorName" class="gt_row gt_left">Patients with GP recorded chronic kidney disease (G3a to G5), who are currently treated with lipid lowering therapy.</td>
+<td headers="Chronic Kidney Disease stub_2_6 PathwayGroupID" class="gt_row gt_right">9</td>
+<td headers="Chronic Kidney Disease stub_2_6 IndicatorCode" class="gt_row gt_left">CVDP010CHOL</td>
+<td headers="Chronic Kidney Disease stub_2_6 IndicatorID" class="gt_row gt_right">23</td>
+<td headers="Chronic Kidney Disease stub_2_6 IndicatorName" class="gt_row gt_left">Patients with GP recorded chronic kidney disease (G3a to G5), who are currently treated with lipid lowering therapy.</td>
 </tr>
 </tbody>
 </table>
@@ -15562,9 +15618,15 @@ classified by <code>IndicatorGroupTypeID</code> which indicates what
 <p>Here we list the indicators under Indicator Group ID 13 (Monitoring)
 which lists ‘Key Question’ Indicator Group indicators:</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_group.html">cvd_indicator_group</a></span><span class="op">(</span>indicator_group_id <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorGroupID</span>, <span class="va">IndicatorGroupName</span>, <span class="va">IndicatorGroupTypeName</span>, <span class="va">IndicatorID</span>, <span class="va">IndicatorName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">IndicatorGroupID</span>, <span class="va">IndicatorGroupName</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_group.html">cvd_indicator_group</a></span><span class="op">(</span>indicator_group_id <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">IndicatorGroupID</span>,</span>
+<span>    <span class="va">IndicatorGroupName</span>,</span>
+<span>    <span class="va">IndicatorGroupTypeName</span>,</span>
+<span>    <span class="va">IndicatorID</span>,</span>
+<span>    <span class="va">IndicatorName</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">IndicatorGroupID</span>, <span class="va">IndicatorGroupName</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="vupsnntyuf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#vupsnntyuf table {
@@ -16049,29 +16111,32 @@ specifying an area ID.</p>
 ‘AF: treatment with anticoagulants’ for women people aged 60-79 years
 (metric ID 130):</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_metric_timeseries.html">cvd_indicator_metric_timeseries</a></span><span class="op">(</span>metric_id <span class="op">=</span> <span class="fl">130</span>, area_id <span class="op">=</span> <span class="fl">705</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>   <span class="co"># prepare for plotting</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>TimePeriodName <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">TimePeriodName</span>, <span class="va">TimePeriodID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_metric_timeseries.html">cvd_indicator_metric_timeseries</a></span><span class="op">(</span>metric_id <span class="op">=</span> <span class="fl">130</span>, area_id <span class="op">=</span> <span class="fl">705</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># prepare for plotting</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    TimePeriodName <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">TimePeriodName</span>, <span class="va">TimePeriodID</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="va">TimePeriodName</span>,</span>
-<span>    y <span class="op">=</span> <span class="va">Value</span>, </span>
-<span>    group <span class="op">=</span> <span class="va">AreaName</span> , </span>
-<span>    colour <span class="op">=</span> <span class="va">AreaName</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    y <span class="op">=</span> <span class="va">Value</span>,</span>
+<span>    group <span class="op">=</span> <span class="va">AreaName</span>,</span>
+<span>    colour <span class="op">=</span> <span class="va">AreaName</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
 <span>    axis.text.x <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="using_cvdprevent_files/figure-html/unnamed-chunk-40-1.png" width="700"></p>
+<p><img src="using_cvdprevent_files/figure-html/return%20time%20series%20data%20for%20a%20metric%20and%20area%201-1.png" width="700"></p>
 <p>Or we can view the details of the time-series performance for this
 metric:</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_metric_timeseries.html">cvd_indicator_metric_timeseries</a></span><span class="op">(</span>metric_id <span class="op">=</span> <span class="fl">130</span>, area_id <span class="op">=</span> <span class="fl">705</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaName</span>, <span class="va">TimePeriodName</span>, <span class="va">TimePeriodID</span>, <span class="va">Value</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaName</span>, <span class="va">TimePeriodName</span>, <span class="va">TimePeriodID</span>, <span class="va">Value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span></span>
 <span>    names_from <span class="op">=</span> <span class="va">AreaName</span>,</span>
 <span>    values_from <span class="op">=</span> <span class="va">Value</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="ggzfelhkpk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ggzfelhkpk table {
@@ -16614,6 +16679,18 @@ metric:</p>
 <td headers="England" class="gt_row gt_right">92.05</td>
 <td headers="Salford South East PCN" class="gt_row gt_right">92.75</td>
 </tr>
+<tr>
+<td headers="TimePeriodName" class="gt_row gt_left">To March 2025</td>
+<td headers="TimePeriodID" class="gt_row gt_right">24</td>
+<td headers="England" class="gt_row gt_right">92.52</td>
+<td headers="Salford South East PCN" class="gt_row gt_right">94.65</td>
+</tr>
+<tr>
+<td headers="TimePeriodName" class="gt_row gt_left">To June 2025</td>
+<td headers="TimePeriodID" class="gt_row gt_right">26</td>
+<td headers="England" class="gt_row gt_right">92.41</td>
+<td headers="Salford South East PCN" class="gt_row gt_right">94.65</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -16629,12 +16706,14 @@ with the indicator ID and specify an area.</p>
 with anticoagulants’ (ID 7) in Salford South East PCN (area ID 705),
 focussed just on the age group inequalities metrics:</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_person_timeseries.html">cvd_indicator_person_timeseries</a></span><span class="op">(</span>indicator_id <span class="op">=</span> <span class="fl">7</span>, area_id <span class="op">=</span> <span class="fl">705</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_person_timeseries.html">cvd_indicator_person_timeseries</a></span><span class="op">(</span>indicator_id <span class="op">=</span> <span class="fl">7</span>, area_id <span class="op">=</span> <span class="fl">705</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
 <span>    <span class="va">MetricCategoryTypeName</span> <span class="op">==</span> <span class="st">'Age group'</span>,</span>
 <span>    <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>TimePeriodName <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">TimePeriodName</span>, <span class="va">TimePeriodID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    TimePeriodName <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">TimePeriodName</span>, <span class="va">TimePeriodID</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
 <span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span></span>
 <span>      x <span class="op">=</span> <span class="va">TimePeriodName</span>,</span>
@@ -16648,21 +16727,20 @@ focussed just on the age group inequalities metrics:</p>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
 <span>    axis.text.x <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="using_cvdprevent_files/figure-html/unnamed-chunk-42-1.png" width="700"></p>
+<p><img src="using_cvdprevent_files/figure-html/return%20time%20series%20data%20for%20an%20indicator%20and%20area%20-%20inequalities%201-1.png" width="700"></p>
 <p>Or we can view the details of the time-series performance for these
 metrics:</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_person_timeseries.html">cvd_indicator_person_timeseries</a></span><span class="op">(</span>indicator_id <span class="op">=</span> <span class="fl">7</span>, area_id <span class="op">=</span> <span class="fl">705</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_person_timeseries.html">cvd_indicator_person_timeseries</a></span><span class="op">(</span>indicator_id <span class="op">=</span> <span class="fl">7</span>, area_id <span class="op">=</span> <span class="fl">705</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
 <span>    <span class="va">MetricCategoryTypeName</span> <span class="op">==</span> <span class="st">'Age group'</span>,</span>
 <span>    <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">MetricCategoryName</span>, <span class="va">TimePeriodName</span>, <span class="va">TimePeriodID</span>, </span>
-<span>                <span class="va">Value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">MetricCategoryName</span>, <span class="va">TimePeriodName</span>, <span class="va">TimePeriodID</span>, <span class="va">Value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span></span>
 <span>    names_from <span class="op">=</span> <span class="va">MetricCategoryName</span>,</span>
 <span>    values_from <span class="op">=</span> <span class="va">Value</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="bjkhrvvqeo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#bjkhrvvqeo table {
@@ -17220,6 +17298,20 @@ metrics:</p>
 <td headers="60-79" class="gt_row gt_right">91.38</td>
 <td headers="80+" class="gt_row gt_right">91.64</td>
 </tr>
+<tr>
+<td headers="TimePeriodName" class="gt_row gt_left">To March 2025</td>
+<td headers="TimePeriodID" class="gt_row gt_right">24</td>
+<td headers="40-59" class="gt_row gt_right">85.71</td>
+<td headers="60-79" class="gt_row gt_right">93.31</td>
+<td headers="80+" class="gt_row gt_right">91.90</td>
+</tr>
+<tr>
+<td headers="TimePeriodName" class="gt_row gt_left">To June 2025</td>
+<td headers="TimePeriodID" class="gt_row gt_right">26</td>
+<td headers="40-59" class="gt_row gt_right">85.71</td>
+<td headers="60-79" class="gt_row gt_right">92.87</td>
+<td headers="80+" class="gt_row gt_right">92.16</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -17236,9 +17328,13 @@ aged 40-59 years (metric ID 1270) in time period 17 for
 Salford South East PCN (area ID 705) <em>and all other</em> PCNs -
 truncated to a sample of four PCN performances:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_metric_systemlevel_comparison.html">cvd_indicator_metric_systemlevel_comparison</a></span><span class="op">(</span>metric_id <span class="op">=</span> <span class="fl">1270</span>, time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">705</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">AreaID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">705</span><span class="op">:</span><span class="fl">709</span><span class="op">)</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelName</span>, <span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">Value</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_metric_systemlevel_comparison.html">cvd_indicator_metric_systemlevel_comparison</a></span><span class="op">(</span></span>
+<span>  metric_id <span class="op">=</span> <span class="fl">1270</span>,</span>
+<span>  time_period_id <span class="op">=</span> <span class="fl">17</span>,</span>
+<span>  area_id <span class="op">=</span> <span class="fl">705</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">AreaID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">705</span><span class="op">:</span><span class="fl">709</span><span class="op">)</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelName</span>, <span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">Value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="elfyoqaitr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#elfyoqaitr table {
@@ -17734,8 +17830,12 @@ return the data Area Breakdown chart.</p>
 aged 60-79 years (metric ID 128) in time period 17 for
 Salford South East PCN (area ID 705):</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_metric_area_breakdown.html">cvd_indicator_metric_area_breakdown</a></span><span class="op">(</span>metric_id <span class="op">=</span> <span class="fl">128</span>, time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">705</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelName</span>, <span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">Value</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_indicator_metric_area_breakdown.html">cvd_indicator_metric_area_breakdown</a></span><span class="op">(</span></span>
+<span>  metric_id <span class="op">=</span> <span class="fl">128</span>,</span>
+<span>  time_period_id <span class="op">=</span> <span class="fl">17</span>,</span>
+<span>  area_id <span class="op">=</span> <span class="fl">705</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SystemLevelName</span>, <span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">Value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div id="xpwwkzgfuj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#xpwwkzgfuj table {
@@ -18221,10 +18321,14 @@ Salford South East PCN (area ID 705):</p>
 function <code><a href="../reference/cvd_external_resource.html">cvd_external_resource()</a></code>. Here we show the first
 five external resources:</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_external_resource.html">cvd_external_resource</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">ExternalResourceID</span> <span class="op">&lt;</span> <span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ExternalResourceCategory</span>, <span class="va">ExternalResourceSource</span>, <span class="va">ExternalResourceTitle</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">ExternalResourceCategory</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_external_resource.html">cvd_external_resource</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">ExternalResourceID</span> <span class="op">&lt;</span> <span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">ExternalResourceCategory</span>,</span>
+<span>    <span class="va">ExternalResourceSource</span>,</span>
+<span>    <span class="va">ExternalResourceTitle</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">ExternalResourceCategory</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span>row_group_as_column <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <div id="ivnxcljjbj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ivnxcljjbj table {
@@ -18683,27 +18787,27 @@ five external resources:</p>
     </tr></thead>
 <tbody class="gt_table_body">
 <tr class="gt_row_group_first">
-<td headers="Data Packs stub_1_1 stub_1" rowspan="2" class="gt_row gt_left gt_stub_row_group">Data Packs</td>
-<td headers="Data Packs stub_1_1 ExternalResourceSource" class="gt_row gt_left">Public Health England</td>
-<td headers="Data Packs stub_1_1 ExternalResourceTitle" class="gt_row gt_left">Cardiovascular Disease Prevention Data Packs</td>
+<td headers="Data Packs stub_2_1 stub_1" rowspan="2" class="gt_row gt_left gt_stub_row_group">Data Packs</td>
+<td headers="Data Packs stub_2_1 ExternalResourceSource" class="gt_row gt_left">Public Health England</td>
+<td headers="Data Packs stub_2_1 ExternalResourceTitle" class="gt_row gt_left">Cardiovascular Disease Prevention Data Packs</td>
 </tr>
 <tr>
-<td headers="Data Packs ExternalResourceSource_2 ExternalResourceSource" class="gt_row gt_left">NHS England</td>
-<td headers="Data Packs ExternalResourceSource_2 ExternalResourceTitle" class="gt_row gt_left">Equality and Health Inequality Packs</td>
+<td headers="Data Packs stub_2_2 ExternalResourceSource" class="gt_row gt_left">NHS England</td>
+<td headers="Data Packs stub_2_2 ExternalResourceTitle" class="gt_row gt_left">Equality and Health Inequality Packs</td>
 </tr>
 <tr class="gt_row_group_first">
-<td headers="Toolkits stub_1_3 stub_1" rowspan="2" class="gt_row gt_left gt_stub_row_group">Toolkits</td>
-<td headers="Toolkits stub_1_3 ExternalResourceSource" class="gt_row gt_left">NHS Digital</td>
-<td headers="Toolkits stub_1_3 ExternalResourceTitle" class="gt_row gt_left">Weight Management Programme General Practice Toolkit</td>
+<td headers="Toolkits stub_2_3 stub_1" rowspan="2" class="gt_row gt_left gt_stub_row_group">Toolkits</td>
+<td headers="Toolkits stub_2_3 ExternalResourceSource" class="gt_row gt_left">NHS Digital</td>
+<td headers="Toolkits stub_2_3 ExternalResourceTitle" class="gt_row gt_left">Weight Management Programme General Practice Toolkit</td>
 </tr>
 <tr>
-<td headers="Toolkits ExternalResourceSource_4 ExternalResourceSource" class="gt_row gt_left">Primary Care Cardiovascular Society</td>
-<td headers="Toolkits ExternalResourceSource_4 ExternalResourceTitle" class="gt_row gt_left">CVD – identification and treatment of people at high risk</td>
+<td headers="Toolkits stub_2_4 ExternalResourceSource" class="gt_row gt_left">Primary Care Cardiovascular Society</td>
+<td headers="Toolkits stub_2_4 ExternalResourceTitle" class="gt_row gt_left">CVD – identification and treatment of people at high risk</td>
 </tr>
 <tr class="gt_row_group_first">
-<td headers="Stratification tools stub_1_5 stub_1" rowspan="1" class="gt_row gt_left gt_stub_row_group">Stratification tools</td>
-<td headers="Stratification tools stub_1_5 ExternalResourceSource" class="gt_row gt_left">UCL Partners</td>
-<td headers="Stratification tools stub_1_5 ExternalResourceTitle" class="gt_row gt_left">Search and risk stratification tools</td>
+<td headers="Stratification tools stub_2_5 stub_1" rowspan="1" class="gt_row gt_left gt_stub_row_group">Stratification tools</td>
+<td headers="Stratification tools stub_2_5 ExternalResourceSource" class="gt_row gt_left">UCL Partners</td>
+<td headers="Stratification tools stub_2_5 ExternalResourceTitle" class="gt_row gt_left">Search and risk stratification tools</td>
 </tr>
 </tbody>
 </table>
@@ -18718,26 +18822,31 @@ period then use the <code><a href="../reference/cvd_data_availability.html">cvd_
 September 2022).</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cvd_data_availability.html">cvd_data_availability</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">6</span>, system_level_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorShortName</span>, <span class="va">IsAvailable</span>, <span class="va">SystemLevelName</span>, <span class="va">MetricCategoryTypeID</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">IndicatorShortName</span>,</span>
+<span>    <span class="va">IsAvailable</span>,</span>
+<span>    <span class="va">SystemLevelName</span>,</span>
+<span>    <span class="va">MetricCategoryTypeID</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div id="gwtlmpwzbi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#gwtlmpwzbi table {
+<div id="bbiaqaayrc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bbiaqaayrc table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#gwtlmpwzbi thead, #gwtlmpwzbi tbody, #gwtlmpwzbi tfoot, #gwtlmpwzbi tr, #gwtlmpwzbi td, #gwtlmpwzbi th {
+#bbiaqaayrc thead, #bbiaqaayrc tbody, #bbiaqaayrc tfoot, #bbiaqaayrc tr, #bbiaqaayrc td, #bbiaqaayrc th {
   border-style: none;
 }
 
-#gwtlmpwzbi p {
+#bbiaqaayrc p {
   margin: 0;
   padding: 0;
 }
 
-#gwtlmpwzbi .gt_table {
+#bbiaqaayrc .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -18763,12 +18872,12 @@ September 2022).</p>
   border-left-color: #D3D3D3;
 }
 
-#gwtlmpwzbi .gt_caption {
+#bbiaqaayrc .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#gwtlmpwzbi .gt_title {
+#bbiaqaayrc .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -18780,7 +18889,7 @@ September 2022).</p>
   border-bottom-width: 0;
 }
 
-#gwtlmpwzbi .gt_subtitle {
+#bbiaqaayrc .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -18792,7 +18901,7 @@ September 2022).</p>
   border-top-width: 0;
 }
 
-#gwtlmpwzbi .gt_heading {
+#bbiaqaayrc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -18804,13 +18913,13 @@ September 2022).</p>
   border-right-color: #D3D3D3;
 }
 
-#gwtlmpwzbi .gt_bottom_border {
+#bbiaqaayrc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#gwtlmpwzbi .gt_col_headings {
+#bbiaqaayrc .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -18825,7 +18934,7 @@ September 2022).</p>
   border-right-color: #D3D3D3;
 }
 
-#gwtlmpwzbi .gt_col_heading {
+#bbiaqaayrc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -18845,7 +18954,7 @@ September 2022).</p>
   overflow-x: hidden;
 }
 
-#gwtlmpwzbi .gt_column_spanner_outer {
+#bbiaqaayrc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -18857,15 +18966,15 @@ September 2022).</p>
   padding-right: 4px;
 }
 
-#gwtlmpwzbi .gt_column_spanner_outer:first-child {
+#bbiaqaayrc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#gwtlmpwzbi .gt_column_spanner_outer:last-child {
+#bbiaqaayrc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#gwtlmpwzbi .gt_column_spanner {
+#bbiaqaayrc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -18877,11 +18986,11 @@ September 2022).</p>
   width: 100%;
 }
 
-#gwtlmpwzbi .gt_spanner_row {
+#bbiaqaayrc .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#gwtlmpwzbi .gt_group_heading {
+#bbiaqaayrc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -18907,7 +19016,7 @@ September 2022).</p>
   text-align: left;
 }
 
-#gwtlmpwzbi .gt_empty_group_heading {
+#bbiaqaayrc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -18922,15 +19031,15 @@ September 2022).</p>
   vertical-align: middle;
 }
 
-#gwtlmpwzbi .gt_from_md > :first-child {
+#bbiaqaayrc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#gwtlmpwzbi .gt_from_md > :last-child {
+#bbiaqaayrc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#gwtlmpwzbi .gt_row {
+#bbiaqaayrc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -18949,7 +19058,7 @@ September 2022).</p>
   overflow-x: hidden;
 }
 
-#gwtlmpwzbi .gt_stub {
+#bbiaqaayrc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -18962,7 +19071,7 @@ September 2022).</p>
   padding-right: 5px;
 }
 
-#gwtlmpwzbi .gt_stub_row_group {
+#bbiaqaayrc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -18976,15 +19085,15 @@ September 2022).</p>
   vertical-align: top;
 }
 
-#gwtlmpwzbi .gt_row_group_first td {
+#bbiaqaayrc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#gwtlmpwzbi .gt_row_group_first th {
+#bbiaqaayrc .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#gwtlmpwzbi .gt_summary_row {
+#bbiaqaayrc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -18994,16 +19103,16 @@ September 2022).</p>
   padding-right: 5px;
 }
 
-#gwtlmpwzbi .gt_first_summary_row {
+#bbiaqaayrc .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#gwtlmpwzbi .gt_first_summary_row.thick {
+#bbiaqaayrc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#gwtlmpwzbi .gt_last_summary_row {
+#bbiaqaayrc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -19013,7 +19122,7 @@ September 2022).</p>
   border-bottom-color: #D3D3D3;
 }
 
-#gwtlmpwzbi .gt_grand_summary_row {
+#bbiaqaayrc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -19023,7 +19132,7 @@ September 2022).</p>
   padding-right: 5px;
 }
 
-#gwtlmpwzbi .gt_first_grand_summary_row {
+#bbiaqaayrc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -19033,7 +19142,7 @@ September 2022).</p>
   border-top-color: #D3D3D3;
 }
 
-#gwtlmpwzbi .gt_last_grand_summary_row_top {
+#bbiaqaayrc .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -19043,11 +19152,11 @@ September 2022).</p>
   border-bottom-color: #D3D3D3;
 }
 
-#gwtlmpwzbi .gt_striped {
+#bbiaqaayrc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#gwtlmpwzbi .gt_table_body {
+#bbiaqaayrc .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -19056,7 +19165,7 @@ September 2022).</p>
   border-bottom-color: #D3D3D3;
 }
 
-#gwtlmpwzbi .gt_footnotes {
+#bbiaqaayrc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -19070,7 +19179,7 @@ September 2022).</p>
   border-right-color: #D3D3D3;
 }
 
-#gwtlmpwzbi .gt_footnote {
+#bbiaqaayrc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -19079,7 +19188,7 @@ September 2022).</p>
   padding-right: 5px;
 }
 
-#gwtlmpwzbi .gt_sourcenotes {
+#bbiaqaayrc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -19093,7 +19202,7 @@ September 2022).</p>
   border-right-color: #D3D3D3;
 }
 
-#gwtlmpwzbi .gt_sourcenote {
+#bbiaqaayrc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -19101,72 +19210,72 @@ September 2022).</p>
   padding-right: 5px;
 }
 
-#gwtlmpwzbi .gt_left {
+#bbiaqaayrc .gt_left {
   text-align: left;
 }
 
-#gwtlmpwzbi .gt_center {
+#bbiaqaayrc .gt_center {
   text-align: center;
 }
 
-#gwtlmpwzbi .gt_right {
+#bbiaqaayrc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#gwtlmpwzbi .gt_font_normal {
+#bbiaqaayrc .gt_font_normal {
   font-weight: normal;
 }
 
-#gwtlmpwzbi .gt_font_bold {
+#bbiaqaayrc .gt_font_bold {
   font-weight: bold;
 }
 
-#gwtlmpwzbi .gt_font_italic {
+#bbiaqaayrc .gt_font_italic {
   font-style: italic;
 }
 
-#gwtlmpwzbi .gt_super {
+#bbiaqaayrc .gt_super {
   font-size: 65%;
 }
 
-#gwtlmpwzbi .gt_footnote_marks {
+#bbiaqaayrc .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#gwtlmpwzbi .gt_asterisk {
+#bbiaqaayrc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#gwtlmpwzbi .gt_indent_1 {
+#bbiaqaayrc .gt_indent_1 {
   text-indent: 5px;
 }
 
-#gwtlmpwzbi .gt_indent_2 {
+#bbiaqaayrc .gt_indent_2 {
   text-indent: 10px;
 }
 
-#gwtlmpwzbi .gt_indent_3 {
+#bbiaqaayrc .gt_indent_3 {
   text-indent: 15px;
 }
 
-#gwtlmpwzbi .gt_indent_4 {
+#bbiaqaayrc .gt_indent_4 {
   text-indent: 20px;
 }
 
-#gwtlmpwzbi .gt_indent_5 {
+#bbiaqaayrc .gt_indent_5 {
   text-indent: 25px;
 }
 
-#gwtlmpwzbi .katex-display {
+#bbiaqaayrc .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#gwtlmpwzbi div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#bbiaqaayrc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -19224,7 +19333,7 @@ September 2022).</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
