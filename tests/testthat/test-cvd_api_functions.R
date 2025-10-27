@@ -5,6 +5,13 @@ test_that('cvd_time_period_list works', {
 
   # expecting at least 17 time periods
   testthat::expect_gte(test$TimePeriodID |> max(), 17)
+
+  # expecting no error - with indictor type id
+  testthat::expect_no_error(
+    test <- cvd_time_period_list(
+      indicator_type_id = get_random_valid_indicator_type_id(n = 1)
+    )
+  )
 })
 
 test_that('cvd_time_period_system_levels works', {
@@ -58,7 +65,10 @@ test_that('cvd_area_details works', {
       testthat::expect_no_error(
         test <- cvd_area_details(
           time_period_id = .x,
-          area_id = 1
+          area_id = get_random_valid_area_id_for_time_period_id(
+            n = 1,
+            time_period_id = .x
+          )
         )
       )
 
@@ -169,43 +179,27 @@ test_that('cvd_indicator works', {
   purrr::walk(
     .x = test_val,
     .f = \(.x) {
+      # passing in a sample of valid tag ids
       testthat::expect_no_error({
-        # without passing in a vector of tag ids
         test <- cvd_indicator(
           time_period_id = .x,
-          area_id = 1
-        )
-
-        # passing in a sample of valid tag ids
-        test <- cvd_indicator(
-          time_period_id = .x,
-          area_id = 1,
-          tag_id = get_random_valid_tag_id(n = 3)
-        )
-      })
-    }
-  )
-})
-
-test_that('cvd_indicator works', {
-  # expecting no error
-  test_val <- get_random_valid_time_period_id(n = 1)
-  purrr::walk(
-    .x = test_val,
-    .f = \(.x) {
-      # expecting no error - tag list included
-      testthat::expect_no_error({
-        test_tag <- get_random_valid_tag_id(n = 2)
-        test <- cvd_indicator(
-          time_period_id = .x,
-          area_id = 1,
-          tag_id = test_tag
+          area_id = get_random_valid_area_id_for_time_period_id(
+            n = 1,
+            time_period_id = .x
+          ),
+          tag_id = get_random_valid_tag_id(n = 4)
         )
       })
 
-      # expecting no error
+      # without passing in a vector of tag ids
       testthat::expect_no_error({
-        test <- cvd_indicator(time_period_id = .x, area_id = 1)
+        test <- cvd_indicator(
+          time_period_id = .x,
+          area_id = get_random_valid_area_id_for_time_period_id(
+            n = 1,
+            time_period_id = .x
+          )
+        )
       })
 
       # check the result is a list
@@ -238,84 +232,108 @@ test_that('cvd_indicator_details works', {
 
 test_that('cvd_indicator_sibling works', {
   # expecting no error
-  testthat::expect_no_error(
+  testthat::expect_no_error({
+    test_time_period_id <- get_random_valid_time_period_id(n = 1)
     test <- cvd_indicator_sibling(
-      time_period_id = 17,
-      area_id = 30,
+      time_period_id = test_time_period_id,
+      area_id = get_random_valid_area_id_for_time_period_id(
+        n = 1,
+        time_period_id = test_time_period_id
+      ),
       metric_id = 1
     )
-  )
+  })
 })
 
 test_that('cvd_indicator_child_data works', {
   # expecting no error
-  testthat::expect_no_error(
+  testthat::expect_no_error({
+    test_time_period_id <- get_random_valid_time_period_id(n = 1)
     test <- cvd_indicator_child_data(
-      time_period_id = 17,
-      area_id = 74,
+      time_period_id = test_time_period_id,
+      area_id = get_random_valid_area_id_for_time_period_id(
+        n = 1,
+        time_period_id = test_time_period_id
+      ),
       metric_id = 1
     )
-  )
+  })
 })
 
 test_that('cvd_indicator_data works', {
   # expecting no error
-  testthat::expect_no_error(
+  testthat::expect_no_error({
+    test_time_period_id <- get_random_valid_time_period_id(n = 1)
     test <- cvd_indicator_data(
       indicator_id = 1,
-      time_period_id = 1,
-      area_id = 1
+      time_period_id = test_time_period_id,
+      area_id = get_random_valid_area_id_for_time_period_id(
+        n = 1,
+        time_period_id = test_time_period_id
+      )
     )
-  )
+  })
 })
 
 test_that('cvd_indicator_metric_data works', {
   # expecting no error
-  testthat::expect_no_error(
+  testthat::expect_no_error({
+    test_time_period_id <- get_random_valid_time_period_id(n = 1)
     test <- cvd_indicator_metric_data(
       metric_id = 7,
-      time_period_id = 1,
-      area_id = 2
+      time_period_id = test_time_period_id,
+      area_id = get_random_valid_area_id_for_time_period_id(
+        n = 1,
+        time_period_id = test_time_period_id
+      )
     )
-  )
+  })
 })
 
 test_that('cvd_indicator_raw_data works', {
   # expecting no error
-  testthat::expect_no_error(
+  testthat::expect_no_error({
+    test_time_period_id <- get_random_valid_time_period_id(n = 1)
     test <- cvd_indicator_raw_data(
       indicator_id = 7,
-      time_period_id = 17,
-      system_level_id = 5
+      time_period_id = test_time_period_id,
+      system_level_id = get_random_system_level_for_time_period_id(
+        n = 1,
+        time_period_id = test_time_period_id
+      )
     )
-  )
+  })
 })
 
 test_that('cvd_indicator_nationalarea_metric_data works', {
   # expecting no error
-  testthat::expect_no_error(
+  testthat::expect_no_error({
+    test_time_period_id <- get_random_valid_time_period_id(n = 1)
     test <- cvd_indicator_nationalarea_metric_data(
       metric_id = 1,
-      time_period_id = 17,
-      area_id = 739
+      time_period_id = test_time_period_id,
+      area_id = get_random_valid_area_id_for_time_period_id(
+        n = 1,
+        time_period_id = test_time_period_id
+      )
     )
-  )
+  })
 
   # expecting error caused by missing parameters
   testthat::expect_error({
     test <- cvd_indicator_nationalarea_metric_data(
       metric_id = NA,
-      time_period_id = 17,
+      time_period_id = get_random_valid_time_period_id(n = 1),
       area_id = 739
     )
     test <- cvd_indicator_nationalarea_metric_data(
       metric_id = 1,
-      time_period_id = NA,
+      time_period_id = get_random_valid_time_period_id(n = 1),
       area_id = 739
     )
     test <- cvd_indicator_nationalarea_metric_data(
       metric_id = 1,
-      time_period_id = 17,
+      time_period_id = get_random_valid_time_period_id(n = 1),
       area_id = NA
     )
   })
@@ -356,24 +374,32 @@ test_that('cvd_indicator_person_timeseries works', {
 
 test_that('cvd_indicator_metric_systemlevel_comparison works', {
   # expecting no error
-  testthat::expect_no_error(
+  testthat::expect_no_error({
+    test_time_period_id <- get_random_valid_time_period_id(n = 1)
     test <- cvd_indicator_metric_systemlevel_comparison(
       metric_id = 1,
-      time_period_id = 1,
-      area_id = 50
+      time_period_id = test_time_period_id,
+      area_id = get_random_valid_area_id_for_time_period_id(
+        n = 1,
+        time_period_id = test_time_period_id
+      )
     )
-  )
+  })
 })
 
 test_that('cvd_indicator_metric_area_breakdown works', {
   # expecting no error
-  testthat::expect_no_error(
+  testthat::expect_no_error({
+    test_time_period_id <- get_random_valid_time_period_id(n = 1)
     test <- cvd_indicator_metric_area_breakdown(
       metric_id = 1,
-      time_period_id = 1,
-      area_id = 1
+      time_period_id = test_time_period_id,
+      area_id = get_random_valid_area_id_for_time_period_id(
+        n = 1,
+        time_period_id = test_time_period_id
+      )
     )
-  )
+  })
 })
 
 # external resource ------------------------------------------------------------
@@ -385,12 +411,14 @@ test_that('cvd_external_resource works', {
 
 test_that('cvd_data_availability works', {
   # expecting no error
-  testthat::expect_no_error(
+  testthat::expect_no_error({
+    test_time_period_id <- get_random_valid_time_period_id(n = 1)
     test <- cvd_data_availability(
-      time_period_id = 1,
-      system_level_id = 1
+      time_period_id = get_random_valid_time_period_id(n = 1),
+      system_level_id = get_random_system_level_for_time_period_id(
+        n = 1,
+        time_period_id = test_time_period_id
+      )
     )
-  )
+  })
 })
-
-# internal functions -----------------------------------------------------------
