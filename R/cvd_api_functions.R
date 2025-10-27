@@ -1,5 +1,12 @@
 # setup ------------------------------------------------------------------------
-url_base <- 'https://api.cvdprevent.nhs.uk'
+#' Get the base URL for the CVD Prevent API
+#' @return A character string with the base URL
+get_api_base_url <- function() {
+  "https://api.cvdprevent.nhs.uk"
+}
+
+# keep for testing - remove before committing
+# url_base <- "https://api.cvdprevent.nhs.uk"
 
 globalVariables(
   c(
@@ -93,34 +100,29 @@ cvd_time_period_list <- function(indicator_type_id) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('timePeriod')
 
   if (!missing(indicator_type_id)) {
     req <-
       req |>
-      httr2::req_url_query(
-        `indicatorTypeID` = indicator_type_id
-      )
+      httr2::req_url_query(`indicatorTypeID` = indicator_type_id)
   }
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <- safe_api_call(
+    req = req,
+    parse_fn = function(resp_body) {
+      dat <-
+        jsonlite::fromJSON(resp_body, flatten = TRUE)$timePeriodList |>
+        purrr::compact() |>
+        tibble::as_tibble() |>
+        safe_arrange(col = "TimePeriodID")
+    },
+    context = "cvd_time_period_list"
+  )
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)$timePeriodList
-
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No time periods returned')
-    return(dplyr::tibble(result = 'No time periods returned'))
-  } else {
-    data <- data |>
-      purrr::compact() |>
-      dplyr::as_tibble() |>
-      dplyr::arrange(TimePeriodID)
-  }
+  return(data)
 }
 
 #' Time periods and system levels
@@ -146,27 +148,38 @@ cvd_time_period_list <- function(indicator_type_id) {
 cvd_time_period_system_levels <- function() {
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('timePeriod/systemLevels')
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
+          purrr::compact() |>
+          tibble::as_tibble() |>
+          dplyr::select(
+            -dplyr::any_of(c(
+              'NotificationCount',
+              'HighestPriorityNotificationType'
+            ))
+          ) |> # prevents conflicts with column of same name in nested data
+          dplyr::relocate(
+            dplyr::any_of(c('SystemLevels')),
+            .after = dplyr::last_col()
+          ) |>
+          tidyr::unnest(cols = dplyr::any_of(c('SystemLevels'))) |>
+          dplyr::arrange(dplyr::pick(dplyr::any_of(c(
+            "TimePeriodID",
+            "SystemLevelID"
+          ))))
+      },
+      context = "cvd_time_period_system_levels"
+    )
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    dplyr::select(
-      -dplyr::any_of(c('NotificationCount', 'HighestPriorityNotificationType'))
-    ) |> # prevents conflicts with column of same name in nested data
-    dplyr::relocate(
-      dplyr::any_of(c('SystemLevels')),
-      .after = dplyr::last_col()
-    ) |>
-    tidyr::unnest(cols = dplyr::any_of(c('SystemLevels'))) |>
-    dplyr::arrange(TimePeriodID, SystemLevelID)
+  return(data)
 }
 
 ## area ------------------------------------------------------------------------
@@ -199,21 +212,26 @@ cvd_area_system_level <- function(time_period_id) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('area/systemLevel') |>
     httr2::req_url_query(
       `timePeriodID` = time_period_id
     )
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
+          purrr::compact() |>
+          tibble::as_tibble()
+        return(dat)
+      }
+    )
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
-    purrr::compact() |>
-    dplyr::as_tibble()
+  return(data)
 }
 
 #' List all system levels and available time periods
@@ -239,19 +257,24 @@ cvd_area_system_level <- function(time_period_id) {
 cvd_area_system_level_time_periods <- function() {
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('area/systemLevel/timePeriods')
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
+          purrr::compact() |>
+          tibble::as_tibble() |>
+          tidyr::unnest(cols = dplyr::any_of(c("TimePeriods")))
+        return(dat)
+      }
+    )
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
-    purrr::compact() |>
-    dplyr::as_tibble() |>
-    tidyr::unnest(cols = dplyr::any_of(c('TimePeriods')))
+  return(data)
 }
 
 
@@ -291,11 +314,6 @@ cvd_area_list <- function(time_period_id, parent_area_id, system_level_id) {
     valid_ids = m_get_valid_time_period_ids()
   )
   validate_input_id(
-    id = parent_area_id,
-    param_name = "parent_area_id",
-    required = FALSE
-  )
-  validate_input_id(
     id = system_level_id,
     param_name = "system_level_id",
     required = FALSE,
@@ -303,10 +321,18 @@ cvd_area_list <- function(time_period_id, parent_area_id, system_level_id) {
       time_period_id = time_period_id
     )
   )
+  validate_input_id(
+    id = parent_area_id,
+    param_name = "parent_area_id",
+    required = FALSE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('area')
 
   if (base::missing(parent_area_id) && base::missing(system_level_id)) {
@@ -334,26 +360,35 @@ cvd_area_list <- function(time_period_id, parent_area_id, system_level_id) {
     )
   }
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)$areaList
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)$areaList
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No areas returned')
-    return(dplyr::tibble(result = 'No areas returned'))
-  } else {
-    data <- data |>
-      purrr::compact() |>
-      dplyr::as_tibble() |>
-      dplyr::relocate(
-        dplyr::any_of(c('Parents')),
-        .after = dplyr::last_col()
-      ) |>
-      tidyr::unnest(col = dplyr::any_of(c('Parents')))
-  }
+        if (length(dat) == 0) {
+          cli::cli_alert_danger("No areas returned")
+          return(dplyr::tibble(result = "No areas returned"))
+        } else {
+          dat <-
+            dat |>
+            purrr::compact() |>
+            tibble::as_tibble() |>
+            dplyr::relocate(
+              dplyr::any_of(c("Parents")),
+              .after = dplyr::last_col()
+            ) |>
+            tidyr::unnest(col = dplyr::any_of(c("Parents")))
+        }
+
+        return(dat)
+      },
+      context = "cvd_area_list"
+    )
+
+  return(data)
 }
 
 #' Area details
@@ -397,66 +432,73 @@ cvd_area_details <- function(time_period_id, area_id) {
   validate_input_id(
     id = area_id,
     param_name = "area_id",
-    required = TRUE
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
   )
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue('area/{area_id}/details')) |>
     httr2::req_url_query(
       `timePeriodID` = time_period_id
     )
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)$areaDetails |>
+          purrr::compact() |>
+          tibble::as_tibble()
 
-  # wrangle to tibble for output
-  data <- jsonlite::fromJSON(resp, flatten = T)$areaDetails |>
-    purrr::compact() |>
-    dplyr::as_tibble()
+        # prepare the return object
+        return <- list()
 
-  # prepare the return object
-  return <- list()
+        # select base fields, exclude any parent or child details
+        area_details <-
+          dat |>
+          dplyr::select(-dplyr::any_of(c("ChildAreaList", "ParentAreaList"))) |>
+          unique()
 
-  # select the base fields, exclude any parent or child details
-  area_details <- data |>
-    dplyr::select(-dplyr::any_of(c('ChildAreaList', 'ParentAreaList'))) |>
-    unique()
+        return <-
+          return |>
+          append(list("area_details" = area_details))
 
-  return <- return |>
-    append(list('area_details' = area_details))
+        # extract any parent details
+        if ('ParentAreaList' %in% names(dat)) {
+          area_parent_details <- dat$ParentAreaList |>
+            purrr::compact() |>
+            dplyr::as_tibble() |>
+            unique()
 
-  # extract any parent details
-  if ('ParentAreaList' %in% names(data)) {
-    area_parent_details <- data$ParentAreaList |>
-      purrr::compact() |>
-      dplyr::as_tibble() |>
-      unique()
+          return <-
+            return |>
+            append(list("area_parent_details" = area_parent_details))
+        }
 
-    return <- return |>
-      append(list('area_parent_details' = area_parent_details))
-  }
+        # extract any child details
+        if ('ChildAreaList' %in% names(dat)) {
+          area_child_details <- dat$ChildAreaList |>
+            purrr::compact() |>
+            dplyr::as_tibble() |>
+            unique()
 
-  # extract any child details
-  if ('ChildAreaList' %in% names(data)) {
-    area_child_details <- data$ChildAreaList |>
-      purrr::compact() |>
-      dplyr::as_tibble() |>
-      unique()
+          return <-
+            return |>
+            append(list("area_child_details" = area_child_details))
+        }
+        return(return)
+      },
+      context = "cvd_area_details",
+      html500_msg = "{.arg area_id} is invalid"
+    )
 
-    return <- return |>
-      append(list('area_child_details' = area_child_details))
-  }
-
-  # add the full data return (for debugging)
-  # return <- return |>
-  #   append(list('all_data' = data))
-
-  # return the result
-  return(return)
+  return(data)
 }
 
 #' Unassigned areas
@@ -502,7 +544,7 @@ cvd_area_unassigned <- function(time_period_id, system_level_id) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('area/unassigned')
 
   if (base::missing(system_level_id)) {
@@ -519,24 +561,22 @@ cvd_area_unassigned <- function(time_period_id, system_level_id) {
       )
   }
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)$unassignedAreaList |>
+          purrr::compact() |>
+          tibble::as_tibble()
 
-  # wrangle to tibble for output
-  data <- jsonlite::fromJSON(resp, flatten = T)$unassignedAreaList
+        return(dat)
+      },
+      context = "cvd_area_unassigned"
+    )
 
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No unassigned areas returned')
-    return(dplyr::tibble(result = 'No unassigned areas returned'))
-  } else {
-    data <- data |>
-      purrr::compact() |>
-      dplyr::as_tibble()
-
-    return(data)
-  }
+  return(data)
 }
 
 #' Search for matching areas
@@ -581,31 +621,28 @@ cvd_area_search <- function(partial_area_name, time_period_id) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('area/search') |>
     httr2::req_url_query(
       `partialAreaName` = partial_area_name,
       `timePeriodID` = time_period_id
     )
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)$foundAreaList |>
+          purrr::compact() |>
+          tibble::as_tibble()
+        return(dat)
+      },
+      context = "cvd_area_search"
+    )
 
-  # wrangle to tibble for output
-  data <- jsonlite::fromJSON(resp, flatten = T)$foundAreaList
-
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No found areas returned')
-    return(dplyr::tibble(result = 'No found areas returned'))
-  } else {
-    data <- data |>
-      purrr::compact() |>
-      dplyr::as_tibble()
-
-    return(data)
-  }
+  return(data)
 }
 
 #' Area nested sub systems
@@ -646,60 +683,70 @@ cvd_area_nested_subsystems <- function(area_id) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue('area/{area_id}/nestedSubSystems'))
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        # gather data from JSON as a tibble
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
+          purrr::compact() |>
+          tibble::as_tibble()
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]] |>
-    purrr::compact() |>
-    dplyr::as_tibble()
+        # set up the return object
+        return <- list()
 
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No area returned')
-    return(dplyr::tibble(result = 'No area returned'))
-  } else {
-    # set up the return
-    return <- list()
+        # `dat` is a complex, multi-layered object that contains details about the
+        # requested area and also potentially its children, nested in a variable
+        # named 'Children'. Each of these children could potentially have nested
+        # children data too.
+        # To tackle this, we will implement a loop to extract details for each
+        # layer before returning all extracted layers in a named list object.
 
-    # extract any children in a loop and add them to the return as named object
-    iter <- 0
-    while (length(data) > 0) {
-      # count iterations
-      iter <- iter + 1
-      iter_name <- glue::glue('level_{iter}')
+        # set up the loop
+        iter <- 0
+        while (length(dat) > 0) {
+          # count iterations
+          iter <- iter + 1
+          iter_name <- glue::glue('level_{iter}')
 
-      # ensure data is a tibble
-      data <- data |>
-        purrr::compact() |>
-        dplyr::as_tibble()
+          # ensure data is a tibble
+          dat <-
+            dat |>
+            purrr::compact() |>
+            dplyr::as_tibble()
 
-      # extract the details for the current level excluding children
-      level <- data |>
-        dplyr::select(-dplyr::any_of('Children')) |>
-        dplyr::distinct()
+          # extract the details for the current level excluding children
+          level <- dat |>
+            dplyr::select(-dplyr::any_of('Children')) |>
+            dplyr::distinct()
 
-      # get the children details
-      child <- data |>
-        dplyr::select(dplyr::any_of('Children')) |>
-        tidyr::unnest(cols = dplyr::any_of('Children'))
+          # get the children details
+          child <- dat |>
+            dplyr::select(dplyr::any_of('Children')) |>
+            tidyr::unnest(cols = dplyr::any_of('Children'))
 
-      # add current level details to the return object if contains data
-      if (length(data) > 0) {
-        return <- return |>
-          append(setNames(list(level), iter_name))
-      }
+          # add current level details to the return object if it contains data
+          if (length(dat) > 0) {
+            return <-
+              return |>
+              append(setNames(list(level), iter_name))
+          }
 
-      # set data to be children (for the loop)
-      data <- child
-    }
+          # set data to be children (for the loop)
+          dat <- child
+        }
+        return(return)
+      },
+      context = "cvd_area_nested_subsystems",
+      html500_msg = "{.arg area_id} is invalid"
+    )
 
-    return(return)
-  }
+  return(data)
 }
 
 #' Area flat subsystems
@@ -734,29 +781,31 @@ cvd_area_flat_subsystems <- function(area_id) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue('area/{area_id}/flatSubSystems'))
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
+          purrr::compact() |>
+          tibble::as_tibble() |>
+          dplyr::relocate(
+            dplyr::any_of(c('SystemLevels')),
+            .after = dplyr::last_col()
+          ) |>
+          tidyr::unnest(cols = dplyr::any_of(c("SubSystems")), names_sep = "_")
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+        return(dat)
+      },
+      context = "cvd_area_flat_subsystems",
+      html500_msg = "{.arg area_id} is invalid"
+    )
 
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No areas returned')
-    return(dplyr::tibble(result = 'No areas returned'))
-  } else {
-    data <- data |>
-      purrr::compact() |>
-      dplyr::as_tibble() |>
-      dplyr::relocate(SubSystems, .after = dplyr::last_col()) |>
-      tidyr::unnest(cols = SubSystems, names_sep = '_')
-
-    return(data)
-  }
+  return(data)
 }
 
 ## indicators ------------------------------------------------------------------
@@ -789,7 +838,7 @@ cvd_area_flat_subsystems <- function(area_id) {
 #' cvd_indicator_list(time_period_id = 17, system_level_id = 5) |>
 #'   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
 #'   dplyr::slice_head(n = 4)
-cvd_indicator_list <- function(time_period_id = NULL, system_level_id = NULL) {
+cvd_indicator_list <- function(time_period_id, system_level_id) {
   # validate input
   validate_input_id(
     id = time_period_id,
@@ -808,31 +857,30 @@ cvd_indicator_list <- function(time_period_id = NULL, system_level_id = NULL) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
-    httr2::req_url_path_append('indicator/list') |>
+    httr2::request(get_api_base_url()) |>
+    httr2::req_url_path_append("indicator/list") |>
     httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `systemLevelID` = system_level_id
     )
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <- safe_api_call(
+    req = req,
+    parse_fn = function(resp_body) {
+      dat <-
+        jsonlite::fromJSON(resp_body, flatten = TRUE)$indicatorList |>
+        purrr::compact() |>
+        dplyr::as_tibble() |>
+        dplyr::arrange(IndicatorID)
 
-  # wrangle to tibble for output
-  data <- jsonlite::fromJSON(resp, flatten = T)$indicatorList
+      return(dat)
+    },
+    context = "cvd_indicator_list"
+  )
 
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No indicators returned')
-    return(dplyr::tibble(result = 'No indicators returned'))
-  } else {
-    data <- data |>
-      purrr::compact() |>
-      dplyr::as_tibble()
-
-    return(data)
-  }
+  # return the result
+  return(data)
 }
 
 #' List metrics for indicators
@@ -885,41 +933,39 @@ cvd_indicator_metric_list <- function(time_period_id, system_level_id) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('indicator/metricList') |>
     httr2::req_url_query(
       `timePeriodID` = time_period_id,
       `systemLevelID` = system_level_id
     )
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
+          purrr::compact() |>
+          tibble::as_tibble()
 
-  # wrangle to tibble for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
+        # move metrics to the last column and expand
+        if ("MetricList" %in% names(dat)) {
+          dat <-
+            dat |>
+            dplyr::relocate(
+              dplyr::any_of(c("MetricList")),
+              .after = dplyr::last_col()
+            ) |>
+            tidyr::unnest(cols = dplyr::any_of(c("MetricList")))
+        }
+        return(dat)
+      },
+      context = "cvd_indicator_metric_list"
+    )
 
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No indicators returned')
-    return(dplyr::tibble(result = 'No indicators returned'))
-  } else {
-    data <- data |>
-      purrr::compact() |>
-      dplyr::as_tibble()
-
-    if ('MetricList' %in% names(data)) {
-      data <-
-        data |>
-        dplyr::relocate(
-          dplyr::any_of(c('MetricList')),
-          .after = dplyr::last_col()
-        ) |>
-        tidyr::unnest(cols = dplyr::any_of(c('MetricList')))
-    }
-
-    return(data)
-  }
+  return(data)
 }
 
 #' Indicators
@@ -992,7 +1038,10 @@ cvd_indicator <- function(time_period_id, area_id, tag_id) {
   validate_input_id(
     id = area_id,
     param_name = "area_id",
-    required = TRUE
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
   )
   validate_input_id_vector(
     ids = tag_id,
@@ -1003,7 +1052,7 @@ cvd_indicator <- function(time_period_id, area_id, tag_id) {
 
   # compose the request
   if (base::missing(tag_id)) {
-    req <- httr2::request(url_base) |>
+    req <- httr2::request(get_api_base_url()) |>
       httr2::req_url_path_append('indicator') |>
       httr2::req_url_query(
         `timePeriodID` = time_period_id,
@@ -1011,7 +1060,7 @@ cvd_indicator <- function(time_period_id, area_id, tag_id) {
       )
   } else {
     req <-
-      httr2::request(url_base) |>
+      httr2::request(get_api_base_url()) |>
       httr2::req_url_path_append('indicator') |>
       httr2::req_url_query(
         `timePeriodID` = time_period_id,
@@ -1021,76 +1070,117 @@ cvd_indicator <- function(time_period_id, area_id, tag_id) {
       )
   }
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        # get the data from JSON as a tibble
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)$indicatorList |>
+          purrr::compact() |>
+          tibble::as_tibble()
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)$indicatorList
+        # `dat` is a complex, multi-layered object that contains details about the
+        # requested indicator and also potentially related metric categories and data
+        # (nested in a variable named 'Categories') and time series data, (nested in a
+        # variable named 'TimeSeries').
+        # Separate tibbles for indicator, metric categories, metric data and time series
+        # data will be extracted and returned as part of a named list.
 
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No indicators returned')
-    return(dplyr::tibble(result = 'No indicators returned'))
-  } else {
-    # compose the return list
-    return <- list()
+        # compose the return list
+        return <- list()
 
-    # prepare data as tibble
-    data <- data |>
-      purrr::compact() |>
-      dplyr::as_tibble()
+        # get indicator data
+        indicators <-
+          dat |>
+          dplyr::select(-dplyr::any_of("Categories")) |>
+          dplyr::distinct()
 
-    # Indicator data
-    indicators <- data |>
-      dplyr::select(-dplyr::any_of('Categories')) |>
-      dplyr::distinct()
+        # handle where no data is returned
+        if (tibble::is_tibble(indicators) && nrow(indicators) == 0) {
+          cli::cli_alert_danger(
+            "No data returned from {.fn cvdprevent::cvd_indicator}"
+          )
+          return(
+            tibble::tibble(
+              context = "cvd_indicator",
+              result = "No data",
+              timestamp = Sys.time()
+            )
+          )
+        } else {
+          return <-
+            return |>
+            append(list("indicators" = indicators))
+        }
 
-    return <- return |>
-      append(list('indicators' = indicators))
+        # get metric categories
+        if ("Categories" %in% names(dat)) {
+          # extract metric data
+          metrics <-
+            dat |>
+            dplyr::select(dplyr::any_of(c("IndicatorID", "Categories"))) |>
+            tidyr::unnest(cols = dplyr::any_of(c("Categories")))
 
-    # Metric categories
-    if ('Categories' %in% names(data)) {
-      # extract metric data
-      metrics <- data |>
-        dplyr::select(c(IndicatorID, dplyr::any_of('Categories'))) |>
-        tidyr::unnest(cols = dplyr::any_of(c('Categories')))
+          # extract metric categories
+          metric_categories <-
+            metrics |>
+            dplyr::select(
+              -c(dplyr::any_of(c("TimeSeries")), dplyr::starts_with("Data."))
+            ) |>
+            dplyr::distinct()
 
-      # extract metric categories
-      metric_categories <- metrics |>
-        dplyr::select(
-          -c(dplyr::any_of(c('TimeSeries')), dplyr::starts_with('Data.'))
-        ) |>
-        dplyr::distinct()
+          return <-
+            return |>
+            append(list('metric_categories' = metric_categories))
 
-      return <- return |>
-        append(list('metric_categories' = metric_categories))
+          # extract metric data
+          # if ("Data" %in% names(metrics)) {
+          if (any(grepl("^Data.", names(metrics)))) {
+            metric_data <-
+              metrics |>
+              dplyr::select(c(
+                dplyr::any_of("MetricID"),
+                dplyr::starts_with("Data.")
+              )) |>
+              tidyr::unnest(cols = dplyr::any_of("Data")) |>
+              dplyr::rename_with(
+                .cols = dplyr::starts_with("Data."),
+                ~ base::gsub(
+                  pattern = "Data.",
+                  replacement = "",
+                  x = .x,
+                  fixed = TRUE
+                )
+              ) |>
+              dplyr::distinct()
 
-      # extract metric data
-      metric_data <- metrics |>
-        dplyr::select(c(MetricID, dplyr::starts_with('Data.'))) |>
-        tidyr::unnest(cols = dplyr::any_of('Data')) |>
-        dplyr::rename_with(
-          .cols = dplyr::starts_with('Data.'),
-          ~ base::gsub(pattern = 'Data.', replacement = '', x = .x, fixed = T)
-        ) |>
-        dplyr::distinct()
+            return <-
+              return |>
+              append(list("metric_data" = metric_data))
+          }
 
-      return <- return |>
-        append(list('metric_data' = metric_data))
+          # extract timeseries data
+          if ("TimeSeries" %in% names(metrics)) {
+            timeseries <-
+              metrics |>
+              dplyr::select(dplyr::any_of(c("MetricID", "TimeSeries"))) |>
+              tidyr::unnest(cols = dplyr::any_of("TimeSeries")) |>
+              dplyr::distinct()
 
-      # extract timeseries data
-      timeseries <- metrics |>
-        dplyr::select(c(MetricID, dplyr::any_of('TimeSeries'))) |>
-        tidyr::unnest(cols = dplyr::any_of('TimeSeries')) |>
-        dplyr::distinct()
+            return <-
+              return |>
+              append(list("timeseries_data" = timeseries))
+          }
+        }
 
-      return <- return |>
-        append(list('timeseries_data' = timeseries))
-    }
+        return(return)
+      },
+      context = "cvd_indicator"
+    )
 
-    return(return)
-  }
+  return(data)
 }
 
 #' Indicator tags
@@ -1118,28 +1208,26 @@ cvd_indicator <- function(time_period_id, area_id, tag_id) {
 cvd_indicator_tags <- function() {
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('indicator/tags')
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <- safe_api_call(
+    req = req,
+    parse_fn = function(resp_body) {
+      dat <-
+        jsonlite::fromJSON(resp_body, flatten = TRUE)$indicatorTagList |>
+        purrr::compact() |>
+        tibble::as_tibble() |>
+        safe_arrange("IndicatorTagID")
 
-  # wrangle to tibble for output
-  data <- jsonlite::fromJSON(resp, flatten = T)$indicatorTagList
+      return(dat)
+    },
+    context = "Indicator tag list"
+  )
 
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No indicators tags returned')
-    return(dplyr::tibble(result = 'No indicator tags returned'))
-  } else {
-    data <- data |>
-      dplyr::as_tibble() |>
-      dplyr::distinct() |>
-      dplyr::arrange(IndicatorTagID)
-
-    return(data)
-  }
+  # return the result
+  return(data)
 }
 
 #' Indicator details
@@ -1176,37 +1264,31 @@ cvd_indicator_details <- function(indicator_id) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue('indicator/{indicator_id}/details'))
 
-  # catch errors caused by bad url - because indicator id is invalid
-  tryCatch(
-    {
-      # perform the request
-      resp <- req |>
-        httr2::req_perform() |>
-        httr2::resp_body_string()
-
-      # wrangle for output
-      data <- jsonlite::fromJSON(resp, flatten = T)$indicatorDetails
-
-      if (length(data) == 0) {
-        cli::cli_alert_danger('No indicator details returned')
-        return(dplyr::tibble(result = 'No indicator details returned'))
-      } else {
-        data <- data |>
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)$indicatorDetails |>
           purrr::compact() |>
-          dplyr::as_tibble() |>
-          dplyr::relocate(MetaData, .after = dplyr::last_col()) |>
-          tidyr::unnest(col = MetaData)
+          tibble::as_tibble() |>
+          dplyr::relocate(
+            dplyr::any_of("MetaData"),
+            .after = dplyr::last_col()
+          ) |>
+          tidyr::unnest(cols = dplyr::any_of("MetaData"))
 
-        return(data)
-      }
-    },
-    httr2_error = function(e) {
-      internal_try_catch_html500(error = e, msg = 'Indicator ID is invalid')
-    }
-  )
+        return(dat)
+      },
+      context = "cvd_indicator_details",
+      html500_msg = "{.arg indicator_id} is invalid"
+    )
+
+  return(data)
 }
 
 #' Indicator sibling data
@@ -1251,7 +1333,10 @@ cvd_indicator_sibling <- function(
   validate_input_id(
     id = area_id,
     param_name = "area_id",
-    required = TRUE
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
   )
   validate_input_id(
     id = metric_id,
@@ -1261,7 +1346,7 @@ cvd_indicator_sibling <- function(
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('indicator/siblingData') |>
     httr2::req_url_query(
       `timePeriodID` = time_period_id,
@@ -1269,32 +1354,30 @@ cvd_indicator_sibling <- function(
       `metricID` = metric_id
     )
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
+          purrr::compact() |>
+          tibble::as_tibble() |>
+          dplyr::select(
+            -dplyr::any_of(c(
+              "NotificationCount",
+              "HighestPriorityNotificationType"
+            ))
+          ) |>
+          dplyr::relocate(dplyr::any_of("Data"), .after = dplyr::last_col()) |>
+          tidyr::unnest(col = dplyr::any_of("Data"))
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
+        return(dat)
+      },
+      context = "cvd_indicator_sibling"
+    )
 
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No sibling details returned')
-    return(dplyr::tibble(result = 'No sibling details returned'))
-  } else {
-    data <- data |>
-      purrr::compact() |>
-      dplyr::as_tibble() |>
-      dplyr::select(
-        -dplyr::any_of(c(
-          'NotificationCount',
-          'HighestPriorityNotificationType'
-        ))
-      ) |> # prevents conflicts with column of same name in nested data
-      dplyr::relocate(Data, .after = dplyr::last_col()) |>
-      tidyr::unnest(col = Data)
-
-    return(data)
-  }
+  return(data)
 }
 
 #' Indicator child data
@@ -1340,7 +1423,10 @@ cvd_indicator_child_data <- function(
   validate_input_id(
     id = area_id,
     param_name = "area_id",
-    required = TRUE
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
   )
   validate_input_id(
     id = metric_id,
@@ -1350,7 +1436,7 @@ cvd_indicator_child_data <- function(
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('indicator/childData') |>
     httr2::req_url_query(
       `timePeriodID` = time_period_id,
@@ -1358,32 +1444,58 @@ cvd_indicator_child_data <- function(
       `metricID` = metric_id
     )
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
+          purrr::compact() |>
+          tibble::as_tibble() |>
+          # prevent conflicts with colum of the same name in nested data
+          dplyr::select(
+            -dplyr::any_of(c(
+              "NotificationCount",
+              "HighestPriorityNotificationType"
+            ))
+          ) |>
+          dplyr::relocate(dplyr::any_of("Data"), .after = dplyr::last_col()) |>
+          tidyr::unnest(col = dplyr::any_of("Data"))
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+        return(dat)
+      },
+      context = "cvd_indicator_child_data"
+    )
 
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No child details returned')
-    return(dplyr::tibble(result = 'No child details returned'))
-  } else {
-    data <- data |>
-      purrr::compact() |>
-      dplyr::as_tibble() |>
-      dplyr::select(
-        -dplyr::any_of(c(
-          'NotificationCount',
-          'HighestPriorityNotificationType'
-        ))
-      ) |> # prevents conflicts with column of same name in nested data
-      dplyr::relocate(Data, .after = dplyr::last_col()) |>
-      tidyr::unnest(col = Data)
+  return(data)
 
-    return(data)
-  }
+  # # perform the request
+  # resp <- req |>
+  #   httr2::req_perform() |>
+  #   httr2::resp_body_string()
+
+  # # wrangle for output
+  # data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+
+  # if (length(data) == 0) {
+  #   cli::cli_alert_danger('No child details returned')
+  #   return(dplyr::tibble(result = 'No child details returned'))
+  # } else {
+  #   data <- data |>
+  #     purrr::compact() |>
+  #     dplyr::as_tibble() |>
+  #     dplyr::select(
+  #       -dplyr::any_of(c(
+  #         'NotificationCount',
+  #         'HighestPriorityNotificationType'
+  #       ))
+  #     ) |> # prevents conflicts with column of same name in nested data
+  #     dplyr::relocate(Data, .after = dplyr::last_col()) |>
+  #     tidyr::unnest(col = Data)
+
+  #   return(data)
+  # }
 }
 
 #' Indicator data
@@ -1424,11 +1536,6 @@ cvd_indicator_data <- function(
 ) {
   # validate input
   validate_input_id(
-    id = indicator_id,
-    param_name = "indicator_id",
-    required = TRUE
-  )
-  validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
@@ -1437,12 +1544,23 @@ cvd_indicator_data <- function(
   validate_input_id(
     id = area_id,
     param_name = "area_id",
-    required = TRUE
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+  validate_input_id(
+    id = indicator_id,
+    param_name = "indicator_id",
+    required = TRUE,
+    valid_ids = m_get_valid_indicator_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
   )
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue('indicator/{indicator_id}/data')) |>
     httr2::req_url_query(
       `timePeriodID` = time_period_id,
@@ -1517,11 +1635,6 @@ cvd_indicator_metric_data <- function(
 ) {
   # validate input
   validate_input_id(
-    id = metric_id,
-    param_name = "metric_id",
-    required = TRUE
-  )
-  validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
@@ -1530,12 +1643,20 @@ cvd_indicator_metric_data <- function(
   validate_input_id(
     id = area_id,
     param_name = "area_id",
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+  validate_input_id(
+    id = metric_id,
+    param_name = "metric_id",
     required = TRUE
   )
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue(
       'indicator/metric/{metric_id}/data'
     )) |>
@@ -1610,11 +1731,6 @@ cvd_indicator_raw_data <- function(
 ) {
   # validate input
   validate_input_id(
-    id = indicator_id,
-    param_name = "indicator_id",
-    required = TRUE
-  )
-  validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
@@ -1628,10 +1744,18 @@ cvd_indicator_raw_data <- function(
       time_period_id = time_period_id
     )
   )
+  validate_input_id(
+    id = indicator_id,
+    param_name = "indicator_id",
+    required = TRUE,
+    valid_ids = m_get_valid_indicator_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue(
       'indicator/{indicator_id}/rawDataJSON'
     )) |>
@@ -1722,16 +1846,11 @@ cvd_indicator_raw_data <- function(
 #' target_data <- return_list$target
 #' target_data |> gt::gt()
 cvd_indicator_nationalarea_metric_data <- function(
-  metric_id = 1,
-  time_period_id = 17,
-  area_id = 739
+  metric_id,
+  time_period_id,
+  area_id
 ) {
   # validate input
-  validate_input_id(
-    id = metric_id,
-    param_name = "metric_id",
-    required = TRUE
-  )
   validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
@@ -1741,12 +1860,20 @@ cvd_indicator_nationalarea_metric_data <- function(
   validate_input_id(
     id = area_id,
     param_name = "area_id",
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+  validate_input_id(
+    id = metric_id,
+    param_name = "metric_id",
     required = TRUE
   )
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue(
       'indicator/nationalVsAreaMetricData/{metric_id}'
     )) |>
@@ -1853,7 +1980,7 @@ cvd_indicator_nationalarea_metric_data <- function(
 cvd_indicator_priority_groups <- function() {
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('indicator/priorityGroups')
 
   # perform the request
@@ -1918,7 +2045,7 @@ cvd_indicator_pathway_group <- function(pathway_group_id) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue(
       'indicator/pathwayGroup/{pathway_group_id}'
     ))
@@ -2000,7 +2127,7 @@ cvd_indicator_group <- function(indicator_group_id) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue(
       'indicator/indicatorGroup/{indicator_group_id}'
     ))
@@ -2087,7 +2214,7 @@ cvd_indicator_metric_timeseries <- function(metric_id, area_id) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue(
       'indicator/timeSeriesByMetric/{metric_id}'
     )) |>
@@ -2173,7 +2300,7 @@ cvd_indicator_person_timeseries <- function(indicator_id, area_id) {
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue(
       'indicator/personsTimeSeriesByIndicator/{indicator_id}'
     )) |>
@@ -2248,11 +2375,6 @@ cvd_indicator_metric_systemlevel_comparison <- function(
 ) {
   # validate input
   validate_input_id(
-    id = metric_id,
-    param_name = "metric_id",
-    required = TRUE
-  )
-  validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
@@ -2261,12 +2383,20 @@ cvd_indicator_metric_systemlevel_comparison <- function(
   validate_input_id(
     id = area_id,
     param_name = "area_id",
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+  validate_input_id(
+    id = metric_id,
+    param_name = "metric_id",
     required = TRUE
   )
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue(
       'indicator/metricSystemLevelComparison/{metric_id}'
     )) |>
@@ -2339,11 +2469,6 @@ cvd_indicator_metric_area_breakdown <- function(
 ) {
   # validate input
   validate_input_id(
-    id = metric_id,
-    param_name = "metric_id",
-    required = TRUE
-  )
-  validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
@@ -2352,12 +2477,20 @@ cvd_indicator_metric_area_breakdown <- function(
   validate_input_id(
     id = area_id,
     param_name = "param_id",
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+  validate_input_id(
+    id = metric_id,
+    param_name = "metric_id",
     required = TRUE
   )
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue(
       'indicator/metricAreaBreakdown/{metric_id}'
     )) |>
@@ -2415,7 +2548,7 @@ cvd_indicator_metric_area_breakdown <- function(
 cvd_external_resource <- function() {
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('externalResource')
 
   # perform the request
@@ -2475,7 +2608,10 @@ cvd_data_availability <- function(
   validate_input_id(
     id = indicator_id,
     param_name = "indicator_id",
-    required = FALSE
+    required = FALSE,
+    valid_ids = m_get_valid_indicator_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
   )
   validate_input_id(
     id = metric_category_type_id,
@@ -2485,7 +2621,7 @@ cvd_data_availability <- function(
 
   # compose the request
   req <-
-    httr2::request(url_base) |>
+    httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('dataAvailability') |>
     httr2::req_url_query(
       `timePeriodID` = time_period_id,
