@@ -102,6 +102,46 @@ delayedAssign(
   )
 )
 
+delayedAssign(
+  "m_cvd_indicator",
+  memoise::memoise(
+    cvd_indicator,
+    cache = m_cache
+  )
+)
+
+delayedAssign(
+  "m_get_valid_indicator_ids_for_time_period_id_and_area_id",
+  memoise::memoise(
+    get_valid_indicator_ids_for_time_period_id_and_area_id,
+    cache = m_cache
+  )
+)
+
+delayedAssign(
+  "m_get_valid_metric_ids_for_time_period_id_and_area_id",
+  memoise::memoise(
+    get_valid_metric_ids_for_time_period_id_and_area_id,
+    cache = m_cache
+  )
+)
+
+delayedAssign(
+  "m_cvd_indicator_priority_groups",
+  memoise::memoise(
+    cvd_indicator_priority_groups,
+    cache = m_cache
+  )
+)
+
+delayedAssign(
+  "m_get_valid_pathway_group_ids",
+  memoise::memoise(
+    get_valid_pathway_group_ids,
+    cache = m_cache
+  )
+)
+
 
 #' Clear memoised caches for CVD input validation functions
 #'
@@ -130,7 +170,20 @@ cvd_clear_cache <- function() {
   # List of memoised functions to forget
   memoised_fns <- list(
     m_get_valid_time_period_ids,
-    m_get_valid_tag_ids
+    m_get_valid_tag_ids,
+    m_get_valid_system_level_id_for_time_period_id,
+    m_get_valid_indicator_type_ids,
+    m_cvd_time_period_list,
+    m_cvd_area_list,
+    m_get_valid_area_ids_for_time_period_id,
+    m_cvd_indicator_metric_list,
+    m_get_valid_indicator_ids_for_time_period_id,
+    m_get_valid_metric_ids_for_time_period_id,
+    m_cvd_indicator,
+    m_get_valid_indicator_ids_for_time_period_id_and_area_id,
+    m_get_valid_metric_ids_for_time_period_id_and_area_id,
+    m_cvd_indicator_priority_groups,
+    m_get_valid_pathway_group_ids
   )
 
   # Validate all are memoised functions
@@ -414,7 +467,10 @@ get_valid_system_level_id_for_time_period_id <- function(time_period_id) {
 #'
 #' @return A numeric vector of `n` randomly selected valid indicator tag IDs.
 #' @noRd
-get_random_system_level_for_time_period_id <- function(n = 1, time_period_id) {
+get_random_valid_system_level_id_for_time_period_id <- function(
+  n = 1,
+  time_period_id
+) {
   # validate input
   validate_input_id(
     id = time_period_id,
@@ -621,6 +677,114 @@ get_random_valid_indicator_id_for_time_period_id <- function(
   return(id)
 }
 
+#' Get valid indicator IDs for a given time period
+#'
+#' @description
+#' Retrieves a unique list of valid `indicator_id` values for a given combination of `time_period_id` and `area_id`.
+#' Results are memoised for performance.
+#'
+#' @return A numeric vector of unique `indicator_id` values.
+#' @noRd
+get_valid_indicator_ids_for_time_period_id_and_area_id <- function(
+  time_period_id,
+  area_id
+) {
+  # validate input
+  validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+  validate_input_id(
+    id = area_id,
+    param_name = "area_id",
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+
+  # get a list of indicator data for this combination of time period and area
+  df_indicator_data <-
+    m_cvd_indicator(time_period_id = time_period_id, area_id = area_id)
+
+  # check the return includes indicators
+  if (!"indicators" %in% names(df_indicator_data)) {
+    cli::cli_abort("Tibble {.val indicators} not found in the indicator data.")
+  }
+
+  # get a distinct list of indicator ids
+  df_indicator_ids <-
+    df_indicator_data$indicators
+
+  # check the tibble contains a column called 'IndicatorID'
+  if (!"IndicatorID" %in% names(df_indicator_ids)) {
+    cli::cli_abort("Column {.val IndicatorID} not found in the indicator data.")
+  }
+
+  # collect a distinct list of indicator ids
+  ids <-
+    df_indicator_ids |>
+    dplyr::pull(dplyr::any_of("IndicatorID")) |>
+    unique() |>
+    sort()
+
+  # checking the ids are numeric type
+  if (!is.numeric(ids)) {
+    cli::cli_warn(
+      "Returned Indicator IDs are not numeric. Coercing to numeric."
+    )
+    ids <- as.numeric(ids)
+  }
+
+  return(ids)
+}
+
+#' Get one or more random indicator IDs for a given combination of time period ID and area ID
+#'
+#' @description
+#' Randomly selects `n` valid `indicator_id` values from the available list for a
+#' given combination of time period ID and area ID.
+#'
+#' @param n Integer. Number of IDs to return. Defaults to 1.
+#'
+#' @return A numeric vector of `n` randomly selected valid indicator IDs.
+#' @noRd
+get_random_valid_indicator_id_for_time_period_id_and_area_id <- function(
+  n = 1,
+  time_period_id,
+  area_id
+) {
+  # validate input
+  validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+  validate_input_id(
+    id = area_id,
+    param_name = "area_id",
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+
+  id <-
+    get_random_ids(
+      n = n,
+      valid_ids = m_get_valid_indicator_ids_for_time_period_id_and_area_id(
+        time_period_id = time_period_id,
+        area_id = area_id
+      ) # cached list of indicator ids
+    )
+
+  # return
+  return(id)
+}
+
 ## metric_ids ----
 
 #' Get valid metric IDs for a given time period
@@ -711,6 +875,176 @@ get_random_valid_metric_id_for_time_period_id <- function(
       valid_ids = m_get_valid_metric_ids_for_time_period_id(
         time_period_id = time_period_id
       ) # cached list of metric ids
+    )
+
+  # return
+  return(id)
+}
+
+#' Get valid metric IDs for a combination of time period and area
+#'
+#' @description
+#' Retrieves a unique list of valid `metric_id` values for a given combination of `time_period_id` and `area_id`.
+#' Results are memoised for performance.
+#'
+#' @return A numeric vector of unique `metric_id` values.
+#' @noRd
+get_valid_metric_ids_for_time_period_id_and_area_id <- function(
+  time_period_id,
+  area_id
+) {
+  # validate input
+  validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+  validate_input_id(
+    id = area_id,
+    param_name = "area_id",
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+
+  # get a list of metric data for this combination of time period and area
+  df_metric_data <-
+    m_cvd_indicator(time_period_id = time_period_id, area_id = area_id)
+
+  # check the return includes metrics
+  if (!"metric_categories" %in% names(df_metric_data)) {
+    cli::cli_abort(
+      "Tibble {.val metric_categories} not found in the metric data."
+    )
+  }
+
+  # get a distinct list of metric ids
+  df_metric_ids <-
+    df_metric_data$metric_categories
+
+  # check the tibble contains a column called 'MetricID'
+  if (!"MetricID" %in% names(df_metric_ids)) {
+    cli::cli_abort("Column {.val MetricID} not found in the metric data.")
+  }
+
+  # collect a distinct list of indicator ids
+  ids <-
+    df_metric_ids |>
+    dplyr::pull(dplyr::any_of("MetricID")) |>
+    unique() |>
+    sort()
+
+  # checking the ids are numeric type
+  if (!is.numeric(ids)) {
+    cli::cli_warn(
+      "Returned Metric IDs are not numeric. Coercing to numeric."
+    )
+    ids <- as.numeric(ids)
+  }
+
+  return(ids)
+}
+
+#' Get one or more random metric IDs for a given combination of time period ID and area ID
+#'
+#' @description
+#' Randomly selects `n` valid `metric_id` values from the available list for a given
+#' combination of time period ID and area ID.
+#'
+#' @param n Integer. Number of IDs to return. Defaults to 1.
+#'
+#' @return A numeric vector of `n` randomly selected valid metric IDs.
+#' @noRd
+get_random_valid_metric_id_for_time_period_id_and_area_id <- function(
+  n = 1,
+  time_period_id,
+  area_id
+) {
+  # validate input
+  validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+  validate_input_id(
+    id = area_id,
+    param_name = "area_id",
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+
+  id <-
+    get_random_ids(
+      n = n,
+      valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
+        time_period_id = time_period_id,
+        area_id = area_id
+      ) # cached list of metric ids
+    )
+
+  # return
+  return(id)
+}
+
+## pathway_group_ids ----
+
+#' Get valid pathway group IDs
+#'
+#' @description
+#' Retrieves a unique list of valid `pathway_group_id` values.
+#' Results are memoised for performance.
+#'
+#' @return A numeric vector of unique `pathway_group_id` values.
+#' @noRd
+get_valid_pathway_group_ids <- function() {
+  # get the pathway groups
+  df_pathway_groups <- m_cvd_indicator_priority_groups()
+
+  # check the tibble contains pathway group id
+  if (!"PathwayGroupID" %in% names(df_pathway_groups)) {
+    cli::cli_abort(
+      "Column {.val PathwayGroupID} not found in the pathway group data."
+    )
+  }
+
+  # collect a distinct list of pathway group ids
+  ids <-
+    df_pathway_groups |>
+    dplyr::pull(dplyr::any_of("PathwayGroupID")) |>
+    unique() |>
+    na.omit() |>
+    sort()
+
+  # checking the ids are numeric type
+  if (!is.numeric(ids)) {
+    cli::cli_warn(
+      "Returned Pathway Group IDs are not numeric. Coercing to numeric."
+    )
+    ids <- as.numeric(ids)
+  }
+
+  return(ids)
+}
+
+#' Get one or more random pathway group IDs
+#'
+#' @description
+#' Randomly selects `n` valid `pathway_group_id` values from the available list.
+#'
+#' @param n Integer. Number of IDs to return. Defaults to 1.
+#'
+#' @return A numeric vector of `n` randomly selected valid pathway group IDs.
+#' @noRd
+get_random_valid_pathway_group_id <- function(n = 1) {
+  id <-
+    get_random_ids(
+      n = n,
+      valid_ids = m_get_valid_pathway_group_ids() # cached list of pathway ids
     )
 
   # return
@@ -888,19 +1222,31 @@ internal_try_catch_html500 <- function(error, msg) {
 #' @param parse_fn Function to parse the response body
 #' @param context Character string describing the API context (for error messages)
 #' @param html500_msg Optional message for HTML 500 errors (e.g. invalid ID)
+#' @param timeout_sec Integer specifying the maximum number of seconds to wait for the response (default = 4)
 #'
 #' @return A tibble or error-safe fallback
+#' @noRd
 safe_api_call <- function(
   req,
   parse_fn,
   context = "API call",
-  html500_msg = NULL
+  html500_msg = NULL,
+  timeout_sec = 5
 ) {
   # wrap in tryCatch to gracefully handle errors
   tryCatch(
     {
       # perform the request
-      resp <- req |> httr2::req_perform()
+      resp <- req |>
+        httr2::req_timeout(seconds = timeout_sec) |>
+        httr2::req_perform()
+
+      # cache the request
+      req |>
+        httr2::req_cache(
+          path = tempfile(),
+          max_age = 60 * 60 * 24 # 1 day in seconds
+        )
 
       # check the status code returned from the API call
       # NB,
@@ -912,11 +1258,13 @@ safe_api_call <- function(
       status <- httr2::resp_status(resp)
       if (status != 200) {
         # display an alert to the user
-        cli::cli_alert_danger("{context} failed with status {status}")
+        cli::cli_alert_danger(
+          "{.fn cvdprevent::{context}} failed with status {status}"
+        )
         # return the result as a tibble
         return(tibble::tibble(
           context = context,
-          result = paste("Failed with status", status),
+          result = paste("Failed with status:", status),
           timestamp = Sys.time()
         ))
       }
@@ -928,11 +1276,11 @@ safe_api_call <- function(
         },
         error = function(e) {
           cli::cli_alert_danger(
-            "Failed to parse response in {context}: {e$message}"
+            "{.fn cvdprevent::{context}} failed to parse response {e$message}"
           )
           return(tibble::tibble(
             context = context,
-            result = "JSON parse error",
+            result = paste("Data parse error:", e$message),
             timestamp = Sys.time()
           ))
         }
@@ -941,7 +1289,7 @@ safe_api_call <- function(
       # handle where nothing returned, despite no errors
       if (is.null(parsed) || length(parsed) == 0) {
         cli::cli_alert_danger(
-          "No data returned from {.fn cvdprevent::{context}}"
+          "{.fn cvdprevent::{context}} returned no data"
         )
         return(tibble::tibble(
           context = context,
@@ -953,22 +1301,56 @@ safe_api_call <- function(
       # return the parsed data
       parsed
     },
-    error = function(e) {
-      # compose an error message
-      msg <- "{context} failed: {e$message}"
-      if (
-        !is.null(html500_msg) && e$message == "HTTP 500 Internal Server Error."
-      ) {
-        msg <- paste(msg, "The likely cause is", html500_msg)
-      }
-      # notify the user
-      cli::cli_alert_danger(msg)
+    httr2_http_404 = function(e) {
+      cli::cli_alert_danger(
+        "{.fn cvdprevent::{context}} failed with HTTP 404 error {e$message}"
+      )
       return(tibble::tibble(
         context = context,
-        result = e$message,
+        result = paste("HTTP 404 not found {e$message}"),
+        timestamp = Sys.time()
+      ))
+    },
+    httr2_error = function(e) {
+      cli::cli_alert_danger(
+        "{.fn cvdprevent::{context}} failed with HTTP error: likely caused by {html500_msg}"
+      )
+      return(tibble::tibble(
+        context = context,
+        result = glue::glue(
+          "Unknown HTTP error likely caused by {html500_msg}"
+        ),
         timestamp = Sys.time()
       ))
     }
+    # # handle html 500
+    # httr2_error = function(e) {
+    #   # msg <- paste(context, dplyr::coalesce(html500_msg, e$Message))
+    #   cli::cli_alert_danger(
+    #     "{.fn cvdprevent::{context}} failed with HTTP 500 error: likely caused by {dplyr::coalesce({html500_msg}, e$Message)}"
+    #   )
+    #   return(tibble::tibble(
+    #     context = context,
+    #     result = paste("HTTP 500 error", html500_msg),
+    #     timestamp = Sys.time()
+    #   ))
+    # }
+    # error = function(e) {
+    #   # compose an error message
+    #   msg <- "{context} failed: {e$message}"
+    #   if (
+    #     !is.null(html500_msg) && e$message == "HTTP 500 Internal Server Error."
+    #   ) {
+    #     msg <- paste(msg, "The likely cause is", html500_msg)
+    #   }
+    #   # notify the user
+    #   cli::cli_alert_danger(msg)
+    #   return(tibble::tibble(
+    #     context = context,
+    #     result = e$message,
+    #     timestamp = Sys.time()
+    #   ))
+    # }
   )
 }
 
@@ -1016,5 +1398,38 @@ get_pkg_functions <- function() {
         )
       )
     })
+  )
+}
+
+
+audit_call <- function() {
+  log_dir <- tools::R_user_dir("cvdprevent", which = "cache")
+  browseURL(log_dir)
+  dir.create(log_dir, showWarnings = FALSE, recursive = TRUE)
+  logfile <- file.path(log_dir, "function_log.txt")
+
+  call_info <- match.call(sys.function(-1), sys.call(-1))
+  log_lines <- c(
+    paste0("Timestamp: ", Sys.time()),
+    paste0("Function called: ", as.character(call_info[[1]])),
+    "Arguments and values:"
+  )
+
+  for (i in 2:length(call_info)) {
+    arg_name <- names(call_info)[i]
+    arg_expr <- call_info[[i]]
+    arg_value <- eval(arg_expr, parent.frame(2))
+    log_lines <- c(
+      log_lines,
+      sprintf("  %s = %s", arg_name, toString(arg_value))
+    )
+  }
+
+  log_lines <- c(log_lines, "")
+  writeLines(
+    log_lines,
+    con = logfile,
+    sep = "\n",
+    useBytes = TRUE
   )
 }
