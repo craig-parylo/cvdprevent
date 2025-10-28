@@ -526,6 +526,8 @@ cvd_area_details <- function(time_period_id, area_id) {
 #' cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>
 #'   dplyr::select(SystemLevelName, AreaID, AreaName)
 cvd_area_unassigned <- function(time_period_id, system_level_id) {
+  # audit_call()
+
   # validate input
   validate_input_id(
     id = time_period_id,
@@ -606,6 +608,8 @@ cvd_area_unassigned <- function(time_period_id, system_level_id) {
 #' \donttest{cvd_area_search(partial_area_name = 'PCN', time_period_id = 17) |>
 #'   dplyr::select(AreaID, AreaName, AreaCode)}
 cvd_area_search <- function(partial_area_name, time_period_id) {
+  # audit_call()
+
   # validate input
   validate_input_string(
     value = partial_area_name,
@@ -1028,6 +1032,8 @@ cvd_indicator_metric_list <- function(time_period_id, system_level_id) {
 #' return_list <-
 #'   cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
 cvd_indicator <- function(time_period_id, area_id, tag_id) {
+  # audit_call()
+
   # validate input
   validate_input_id(
     id = time_period_id,
@@ -1094,13 +1100,13 @@ cvd_indicator <- function(time_period_id, area_id, tag_id) {
         # get indicator data
         indicators <-
           dat |>
-          dplyr::select(-dplyr::any_of("Categories")) |>
+          dplyr::select(-dplyr::any_of(c("Categories"))) |>
           dplyr::distinct()
 
         # handle where no data is returned
         if (tibble::is_tibble(indicators) && nrow(indicators) == 0) {
           cli::cli_alert_danger(
-            "No data returned from {.fn cvdprevent::cvd_indicator}"
+            "{.fn cvdprevent::cvd_indicator} returned no data"
           )
           return(
             tibble::tibble(
@@ -1177,7 +1183,8 @@ cvd_indicator <- function(time_period_id, area_id, tag_id) {
 
         return(return)
       },
-      context = "cvd_indicator"
+      context = "cvd_indicator",
+      timeout_sec = 10
     )
 
   return(data)
@@ -1341,7 +1348,11 @@ cvd_indicator_sibling <- function(
   validate_input_id(
     id = metric_id,
     param_name = "metric_id",
-    required = TRUE
+    required = TRUE,
+    valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
+      time_period_id = time_period_id,
+      area_id = area_id
+    )
   )
 
   # compose the request
@@ -1413,6 +1424,8 @@ cvd_indicator_child_data <- function(
   area_id,
   metric_id
 ) {
+  # audit_call()
+
   # validate input
   validate_input_id(
     id = time_period_id,
@@ -1423,15 +1436,19 @@ cvd_indicator_child_data <- function(
   validate_input_id(
     id = area_id,
     param_name = "area_id",
-    required = TRUE,
-    valid_ids = m_get_valid_area_ids_for_time_period_id(
-      time_period_id = time_period_id
-    )
+    required = TRUE
+    # valid_ids = m_get_valid_area_ids_for_time_period_id(
+    #   time_period_id = time_period_id
+    # )
   )
   validate_input_id(
     id = metric_id,
     param_name = "metric_id",
     required = TRUE
+    # valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
+    #   time_period_id = time_period_id,
+    #   area_id = area_id
+    # )
   )
 
   # compose the request
@@ -1452,16 +1469,26 @@ cvd_indicator_child_data <- function(
         dat <-
           jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
           purrr::compact() |>
-          tibble::as_tibble() |>
-          # prevent conflicts with colum of the same name in nested data
-          dplyr::select(
-            -dplyr::any_of(c(
-              "NotificationCount",
-              "HighestPriorityNotificationType"
-            ))
-          ) |>
-          dplyr::relocate(dplyr::any_of("Data"), .after = dplyr::last_col()) |>
-          tidyr::unnest(col = dplyr::any_of("Data"))
+          tibble::as_tibble()
+
+        # only proceed if `dat` is a tibble and contains at least one column
+        if (tibble::is_tibble(dat) && ncol(dat) > 0) {
+          dat <-
+            dat |>
+            # prevent conflicts with columns of the same name in nested data
+            dplyr::select(
+              -dplyr::any_of(c(
+                "NotificationCount",
+                "HighestPriorityNotificationType"
+              ))
+            ) |>
+            # move 'Data' to the end and unpack
+            dplyr::relocate(
+              dplyr::any_of(c("Data")),
+              .after = dplyr::last_col()
+            ) |>
+            tidyr::unnest(col = dplyr::any_of("Data"))
+        }
 
         return(dat)
       },
@@ -1469,33 +1496,6 @@ cvd_indicator_child_data <- function(
     )
 
   return(data)
-
-  # # perform the request
-  # resp <- req |>
-  #   httr2::req_perform() |>
-  #   httr2::resp_body_string()
-
-  # # wrangle for output
-  # data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
-
-  # if (length(data) == 0) {
-  #   cli::cli_alert_danger('No child details returned')
-  #   return(dplyr::tibble(result = 'No child details returned'))
-  # } else {
-  #   data <- data |>
-  #     purrr::compact() |>
-  #     dplyr::as_tibble() |>
-  #     dplyr::select(
-  #       -dplyr::any_of(c(
-  #         'NotificationCount',
-  #         'HighestPriorityNotificationType'
-  #       ))
-  #     ) |> # prevents conflicts with column of same name in nested data
-  #     dplyr::relocate(Data, .after = dplyr::last_col()) |>
-  #     tidyr::unnest(col = Data)
-
-  #   return(data)
-  # }
 }
 
 #' Indicator data
@@ -1553,8 +1553,9 @@ cvd_indicator_data <- function(
     id = indicator_id,
     param_name = "indicator_id",
     required = TRUE,
-    valid_ids = m_get_valid_indicator_ids_for_time_period_id(
-      time_period_id = time_period_id
+    valid_ids = m_get_valid_indicator_ids_for_time_period_id_and_area_id(
+      time_period_id = time_period_id,
+      area_id = area_id
     )
   )
 
@@ -1567,34 +1568,28 @@ cvd_indicator_data <- function(
       `areaID` = area_id
     )
 
-  # catch errors caused by bad url - because indicator id is invalid
-  tryCatch(
-    {
-      # perform the request
-      resp <- req |>
-        httr2::req_perform() |>
-        httr2::resp_body_string()
-
-      # wrangle for output
-      data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
-
-      if (length(data) == 0) {
-        cli::cli_alert_danger('No indicator details returned')
-        return(dplyr::tibble(result = 'No indicator details returned'))
-      } else {
-        data <- data |>
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
           purrr::compact() |>
-          dplyr::as_tibble() |>
-          dplyr::relocate(Categories, .after = dplyr::last_col()) |>
-          tidyr::unnest(col = Categories)
+          tibble::as_tibble() |>
+          dplyr::relocate(
+            dplyr::any_of(c("Categories")),
+            .after = dplyr::last_col()
+          ) |>
+          tidyr::unnest(col = dplyr::any_of(c("Categories")))
 
-        return(data)
-      }
-    },
-    httr2_error = function(e) {
-      internal_try_catch_html500(error = e, msg = 'Indicator ID is invalid')
-    }
-  )
+        return(dat)
+      },
+      context = "cvd_indicator_data",
+      html500_msg = "invalid {.arg indicator_id}"
+    )
+
+  return(data)
 }
 
 
@@ -1651,7 +1646,11 @@ cvd_indicator_metric_data <- function(
   validate_input_id(
     id = metric_id,
     param_name = "metric_id",
-    required = TRUE
+    required = TRUE,
+    valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
+      time_period_id = time_period_id,
+      area_id = area_id
+    )
   )
 
   # compose the request
@@ -1665,34 +1664,28 @@ cvd_indicator_metric_data <- function(
       `areaID` = area_id
     )
 
-  # catch errors caused by bad url - because metric id is invalid
-  tryCatch(
-    {
-      # perform the request
-      resp <- req |>
-        httr2::req_perform() |>
-        httr2::resp_body_string()
-
-      # wrangle for output
-      data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
-
-      if (length(data) == 0) {
-        cli::cli_alert_danger('No metric details returned')
-        return(dplyr::tibble(result = 'No metric details returned'))
-      } else {
-        data <- data |>
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
           purrr::compact() |>
-          dplyr::as_tibble() |>
-          dplyr::relocate(Categories, .after = dplyr::last_col()) |>
-          tidyr::unnest(col = Categories)
+          tibble::as_tibble() |>
+          dplyr::relocate(
+            dplyr::any_of(c("Categories")),
+            .after = dplyr::last_col()
+          ) |>
+          tidyr::unnest(col = dplyr::any_of(c("Categories")))
 
-        return(data)
-      }
-    },
-    httr2_error = function(e) {
-      internal_try_catch_html500(error = e, msg = 'Metric ID is invalid')
-    }
-  )
+        return(dat)
+      },
+      context = "cvd_indicator_metric_data",
+      html500_msg = "invalid `metric_id`"
+    )
+
+  return(data)
 }
 
 #' Indicator raw data (JSON)
@@ -1764,32 +1757,23 @@ cvd_indicator_raw_data <- function(
       `systemLevelID` = system_level_id
     )
 
-  # catch errors caused by bad url - because indicator id is invalid
-  tryCatch(
-    {
-      # perform the request
-      resp <- req |>
-        httr2::req_perform() |>
-        httr2::resp_body_string()
-
-      # wrangle for output
-      data <- jsonlite::fromJSON(resp, flatten = T)[[2]]
-
-      if (length(data) == 0) {
-        cli::cli_alert_danger('No indicator details returned')
-        return(dplyr::tibble(result = 'No indicator details returned'))
-      } else {
-        data <- data |>
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
           purrr::compact() |>
-          dplyr::as_tibble()
+          tibble::as_tibble()
 
-        return(data)
-      }
-    },
-    httr2_error = function(e) {
-      internal_try_catch_html500(error = e, msg = 'Metric ID is invalid')
-    }
-  )
+        return(dat)
+      },
+      context = "cvd_indicator_raw_data",
+      html500_msg = "invalid `indicator_id`"
+    )
+
+  return(data)
 }
 
 #' Indicator national vs area metric data
@@ -1868,7 +1852,11 @@ cvd_indicator_nationalarea_metric_data <- function(
   validate_input_id(
     id = metric_id,
     param_name = "metric_id",
-    required = TRUE
+    required = TRUE,
+    valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
+      time_period_id = time_period_id,
+      area_id = area_id
+    )
   )
 
   # compose the request
@@ -1882,44 +1870,36 @@ cvd_indicator_nationalarea_metric_data <- function(
       `areaID` = area_id
     )
 
-  # catch errors caused by bad url - because indicator id is invalid
-  tryCatch(
-    {
-      # perform the request
-      resp <- req |>
-        httr2::req_perform() |>
-        httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
+          purrr::compact()
 
-      # wrangle for output
-      data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
-        purrr::compact()
-
-      if (length(data) == 0) {
-        cli::cli_alert_danger('No metric details returned')
-        return(dplyr::tibble(result = 'No metric details returned'))
-      } else {
-        # compose the return list
+        # set up the return object
         return <- list()
 
         # handle area data
-        if ('AreaData' %in% names(data)) {
+        if ("AreaData" %in% names(dat)) {
           # extract area data - the first element
           area_data <-
-            data |>
+            dat |>
             dplyr::nth(1) |>
             tibble::as_tibble()
 
-          # add to return list
           return <-
             return |>
-            append(list('area' = area_data))
+            append(list("area" = area_data))
         }
 
         # handle target data
-        if ('TargetData' %in% names(data)) {
+        if ("TargetData" %in% names(dat)) {
           # extract target data - the second element
           target_data <-
-            data |>
+            dat |>
             dplyr::nth(2)
 
           # only output if not NULL
@@ -1934,19 +1914,19 @@ cvd_indicator_nationalarea_metric_data <- function(
             # add to return list
             return <-
               return |>
-              append(list('target' = target_data))
+              append(list("target" = target_data))
           }
         }
 
-        # return the result
         return(return)
-      }
-    },
-    httr2_error = function(e) {
-      internal_try_catch_html500(error = e, msg = 'Metric ID is invalid')
-    }
-  )
+      },
+      context = "cvd_indicator_nationalarea_metric_data",
+      html500_msg = "invalid `metric_id`"
+    )
+
+  return(data)
 }
+
 
 #' Indicator priority groups
 #'
@@ -1983,26 +1963,25 @@ cvd_indicator_priority_groups <- function() {
     httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('indicator/priorityGroups')
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        # dat is a named list of tibbles, one for each of the priority groups
+        # the next step combines these tibbles together into a single tibble
+        # adding the name of each tibble as a new variable called 'PriorityGroup'
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
+          purrr::compact() |>
+          dplyr::bind_rows(.id = "PriorityGroup")
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
+        return(dat)
+      },
+      context = "cvd_indicator_priority_groups"
+    )
 
-  if (length(data) == 0) {
-    cli::cli_alert_danger('No indicator priority groups returned')
-    return(dplyr::tibble(result = 'No indicator priority groups returned'))
-  } else {
-    data <- data |>
-      dplyr::tibble() |>
-      dplyr::mutate(PriorityGroup = names(data)) |>
-      purrr::compact() |>
-      tidyr::unnest(cols = data)
-
-    return(data)
-  }
+  return(data)
 }
 
 
@@ -2040,7 +2019,8 @@ cvd_indicator_pathway_group <- function(pathway_group_id) {
   validate_input_id(
     id = pathway_group_id,
     param_name = "pathway_group_id",
-    required = TRUE
+    required = TRUE,
+    valid_ids = m_get_valid_pathway_group_ids()
   )
 
   # compose the request
@@ -2050,35 +2030,28 @@ cvd_indicator_pathway_group <- function(pathway_group_id) {
       'indicator/pathwayGroup/{pathway_group_id}'
     ))
 
-  # catch errors caused by bad url - because pathway group id is invalid
-  tryCatch(
-    {
-      # perform the request
-      # extract the response as string (this bit is most likely to fail)
-      resp <- req |>
-        httr2::req_perform() |>
-        httr2::resp_body_string()
-
-      # wrangle for output
-      data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
-
-      if (length(data) == 0) {
-        cli::cli_alert_danger('No indicator pathway groups returned')
-        return(dplyr::tibble(result = 'No indicator pathway groups returned'))
-      } else {
-        data <- data |>
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
           purrr::compact() |>
-          dplyr::as_tibble() |>
-          dplyr::relocate(Indicators, .after = dplyr::last_col()) |>
-          tidyr::unnest(cols = Indicators)
+          tibble::as_tibble() |>
+          dplyr::relocate(
+            dplyr::any_of(c("Indicators")),
+            .after = dplyr::last_col()
+          ) |>
+          tidyr::unnest(cols = dplyr::any_of(c("Indicators")))
 
-        return(data)
-      }
-    },
-    httr2_error = function(e) {
-      internal_try_catch_html500(error = e, msg = 'Pathway Group ID is invalid')
-    }
-  )
+        return(dat)
+      },
+      context = "cvd_indicator_pathway_group",
+      html500_msg = "invalid `pathway_group_id`"
+    )
+
+  return(data)
 }
 
 #' Indicator group
@@ -2132,38 +2105,35 @@ cvd_indicator_group <- function(indicator_group_id) {
       'indicator/indicatorGroup/{indicator_group_id}'
     ))
 
-  # catch errors caused by bad url - because pathway group id is invalid
-  tryCatch(
-    {
-      # perform the request
-      # extract the response as string (this bit is most likely to fail)
-      resp <- req |>
-        httr2::req_perform() |>
-        httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
+          purrr::compact() |>
+          tibble::as_tibble() |>
+          # prevent conflicts with columns of the same name in nested data
+          dplyr::select(
+            -dplyr::any_of(c(
+              "NotificationCount",
+              "HighestPriorityNotificationType"
+            ))
+          ) |>
+          dplyr::relocate(
+            dplyr::any_of(c("Indicators")),
+            .after = dplyr::last_col()
+          ) |>
+          tidyr::unnest(cols = dplyr::any_of(c("Indicators")))
 
-      # wrangle for output
-      data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
-      data <- data |>
-        purrr::compact() |>
-        dplyr::as_tibble() |>
-        dplyr::select(
-          -dplyr::any_of(c(
-            'NotificationCount',
-            'HighestPriorityNotificationType'
-          ))
-        ) |> # prevents conflicts with column of same name in nested data
-        dplyr::relocate(Indicators, .after = dplyr::last_col()) |>
-        tidyr::unnest(cols = Indicators)
+        return(dat)
+      },
+      context = "cvd_indicator_group",
+      html500_msg = "invalid `indicator_group_id`"
+    )
 
-      return(data)
-    },
-    httr2_error = function(e) {
-      internal_try_catch_html500(
-        error = e,
-        msg = 'Indicator Group ID is invalid'
-      )
-    }
-  )
+  return(data)
 }
 
 #' Indicator time series by metric
@@ -2222,28 +2192,25 @@ cvd_indicator_metric_timeseries <- function(metric_id, area_id) {
       `areaID` = area_id
     )
 
-  # catch errors caused by bad url - because pathway group id is invalid
-  tryCatch(
-    {
-      # perform the request
-      resp <- req |>
-        httr2::req_perform() |>
-        httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
+          purrr::compact() |>
+          tibble::as_tibble() |>
+          tidyr::unnest(cols = dplyr::any_of(c("Areas"))) |>
+          tidyr::unnest(cols = dplyr::any_of(c("TimeSeriesData")))
 
-      # wrangle for output
-      data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
-      data <- data |>
-        purrr::compact() |>
-        dplyr::as_tibble() |>
-        tidyr::unnest(cols = Areas) |>
-        tidyr::unnest(cols = TimeSeriesData)
+        return(dat)
+      },
+      context = "cvd_indicator_metric_timeseries",
+      html500_msg = "invalid `metric_id`"
+    )
 
-      return(data)
-    },
-    httr2_error = function(e) {
-      internal_try_catch_html500(error = e, msg = 'Metric ID is invalid')
-    }
-  )
+  return(data)
 }
 
 #' Indicator persons time series by indicator
@@ -2308,31 +2275,25 @@ cvd_indicator_person_timeseries <- function(indicator_id, area_id) {
       `areaID` = area_id
     )
 
-  # catch errors caused by bad url - because pathway group id is invalid
-  tryCatch(
-    {
-      # perform the request
-      resp <- req |>
-        httr2::req_perform() |>
-        httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
+          purrr::compact() |>
+          tibble::as_tibble() |>
+          tidyr::unnest(cols = dplyr::any_of(c("InequalityMarkers"))) |>
+          tidyr::unnest(cols = dplyr::any_of(c("CategoryData")))
 
-      # wrangle for output
-      data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
-      data <- data |>
-        purrr::compact() |>
-        dplyr::as_tibble() |>
-        tidyr::unnest(cols = InequalityMarkers) |>
-        tidyr::unnest(cols = CategoryData)
+        return(dat)
+      },
+      context = "cvd_indicator_person_timeseries",
+      html500_msg = "invalid `indicator_id`"
+    )
 
-      return(data)
-    },
-    httr2_error = function(e) {
-      internal_try_catch_html500(
-        error = e,
-        msg = 'Either Metric ID or Area ID is invalid'
-      )
-    }
-  )
+  return(data)
 }
 
 #' Indicator metric system level comparison
@@ -2391,7 +2352,11 @@ cvd_indicator_metric_systemlevel_comparison <- function(
   validate_input_id(
     id = metric_id,
     param_name = "metric_id",
-    required = TRUE
+    required = TRUE,
+    valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
+      time_period_id = time_period_id,
+      area_id = area_id
+    )
   )
 
   # compose the request
@@ -2405,32 +2370,29 @@ cvd_indicator_metric_systemlevel_comparison <- function(
       `areaID` = area_id
     )
 
-  # catch errors caused by bad url - because pathway group id is invalid
-  tryCatch(
-    {
-      # perform the request
-      resp <- req |>
-        httr2::req_perform() |>
-        httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
+          purrr::compact() |>
+          tibble::as_tibble() |>
+          tidyr::unnest(cols = dplyr::any_of(c("SystemLevels"))) |>
+          dplyr::relocate(
+            dplyr::any_of(c("ComparisonData")),
+            .after = dplyr::last_col()
+          ) |>
+          tidyr::unnest(cols = dplyr::any_of(c("ComparisonData")))
 
-      # wrangle for output
-      data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
-      data <- data |>
-        purrr::compact() |>
-        dplyr::as_tibble() |>
-        tidyr::unnest(cols = SystemLevels) |>
-        dplyr::relocate(ComparisonData, .after = dplyr::last_col()) |>
-        tidyr::unnest(cols = ComparisonData)
+        return(dat)
+      },
+      context = "cvd_indicator_metric_systemlevel_comparison",
+      html500_msg = "invalid `metric_id`"
+    )
 
-      return(data)
-    },
-    httr2_error = function(e) {
-      internal_try_catch_html500(
-        error = e,
-        msg = 'Either Metric ID, Area ID or Time Period ID are invalid'
-      )
-    }
-  )
+  return(data)
 }
 
 #' Indicator metric area breakdown
@@ -2476,7 +2438,7 @@ cvd_indicator_metric_area_breakdown <- function(
   )
   validate_input_id(
     id = area_id,
-    param_name = "param_id",
+    param_name = "area_id",
     required = TRUE,
     valid_ids = m_get_valid_area_ids_for_time_period_id(
       time_period_id = time_period_id
@@ -2485,7 +2447,11 @@ cvd_indicator_metric_area_breakdown <- function(
   validate_input_id(
     id = metric_id,
     param_name = "metric_id",
-    required = TRUE
+    required = TRUE,
+    valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
+      time_period_id = time_period_id,
+      area_id = area_id
+    )
   )
 
   # compose the request
@@ -2499,32 +2465,29 @@ cvd_indicator_metric_area_breakdown <- function(
       `areaID` = area_id
     )
 
-  # catch errors caused by bad url - because pathway group id is invalid
-  tryCatch(
-    {
-      # perform the request
-      resp <- req |>
-        httr2::req_perform() |>
-        httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
+          purrr::compact() |>
+          tibble::as_tibble() |>
+          tidyr::unnest(cols = dplyr::any_of(c("SystemLevels"))) |>
+          dplyr::relocate(
+            dplyr::any_of(c("ComparisonData")),
+            .after = dplyr::last_col()
+          ) |>
+          tidyr::unnest(cols = dplyr::any_of(c("ComparisonData")))
 
-      # wrangle for output
-      data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
-      data <- data |>
-        purrr::compact() |>
-        dplyr::as_tibble() |>
-        tidyr::unnest(cols = SystemLevels) |>
-        dplyr::relocate(ComparisonData, .after = dplyr::last_col()) |>
-        tidyr::unnest(cols = ComparisonData)
+        return(dat)
+      },
+      context = "cvd_indicator_metric_area_breakdown",
+      html500_msg = "invalid `metric_id`"
+    )
 
-      return(data)
-    },
-    httr2_error = function(e) {
-      internal_try_catch_html500(
-        error = e,
-        msg = 'Either Metric ID or Time Period ID are invalid'
-      )
-    }
-  )
+  return(data)
 }
 
 ## external resource -----------------------------------------------------------
@@ -2551,15 +2514,22 @@ cvd_external_resource <- function() {
     httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('externalResource')
 
-  # perform the request
-  resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
+          purrr::compact() |>
+          tibble::as_tibble()
 
-  # wrangle for output
-  data <- jsonlite::fromJSON(resp, flatten = T)[[2]] |>
-    purrr::compact() |>
-    dplyr::as_tibble()
+        return(dat)
+      },
+      context = "cvd_external_resource"
+    )
+
+  return(data)
 }
 
 #' Data availability
@@ -2649,27 +2619,20 @@ cvd_data_availability <- function(
       )
   }
 
-  # catch errors caused by bad url - because pathway group id is invalid
-  tryCatch(
-    {
-      # perform the request
-      resp <- req |>
-        httr2::req_perform() |>
-        httr2::resp_body_string()
+  # safely perform the request and parse
+  data <-
+    safe_api_call(
+      req = req,
+      parse_fn = function(resp_body) {
+        dat <-
+          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
+          purrr::compact() |>
+          dplyr::as_tibble()
 
-      # wrangle for output
-      data <- jsonlite::fromJSON(resp, flatten = T)[[1]]
-      data <- data |>
-        purrr::compact() |>
-        dplyr::as_tibble()
+        return(dat)
+      },
+      context = "cvd_data_availability"
+    )
 
-      return(data)
-    },
-    httr2_error = function(e) {
-      internal_try_catch_html500(
-        error = e,
-        msg = 'HTTPS error - please check either Time Period ID, Indicator ID (if supplied) and Metric Category Type ID (if supplied)'
-      )
-    }
-  )
+  return(data)
 }
