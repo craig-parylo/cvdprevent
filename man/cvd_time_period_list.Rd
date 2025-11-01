@@ -2,35 +2,38 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_time_period_list}
 \alias{cvd_time_period_list}
-\title{List time periods}
+\title{List available time periods for CVD indicators}
 \usage{
 cvd_time_period_list(indicator_type_id)
 }
 \arguments{
-\item{indicator_type_id}{integer - Indicator type ID, e.g. standard or outcome indicator type. If passed will show time periods containing data of the given type (optional)}
+\item{indicator_type_id}{Optional integer. If provided, restricts the returned time periods to those containing data of the given indicator type.}
 }
 \value{
-Tibble of time period details
+A tibble with details of available time periods, including fields such as \code{TimePeriodID}, \code{TimePeriodName}, and associated indicator type information.
+If no data is found, returns a tibble describing the error.
 }
 \description{
-Returns all available time periods
+Retrieves all available reporting periods from the CVDPREVENT API. Optionally, you can filter periods by a specific indicator type (e.g., standard, outcome) using the \code{indicator_type_id} parameter.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FtimePeriod}{Time period}
+This function is often used to determine valid values for time period parameters in other API queries. It is a building block for most higher-level data retrieval functions in this package.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FtimePeriod}{CVDPREVENT API documentation: Time period} for endpoint details.
+}
+
 \examples{
 # NB, the following examples are not tested because they take longer than
 # expected to return the results
 
-# get a tibble of all periods
-\donttest{cvd_time_periods <- cvd_time_period_list()}
+# List all available time periods
+\donttest{cvd_time_period_list()}
 
-# filter for the latest four periods
-\donttest{cvd_time_period_list() |>
-  dplyr::filter(IndicatorTypeName == 'Standard') |>
-  dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
-  dplyr::select(TimePeriodID, TimePeriodName)}
+# List time periods with data for a specific indicator type (e.g., Standard)
+\donttest{cvd_time_period_list(indicator_type_id = 1)}
+
 }
 \seealso{
 \code{\link[=cvd_indicator_types]{cvd_indicator_types()}}, \code{\link[=cvd_time_period_system_levels]{cvd_time_period_system_levels()}}

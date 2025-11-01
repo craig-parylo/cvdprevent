@@ -2,30 +2,36 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_time_period_system_levels}
 \alias{cvd_time_period_system_levels}
-\title{Time periods and system levels}
+\title{List available time periods and associated system levels}
 \usage{
 cvd_time_period_system_levels()
 }
 \value{
-tibble of time periods and associated system levels
+A tibble containing time periods and the corresponding system levels available for each, with columns including (but not limited to) \code{TimePeriodID}, \code{TimePeriodName}, \code{SystemLevelID} and \code{SystemLevelName}.
 }
 \description{
-Returns all available time periods along with the systems levels included
-in each time period.
+Retrieves all available reporting periods from the CVDPREVENT API, along with the NHS system levels included in each time period.
+
+This function is useful to determine which system levels (e.g., national, region, ICB, PCN, practice) have data available for each reporting period.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*-\%2FtimePeriod\%2FsystemLevels}{Time period system levels}
+This function is helpful for understanding the data structure of each reporting period, especially if you need to filter or subset data by system level and time period in downstream API calls.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*-\%2FtimePeriod\%2FsystemLevels}{CVDPREVENT API documentation: Time period system levels} for technical details.
+}
+
 \examples{
-# get a tibble of all periods and levels
+# Retrieve all time periods and associated system levels
 periods_levels <- cvd_time_period_system_levels()
 
-# see which levels are available for the latest period
+# Show available system levels for the latest time period
 periods_levels |>
-  dplyr::filter(TimePeriodID == max(TimePeriodID)) |>
+  plyr::slice_max(order_by = TimePeriodID) |>
   dplyr::select(TimePeriodID, TimePeriodName, SystemLevelID, SystemLevelName)
+
 }
 \seealso{
-\code{\link[=cvd_time_period_list]{cvd_time_period_list()}}
+\code{\link[=cvd_time_period_list]{cvd_time_period_list()}}, \code{\link[=cvd_area_system_level_time_periods]{cvd_area_system_level_time_periods()}}
 }

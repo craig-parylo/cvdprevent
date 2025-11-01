@@ -2,28 +2,45 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_area_system_level}
 \alias{cvd_area_system_level}
-\title{List system levels per time period}
+\title{List system levels available for a specific time period}
 \usage{
 cvd_area_system_level(time_period_id)
 }
 \arguments{
-\item{time_period_id}{integer - the time period to return data for (compulsory)}
+\item{time_period_id}{Integer (required). The ID of the reporting time period for which system levels should be returned. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
 }
 \value{
-tibble of system levels available for the time period
+A tibble containing system level details for the specified time period, with columns such as \code{SystemLevelID} and \code{SystemLevelName}.
+If there are no results, returns a tibble with a single column \code{result} describing the error.
 }
 \description{
-Returns all available system levels for a specified time period.
+Retrieves all available NHS system levels (e.g., National, Region, ICB, PCN, Practice) for a specified reporting time period from the CVDPREVENT API.
+
+This function helps users determine which system levels are available for data extraction in a given reporting period.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2FsystemLevel}{System levels per time period}
+This function is useful in workflows where you need to filter or subset NHS areas or data by both time period and system level. It is often used as a precursor to more detailed area or indicator queries.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2FsystemLevel}{CVDPREVENT API documentation: System levels per time period}
+}
+
 \examples{
-# list system levels for time period 4
+# List all system levels available for time period 4 (activity to March 2022)
 cvd_area_system_level(time_period_id = 4) |>
   dplyr::select(SystemLevelID, SystemLevelName)
+
+# Find valid time period IDs, then get system levels for the latest one
+latest_period <-
+  cvd_time_period_list() |>
+  dplyr::pull(TimePeriodID) |>
+  max()
+
+cvd_area_system_level(time_period_id = latest_period) |>
+  dplyr::select(SystemLevelID, SystemLevelName)
+
 }
 \seealso{
-\code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}
+\code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}, \code{\link[=cvd_time_period_system_levels]{cvd_time_period_system_levels()}}
 }
