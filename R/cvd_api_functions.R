@@ -127,26 +127,34 @@ cvd_time_period_list <- function(indicator_type_id) {
   }
 }
 
-#' Time periods and system levels
+#' List available time periods and associated system levels
 #'
-#' Returns all available time periods along with the systems levels included
-#' in each time period.
+#' @description
+#' Retrieves all available reporting periods from the CVDPREVENT API, along with the NHS system levels included in each time period.
 #'
-#' CVD Prevent API documentation:
-#' [Time period system levels](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*-%2FtimePeriod%2FsystemLevels)
+#' This function is useful to determine which system levels (e.g., national, region, ICB, PCN, practice) have data available for each reporting period.
 #'
-#' @return tibble of time periods and associated system levels
-#' @export
-#' @seealso [cvd_time_period_list()]
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Time period system levels](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*-%2FtimePeriod%2FsystemLevels) for technical details.
+#'
+#' @return
+#' A tibble containing time periods and the corresponding system levels available for each, with columns including (but not limited to) `TimePeriodID`, `TimePeriodName`, `SystemLevelID` and `SystemLevelName`.
+#'
+#' @details
+#' This function is helpful for understanding the data structure of each reporting period, especially if you need to filter or subset data by system level and time period in downstream API calls.
+#'
+#' @seealso [cvd_time_period_list()], [cvd_area_system_level_time_periods()]
 #'
 #' @examples
-#' # get a tibble of all periods and levels
+#' # Retrieve all time periods and associated system levels
 #' periods_levels <- cvd_time_period_system_levels()
 #'
-#' # see which levels are available for the latest period
+#' # Show available system levels for the latest time period
 #' periods_levels |>
-#'   dplyr::filter(TimePeriodID == max(TimePeriodID)) |>
+#'   plyr::slice_max(order_by = TimePeriodID) |>
 #'   dplyr::select(TimePeriodID, TimePeriodName, SystemLevelID, SystemLevelName)
+#'
+#' @export
 cvd_time_period_system_levels <- function() {
   # compose the request
   req <-
