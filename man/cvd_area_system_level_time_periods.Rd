@@ -2,29 +2,36 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_area_system_level_time_periods}
 \alias{cvd_area_system_level_time_periods}
-\title{List all system levels and available time periods}
+\title{List all system levels and their available time periods}
 \usage{
 cvd_area_system_level_time_periods()
 }
 \value{
-tibble of system levels and reporting periods
+A tibble with one row per system level and time period, including columns such as \code{SystemLevelID}, \code{SystemLevelName}, \code{TimePeriodID} and \code{TimePeriodName}.
 }
 \description{
-Returns all available system levels along with the time periods where the
-system levels occur.
+Retrieves all available NHS system levels from the CVDPREVENT API, along with the reporting periods (time periods) in which each system level has data available.
+
+This function is the inverse of \code{\link[=cvd_time_period_system_levels]{cvd_time_period_system_levels()}}, allowing you to see, for each system level (e.g., National, Region, ICB, PCN, Practice), the set of time periods for which data exists.
 }
 \details{
-Note: this is the inverse of \code{cvd_time_period_system_levels()}.
-
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*\%2Farea\%2FsystemLevel\%2FtimePeriods}{All system levels and time periods}
+Use this function to determine which reporting periods are available for each NHS system level. This is useful for dynamically generating data selections or validating user input in dashboards or scripts.
 }
+\section{API Documentation}{
+
+\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*\%2Farea\%2FsystemLevel\%2FtimePeriods}{CVDPREVENT API documentation: All system levels and time periods} for details.
+}
+
 \examples{
-# list the latest four reporting periods at GP practice level
+# List the latest four reporting periods at GP practice level
 cvd_area_system_level_time_periods() |>
-  dplyr::filter(SystemLevelName == 'Practice') |>
+  dplyr::filter(SystemLevelName == "Practice") |>
   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
   dplyr::select(SystemLevelName, TimePeriodID, TimePeriodName)
+
+# Explore all system levels and their available time periods
+cvd_area_system_level_time_periods()
+
 }
 \seealso{
 \code{\link[=cvd_time_period_system_levels]{cvd_time_period_system_levels()}}, \code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}

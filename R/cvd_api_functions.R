@@ -246,26 +246,34 @@ cvd_area_system_level <- function(time_period_id) {
     dplyr::as_tibble()
 }
 
-#' List all system levels and available time periods
+#' List all system levels and their available time periods
 #'
-#' Returns all available system levels along with the time periods where the
-#' system levels occur.
+#' @description
+#' Retrieves all available NHS system levels from the CVDPREVENT API, along with the reporting periods (time periods) in which each system level has data available.
 #'
-#' Note: this is the inverse of `cvd_time_period_system_levels()`.
+#' This function is the inverse of [cvd_time_period_system_levels()], allowing you to see, for each system level (e.g., National, Region, ICB, PCN, Practice), the set of time periods for which data exists.
 #'
-#' CVD Prevent API documentation:
-#' [All system levels and time periods](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Farea%2FsystemLevel%2FtimePeriods)
+#' @section API Documentation:
+#' [CVDPREVENT API documentation: All system levels and time periods](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Farea%2FsystemLevel%2FtimePeriods) for details.
 #'
-#' @return tibble of system levels and reporting periods
-#' @export
+#' @return A tibble with one row per system level and time period, including columns such as `SystemLevelID`, `SystemLevelName`, `TimePeriodID` and `TimePeriodName`.
+#'
+#' @details
+#' Use this function to determine which reporting periods are available for each NHS system level. This is useful for dynamically generating data selections or validating user input in dashboards or scripts.
+#'
 #' @seealso [cvd_time_period_system_levels()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
-#' # list the latest four reporting periods at GP practice level
+#' # List the latest four reporting periods at GP practice level
 #' cvd_area_system_level_time_periods() |>
-#'   dplyr::filter(SystemLevelName == 'Practice') |>
+#'   dplyr::filter(SystemLevelName == "Practice") |>
 #'   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
 #'   dplyr::select(SystemLevelName, TimePeriodID, TimePeriodName)
+#'
+#' # Explore all system levels and their available time periods
+#' cvd_area_system_level_time_periods()
+#'
+#' @export
 cvd_area_system_level_time_periods <- function() {
   # compose the request
   req <-
