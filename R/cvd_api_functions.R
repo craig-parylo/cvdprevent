@@ -58,31 +58,35 @@ cvd_indicator_types <- function() {
     dplyr::distinct()
 }
 
-#' List time periods
+#' List available time periods for CVD indicators
 #'
-#' Returns all available time periods
+#' @description
+#' Retrieves all available reporting periods from the CVDPREVENT API. Optionally, you can filter periods by a specific indicator type (e.g., standard, outcome) using the `indicator_type_id` parameter.
 #'
-#' CVD Prevent API documentation:
-#' [Time period](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FtimePeriod)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Time period](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FtimePeriod) for endpoint details.
 #'
-#' @param indicator_type_id integer - Indicator type ID, e.g. standard or outcome indicator type. If passed will show time periods containing data of the given type (optional)
+#' @param indicator_type_id Optional integer. If provided, restricts the returned time periods to those containing data of the given indicator type.
 #'
-#' @return Tibble of time period details
-#' @export
+#' @return A tibble with details of available time periods, including fields such as `TimePeriodID`, `TimePeriodName`, and associated indicator type information.
+#' If no data is found, returns a tibble describing the error.
+#'
+#' @details
+#' This function is often used to determine valid values for time period parameters in other API queries. It is a building block for most higher-level data retrieval functions in this package.
+#'
 #' @seealso [cvd_indicator_types()], [cvd_time_period_system_levels()]
 #'
 #' @examples
 #' # NB, the following examples are not tested because they take longer than
 #' # expected to return the results
 #'
-#' # get a tibble of all periods
-#' \donttest{cvd_time_periods <- cvd_time_period_list()}
+#' # List all available time periods
+#' \donttest{cvd_time_period_list()}
 #'
-#' # filter for the latest four periods
-#' \donttest{cvd_time_period_list() |>
-#'   dplyr::filter(IndicatorTypeName == 'Standard') |>
-#'   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
-#'   dplyr::select(TimePeriodID, TimePeriodName)}
+#' # List time periods with data for a specific indicator type (e.g., Standard)
+#' \donttest{cvd_time_period_list(indicator_type_id = 1)}
+#'
+#' @export
 cvd_time_period_list <- function(indicator_type_id) {
   # validate input
   validate_input_id(
