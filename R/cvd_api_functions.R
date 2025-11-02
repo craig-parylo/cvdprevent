@@ -789,28 +789,36 @@ cvd_area_nested_subsystems <- function(area_id) {
   }
 }
 
-#' Area flat subsystems
+#' Retieve flat sub-systems for an NHS area, grouped by system level
 #'
-#' Similar to `cvd_area_nested_subsystems()` but the sub-areas are grouped
-#' based on their system level.
+#' @description
+#' Returns a "flat" list of the specified NHS area and all its immediate child areas from the CVDPREVENT API, with child areas grouped by their system level rather than by strict heirarchical nesting. This function provides a convenient overview when you want to see all sub-areas organised by level (e.g., all PCNs and all GP practices beneath an ICB) without traversing the full heirarchy.
 #'
-#' CVD Prevent API documentation:
-#' [Area flat subsystems](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2FflatSubSystems)
+#' The output is a tibble where each row represents an area or sub-area, and child areas are included as columns (with system level information).
 #'
-#' @param area_id integer - the area to return data for (compulsory)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Area flat subsystems](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2FflatSubSystems)
 #'
-#' @return Tibble of details for the area and its child areas (where applicable)
-#' @export
-#' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()]
+#' @param area_id Integer (required). The AreaID for which to retrieve flat sub-system data. use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
+#'
+#' @return
+#' A tibble containing details for the specified area and its child areas, with columns such as `AreaID`, `AreaName`, `SystemLevelID`, `SystemLevelName`, and child area details (e.g., via `SubSystems_*` columns).
+#' If no areas are found, returns a tibble describing the error.
+#'
+#' @details
+#' This function is useful for quickly listing all areas beneath a parent, grouped by system level, for reporting or selection purposes. For a fully nested view, see [cvd_area_nested_subsystems()].
+#'
+#' @seealso
+#' [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()]
 #'
 #' @examples
-#' # View details for for Somerset STP
-#' cvd_area_flat_subsystems(area_id = 5) |>
-#'   dplyr::glimpse()
+#' # View flat sub-systems for Somerset STP (area_id = 5)
+#' cvd_area_flat_subsystems(area_id = 5) |> dplyr::glimpse()
 #'
-#' # View details for Lincolnshire ICB
-#' cvd_area_flat_subsystems(area_id = 8042) |>
-#'   dplyr::glimpse()
+#' # View flat sub-systems for Lincolnshire ICB (area_id = 8042)
+#' cvd_area_flat_subsystems(area_id = 8042) |> dplyr::glimpse()
+#'
+#' @export
 cvd_area_flat_subsystems <- function(area_id) {
   # validate input
   validate_input_id(
