@@ -686,34 +686,43 @@ cvd_area_search <- function(partial_area_name, time_period_id) {
   }
 }
 
-#' Area nested sub systems
+#' Retrieve nested sub-systems for an NHS area
 #'
-#' Returns given area and children areas in a nested structure
+#' @description
+#' Returns a hierarchical (nested) structure of the specified NHS area and all of its descendent (child) areas from the CVDPREVENT API. This function is useful for exploring the parent-child relationships within NHS geographies, such as seeing a PCN and all of its practices, or an ICB with all subordinate structures.
 #'
-#' CVD Prevent API documentation:
-#' [Area nested subsystems](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2FnestedSubSystems)
+#' The output is a list of tibbles, one for each "level" in the heirarchy, named as `level_1`, `level_2`, etc. Each tibble contains the details for the areas at that level.
 #'
-#' @param area_id integer - the area to return data for (compulsory)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Area nested subsystems](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2F%3Carea_id%3E%2FnestedSubSystems)
 #'
-#' @return List of named tibbles containing details for the area and each sub-level areas
-#' @export
-#' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_flat_subsystems()]
+#' @param area_id Integer (required). The AreaID for which to retrieve nested sub-system data. Use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
+#'
+#' @return
+#' A named list of tibbles, where each element (`level_1`, `level_2`, etc.) contains details for the specified area and each subsequent child level. If no data is found, returns a tibble describing the error.
+#'
+#' @details
+#' This function is helpful for visualising or programmatically traversing the full nested structure beneath a given NHS area. For example, given an ICB, you can see all PCNs, then all practices beneath those PCNs, and so on.
+#'
+#' @seealso
+#' [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
-#' # View details for for Somerset STP
+#' # View the nested structure for Somerset STP (area_id = 5)
 #' returned_list <- cvd_area_nested_subsystems(area_id = 5)
 #' returned_list |> summary()
 #'
-#' # see details for five of the immediate children of Somerset STP
-#' returned_list$level_2 |>
-#'   dplyr::slice_head(n = 5)
+#' # See details for the first five immediate children of Somerset STP
+#' returned_list$level_2 |> dplyr::slice_head(n = 5)
 #'
-#' # View details for Leicester Central PCN
+#' # View the nested structure for Leicester Central PCN (area_id = 701)
 #' returned_list <- cvd_area_nested_subsystems(area_id = 701)
 #' returned_list |> summary()
 #'
-#' # see details for the GP practice children of the PCN
+#' # See the GP practice children of the PCN
 #' returned_list$level_2
+#'
+#' @export
 cvd_area_nested_subsystems <- function(area_id) {
   # validate input
   validate_input_id(
