@@ -1429,34 +1429,41 @@ cvd_indicator_sibling <- function(
   }
 }
 
-#' Indicator child data
+#' Retrieve child area data for a specific metric, time period and area
 #'
-#' Returns all children areas and their data for specified time period, area
-#' and metric. This endpoint is intended to only return data for selected
-#' metric, and not all metrics for indicators, hence the metricID query
-#' parameter.
+#' @description
+#' Returns the value of a single metric for all child areas of a specified NHS area (and the specified area itself) for a chosen reporting period, using the CVDPREVENT API. This function enables direct comparison of a specific metric across all subordinate areas (e.g., all GP practices within a PCN, or all PCNs within an ICB).
 #'
-#' CVD Prevent API documentation:
-#' [Indicator child data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FchildData)
+#' Only the selected metric is returned for each child area.
 #'
-#' @param time_period_id integer - time period for which to return data (compulsory)
-#' @param area_id integer - area for which all children data will be returned (compulsory)
-#' @param metric_id integer - metric for which to return data (compulsory)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Indicator child data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FchildData)
 #'
-#' @return Tibble of details for the specified metric in the child areas of the specified area
-#' @export
-#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
-#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
-#' [cvd_indicator_data()], [cvd_indicator_metric_data()],
-#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
-#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
-#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
-#' [cvd_indicator_metric_area_breakdown()]
+#' @param time_period_id Integer (required). The reporting period (time period) for which to return child data. Use [cvd_time_period_list()] to find valid IDs.
+#' @param area_id Integer (required). The AreaID for which to find child areas. Use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
+#' @param metric_id Integer (required). The MetricID for which to retrieve values. Use [cvd_indicator_metric_list()] or [cvd_indicator_data()] to find valid MetricIDs.
+#'
+#' @return
+#' A tibble with the value of the specified metric for the given area and all its child areas, for the specified time period. Typical columns include `AreaID`, `AreaName`, `Value`, `LowerConfidenceLimit`, `UpperConfidenceLimit` and other relevant metric information.
+#' If no child data is found, returns a tibble describing the error.
+#'
+#' @details
+#' Use this function to compare a metric across all immediate child areas under a parent (for example, to benchmark all GP practices within a PCN for a specific indicator and reporting period).
+#'
+#' @seealso
+#' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()], [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()], [cvd_indicator_data()], [cvd_indicator_metric_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' cvd_indicator_child_data(time_period_id = 17, area_id = 74, metric_id = 126) |>
+#' # Compare the value of metric 126 for area 1103 and all its child areas in time period 17
+#' cvd_indicator_child_data(time_period_id = 17, area_id = 1103, metric_id = 126) |>
 #'   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit)
+#'
+#' # Find a valid metric ID for an indicator, then get child area data
+#' metrics <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
+#' metric_id <- metrics$MetricID[1]
+#' cvd_indicator_child_data(time_period_id = 17, area_id = 1103, metric_id = metric_id)
+#'
+#' @export
 cvd_indicator_child_data <- function(
   time_period_id,
   area_id,
