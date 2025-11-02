@@ -935,37 +935,38 @@ cvd_indicator_list <- function(time_period_id = NULL, system_level_id = NULL) {
   }
 }
 
-#' List metrics for indicators
+#' List indicators and associated metrics for a system level and time period
 #'
-#' Returns same data as cvd_indicator_list() but adds a 'MetricList' array for
-#' each indicator, containing details of the relevant metrics. Only returns
-#' indicators for which data exists in selected time period, and on selected
-#' system level.
+#' @description
+#' Retrieves all CVD indicators available for a given reporting period and given system level from the CVDPREVENT API, with an expanded view that includes 'MetricList' array for each indicator. This allows you to see not only which indicators are available, but also the specific metrics (e.g., breakdowns by age, sex or other attributes) associated with each indicator in the selected context.
 #'
-#' CVD Prevent API documentation:
-#' [Indicator metric list](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Findicator%2FmetricList)
+#' Only indicators with available data for the specified time period and system level are returned. This function is useful for determining what granular metric breakdowns are provided for each indicator.
 #'
-#' @param time_period_id integer - time period to return data for (compulsory)
-#' @param system_level_id integer - system level to return data for (compulsory)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Indicator metric list](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Findicator%2FmetricList)
 #'
-#' @return Tibble of details for indicators and associated metrics
-#' @export
-#' @seealso [cvd_indicator_list()], [cvd_indicator()],
-#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
-#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
-#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()],
-#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
-#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
-#' [cvd_indicator_metric_area_breakdown()]
+#' @param time_period_id Integer (required). The reporting period (time period) for which to return indicators and metrics. use [cvd_time_period_list()] to find valid IDs.
+#' @param system_level_id Integer (required). The system level (e.g., National, Region, ICB, PCN, Practice) for which to return indicators and metrics. Use [cvd_area_system_level()] to find valid IDs for a given time period.
+#'
+#' @return
+#' A tibble containing one row for each indicator-metric pair avialable for the specified system level and time period. Columns typically include `IndicatorID`, `IndicatorShortName`, `MetricID`, `MetricCategoryName`, `CategoryAttribute`, and other metric-related fields.
+#' If no indicators or metrics are found returns a tibble describing the error.
+#'
+#' @details
+#' Use this function to explore the detailed metric breakdowns available for each indicator before performing data extraction or analysis. The `MetricList` column is unnested for convenience, so each row represents a single metric linked to an indicator.
 #'
 #' @examples
 #' # List metrics for the prevalence of atrial fibrillation (indicator ID 1),
-#' # focussing on just those metrics for the 40-59 years age group:
+#' # focusing on metrics for the 40-59 years age group at the national level:
 #' cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
-#'   dplyr::filter(IndicatorID == 1, MetricCategoryName == '40-59') |>
+#'   dplyr::filter(IndicatorID == 1, MetricCategoryName == "40-59") |>
 #'   dplyr::count(IndicatorID, IndicatorShortName, MetricID, MetricCategoryName, CategoryAttribute) |>
 #'   dplyr::select(-n)
+#'
+#' # Get all indicator-metric pairs for GP practice level (system level 5) in a given period
+#' cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
+#'
+#' @export
 cvd_indicator_metric_list <- function(time_period_id, system_level_id) {
   # validate_input
   validate_input_id(
