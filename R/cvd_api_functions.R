@@ -520,30 +520,40 @@ cvd_area_details <- function(time_period_id, area_id) {
   return(return)
 }
 
-#' Unassigned areas
+#' List NHS areas without parent assignments for a given time period
 #'
-#' Returns a list of all areas which have data in the selected time period,
-#' but do not have any parent areas assigned, and therefore are unreachable.
+#' @description
+#' Retrieves all NHS areas that have data in the specified reporting time period but do not have any parent areas assigned. These "unassigned" areas are unreachable via standard heirarchical navigation and may represent data issues or exceptional cases (e.g., England as the highest-level system).
 #'
-#' CVD Prevent API documentation:
-#' [Areas unassigned](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2Funassigned)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Areas unassigned](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2Funassigned)
 #'
-#' @param time_period_id integer - time period for which Area must have data for (compulsory)
-#' @param system_level_id integer - system level of areas in the unassigned list (optional)
+#' @param time_period_id Integer (required). The reporting period (time period) for which to find unassigned areas. Use [cvd_time_period_list()] to obtain valid IDs.
+#' @param system_level_id Integer (optional). Restrict the search to areas at a specific system level (e.g., Practice, PCN, ICB). Use [cvd_area_system_level()] to find valid IDs for a given time period.
 #'
-#' @return Tibble of details for areas without parent details
-#' @export
-#' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
+#' @return
+#' A tibble containing details for all areas without parent assignments in the selected time period (and system leve, if specified). Typical columns include `SystemLevelName`, `AreaID`, `AreaName`, etc.
+#' If no unassigned areas are found, returns a tibble describing the error.
+#'
+#' @details
+#' - Use this function to identify "orphaned" NHS areas or to understand top-level areas (e.g., England).
+#' - If `system_level_id = 1` (England), expect the only result to be England, since it has no parent.
+#' - This can help with data quality checks or to ensure all areas are accessible via parent/child navigation.
+#'
+#' @seealso
+#' [cvd_area_list()], [cvd_area_details()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
-#' # Report four GP practices (ID = 5) without parent PCN details:
+#' # Report four GP practices (system level ID = 5) without parent PCN details for time period 17:
 #' cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
 #'   dplyr::slice_head(n = 4) |>
 #'   dplyr::select(SystemLevelName, AreaID, AreaName)
 #'
-#' # England, as the highest system_level (ID = 1) does not have parent details
+#' # List unassigned top-level areas (system level ID = 1, England) for time period 17:
 #' cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>
 #'   dplyr::select(SystemLevelName, AreaID, AreaName)
+#'
+#' @export
 cvd_area_unassigned <- function(time_period_id, system_level_id) {
   # validate input
   validate_input_id(

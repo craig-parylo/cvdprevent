@@ -2,35 +2,44 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_area_unassigned}
 \alias{cvd_area_unassigned}
-\title{Unassigned areas}
+\title{List NHS areas without parent assignments for a given time period}
 \usage{
 cvd_area_unassigned(time_period_id, system_level_id)
 }
 \arguments{
-\item{time_period_id}{integer - time period for which Area must have data for (compulsory)}
+\item{time_period_id}{Integer (required). The reporting period (time period) for which to find unassigned areas. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to obtain valid IDs.}
 
-\item{system_level_id}{integer - system level of areas in the unassigned list (optional)}
+\item{system_level_id}{Integer (optional). Restrict the search to areas at a specific system level (e.g., Practice, PCN, ICB). Use \code{\link[=cvd_area_system_level]{cvd_area_system_level()}} to find valid IDs for a given time period.}
 }
 \value{
-Tibble of details for areas without parent details
+A tibble containing details for all areas without parent assignments in the selected time period (and system leve, if specified). Typical columns include \code{SystemLevelName}, \code{AreaID}, \code{AreaName}, etc.
+If no unassigned areas are found, returns a tibble describing the error.
 }
 \description{
-Returns a list of all areas which have data in the selected time period,
-but do not have any parent areas assigned, and therefore are unreachable.
+Retrieves all NHS areas that have data in the specified reporting time period but do not have any parent areas assigned. These "unassigned" areas are unreachable via standard heirarchical navigation and may represent data issues or exceptional cases (e.g., England as the highest-level system).
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2Funassigned}{Areas unassigned}
+\itemize{
+\item Use this function to identify "orphaned" NHS areas or to understand top-level areas (e.g., England).
+\item If \code{system_level_id = 1} (England), expect the only result to be England, since it has no parent.
+\item This can help with data quality checks or to ensure all areas are accessible via parent/child navigation.
 }
+}
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2Funassigned}{CVDPREVENT API documentation: Areas unassigned}
+}
+
 \examples{
-# Report four GP practices (ID = 5) without parent PCN details:
+# Report four GP practices (system level ID = 5) without parent PCN details for time period 17:
 cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
   dplyr::slice_head(n = 4) |>
   dplyr::select(SystemLevelName, AreaID, AreaName)
 
-# England, as the highest system_level (ID = 1) does not have parent details
+# List unassigned top-level areas (system level ID = 1, England) for time period 17:
 cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>
   dplyr::select(SystemLevelName, AreaID, AreaName)
+
 }
 \seealso{
 \code{\link[=cvd_area_list]{cvd_area_list()}}, \code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}
