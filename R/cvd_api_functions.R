@@ -856,34 +856,39 @@ cvd_area_flat_subsystems <- function(area_id) {
 
 ## indicators ------------------------------------------------------------------
 
-#' List indicators
+#' List available indicators for a system level and time period
 #'
-#' Returns basic details of all indicators for a given system level and time period.
-#' Only returns indicators for which data exists in selected time period, and on
-#' selected system level. Used to populate available indicator list in Data Explorer.
+#' @description
+#' Retrieves basic details for all CVD indicators available for a given system level and reportion period from the CVDPREVENT API. Only indicators with data for the selected time period and system level are returned. This function is commonly used to populate indicator pickers or to discover what data is available for further queries.
 #'
-#' CVD Prevent API documentation:
-#' [Indicator list](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2Flist)
+#' @section API Docuemtnation:
+#' See the [CVDPREVENT API documentation: Indicator list](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2Flist)
 #'
-#' @param time_period_id integer - time period to reutrn data for (compulsory)
-#' @param system_level_id integer - system level to return data for (compulsory)
+#' @param time_period_id Integer (required). The reporting period (time period) for which to return indicators. Use [cvd_time_period_list()] to find valid IDs.
+#' @param system_level_id Integer (required). The system level (e.g., National, Region, ICB, PCN, Practice) for which to return indicators. Use [cvd_area_system_level()] to find valid IDs for a given time period.
 #'
-#' @return Tibble of details for indicators for the time period and system level
-#' @export
-#' @seealso [cvd_indicator_metric_list()], [cvd_indicator()],
-#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
-#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
-#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
-#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
-#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
-#' [cvd_indicator_metric_area_breakdown()]
+#' @return
+#' A tibble with one row per available indicator for the specified system level and time period. Typical columns include (but are not limited to) `IndicatorID`, `IndicatorCode`, `IndicatorShortName`, `IndicatorName`, `IndicatorStatus`, `IndicatorFormatID`, and others describing indicator properties.
+#' If no indicators are found, returns a tibble describing the error.
+#'
+#' @details
+#' Use this function to discover which indicators are available for a specific combination of system level and time period. The results can be joined with other outputs for further analysis, or used as the basis for more detailed indicator, metric, or data queries.
+#'
+#' @seealso
+#' [cvd_indicator_metric_list()], [cvd_indicator()], [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()], [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' # List four indicators for time point 17 and GP practice level (system level 5)
+#' # List four indicators for time period 17 and GP practice level (system level 5)
 #' cvd_indicator_list(time_period_id = 17, system_level_id = 5) |>
 #'   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
 #'   dplyr::slice_head(n = 4)
+#'
+#' # Find valid time period and system level IDs, then list all available indicators
+#' valid_periods <- cvd_time_period_list()
+#' valid_levels <- cvd_area_system_level(time_period_id = 17)
+#' cvd_indicator_list(time_period_id = 17, system_level_id = valid_levels$SystemLevelID[1])
+#'
+#' @export
 cvd_indicator_list <- function(time_period_id = NULL, system_level_id = NULL) {
   # validate input
   validate_input_id(
