@@ -2,39 +2,53 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_area_list}
 \alias{cvd_area_list}
-\title{List areas}
+\title{List NHS areas for a given time period and parent or system level}
 \usage{
 cvd_area_list(time_period_id, parent_area_id, system_level_id)
 }
 \arguments{
-\item{time_period_id}{integer - specifies time period for which to return areas (compulsory)}
+\item{time_period_id}{Integer (required). The reporting period ID for which to return areas. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
 
-\item{parent_area_id}{integer - specifies the area of which children will be returned (optional)}
+\item{parent_area_id}{Integer (optional). The AreaID for which all children will be returned. If provided, this takes precedence over \code{system_level_id}.}
 
-\item{system_level_id}{integer - specifies which system levels to return areas for (optional)}
+\item{system_level_id}{Integer (optional). The system level ID for which to return all areas (e.g., Practice, PCN, ICB). Ignored if \code{parent_area_id} is specified. Use \code{\link[=cvd_area_system_level]{cvd_area_system_level()}} to find valid IDs for a given time period.}
 }
 \value{
-Tibble of area details
+A tibble containing area details for the specified criteria. Columns typically include \code{SystemLevelName}, \code{AreaID}, \code{AreaCode}, \code{AreaName}, and (if available) parent area details.
+If no areas are found, returns a tibble describing the error.
 }
 \description{
-Returns all areas for a given time period and parent area or system level.
-Only areas which have data for the specified time period will be returned.
+Retrieves all NHS geographical areas (e.g., England, Region, ICB, PCN, Practice) that have data avialable for a specified reporting period and either a pareent area or system level. Only areas with data for the chosen time period are returned.
+
+You must specify at least one of \code{parent_area_id} or \code{system_level_id}. If both are provided, \code{parent_area_id} takes precedence and \code{system_level_id} is ignored.
+\itemize{
+\item If \code{parent_area_id} is specified, returns all child areas of the specified parent area.
+\item If \code{system_level_id} is specified, returns all areas within that system level.
+}
 }
 \details{
-Either parent area or system level must be specified:
-If parent area is specified, all children areas of that parent will be returned.
-If system level is specified, all areas within that system level will be returned.
-
-Parent area takes precedence over system level - if parent area is specified, system level is ignored.
-
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea}{Area lists}
+\itemize{
+\item At least one of \code{parent_area_id} or \code{system_level_id} must be supplied, otherwise an error is thrown.
+\item This function is commonly used to list all practices within a given PCN, all PCNs within an ICB, or all areas at a specific system level for a chosen time period.
 }
+}
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea}{CVDPREVENT API documentation: Area lists}
+}
+
 \examples{
-# list four PCNs with data available at time period 17
+# List four PCNs (system level 4) with data available at time period 17
 cvd_area_list(time_period_id = 17, system_level_id = 4) |>
   dplyr::select(SystemLevelName, AreaID, AreaCode, AreaName) |>
   dplyr::slice_head(n = 4)
+
+# List all child areas of parent area 8037 (e.g., an ICB) in time period 17
+cvd_area_list(time_period_id = 17, parent_area_id = 8037)
+
+# Attempting to call without either optional argument will result in an error
+# cvd_area_list(time_period_id = 17)
+
 }
 \seealso{
 \code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}

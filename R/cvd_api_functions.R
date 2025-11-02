@@ -293,33 +293,46 @@ cvd_area_system_level_time_periods <- function() {
 }
 
 
-#' List areas
+#' List NHS areas for a given time period and parent or system level
 #'
-#' Returns all areas for a given time period and parent area or system level.
-#' Only areas which have data for the specified time period will be returned.
+#' @description
+#' Retrieves all NHS geographical areas (e.g., England, Region, ICB, PCN, Practice) that have data avialable for a specified reporting period and either a pareent area or system level. Only areas with data for the chosen time period are returned.
 #'
-#' Either parent area or system level must be specified:
-#' If parent area is specified, all children areas of that parent will be returned.
-#' If system level is specified, all areas within that system level will be returned.
+#' You must specify at least one of `parent_area_id` or `system_level_id`. If both are provided, `parent_area_id` takes precedence and `system_level_id` is ignored.
+#' - If `parent_area_id` is specified, returns all child areas of the specified parent area.
+#' - If `system_level_id` is specified, returns all areas within that system level.
 #'
-#' Parent area takes precedence over system level - if parent area is specified, system level is ignored.
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Area lists](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea)
 #'
-#' CVD Prevent API documentation:
-#' [Area lists](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea)
+#' @param time_period_id Integer (required). The reporting period ID for which to return areas. Use [cvd_time_period_list()] to find valid IDs.
+#' @param parent_area_id Integer (optional). The AreaID for which all children will be returned. If provided, this takes precedence over `system_level_id`.
+#' @param system_level_id Integer (optional). The system level ID for which to return all areas (e.g., Practice, PCN, ICB). Ignored if `parent_area_id` is specified. Use [cvd_area_system_level()] to find valid IDs for a given time period.
 #'
-#' @param time_period_id integer - specifies time period for which to return areas (compulsory)
-#' @param parent_area_id integer - specifies the area of which children will be returned (optional)
-#' @param system_level_id integer - specifies which system levels to return areas for (optional)
+#' @return
+#' A tibble containing area details for the specified criteria. Columns typically include `SystemLevelName`, `AreaID`, `AreaCode`, `AreaName`, and (if available) parent area details.
+#' If no areas are found, returns a tibble describing the error.
 #'
-#' @return Tibble of area details
-#' @export
-#' @seealso [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
+#' @details
+#' - At least one of `parent_area_id` or `system_level_id` must be supplied, otherwise an error is thrown.
+#' - This function is commonly used to list all practices within a given PCN, all PCNs within an ICB, or all areas at a specific system level for a chosen time period.
+#'
+#' @seealso
+#' [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
-#' # list four PCNs with data available at time period 17
+#' # List four PCNs (system level 4) with data available at time period 17
 #' cvd_area_list(time_period_id = 17, system_level_id = 4) |>
 #'   dplyr::select(SystemLevelName, AreaID, AreaCode, AreaName) |>
 #'   dplyr::slice_head(n = 4)
+#'
+#' # List all child areas of parent area 8037 (e.g., an ICB) in time period 17
+#' cvd_area_list(time_period_id = 17, parent_area_id = 8037)
+#'
+#' # Attempting to call without either optional argument will result in an error
+#' # cvd_area_list(time_period_id = 17)
+#'
+#' @export
 cvd_area_list <- function(time_period_id, parent_area_id, system_level_id) {
   # validate input
   validate_input_id(
