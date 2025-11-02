@@ -610,32 +610,39 @@ cvd_area_unassigned <- function(time_period_id, system_level_id) {
   }
 }
 
-#' Search for matching areas
+#' Search for NHS areas by partial name and time period
 #'
-#' Returns a list of Areas that match a partial name for a given time period.
-#' Uses simple LIKE '%<partial_area_name>%' comparison.
+#' @description
+#' Searches for NHS areas whose names match a given partial string, within a specified reporting time period. This function uses a case-insensitive "LIKE" search (i.e., matches any area containing the search term) and returns only areas for which data is available in the specified period.
 #'
-#' CVD Prevent API documentation:
-#' [Area search](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2Fsearch)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Area search](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Farea%2Fsearch)
 #'
-#' @param partial_area_name string - string to use to search for an Area (compulsory)
-#' @param time_period_id integer - limits the search to Areas which have data in specified time period (compulsory)
+#' @param partial_area_name String (required). The substring to search for within area names (case-insensitive). This may be any part of an area name, e.g., "practice", "PCN", or a specific place.
+#' @param time_period_id Integer (required). The reporting period (time period) to restrict the search to areas with data. use [cvd_time_period_list()] to obtain valid IDs.
 #'
-#' @return Tibble of details for areas matching the search term
-#' @export
-#' @seealso [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
+#' @return
+#' A tibble containing details of areas matching the search term and having data for the specified time period. Typical columns include `AreaID`, `AreaName`, `AreaCode`, etc.
+#' If no areas are found, returns a tibble describing the error.
+#'
+#' @details
+#' - The search is case-insensitive and matches anywhere in the area name.
+#' - Only areas with available data in the chosen time period will be returned.
+#' - Use this function to quickly locate AreaIDs or codes for use in other `cvdprevent` API calls.
+#'
+#' @seealso
+#' [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
-#' # NB, the following examples are not tested because they take longer than
-#' # expected to return the results
+#' # Search for areas containing "practice" in their name for time period 17
+#' cvd_area_search(partial_area_name = "practice", time_period_id = 17) |>
+#'   dplyr::select(AreaID, AreaName, AreaCode)
 #'
-#' # search for areas matching the term 'practice'
-#' \donttest{cvd_area_search(partial_area_name = 'practice', time_period_id = 17) |>
-#'   dplyr::select(AreaID, AreaName, AreaCode)}
+#' # Search for areas containing "PCN" for time period 17
+#' cvd_area_search(partial_area_name = "PCN", time_period_id = 17) |>
+#'   dplyr::select(AreaID, AreaName, AreaCode)
 #'
-#' # search for areas matching the term 'PCN'
-#' \donttest{cvd_area_search(partial_area_name = 'PCN', time_period_id = 17) |>
-#'   dplyr::select(AreaID, AreaName, AreaCode)}
+#' @export
 cvd_area_search <- function(partial_area_name, time_period_id) {
   # validate input
   validate_input_string(
