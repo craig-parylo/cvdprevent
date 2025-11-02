@@ -2,40 +2,45 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_sibling}
 \alias{cvd_indicator_sibling}
-\title{Indicator sibling data}
+\title{Retrieve sibling area data for a specific metric, time period, and area}
 \usage{
 cvd_indicator_sibling(time_period_id, area_id, metric_id)
 }
 \arguments{
-\item{time_period_id}{integer - time period for which to return data (compulsory)}
+\item{time_period_id}{Integer (required). The reporting period (time period) for which to return sibling data. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to obtain valid IDs.}
 
-\item{area_id}{integer - area for which all sibling data will be returned (compulsory)}
+\item{area_id}{Integer (required). The AreaID for which sibling data will be determined. Use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid IDs.}
 
-\item{metric_id}{integer - metric for which to return data (compulsory)}
+\item{metric_id}{Integer (required). The MetricID for which to return data. Use \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} or \code{\link[=cvd_indicator_data]{cvd_indicator_data()}} to find valid MetricIDs.}
 }
 \value{
-Tibble of data for indicators for the area and its siblings in the time period
+A tibble containing the data for the specified metric in the selected area and all its siblings for the given reporting period. Columns typically include \code{AreaID}, \code{AreaName}, \code{Value}, \code{LowerConfidenceLimit}, \code{UpperConfidenceLimit}, and other relevant metric information.
+If no sibling data is found, returns a tibble describing the error.
 }
 \description{
-Returns all sibling areas and their data for specified time period, area
-and metric. This endpoint is intended to only return data for selected metric,
-and not all metrics for a chosen indicator, hence the metric_id query parameter.
+Returns data for all sibling areas (i.e., areas sharing the same parent) and the specified area itself, for a given metric and reporting period from the CVDPREVENT API. This endpoint is intended to provide a direct comparison of a single metric across related areas (e.g., all PCNs within an ICB, or all practices within an PCN).
+
+Only the selected metric is returned for each sibling area.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FsiblingData}{Indicator sibling data}
+Use this function to compare a metric across all areas at the same heirarchical level (e.g., compare all practices in a PCN or all PCNs in an ICB) for benchmarking and visualisation purposes.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FsiblingData}{CVDPREVENT API documentation: Indicator sibling data}
+}
+
 \examples{
+# Compare the value of metric 126 for area 1103 and all its siblings in time period 17
 cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = 126) |>
   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit)
+
+# Find a valid metric ID for an indicator, then get sibling data
+metrics <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
+metric_id <- metrics$MetricID[1]
+cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = metric_id)
+
 }
 \seealso{
-\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
-\code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}},
-\code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
-\code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}},
-\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, #
-\code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}},
-\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
+\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}}, \code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}}, \code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}}, \code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, \code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}}, \code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}}, \code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
 }

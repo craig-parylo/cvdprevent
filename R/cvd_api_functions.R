@@ -1333,33 +1333,41 @@ cvd_indicator_details <- function(indicator_id) {
   )
 }
 
-#' Indicator sibling data
+#' Retrieve sibling area data for a specific metric, time period, and area
 #'
-#' Returns all sibling areas and their data for specified time period, area
-#' and metric. This endpoint is intended to only return data for selected metric,
-#' and not all metrics for a chosen indicator, hence the metric_id query parameter.
+#' @description
+#' Returns data for all sibling areas (i.e., areas sharing the same parent) and the specified area itself, for a given metric and reporting period from the CVDPREVENT API. This endpoint is intended to provide a direct comparison of a single metric across related areas (e.g., all PCNs within an ICB, or all practices within an PCN).
 #'
-#' CVD Prevent API documentation:
-#' [Indicator sibling data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FsiblingData)
+#' Only the selected metric is returned for each sibling area.
 #'
-#' @param time_period_id integer - time period for which to return data (compulsory)
-#' @param area_id integer - area for which all sibling data will be returned (compulsory)
-#' @param metric_id integer - metric for which to return data (compulsory)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Indicator sibling data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FsiblingData)
 #'
-#' @return Tibble of data for indicators for the area and its siblings in the time period
-#' @export
-#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
-#' [cvd_indicator_tags()], [cvd_indicator_details()],
-#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
-#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
-#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
-#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
-#' [cvd_indicator_metric_area_breakdown()]
+#' @param time_period_id Integer (required). The reporting period (time period) for which to return sibling data. Use [cvd_time_period_list()] to obtain valid IDs.
+#' @param area_id Integer (required). The AreaID for which sibling data will be determined. Use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
+#' @param metric_id Integer (required). The MetricID for which to return data. Use [cvd_indicator_metric_list()] or [cvd_indicator_data()] to find valid MetricIDs.
+#'
+#' @return
+#' A tibble containing the data for the specified metric in the selected area and all its siblings for the given reporting period. Columns typically include `AreaID`, `AreaName`, `Value`, `LowerConfidenceLimit`, `UpperConfidenceLimit`, and other relevant metric information.
+#' If no sibling data is found, returns a tibble describing the error.
+#'
+#' @details
+#' Use this function to compare a metric across all areas at the same heirarchical level (e.g., compare all practices in a PCN or all PCNs in an ICB) for benchmarking and visualisation purposes.
+#'
+#' @seealso
+#' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()], [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
+#' # Compare the value of metric 126 for area 1103 and all its siblings in time period 17
 #' cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = 126) |>
 #'   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit)
+#'
+#' # Find a valid metric ID for an indicator, then get sibling data
+#' metrics <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
+#' metric_id <- metrics$MetricID[1]
+#' cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = metric_id)
+#'
+#' @export
 cvd_indicator_sibling <- function(
   time_period_id,
   area_id,
