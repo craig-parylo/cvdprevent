@@ -2,72 +2,75 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator}
 \alias{cvd_indicator}
-\title{Indicators}
+\title{Retrieve all indicators and their data for a given time period and area}
 \usage{
 cvd_indicator(time_period_id, area_id, tag_id)
 }
 \arguments{
-\item{time_period_id}{integer - time period to return data for (compulsory)}
+\item{time_period_id}{Integer (required). The reporting period (time period) for which to return indicator data. Use the \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
 
-\item{area_id}{integer - area to return data for (compulsory)}
+\item{area_id}{Integer (required). The AreaID for which to return indicator data. Use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid IDs.}
 
-\item{tag_id}{numeric vector - allows filtering indicators by one or more tags (optional)}
+\item{tag_id}{Numeric vector (optional). One or more tag IDs to filter indicators by tag. Use \code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}} to find valid IDs.}
 }
 \value{
-List of named tibbles (indicators, categories, category_data, timeseries_data, all_data)
+A named list containing up to four tibbles:
+\describe{
+\item{indicators}{Tibble of indicators for the area and time period.}
+\item{metric_categories}{Tibble of metric categories related to the indicators.}
+\item{metric_data}{Tibble of metric values for the area and indicators.}
+\item{timeseries_data}{Tibble of time series data for metrics and indicators across time periods.}
+}
+If no indicators are found, returns a tibble describing the error.
 }
 \description{
-Returns all indicators and data for a given time period and area. Also returns
-time series data for all time periods available. If tags are specified, only
-indicators which have one of the specified tags will be returned.
+Returns all CVD indicators and related data for a specified reporting period (\code{time_period_id}) and NHS area (\code{area_id}) from the CVDPREVENT API. Also retrieves time series data for all available periods. Optionally, you can filter results by one or more indicator tags.
+
+The returned object is a nemd list of tibbles, including details about indicators, metric categories, metric data and time series, making this function ideal for comprehensive data extraction and downstream analysis.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator}{Indicator}
+This function is useful for extracting all indicator data for a given area and period, including breakdowns by category and time series. The list output allows easy access to different data tables for further analysis or visualisation. Filtering by tag enables targeted queries for specific subsets of indicators.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator}{CVDPREVENT API documentation: Indicator}
+}
+
 \examples{
-# Returns a list of named tibbles. To use we need to unpack the list:
+# Get all indicator data for area_id = 1103 in time period 17
 return_list <- cvd_indicator(time_period_id = 17, area_id = 1103)
 
-# See what the list contains
-return_list |> summary()
+# See what data tables are available
+summary(return_list)
 
-# extract the indicators
+# Extract and examine indicators
 indicators <- return_list$indicators
 indicators |>
   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
   dplyr::arrange(IndicatorID) |>
   dplyr::slice_head(n = 4)
 
-# extract the metric categories
+# Extract metric categories for a specific indicator and categories
 categories <- return_list$metric_categories
 categories |>
   dplyr::filter(IndicatorID == 7, MetricCategoryID \%in\% c(7, 8)) |>
-  dplyr::select(IndicatorID, MetricCategoryTypeName,
-  CategoryAttribute, MetricCategoryName, MetricID)
+  dplyr::select(IndicatorID, MetricCategoryTypeName, CategoryAttribute, MetricCategoryName, MetricID)
 
-# extract metric data
+# Extract metric data for specific metrics
 metric_data <- return_list$metric_data
 metric_data |>
   dplyr::filter(MetricID \%in\% c(126, 132)) |>
   dplyr::select(MetricID, Value, Numerator, Denominator)
 
-# extract the time series data
+# Extract time series data for selected metrics
 timeseries_data <- return_list$timeseries_data
 timeseries_data |>
   dplyr::filter(MetricID \%in\% c(126, 132), !is.na(Value))
 
-# indicators are searcheable by one or more Tag.
-return_list <-
-  cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
+# Filter by tags: get indicators tagged with either tag 3 or 4 in area 3, time period 17
+return_list <- cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
+
 }
 \seealso{
-\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}},
-\code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}},
-\code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
-\code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}},
-\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, #
-\code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}},
-\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
+\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}}, \code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}}, \code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}}, \code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, \code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}}, \code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}}, \code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
 }
