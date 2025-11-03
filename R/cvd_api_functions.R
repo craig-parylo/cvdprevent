@@ -1717,35 +1717,34 @@ cvd_indicator_metric_data <- function(
   )
 }
 
-#' Indicator raw data (JSON)
+#' Retrieve raw metric values for multiple metrics, a specified are and time period
 #'
-#' Returns all metric data for a specified indicator, system level and time
-#' period.
+#' @description
+#' Returns raw values for multiple metrics (specified as a vector of `metric_id`) for a single NHS area and reporting period using the CVDPREVENT API. This function fetches unfiltered raw data at the metric level, allowing comprehensive extraction for all selected metrics and their available breakdowns (such as by age, sex or other category) within the chosen context.
 #'
-#' CVD Prevent API documentation:
-#' [Indicator raw data JSON](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_ID%3E%2FrawDataJSON)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Indicator raw data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FrawData)
 #'
-#' @param indicator_id integer - indicator for which to return data for (compulsory)
-#' @param time_period_id integer - time period for which to return data for (compulsory)
-#' @param system_level_id integer - system level for which to return data for (compulsory)
+#' @param time_period_id Integer (required). The reporting period (time period) for which to retrieve data. Use [cvd_time_period_list()] to find valid IDs.
+#' @param area_id Integer (required). The AreaID for which to retrieve data. Use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
+#' @param metric_id Integer vector (required). One or more MetricIDs specifying which metrics to return. Use [cvd_indicator_metric_list()] or [cvd_indicator_data()] to find valid MetricIDs.
 #'
-#' @return Tibble of metric performance details for a specified indicator across the system level
-#' @export
-#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
-#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
-#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
-#' [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
-#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
-#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
-#' [cvd_indicator_metric_area_breakdown()]
+#' @return
+#' A tibble with one row per metric breakdown for all requested metrics, the specified area and period. Typical columns include `MetricID`, `AreaID`, `Value`, `Numerator`, `Denominator`, `LowerConfidenceLimit`, `UpperConfidenceLimit`, `MetricCategoryName`, `CategoryAttribute`, and others.
+#'
+#' @details
+#' Use this function to retrieve a wide set of metric breakdowns for multiple metrics in a single area and time period - useful for broad data extractions, dashboards or advanced analytics.
 #'
 #' @examples
-#' # return all metric data for indicator 'AF: treatment with anticoagulants'
-#' # (indicator ID 7) in time period 17 at GP practice level (system level ID 5):
-#' cvd_indicator_raw_data(indicator_id = 7, time_period_id = 17, system_level_id = 5) |>
-#'   dplyr::slice_head(n = 5) |>
-#'   dplyr::select(AreaCode, AreaName, Value)
+#' # Retrieve raw data for metrics 126 and 127 in area 1103 for time period 17
+#' cvd_indicator_raw_data(time_period_id = 17, area_id = 1103, metric_id = c(126, 127)) |>
+#'   dplyr::select(MetricID, AreaID, Value, MetricCategoryName, CategoryAttribute)
+#'
+#' # Find a vector of valid metric IDs, then retrieve raw data for one area
+#' metrics <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
+#' cvd_indicator_raw_data(time_period_id = 17, area_id = 1103, metric_id = metrics$MetricID[1:3])
+#'
+#' @export
 cvd_indicator_raw_data <- function(
   indicator_id,
   time_period_id,
