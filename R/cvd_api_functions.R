@@ -1810,38 +1810,33 @@ cvd_indicator_raw_data <- function(
   )
 }
 
-#' Indicator national vs area metric data
+#' Retrieve metric data for a specific area and for national (England) comparison
 #'
-#' Returns national and area data for the provided metric, area, and time period.
+#' @description
+#' Returns a named list of tibbles containing: (1) metric data for the specified NHS area and the national (England, AreaID = 1) aggregate, and (2) details achieving the target value (if defined), including the target percentage and the additional number of patients needed to reach the target. This function supports benchmarking local performance vs. the national average, and helps quantify gaps to clinical targets.
 #'
-#' The returned object is a list containing named tibbles. The two possible
-#' tibbles are:
-#' * `area`: contains metric data for the specified area in comparison with national metric data.
+#' If there is no data for either national or the chosen area for the given parameters, an error tibble is returned.
 #'
-#' * `target`: contains details on how to reach target values, including:
-#'     * target value as a percentage (stored as a whole number up to 100)
-#'     * target patients (the number of additional patients needed to reach the target percentage)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Indicator national area metric data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FnationalAreaMetricData)
 #'
-#' Note that the `target` tibble is only provided if data is available for both
-#' national and the chosen area.
+#' @param time_period_id Integer (required). The reporting period (time period) for which to retrieve metric data. Use [cvd_time_period_list()] to find valid IDs.
+#' @param area_id Integer (required). The AreaID for which to retrieve data in addition to the national aggregate. use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
+#' @param metric_id Integer (required). The MetricID for which to retrieve values. Use [cvd_indicator_metric_list()] or [cvd_indicator_data()] to find valid MetricIDs.
 #'
-#' CVD Prevent API documentation:
-#' [Indicator national vs area metric data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FnationalVsAreaMetricData%2F%3Cmetric_ID%3E)
+#' @return
+#' A named list with up to two tibbles:
+#' \describe{
+#'   \item{area}{Tibble with one or more rows, summarising the metric for the specified area and the England aggregate (AreaID = 1). Typical columns include `AreaID`, `AreaName`, `MetricID`, `Value`, `Numerator`, `Denominator`, `LowerConfidenceLimit`, `UpperConfidenceLimit`, `MetricCategoryName`, `CategoryAttribute`, etc.}
+#'   \item{target}{Tibble (if available) with target-setting details for the area, including columns such as: `TargetValue` (target as a percentage up to 100, integer), and `TargetPatients` (number of additional patients required to reach the target).}
+#' }
+#' If no data exists for both the area and the national aggregate for the given parameters, returns a tibble describing the error.
 #'
-#' @param metric_id integer - metric for which to return data (compulsory)
-#' @param time_period_id integer - time period for which to return data (compulsory)
-#' @param area_id integer - area for which to return data (compulsory)
+#' @details
+#' Use this function to benchmark a local area's metric value against the national figure and to understand the actual gap to a clinically meaningful target.
 #'
-#' @return List of named tibbles (`area`, `target`) where `target` is only provided if data is available.
-#' @export
-#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
-#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
-#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
-#' [cvd_indicator_raw_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()],
-#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
-#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
-#' [cvd_indicator_metric_area_breakdown()]
+#' @seealso
+#' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator_metric_data()], [cvd_indicator_data()], [cvd_indicator_raw_data()], [cvd_area_list()]
 #'
 #' @examples
 #' # Compare performance against metric 150  (AF: treatment with anticoagulants
@@ -1858,11 +1853,13 @@ cvd_indicator_raw_data <- function(
 #'
 #' # Extract the `area` details
 #' area_data <- return_list$area
-#' area_data |> gt::gt()
+#' area_data
 #'
 #' # Extract `target` details
 #' target_data <- return_list$target
-#' target_data |> gt::gt()
+#' target_data
+#'
+#' @export
 cvd_indicator_nationalarea_metric_data <- function(
   metric_id = 1,
   time_period_id = 17,
