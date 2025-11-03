@@ -1292,7 +1292,7 @@ cvd_indicator_details <- function(indicator_id) {
         return(dat)
       },
       context = "cvd_indicator_details",
-      html500_msg = "{.arg indicator_id} is invalid"
+      html500_msg = "invalid `indicator_id`"
     )
 
   return(data)
@@ -1628,6 +1628,8 @@ cvd_indicator_metric_data <- function(
   time_period_id,
   area_id
 ) {
+  # audit_call()
+
   # validate input
   validate_input_id(
     id = time_period_id,
@@ -1682,7 +1684,8 @@ cvd_indicator_metric_data <- function(
         return(dat)
       },
       context = "cvd_indicator_metric_data",
-      html500_msg = "invalid `metric_id`"
+      html500_msg = "invalid `metric_id`",
+      timeout_sec = 10
     )
 
   return(data)

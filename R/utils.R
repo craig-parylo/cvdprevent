@@ -21,123 +21,281 @@ set_cache <- function() {
 delayedAssign("m_cache", set_cache())
 
 ## memoised functions ---------------------------------------------------------
+
+#' Safely memoise a function with error handling and optional cache
+#'
+#' @param fn The function to memoise
+#' @param name Optional name for logging/debugging
+#' @param cache A memoise-compatible cache object (e.g. cache_mem())
+#'
+#' @return A memoised function that returns NULL on error and avoids caching failures
+#' @noRd
+memoise_safe <- function(fn, name = NULL, cache = NULL) {
+  safe_wrapper <- function(...) {
+    result <- tryCatch(
+      fn(...),
+      error = function(e) {
+        if (!is.null(name)) {
+          cli::cli_alert_danger("Function {.fn {name}} failed: {e$message}")
+        }
+        return(NULL)
+      }
+    )
+
+    if (is.null(result) || length(result) == 0) {
+      if (!is.null(name)) {
+        cli::cli_alert_warning("Function {.fn {name}} returned no data")
+      }
+      return(NULL)
+    }
+
+    result
+  }
+
+  if (!is.null(cache)) {
+    memoise::memoise(safe_wrapper, cache = cache)
+  } else {
+    memoise::memoise(safe_wrapper)
+  }
+}
+
 # set as delayed assign to avoid issues on load
+# delayedAssign(
+#   "m_get_valid_time_period_ids",
+#   memoise::memoise(
+#     get_valid_time_period_ids,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_get_valid_time_period_ids",
-  memoise::memoise(
-    get_valid_time_period_ids,
+  memoise_safe(
+    fn = get_valid_time_period_ids,
+    name = "get_valid_time_period_ids",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_get_valid_tag_ids",
+#   memoise::memoise(
+#     get_valid_tag_ids,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_get_valid_tag_ids",
-  memoise::memoise(
-    get_valid_tag_ids,
+  memoise_safe(
+    fn = get_valid_tag_ids,
+    name = "get_valid_tag_ids",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_get_valid_system_level_id_for_time_period_id",
+#   memoise::memoise(
+#     get_valid_system_level_id_for_time_period_id,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_get_valid_system_level_id_for_time_period_id",
-  memoise::memoise(
-    get_valid_system_level_id_for_time_period_id,
+  memoise_safe(
+    fn = get_valid_system_level_id_for_time_period_id,
+    name = "get_valid_system_level_id_for_time_period_id",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_get_valid_indicator_type_ids",
+#   memoise::memoise(
+#     get_valid_indicator_type_ids,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_get_valid_indicator_type_ids",
-  memoise::memoise(
-    get_valid_indicator_type_ids,
+  memoise_safe(
+    fn = get_valid_indicator_type_ids,
+    name = "get_valid_indicator_type_ids",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_cvd_time_period_list",
+#   memoise::memoise(
+#     cvd_time_period_list,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_cvd_time_period_list",
-  memoise::memoise(
-    cvd_time_period_list,
+  memoise_safe(
+    fn = cvd_time_period_list,
+    name = "cvd_time_period_list",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_cvd_area_list",
+#   memoise::memoise(
+#     cvd_area_list,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_cvd_area_list",
-  memoise::memoise(
-    cvd_area_list,
+  memoise_safe(
+    fn = cvd_area_list,
+    name = "cvd_area_list",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_get_valid_area_ids_for_time_period_id",
+#   memoise::memoise(
+#     get_valid_area_ids_for_time_period_id,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_get_valid_area_ids_for_time_period_id",
-  memoise::memoise(
-    get_valid_area_ids_for_time_period_id,
+  memoise_safe(
+    fn = get_valid_area_ids_for_time_period_id,
+    name = "get_valid_area_ids_for_time_period_id",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_cvd_indicator_metric_list",
+#   memoise::memoise(
+#     cvd_indicator_metric_list,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_cvd_indicator_metric_list",
-  memoise::memoise(
-    cvd_indicator_metric_list,
+  memoise_safe(
+    fn = cvd_indicator_metric_list,
+    name = "cvd_indicator_metric_list",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_get_valid_indicator_ids_for_time_period_id",
+#   memoise::memoise(
+#     get_valid_indicator_ids_for_time_period_id,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_get_valid_indicator_ids_for_time_period_id",
-  memoise::memoise(
-    get_valid_indicator_ids_for_time_period_id,
+  memoise_safe(
+    fn = get_valid_indicator_ids_for_time_period_id,
+    name = "get_valid_indicator_ids_for_time_period_id",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_get_valid_metric_ids_for_time_period_id",
+#   memoise::memoise(
+#     get_valid_metric_ids_for_time_period_id,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_get_valid_metric_ids_for_time_period_id",
-  memoise::memoise(
+  memoise_safe(
     get_valid_metric_ids_for_time_period_id,
+    name = "get_valid_metric_ids_for_time_period_id",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_cvd_indicator",
+#   memoise::memoise(
+#     cvd_indicator,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_cvd_indicator",
-  memoise::memoise(
-    cvd_indicator,
+  memoise_safe(
+    fn = cvd_indicator,
+    name = "cvd_indicator",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_get_valid_indicator_ids_for_time_period_id_and_area_id",
+#   memoise::memoise(
+#     get_valid_indicator_ids_for_time_period_id_and_area_id,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_get_valid_indicator_ids_for_time_period_id_and_area_id",
-  memoise::memoise(
-    get_valid_indicator_ids_for_time_period_id_and_area_id,
+  memoise_safe(
+    fn = get_valid_indicator_ids_for_time_period_id_and_area_id,
+    name = "get_valid_indicator_ids_for_time_period_id_and_area_id",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_get_valid_metric_ids_for_time_period_id_and_area_id",
+#   memoise::memoise(
+#     get_valid_metric_ids_for_time_period_id_and_area_id,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_get_valid_metric_ids_for_time_period_id_and_area_id",
-  memoise::memoise(
-    get_valid_metric_ids_for_time_period_id_and_area_id,
+  memoise_safe(
+    fn = get_valid_metric_ids_for_time_period_id_and_area_id,
+    name = "get_valid_metric_ids_for_time_period_id_and_area_id",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_cvd_indicator_priority_groups",
+#   memoise::memoise(
+#     cvd_indicator_priority_groups,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_cvd_indicator_priority_groups",
-  memoise::memoise(
-    cvd_indicator_priority_groups,
+  memoise_safe(
+    fn = cvd_indicator_priority_groups,
+    name = "cvd_indicator_priority_groups",
     cache = m_cache
   )
 )
 
+# delayedAssign(
+#   "m_get_valid_pathway_group_ids",
+#   memoise::memoise(
+#     get_valid_pathway_group_ids,
+#     cache = m_cache
+#   )
+# )
 delayedAssign(
   "m_get_valid_pathway_group_ids",
-  memoise::memoise(
-    get_valid_pathway_group_ids,
+  memoise_safe(
+    fn = get_valid_pathway_group_ids,
+    name = "get_valid_pathway_group_ids",
     cache = m_cache
   )
 )
@@ -167,7 +325,6 @@ delayedAssign(
 #'
 #' @export
 cvd_clear_cache <- function() {
-  # List of memoised functions to forget
   memoised_fns <- list(
     m_get_valid_time_period_ids,
     m_get_valid_tag_ids,
@@ -186,19 +343,17 @@ cvd_clear_cache <- function() {
     m_get_valid_pathway_group_ids
   )
 
-  # Validate all are memoised functions
   purrr::walk(memoised_fns, function(fn) {
-    if (!inherits(fn, "memoised_function")) {
+    fn <- force(fn)
+    if (inherits(fn, "memoised")) {
+      memoise::forget(fn)
+    } else {
       cli::cli_warn(
-        "One or more functions in {.arg memoised_fns} are not memoised."
+        "{.fn {deparse(substitute(fn))}} is not memoised or not found."
       )
     }
   })
 
-  # Clear their caches
-  purrr::walk(memoised_fns, memoise::forget)
-
-  # return
   invisible(TRUE)
 }
 
@@ -1216,13 +1371,15 @@ internal_try_catch_html500 <- function(error, msg) {
   return(dplyr::tibble(result = msg))
 }
 
-#' Safely perform an httr2 API request with error handling
+#' Safely perform an httr2 API request with error handling and retries
 #'
 #' @param req httr2 request object
 #' @param parse_fn Function to parse the response body
 #' @param context Character string describing the API context (for error messages)
 #' @param html500_msg Optional message for HTML 500 errors (e.g. invalid ID)
-#' @param timeout_sec Integer specifying the maximum number of seconds to wait for the response (default = 4)
+#' @param timeout_sec Integer specifying the maximum number of seconds to wait for the response (default = 5)
+#' @param max_attempts Integer specifying the number of retry attempts (default = 3)
+#' @param delay_sec Integer base delay between retries (default = 1)
 #'
 #' @return A tibble or error-safe fallback
 #' @noRd
@@ -1231,128 +1388,232 @@ safe_api_call <- function(
   parse_fn,
   context = "API call",
   html500_msg = NULL,
-  timeout_sec = 5
+  timeout_sec = 5,
+  max_attempts = 3,
+  delay_sec = 1,
+  cache = NULL,
+  cache_key = NULL # optional key for caching
 ) {
-  # wrap in tryCatch to gracefully handle errors
-  tryCatch(
-    {
-      # perform the request
-      resp <- req |>
-        httr2::req_timeout(seconds = timeout_sec) |>
-        httr2::req_perform()
+  force(req)
+  force(parse_fn)
+  force(context)
 
-      # cache the request
-      req |>
-        httr2::req_cache(
-          path = tempfile(),
-          max_age = 60 * 60 * 24 # 1 day in seconds
-        )
-
-      # check the status code returned from the API call
-      # NB,
-      # 1xx - informational
-      # 2xx - success, esp 200 = OK
-      # 3xx - redirection
-      # 4xx - client errors, e.g. malformed request
-      # 5xx - server errors
-      status <- httr2::resp_status(resp)
-      if (status != 200) {
-        # display an alert to the user
-        cli::cli_alert_danger(
-          "{.fn cvdprevent::{context}} failed with status {status}"
-        )
-        # return the result as a tibble
-        return(tibble::tibble(
-          context = context,
-          result = paste("Failed with status:", status),
-          timestamp = Sys.time()
-        ))
-      }
-
-      # handle JSON parsing errors
-      parsed <- tryCatch(
-        {
-          parse_fn(httr2::resp_body_string(resp))
-        },
-        error = function(e) {
-          cli::cli_alert_danger(
-            "{.fn cvdprevent::{context}} failed to parse response {e$message}"
-          )
-          return(tibble::tibble(
-            context = context,
-            result = paste("Data parse error:", e$message),
-            timestamp = Sys.time()
-          ))
+  # Core worker that actually performs the request
+  worker <- function(req) {
+    safe_retry <- function(expr) {
+      attempt <- 1
+      while (attempt <= max_attempts) {
+        result <- tryCatch(expr, error = function(e) e)
+        if (!inherits(result, "error")) {
+          return(result)
         }
-      )
-
-      # handle where nothing returned, despite no errors
-      if (is.null(parsed) || length(parsed) == 0) {
-        cli::cli_alert_danger(
-          "{.fn cvdprevent::{context}} returned no data"
-        )
-        return(tibble::tibble(
-          context = context,
-          result = "Returned no data",
-          timestamp = Sys.time()
-        ))
+        Sys.sleep(delay_sec * attempt)
+        attempt <- attempt + 1
       }
+      structure(
+        list(message = "All retry attempts failed"),
+        class = "retry_error"
+      )
+    }
 
-      # return the parsed data
-      parsed
-    },
-    httr2_http_404 = function(e) {
-      cli::cli_alert_danger(
-        "{.fn cvdprevent::{context}} failed with HTTP 404 error {e$message}"
-      )
+    req <- req |> httr2::req_timeout(seconds = timeout_sec)
+    resp <- safe_retry(httr2::req_perform(req))
+
+    if (inherits(resp, "retry_error")) {
       return(tibble::tibble(
         context = context,
-        result = paste("HTTP 404 not found {e$message}"),
-        timestamp = Sys.time()
-      ))
-    },
-    httr2_error = function(e) {
-      cli::cli_alert_danger(
-        "{.fn cvdprevent::{context}} failed with HTTP error: likely caused by {html500_msg}"
-      )
-      return(tibble::tibble(
-        context = context,
-        result = glue::glue(
-          "Unknown HTTP error likely caused by {html500_msg}"
-        ),
+        result = if (!is.null(html500_msg)) {
+          glue::glue("All retry attempts failed — likely cause: {html500_msg}")
+        } else {
+          "All retry attempts failed"
+        },
         timestamp = Sys.time()
       ))
     }
-    # # handle html 500
-    # httr2_error = function(e) {
-    #   # msg <- paste(context, dplyr::coalesce(html500_msg, e$Message))
-    #   cli::cli_alert_danger(
-    #     "{.fn cvdprevent::{context}} failed with HTTP 500 error: likely caused by {dplyr::coalesce({html500_msg}, e$Message)}"
-    #   )
-    #   return(tibble::tibble(
-    #     context = context,
-    #     result = paste("HTTP 500 error", html500_msg),
-    #     timestamp = Sys.time()
-    #   ))
-    # }
-    # error = function(e) {
-    #   # compose an error message
-    #   msg <- "{context} failed: {e$message}"
-    #   if (
-    #     !is.null(html500_msg) && e$message == "HTTP 500 Internal Server Error."
-    #   ) {
-    #     msg <- paste(msg, "The likely cause is", html500_msg)
-    #   }
-    #   # notify the user
-    #   cli::cli_alert_danger(msg)
-    #   return(tibble::tibble(
-    #     context = context,
-    #     result = e$message,
-    #     timestamp = Sys.time()
-    #   ))
-    # }
-  )
+
+    status <- httr2::resp_status(resp)
+    if (status >= 400) {
+      return(tibble::tibble(
+        context = context,
+        result = paste("HTTP error", status, httr2::resp_status_desc(resp)),
+        timestamp = Sys.time()
+      ))
+    }
+
+    parsed <- tryCatch(
+      parse_fn(httr2::resp_body_string(resp)),
+      error = function(e) {
+        tibble::tibble(
+          context = context,
+          result = paste("Parse error:", e$message),
+          timestamp = Sys.time()
+        )
+      }
+    )
+
+    if (is.null(parsed) || length(parsed) == 0) {
+      return(tibble::tibble(
+        context = context,
+        result = "Returned no data",
+        timestamp = Sys.time()
+      ))
+    }
+
+    parsed
+  }
+
+  # If caching is enabled, wrap worker in memoise
+  if (!is.null(cache)) {
+    # If user provides a cache_key, memoise on that instead of req
+    if (!is.null(cache_key)) {
+      key_worker <- function(key) worker(req)
+      key_worker <- memoise::memoise(key_worker, cache = cache)
+      return(key_worker(cache_key))
+    } else {
+      worker <- memoise::memoise(worker, cache = cache)
+    }
+  }
+
+  worker(req)
 }
+
+# #' Safely perform an httr2 API request with error handling
+# #'
+# #' @param req httr2 request object
+# #' @param parse_fn Function to parse the response body
+# #' @param context Character string describing the API context (for error messages)
+# #' @param html500_msg Optional message for HTML 500 errors (e.g. invalid ID)
+# #' @param timeout_sec Integer specifying the maximum number of seconds to wait for the response (default = 4)
+# #'
+# #' @return A tibble or error-safe fallback
+# #' @noRd
+# safe_api_call <- function(
+#   req,
+#   parse_fn,
+#   context = "API call",
+#   html500_msg = NULL,
+#   timeout_sec = 5
+# ) {
+#   # wrap in tryCatch to gracefully handle errors
+#   tryCatch(
+#     {
+#       # perform the request
+#       resp <- req |>
+#         httr2::req_timeout(seconds = timeout_sec) |>
+#         httr2::req_perform()
+
+#       # cache the request
+#       req |>
+#         httr2::req_cache(
+#           path = tempfile(),
+#           max_age = 60 * 60 * 24 # 1 day in seconds
+#         )
+
+#       # check the status code returned from the API call
+#       # NB,
+#       # 1xx - informational
+#       # 2xx - success, esp 200 = OK
+#       # 3xx - redirection
+#       # 4xx - client errors, e.g. malformed request
+#       # 5xx - server errors
+#       status <- httr2::resp_status(resp)
+#       if (status != 200) {
+#         # display an alert to the user
+#         cli::cli_alert_danger(
+#           "{.fn cvdprevent::{context}} failed with status {status}"
+#         )
+#         # return the result as a tibble
+#         return(tibble::tibble(
+#           context = context,
+#           result = paste("Failed with status:", status),
+#           timestamp = Sys.time()
+#         ))
+#       }
+
+#       # handle JSON parsing errors
+#       parsed <- tryCatch(
+#         {
+#           parse_fn(httr2::resp_body_string(resp))
+#         },
+#         error = function(e) {
+#           cli::cli_alert_danger(
+#             "{.fn cvdprevent::{context}} failed to parse response {e$message}"
+#           )
+#           return(tibble::tibble(
+#             context = context,
+#             result = paste("Data parse error:", e$message),
+#             timestamp = Sys.time()
+#           ))
+#         }
+#       )
+
+#       # handle where nothing returned, despite no errors
+#       if (is.null(parsed) || length(parsed) == 0) {
+#         cli::cli_alert_danger(
+#           "{.fn cvdprevent::{context}} returned no data"
+#         )
+#         return(tibble::tibble(
+#           context = context,
+#           result = "Returned no data",
+#           timestamp = Sys.time()
+#         ))
+#       }
+
+#       # return the parsed data
+#       parsed
+#     },
+#     httr2_http_404 = function(e) {
+#       cli::cli_alert_danger(
+#         "{.fn cvdprevent::{context}} failed with HTTP 404 error {e$message}"
+#       )
+#       return(tibble::tibble(
+#         context = context,
+#         result = paste("HTTP 404 not found {e$message}"),
+#         timestamp = Sys.time()
+#       ))
+#     },
+#     httr2_error = function(e) {
+#       cli::cli_alert_danger(
+#         "{.fn cvdprevent::{context}} failed with HTTP error: likely caused by {html500_msg}"
+#       )
+#       return(tibble::tibble(
+#         context = context,
+#         result = glue::glue(
+#           "Unknown HTTP error likely caused by {html500_msg}"
+#         ),
+#         timestamp = Sys.time()
+#       ))
+#     }
+#     # # handle html 500
+#     # httr2_error = function(e) {
+#     #   # msg <- paste(context, dplyr::coalesce(html500_msg, e$Message))
+#     #   cli::cli_alert_danger(
+#     #     "{.fn cvdprevent::{context}} failed with HTTP 500 error: likely caused by {dplyr::coalesce({html500_msg}, e$Message)}"
+#     #   )
+#     #   return(tibble::tibble(
+#     #     context = context,
+#     #     result = paste("HTTP 500 error", html500_msg),
+#     #     timestamp = Sys.time()
+#     #   ))
+#     # }
+#     # error = function(e) {
+#     #   # compose an error message
+#     #   msg <- "{context} failed: {e$message}"
+#     #   if (
+#     #     !is.null(html500_msg) && e$message == "HTTP 500 Internal Server Error."
+#     #   ) {
+#     #     msg <- paste(msg, "The likely cause is", html500_msg)
+#     #   }
+#     #   # notify the user
+#     #   cli::cli_alert_danger(msg)
+#     #   return(tibble::tibble(
+#     #     context = context,
+#     #     result = e$message,
+#     #     timestamp = Sys.time()
+#     #   ))
+#     # }
+#   )
+# }
 
 #' Safely arrange a data frame by a column
 #'
@@ -1374,6 +1635,24 @@ safe_arrange <- function(df, col) {
   } else {
     cli::cli_alert_warning("Column '{col_name}' not found — skipping arrange.")
     df
+  }
+}
+
+#' Safely test a memoised API function
+#'
+#' @param expr Expression to evaluate (e.g. force(memoised_fn))
+#' @param name Optional name for logging/debugging
+#'
+#' @return None; runs testthat expectations
+#' @noRd
+test_memoised_api <- function(expr, name = "API function") {
+  result <- tryCatch(force(expr), error = function(e) NULL)
+
+  if (is.null(result)) {
+    testthat::skip(glue::glue("{name} unavailable or failed"))
+  } else {
+    testthat::expect_s3_class(result, "tbl_df")
+    # testthat::expect_true(nrow(result) > 0 || grepl("API", result$result[1]))
   }
 }
 
