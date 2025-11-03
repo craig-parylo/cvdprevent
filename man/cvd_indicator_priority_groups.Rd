@@ -2,39 +2,35 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_priority_groups}
 \alias{cvd_indicator_priority_groups}
-\title{Indicator priority groups}
+\title{List all indicator priority groups}
 \usage{
 cvd_indicator_priority_groups()
 }
 \value{
-Tibble of indicators grouped by priority group
+A tibble with one row per indicator / priority group. Key columns typically include \code{PriorityGroupID}, \code{PriorityGroup} (the display name), \code{PriorityGroupDisplayOrder}, and \code{IndicatorName}. Other columns may be present to support specialised reporting or grouping.
+If no priority groups are found, returns a tibble describing the error.
 }
 \description{
-Returns the list of top-level groupings (Priority Groups) displayed in the
-Regional & ICS Insights page. Returns a dictionary called 'PriorityGroups'
-with each key being a Priority Group name, and each value being the array of
-indicators contained in that group. The 'PriorityGroupDisplayOrder'
-indicates the order in which it should be displayed for the given Priority
-Group.
+Retrieves a tibble of indicator priority groups from the CVDPREVENT API. Priority groups reflect high-level clinical, operational or policy themes (such as "Inequalities" or "NHS Long Term Plan") and provide a way to cluster or filter multiple indicators for reporting and analytics.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FpriorityGroups}{Indicator priority groups}
+Use this function to provide grouping / filtering options for dashboards or reports, or to explore which indicator themes are tracked in CVDPREVENT. Typically, you will select the priority group's name and ID for grouping or filtering tasks.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FpriorityGroup}{CVDPREVENT API documentation: Indicator priority groups}
+}
+
 \examples{
-# Return one indicator from each of the priority groups:
+# List all available priority group display names and their IDs
 cvd_indicator_priority_groups() |>
-  dplyr::select(PriorityGroup, PathwayGroupName, PathwayGroupID,
-  IndicatorCode, IndicatorID, IndicatorName) |>
-  dplyr::slice_head(by = PathwayGroupID)
+  dplyr::select(PriorityGroupID, PriorityGroup)
+
+# Preview group names for a sidebar filter in a dashboard
+groups <- cvd_indicator_priority_groups()
+unique(groups$PriorityGroup)
+
 }
 \seealso{
-\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
-\code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}},
-\code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
-\code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}},
-\code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}},
-\code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}},
-\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
+\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_area_list]{cvd_area_list()}}, \code{\link[=cvd_time_period_list]{cvd_time_period_list()}}
 }
