@@ -1525,37 +1525,38 @@ cvd_indicator_child_data <- function(
   }
 }
 
-#' Indicator data
+#' Retrieve indicator data for a specific area, time period and indicator
 #'
-#' Returns all metric data for a specified indicator. Data will include values
-#' for both selected area, and organisation at National Level (usually England).
+#' @description
+#' Returns data for all metric associated with a single CVD indicator for a specified NHS area and reporting period from the CVDPREVENT API. This allows you to access all breakdowns (e.g., age, sex, ethnicity) of a given indicator for a single area in a single time period.
 #'
-#' CVD Prevent API documentation:
-#' [Indicator data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_id%3E%2Fdata)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Indicator data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2Fdata)
 #'
-#' @param indicator_id integer - indicator for which to return data (compulsory)
-#' @param time_period_id integer - time period for which to return data for (compulsory)
-#' @param area_id integer - area for which to return data for (compulsory)
+#' @param time_period_id Integer (required). The reporting period (time period) to retrieve data for. Use [cvd_time_period_list()] to find valid IDs.
+#' @param area_id Integer (required). The AreaID for which to retrieve indicator data. use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
+#' @param indicator_id Integer (required). The IndicatorID for which to retrieve data. use [cvd_indicator_list()] or [cvd_indicator_metric_list()] to find valid IDs.
 #'
-#' @return Tibble of details for the indicator in the area and a national comparison
-#' @export
-#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
-#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
-#' [cvd_indicator_child_data()], [cvd_indicator_metric_data()],
-#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
-#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
-#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
-#' [cvd_indicator_metric_area_breakdown()]
+#' @return
+#' A tibble with one row per metric breakdown for the requested indicator, area and period. Typical columns include `IndicatorID`, `MetricID`, `MetricCategoryName`, `CategoryAttribute`, `Value`, `Numerator`, `Denominator`, `LowerConfidenceLimit`, `UpperConfidenceLimit` and others.
+#' If no indicator data is found, returns a tibble describing the error.
+#'
+#' @details
+#' Use this function to obtain all metric values for a single indicator in a particular area and time period, such as for a local dashboard or a focussed report. For broader queries across multiple indicators, see [cvd_indicator()] or [cvd_indicator_metric_list()].
+#'
+#' @seealso
+#' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()], [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()], [cvd_indicator_child_data()], [cvd_indicator_metric_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
-#' # Look at 'AF: treatment with anticoagulants' (indicator ID 7) in time
-#' # period 17 for  'Leicester Central PCN' (area_id 701) focussed on metrics
-#' # by gender:
-#' cvd_indicator_data(time_period_id = 17, indicator_id = 7, area_id = 701) |>
-#'   dplyr::filter(MetricCategoryTypeName == 'Sex') |>
-#'   dplyr::select(MetricID, MetricCategoryName, AreaData.AreaName,
-#'   AreaData.Value, NationalData.AreaName, NationalData.Value)
+#' # Retrieve all metric breakdowns for indicator 7 in area 1103 for time period 17
+#' cvd_indicator_data(time_period_id = 17, area_id = 1103, indicator_id = 7) |>
+#'   dplyr::select(IndicatorID, MetricID, MetricCategoryName, CategoryAttribute, Value)
+#'
+#' # Find valid indicator ID, then retrieve its data
+#' indicators <- cvd_indicator_list(time_period_id = 17, system_level_id = 5)
+#' cvd_indicator_data(time_period_id = 17, area_id = 1103, indicator_id = indicators$IndicatorID[1])
+#'
+#' @export
 cvd_indicator_data <- function(
   indicator_id,
   time_period_id,
