@@ -768,20 +768,25 @@ cvd_area_unassigned <- function(time_period_id, system_level_id) {
 #' \donttest{cvd_area_search(partial_area_name = 'PCN', time_period_id = 17) |>
 #'   dplyr::select(AreaID, AreaName, AreaCode)}
 cvd_area_search <- function(partial_area_name, time_period_id) {
-  # audit_call()
-
   # validate input
-  validate_input_string(
+  v1 <- validate_input_string(
     value = partial_area_name,
     param_name = "partial_area_name",
     required = TRUE
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
 
   # compose the request
   req <-
@@ -792,21 +797,41 @@ cvd_area_search <- function(partial_area_name, time_period_id) {
       `timePeriodID` = time_period_id
     )
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)$foundAreaList |>
-          purrr::compact() |>
-          tibble::as_tibble()
-        return(dat)
-      },
-      context = "cvd_area_search"
-    )
+  # processing function
+  process_area_search <- function(parsed) {
+    # defensive check
+    if (
+      !"foundAreaList" %in% names(parsed) ||
+        length(parsed[["foundAreaList"]]) < 2
+    ) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_area_search",
+          error = "Response does not contain expected `foundAreaList` structure",
+          url = httr2::req_get_url(req)
+        )
+      )
+    }
 
-  return(data)
+    # continue with processing
+    parsed$foundAreaList |>
+      purrr::compact() |>
+      tibble::as_tibble()
+  }
+
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_area_search,
+    context = "cvd_area_search"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Area nested sub systems
