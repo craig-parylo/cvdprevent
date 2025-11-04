@@ -693,6 +693,66 @@ get_random_valid_metric_id_for_time_period_id_and_area_id <- function(
   return(id)
 }
 
+## pathway_group_ids ----
+
+#' Get valid pathway group IDs
+#'
+#' @description
+#' Retrieves a unique list of valid `pathway_group_id` values.
+#' Results are memoised for performance.
+#'
+#' @return A numeric vector of unique `pathway_group_id` values.
+#' @noRd
+get_valid_pathway_group_ids <- function() {
+  # get the pathway groups
+  df_pathway_groups <- cvd_indicator_priority_groups()
+
+  # check the tibble contains pathway group id
+  if (!"PathwayGroupID" %in% names(df_pathway_groups)) {
+    cli::cli_abort(
+      "Column {.val PathwayGroupID} not found in the pathway group data."
+    )
+  }
+
+  # collect a distinct list of pathway group ids
+  ids <-
+    df_pathway_groups |>
+    dplyr::pull(dplyr::any_of("PathwayGroupID")) |>
+    unique() |>
+    na.omit() |>
+    sort()
+
+  # checking the ids are numeric type
+  if (!is.numeric(ids)) {
+    cli::cli_warn(
+      "Returned Pathway Group IDs are not numeric. Coercing to numeric."
+    )
+    ids <- as.numeric(ids)
+  }
+
+  return(ids)
+}
+
+#' Get one or more random pathway group IDs
+#'
+#' @description
+#' Randomly selects `n` valid `pathway_group_id` values from the available list.
+#'
+#' @param n Integer. Number of IDs to return. Defaults to 1.
+#'
+#' @return A numeric vector of `n` randomly selected valid pathway group IDs.
+#' @noRd
+get_random_valid_pathway_group_id <- function(n = 1) {
+  id <-
+    get_random_ids(
+      n = n,
+      valid_ids = m_get_valid_pathway_group_ids() # cached list of pathway ids
+    )
+
+  # return
+  return(id)
+}
+
 # ## indicator_type_id ----
 # #' Get valid indicator type IDs
 # #'
@@ -937,66 +997,6 @@ get_random_valid_metric_id_for_time_period_id_and_area_id <- function(
 #       valid_ids = m_get_valid_metric_ids_for_time_period_id(
 #         time_period_id = time_period_id
 #       ) # cached list of metric ids
-#     )
-
-#   # return
-#   return(id)
-# }
-
-# ## pathway_group_ids ----
-
-# #' Get valid pathway group IDs
-# #'
-# #' @description
-# #' Retrieves a unique list of valid `pathway_group_id` values.
-# #' Results are memoised for performance.
-# #'
-# #' @return A numeric vector of unique `pathway_group_id` values.
-# #' @noRd
-# get_valid_pathway_group_ids <- function() {
-#   # get the pathway groups
-#   df_pathway_groups <- m_cvd_indicator_priority_groups()
-
-#   # check the tibble contains pathway group id
-#   if (!"PathwayGroupID" %in% names(df_pathway_groups)) {
-#     cli::cli_abort(
-#       "Column {.val PathwayGroupID} not found in the pathway group data."
-#     )
-#   }
-
-#   # collect a distinct list of pathway group ids
-#   ids <-
-#     df_pathway_groups |>
-#     dplyr::pull(dplyr::any_of("PathwayGroupID")) |>
-#     unique() |>
-#     na.omit() |>
-#     sort()
-
-#   # checking the ids are numeric type
-#   if (!is.numeric(ids)) {
-#     cli::cli_warn(
-#       "Returned Pathway Group IDs are not numeric. Coercing to numeric."
-#     )
-#     ids <- as.numeric(ids)
-#   }
-
-#   return(ids)
-# }
-
-# #' Get one or more random pathway group IDs
-# #'
-# #' @description
-# #' Randomly selects `n` valid `pathway_group_id` values from the available list.
-# #'
-# #' @param n Integer. Number of IDs to return. Defaults to 1.
-# #'
-# #' @return A numeric vector of `n` randomly selected valid pathway group IDs.
-# #' @noRd
-# get_random_valid_pathway_group_id <- function(n = 1) {
-#   id <-
-#     get_random_ids(
-#       n = n,
-#       valid_ids = m_get_valid_pathway_group_ids() # cached list of pathway ids
 #     )
 
 #   # return

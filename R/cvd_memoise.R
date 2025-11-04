@@ -128,3 +128,7 @@ delayedAssign(
   "m_get_valid_indicator_ids_for_time_period_id_and_system_level_id",
   memoise_lookup(get_valid_indicator_ids_for_time_period_id_and_system_level_id)
 )
+delayedAssign(
+  "m_get_valid_pathway_group_ids",
+  memoise_lookup(get_valid_pathway_group_ids)
+)

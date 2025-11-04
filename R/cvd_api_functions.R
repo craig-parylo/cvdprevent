@@ -2413,18 +2413,22 @@ cvd_indicator_raw_data <- function(
 #' target_data <- return_list$target
 #' target_data |> gt::gt()
 cvd_indicator_nationalarea_metric_data <- function(
-  metric_id,
   time_period_id,
-  area_id
+  area_id,
+  metric_id
 ) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = area_id,
     param_name = "area_id",
     required = TRUE,
@@ -2432,7 +2436,11 @@ cvd_indicator_nationalarea_metric_data <- function(
       time_period_id = time_period_id
     )
   )
-  validate_input_id(
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
+
+  v3 <- validate_input_id(
     id = metric_id,
     param_name = "metric_id",
     required = TRUE,
@@ -2441,6 +2449,9 @@ cvd_indicator_nationalarea_metric_data <- function(
       area_id = area_id
     )
   )
+  if (!isTRUE(v3)) {
+    return(v3)
+  }
 
   # compose the request
   req <-
@@ -2453,61 +2464,82 @@ cvd_indicator_nationalarea_metric_data <- function(
       `areaID` = area_id
     )
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
-          purrr::compact()
+  # process function
+  process_indicator_nationalarea_metric_data <- function(parsed) {
+    # defensive check
+    if (length(parsed) < 2 || !is.list(parsed[[2]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_nationalarea_metric_data",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        # set up the return object
-        return <- list()
+    # continue process
+    dat <-
+      parsed[[2]] |>
+      purrr::compact()
 
-        # handle area data
-        if ("AreaData" %in% names(dat)) {
-          # extract area data - the first element
-          area_data <-
-            dat |>
-            dplyr::nth(1) |>
-            tibble::as_tibble()
+    # set up the return object
+    return <- list()
 
-          return <-
-            return |>
-            append(list("area" = area_data))
-        }
+    # handle area data
+    if ("AreaData" %in% names(dat)) {
+      # extract area data - the first element
+      area_data <-
+        dat |>
+        dplyr::nth(1) |>
+        tibble::as_tibble()
 
-        # handle target data
-        if ("TargetData" %in% names(dat)) {
-          # extract target data - the second element
-          target_data <-
-            dat |>
-            dplyr::nth(2)
+      return <-
+        return |>
+        append(list("area" = area_data))
+    }
 
-          # only output if not NULL
-          if (target_data |> dplyr::nth(1) |> is.null()) {
-            # do nothing as the first element is null
-          } else {
-            # convert to tibble
-            target_data <-
-              target_data |>
-              tibble::as_tibble()
+    # handle target data
+    if ("TargetData" %in% names(dat)) {
+      # extract target data - the second element
+      target_data <-
+        dat |>
+        dplyr::nth(2)
 
-            # add to return list
-            return <-
-              return |>
-              append(list("target" = target_data))
-          }
-        }
+      # only output if not NULL
+      if (target_data |> dplyr::nth(1) |> is.null()) {
+        # do nothing as the first element is null
+      } else {
+        # convert to tibble
+        target_data <-
+          target_data |>
+          tibble::as_tibble()
 
-        return(return)
-      },
-      context = "cvd_indicator_nationalarea_metric_data",
-      html500_msg = "invalid `metric_id`"
-    )
+        # add to return list
+        return <-
+          return |>
+          append(list("target" = target_data))
+      }
+    }
 
-  return(data)
+    return(return)
+  }
+
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_nationalarea_metric_data,
+    context = "cvd_indicator_nationalarea_metric_data"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 
@@ -2546,25 +2578,44 @@ cvd_indicator_priority_groups <- function() {
     httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('indicator/priorityGroups')
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        # dat is a named list of tibbles, one for each of the priority groups
-        # the next step combines these tibbles together into a single tibble
-        # adding the name of each tibble as a new variable called 'PriorityGroup'
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
-          purrr::compact() |>
-          dplyr::bind_rows(.id = "PriorityGroup")
+  # process function
+  process_indicator_priority_groups <- function(parsed) {
+    # defensive check
+    if (length(parsed[[1]]) < 2 || !is.list(parsed[[1]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_priority_groups",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_indicator_priority_groups"
-    )
+    # continue process
+    parsed[[1]] |>
+      purrr::compact() |>
+      # this is a named list of tibbles, one for each of the priority groups
+      # the next step combines these tibbles together into a single tibble
+      # adding the name of each tibble as a new variable called 'PriorityGroup'
+      dplyr::bind_rows(.id = "PriorityGroup")
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_priority_groups,
+    context = "cvd_indicator_priority_groups"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 
@@ -2599,12 +2650,15 @@ cvd_indicator_priority_groups <- function() {
 #'   dplyr::select(PathwayGroupName, PathwayGroupID, IndicatorCode, IndicatorID, IndicatorName)
 cvd_indicator_pathway_group <- function(pathway_group_id) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = pathway_group_id,
     param_name = "pathway_group_id",
     required = TRUE,
     valid_ids = m_get_valid_pathway_group_ids()
   )
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
 
   # compose the request
   req <-
@@ -2613,28 +2667,46 @@ cvd_indicator_pathway_group <- function(pathway_group_id) {
       'indicator/pathwayGroup/{pathway_group_id}'
     ))
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
-          purrr::compact() |>
-          tibble::as_tibble() |>
-          dplyr::relocate(
-            dplyr::any_of(c("Indicators")),
-            .after = dplyr::last_col()
-          ) |>
-          tidyr::unnest(cols = dplyr::any_of(c("Indicators")))
+  # process function
+  process_indicator_pathway_group <- function(parsed) {
+    # defensive check
+    if (length(parsed[[1]]) < 2 || !is.list(parsed[[1]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_pathway_group",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_indicator_pathway_group",
-      html500_msg = "invalid `pathway_group_id`"
-    )
+    # continue process
+    parsed[[1]] |>
+      purrr::compact() |>
+      tibble::as_tibble() |>
+      dplyr::relocate(
+        dplyr::any_of(c("Indicators")),
+        .after = dplyr::last_col()
+      ) |>
+      tidyr::unnest(cols = dplyr::any_of(c("Indicators")))
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_pathway_group,
+    context = "cvd_indicator_pathway_group"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Indicator group
