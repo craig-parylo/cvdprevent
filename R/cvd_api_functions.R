@@ -65,6 +65,7 @@ cvd_indicator_types <- function() {
     dplyr::distinct()
 }
 
+
 #' List time periods
 #'
 #' Returns all available time periods
@@ -90,40 +91,58 @@ cvd_indicator_types <- function() {
 #'   dplyr::filter(IndicatorTypeName == 'Standard') |>
 #'   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
 #'   dplyr::select(TimePeriodID, TimePeriodName)}
-cvd_time_period_list <- function(indicator_type_id) {
-  # validate input
-  validate_input_id(
-    id = indicator_type_id,
-    param_name = "indicator_type_id",
-    required = FALSE
-  )
-
-  # compose the request
-  req <-
-    httr2::request(get_api_base_url()) |>
-    httr2::req_url_path_append('timePeriod')
-
-  if (!missing(indicator_type_id)) {
-    req <-
-      req |>
-      httr2::req_url_query(`indicatorTypeID` = indicator_type_id)
+cvd_time_period_list <- function(indicator_type_id = NULL) {
+  # validate input if provided
+  if (!is.null(indicator_type_id)) {
+    v <- validate_input_id(
+      id = indicator_type_id,
+      param_name = "indicator_type_id",
+      required = FALSE
+    )
+    if (!identical(v, TRUE)) return(v)
   }
 
-  # safely perform the request and parse
-  data <- safe_api_call(
+  # build request
+  req <- httr2::request(get_api_base_url()) |>
+    httr2::req_url_path_append("timePeriod")
+
+  if (!is.null(indicator_type_id)) {
+    req <- req |>
+      httr2::req_url_query(indicatorTypeID = indicator_type_id)
+  }
+
+  # processor: extract and tidy the list
+  process_time_periods <- function(parsed) {
+    if (!"timePeriodList" %in% names(parsed)) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_time_period_list",
+          error = "Response does not contain `timePeriodList`.",
+          status = NA_integer_,
+          url = NA_character_,
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
+    parsed$timePeriodList |>
+      tibble::as_tibble()
+  }
+
+  # perform request safely with cache
+  res <- memoised_safe_api_call(
     req = req,
-    parse_fn = function(resp_body) {
-      dat <-
-        jsonlite::fromJSON(resp_body, flatten = TRUE)$timePeriodList |>
-        purrr::compact() |>
-        tibble::as_tibble() |>
-        safe_arrange(col = "TimePeriodID")
-    },
+    process_fn = process_time_periods,
     context = "cvd_time_period_list"
   )
 
-  return(data)
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
+
 
 #' Time periods and system levels
 #'
@@ -146,41 +165,60 @@ cvd_time_period_list <- function(indicator_type_id) {
 #'   dplyr::filter(TimePeriodID == max(TimePeriodID)) |>
 #'   dplyr::select(TimePeriodID, TimePeriodName, SystemLevelID, SystemLevelName)
 cvd_time_period_system_levels <- function() {
-  # compose the request
-  req <-
-    httr2::request(get_api_base_url()) |>
-    httr2::req_url_path_append('timePeriod/systemLevels')
+  # build request
+  req <- httr2::request(get_api_base_url()) |>
+    httr2::req_url_path_append("timePeriod/systemLevels")
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
-          purrr::compact() |>
-          tibble::as_tibble() |>
-          dplyr::select(
-            -dplyr::any_of(c(
-              'NotificationCount',
-              'HighestPriorityNotificationType'
-            ))
-          ) |> # prevents conflicts with column of same name in nested data
-          dplyr::relocate(
-            dplyr::any_of(c('SystemLevels')),
-            .after = dplyr::last_col()
-          ) |>
-          tidyr::unnest(cols = dplyr::any_of(c('SystemLevels'))) |>
-          dplyr::arrange(dplyr::pick(dplyr::any_of(c(
-            "TimePeriodID",
-            "SystemLevelID"
-          ))))
-      },
-      context = "cvd_time_period_system_levels"
-    )
+  # processor: extract and tidy the nested SystemLevels
+  process_system_levels <- function(parsed) {
+    # defensive check
+    if (length(parsed) < 2 || !is.list(parsed[[2]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_time_period_system_levels",
+          error = "Response does not contain expected `SystemLevels` structure.",
+          status = NA_integer_,
+          url = NA_character_,
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-  return(data)
+    # continue with processing
+    parsed[[2]] |>
+      tibble::as_tibble() |>
+      dplyr::select(
+        -dplyr::any_of(c(
+          "NotificationCount",
+          "HighestPriorityNotificationType"
+        ))
+      ) |> # drop potentially conflicting columns
+      dplyr::relocate(
+        dplyr::any_of("SystemLevels"),
+        .after = dplyr::last_col()
+      ) |>
+      tidyr::unnest(cols = dplyr::any_of("SystemLevels")) |>
+      dplyr::arrange(
+        dplyr::pick(dplyr::any_of(c("TimePeriodID", "SystemLevelID")))
+      )
+  }
+
+  # safely perform the request
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_system_levels,
+    context = "cvd_time_period_system_levels"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
+
 
 ## area ------------------------------------------------------------------------
 
@@ -203,12 +241,15 @@ cvd_time_period_system_levels <- function() {
 #'   dplyr::select(SystemLevelID, SystemLevelName)
 cvd_area_system_level <- function(time_period_id) {
   # validate input
-  validate_input_id(
+  v <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
+  if (!identical(v, TRUE)) {
+    return(v)
+  } # propagate error tibble
 
   # compose the request
   req <-
@@ -218,20 +259,39 @@ cvd_area_system_level <- function(time_period_id) {
       `timePeriodID` = time_period_id
     )
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
-          purrr::compact() |>
-          tibble::as_tibble()
-        return(dat)
-      }
-    )
+  # define a processor that works on parsed JSON
+  process_area_system_level <- function(parsed) {
+    # defensive check
+    if (length(parsed) < 2 || !is.list(parsed[[2]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_area_system_level",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = NA_character_,
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-  return(data)
+    # continue with processing
+    parsed[[2]] |> tibble::as_tibble()
+  }
+
+  # safely perform the request
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_area_system_level,
+    context = "cvd_area_system_level"
+  )
+
+  # reutrn either processed tibble or error tibble
+  if (isTRUE(res$success)) {
+    return(res$result)
+  } else {
+    return(res$tibble)
+  }
 }
 
 #' List all system levels and available time periods
@@ -1569,27 +1629,40 @@ cvd_indicator_data <- function(
     )
 
   # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
-          purrr::compact() |>
-          tibble::as_tibble() |>
-          dplyr::relocate(
-            dplyr::any_of(c("Categories")),
-            .after = dplyr::last_col()
-          ) |>
-          tidyr::unnest(col = dplyr::any_of(c("Categories")))
+  perf <- safe_perform(req)
+  res <- handle_safe_result(
+    perf,
+    context = "cvd_indicator_data",
+    req_params = list(http_500 = TRUE)
+  )
+  if (isTRUE(res$success)) {
+    data <- res$body
+  } else {
+    return(res$tibble)
+  }
 
-        return(dat)
-      },
-      context = "cvd_indicator_data",
-      html500_msg = "invalid {.arg indicator_id}"
-    )
+  # # safely perform the request and parse
+  # data <-
+  #   safe_api_call(
+  #     req = req,
+  #     parse_fn = function(resp_body) {
+  #       dat <-
+  #         jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
+  #         purrr::compact() |>
+  #         tibble::as_tibble() |>
+  #         dplyr::relocate(
+  #           dplyr::any_of(c("Categories")),
+  #           .after = dplyr::last_col()
+  #         ) |>
+  #         tidyr::unnest(col = dplyr::any_of(c("Categories")))
 
-  return(data)
+  #       return(dat)
+  #     },
+  #     context = "cvd_indicator_data",
+  #     html500_msg = "invalid {.arg indicator_id}"
+  #   )
+
+  # return(data)
 }
 
 
