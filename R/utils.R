@@ -1,359 +1,4 @@
-# ## memoised functions ---------------------------------------------------------
-
-# #' Safely memoise a function with error handling and optional cache
-# #'
-# #' @param fn The function to memoise
-# #' @param name Optional name for logging/debugging
-# #' @param cache A memoise-compatible cache object (e.g. cache_mem())
-# #'
-# #' @return A memoised function that returns NULL on error and avoids caching failures
-# #' @noRd
-# memoise_safe <- function(fn, name = NULL, cache = NULL) {
-#   safe_wrapper <- function(...) {
-#     result <- tryCatch(
-#       fn(...),
-#       error = function(e) {
-#         if (!is.null(name)) {
-#           cli::cli_alert_danger("Function {.fn {name}} failed: {e$message}")
-#         }
-#         return(NULL)
-#       }
-#     )
-
-#     if (is.null(result) || length(result) == 0) {
-#       if (!is.null(name)) {
-#         cli::cli_alert_warning("Function {.fn {name}} returned no data")
-#       }
-#       return(NULL)
-#     }
-
-#     result
-#   }
-
-#   if (!is.null(cache)) {
-#     memoise::memoise(safe_wrapper, cache = cache)
-#   } else {
-#     memoise::memoise(safe_wrapper)
-#   }
-# }
-
-# # set as delayed assign to avoid issues on load
-# # delayedAssign(
-# #   "m_get_valid_time_period_ids",
-# #   memoise::memoise(
-# #     get_valid_time_period_ids,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_get_valid_time_period_ids",
-#   memoise_safe(
-#     fn = get_valid_time_period_ids,
-#     name = "get_valid_time_period_ids",
-#     cache = m_cache
-#   )
-# )
-# delayedAssign(
-#   "m_get_valid_time_period_ids",
-#   memoise_lookup(get_valid_time_period_ids)
-# )
-
-# # delayedAssign(
-# #   "m_get_valid_tag_ids",
-# #   memoise::memoise(
-# #     get_valid_tag_ids,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_get_valid_tag_ids",
-#   memoise_safe(
-#     fn = get_valid_tag_ids,
-#     name = "get_valid_tag_ids",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_get_valid_system_level_id_for_time_period_id",
-# #   memoise::memoise(
-# #     get_valid_system_level_id_for_time_period_id,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_get_valid_system_level_id_for_time_period_id",
-#   memoise_safe(
-#     fn = get_valid_system_level_id_for_time_period_id,
-#     name = "get_valid_system_level_id_for_time_period_id",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_get_valid_indicator_type_ids",
-# #   memoise::memoise(
-# #     get_valid_indicator_type_ids,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_get_valid_indicator_type_ids",
-#   memoise_safe(
-#     fn = get_valid_indicator_type_ids,
-#     name = "get_valid_indicator_type_ids",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_cvd_time_period_list",
-# #   memoise::memoise(
-# #     cvd_time_period_list,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_cvd_time_period_list",
-#   memoise_safe(
-#     fn = cvd_time_period_list,
-#     name = "cvd_time_period_list",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_cvd_area_list",
-# #   memoise::memoise(
-# #     cvd_area_list,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_cvd_area_list",
-#   memoise_safe(
-#     fn = cvd_area_list,
-#     name = "cvd_area_list",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_get_valid_area_ids_for_time_period_id",
-# #   memoise::memoise(
-# #     get_valid_area_ids_for_time_period_id,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_get_valid_area_ids_for_time_period_id",
-#   memoise_safe(
-#     fn = get_valid_area_ids_for_time_period_id,
-#     name = "get_valid_area_ids_for_time_period_id",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_cvd_indicator_metric_list",
-# #   memoise::memoise(
-# #     cvd_indicator_metric_list,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_cvd_indicator_metric_list",
-#   memoise_safe(
-#     fn = cvd_indicator_metric_list,
-#     name = "cvd_indicator_metric_list",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_get_valid_indicator_ids_for_time_period_id",
-# #   memoise::memoise(
-# #     get_valid_indicator_ids_for_time_period_id,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_get_valid_indicator_ids_for_time_period_id",
-#   memoise_safe(
-#     fn = get_valid_indicator_ids_for_time_period_id,
-#     name = "get_valid_indicator_ids_for_time_period_id",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_get_valid_metric_ids_for_time_period_id",
-# #   memoise::memoise(
-# #     get_valid_metric_ids_for_time_period_id,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_get_valid_metric_ids_for_time_period_id",
-#   memoise_safe(
-#     get_valid_metric_ids_for_time_period_id,
-#     name = "get_valid_metric_ids_for_time_period_id",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_cvd_indicator",
-# #   memoise::memoise(
-# #     cvd_indicator,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_cvd_indicator",
-#   memoise_safe(
-#     fn = cvd_indicator,
-#     name = "cvd_indicator",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_get_valid_indicator_ids_for_time_period_id_and_area_id",
-# #   memoise::memoise(
-# #     get_valid_indicator_ids_for_time_period_id_and_area_id,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_get_valid_indicator_ids_for_time_period_id_and_area_id",
-#   memoise_safe(
-#     fn = get_valid_indicator_ids_for_time_period_id_and_area_id,
-#     name = "get_valid_indicator_ids_for_time_period_id_and_area_id",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_get_valid_metric_ids_for_time_period_id_and_area_id",
-# #   memoise::memoise(
-# #     get_valid_metric_ids_for_time_period_id_and_area_id,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_get_valid_metric_ids_for_time_period_id_and_area_id",
-#   memoise_safe(
-#     fn = get_valid_metric_ids_for_time_period_id_and_area_id,
-#     name = "get_valid_metric_ids_for_time_period_id_and_area_id",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_cvd_indicator_priority_groups",
-# #   memoise::memoise(
-# #     cvd_indicator_priority_groups,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_cvd_indicator_priority_groups",
-#   memoise_safe(
-#     fn = cvd_indicator_priority_groups,
-#     name = "cvd_indicator_priority_groups",
-#     cache = m_cache
-#   )
-# )
-
-# # delayedAssign(
-# #   "m_get_valid_pathway_group_ids",
-# #   memoise::memoise(
-# #     get_valid_pathway_group_ids,
-# #     cache = m_cache
-# #   )
-# # )
-# delayedAssign(
-#   "m_get_valid_pathway_group_ids",
-#   memoise_safe(
-#     fn = get_valid_pathway_group_ids,
-#     name = "get_valid_pathway_group_ids",
-#     cache = m_cache
-#   )
-# )
-
-## Cache management -----------------------------------------------------------
-
-# #' Clear memoised caches for CVD input validation functions
-# #'
-# #' @description
-# #' Clears the memoised caches used by input validation functions in the `cvdprevent` package,
-# #' such as `m_get_valid_time_period_ids()` and `m_get_valid_tag_ids()`.
-# #'
-# #' @details
-# #' The `cvdprevent` package validates user inputs like `time_period_id` and `tag_id` by
-# #' retrieving valid values from an external API. To improve responsiveness and reduce
-# #' unnecessary API calls, these values are cached using memoisation and remain valid for up to 7 days.
-# #'
-# #' This function clears any existing caches, forcing the validation functions to re-fetch
-# #' fresh data from the API. This is especially useful when new audit data has been published
-# #' since the last cache was created, and stale values are causing validation errors (e.g.,
-# #' an apparently invalid `time_period_id` that is actually valid in the latest dataset).
-# #'
-# #' @return Invisibly returns `TRUE` after clearing all relevant caches.
-# #'
-# #' @examples
-# #' # clear all caches used to validate user inputs
-# #' \donttest{cvd_clear_cache()}
-# #'
-# #' @export
-# cvd_clear_cache <- function() {
-#   memoised_fns <- list(
-#     m_get_valid_time_period_ids,
-#     m_get_valid_tag_ids,
-#     m_get_valid_system_level_id_for_time_period_id,
-#     m_get_valid_indicator_type_ids,
-#     m_cvd_time_period_list,
-#     m_cvd_area_list,
-#     m_get_valid_area_ids_for_time_period_id,
-#     m_cvd_indicator_metric_list,
-#     m_get_valid_indicator_ids_for_time_period_id,
-#     m_get_valid_metric_ids_for_time_period_id,
-#     m_cvd_indicator,
-#     m_get_valid_indicator_ids_for_time_period_id_and_area_id,
-#     m_get_valid_metric_ids_for_time_period_id_and_area_id,
-#     m_cvd_indicator_priority_groups,
-#     m_get_valid_pathway_group_ids
-#   )
-
-#   purrr::walk(memoised_fns, function(fn) {
-#     fn <- force(fn)
-#     if (inherits(fn, "memoised")) {
-#       memoise::forget(fn)
-#     } else {
-#       cli::cli_warn(
-#         "{.fn {deparse(substitute(fn))}} is not memoised or not found."
-#       )
-#     }
-#   })
-
-#   invisible(TRUE)
-# }
-
-# #' Clear all cached lookup results
-# #' @noRd
-# cvd_clear_all_cache <- function() {
-#   m_cache$reset()
-#   invisible(TRUE)
-# }
-
-# #' Refresh a specific memoised lookup
-# #' @param fn a memoised function object
-# #' @noRd
-# cvd_refresh_lookup <- function(fn) {
-#   memoise::forget(fn)
-#   invisible(TRUE)
-# }
+# General functions -----------------------------------------------------------
 
 #' Get one or more random ID values
 #'
@@ -393,7 +38,10 @@ get_random_ids <- function(
   return(id)
 }
 
+# Lookup values ---------------------------------------------------------------
+
 ## time_period_id ------
+
 #' Get valid time period IDs
 #'
 #' @description
@@ -446,6 +94,89 @@ get_random_valid_time_period_id <- function(n = 1) {
     get_random_ids(
       n = n,
       valid_ids = m_get_valid_time_period_ids() # cached list of time period ids
+    )
+
+  # return
+  return(id)
+}
+
+## system_level_id -----
+
+#' Get valid system level IDs for a given time period
+#'
+#' @description
+#' Retrieves a unique list of valid `system_level_id` values for a given value of `time_period_id`.
+#' Results are memoised for performance.
+#'
+#' @return A numeric vector of unique `system_level_id` values.
+#' @noRd
+get_valid_system_level_id_for_time_period_id <- function(time_period_id) {
+  # validate input
+  v <- validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+  if (!identical(v, TRUE)) {
+    return(v)
+  }
+
+  # get a tibble containing valid system levels from the API
+  df_system_levels <- cvd_area_system_level(time_period_id = time_period_id)
+
+  # check the tibble contains a column called 'SystemLevelID'
+  if (!"SystemLevelID" %in% names(df_system_levels)) {
+    cli::cli_abort(
+      "Column {.val SystemLevelID} not found in the system level data."
+    )
+  }
+
+  # collect a distinct list of system level ids
+  ids <- df_system_levels |>
+    dplyr::pull(.data$SystemLevelID) |>
+    unique() |>
+    sort()
+
+  # checking the ids are numeric type
+  if (!is.numeric(ids)) {
+    cli::cli_warn(
+      "Returned System Level IDs are not numeric. Coercing to numeric."
+    )
+    ids <- as.numeric(ids)
+  }
+
+  # return the result
+  return(ids)
+}
+
+#' Get one or more random system level IDs
+#'
+#' @description
+#' Randomly selects `n` valid `system_level_id` values from the available list.
+#'
+#' @param n Integer. Number of IDs to return. Defaults to 1.
+#'
+#' @return A numeric vector of `n` randomly selected valid indicator tag IDs.
+#' @noRd
+get_random_valid_system_level_id_for_time_period_id <- function(
+  n = 1,
+  time_period_id
+) {
+  # validate input
+  validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+
+  id <-
+    get_random_ids(
+      n = n,
+      valid_ids = m_get_valid_system_level_id_for_time_period_id(
+        time_period_id = time_period_id
+      ) # cached list of ids
     )
 
   # return
@@ -566,89 +297,6 @@ get_random_valid_time_period_id <- function(n = 1) {
 #   # return
 #   return(id)
 # }
-
-# ## system_level_id -----
-
-#' Get valid system level IDs for a given time period
-#'
-#' @description
-#' Retrieves a unique list of valid `system_level_id` values for a given value of `time_period_id`.
-#' Results are memoised for performance.
-#'
-#' @return A numeric vector of unique `system_level_id` values.
-#' @noRd
-get_valid_system_level_id_for_time_period_id <- function(time_period_id) {
-  # validate input
-  v <- validate_input_id(
-    id = time_period_id,
-    param_name = "time_period_id",
-    required = TRUE,
-    valid_ids = m_get_valid_time_period_ids()
-  )
-  if (!identical(v, TRUE)) {
-    return(v)
-  }
-
-  # get a tibble containing valid system levels from the API
-  df_system_levels <- cvd_area_system_level(time_period_id = time_period_id)
-
-  # check the tibble contains a column called 'SystemLevelID'
-  if (!"SystemLevelID" %in% names(df_system_levels)) {
-    cli::cli_abort(
-      "Column {.val SystemLevelID} not found in the system level data."
-    )
-  }
-
-  # collect a distinct list of system level ids
-  ids <- df_system_levels |>
-    dplyr::pull(.data$SystemLevelID) |>
-    unique() |>
-    sort()
-
-  # checking the ids are numeric type
-  if (!is.numeric(ids)) {
-    cli::cli_warn(
-      "Returned System Level IDs are not numeric. Coercing to numeric."
-    )
-    ids <- as.numeric(ids)
-  }
-
-  # return the result
-  return(ids)
-}
-
-#' Get one or more random system level IDs
-#'
-#' @description
-#' Randomly selects `n` valid `system_level_id` values from the available list.
-#'
-#' @param n Integer. Number of IDs to return. Defaults to 1.
-#'
-#' @return A numeric vector of `n` randomly selected valid indicator tag IDs.
-#' @noRd
-get_random_valid_system_level_id_for_time_period_id <- function(
-  n = 1,
-  time_period_id
-) {
-  # validate input
-  validate_input_id(
-    id = time_period_id,
-    param_name = "time_period_id",
-    required = TRUE,
-    valid_ids = m_get_valid_time_period_ids()
-  )
-
-  id <-
-    get_random_ids(
-      n = n,
-      valid_ids = m_get_valid_system_level_id_for_time_period_id(
-        time_period_id = time_period_id
-      ) # cached list of ids
-    )
-
-  # return
-  return(id)
-}
 
 # ## area_ids ----
 
