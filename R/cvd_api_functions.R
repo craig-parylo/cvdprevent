@@ -388,28 +388,42 @@ cvd_area_system_level_time_periods <- function() {
 #'   dplyr::slice_head(n = 4)
 cvd_area_list <- function(time_period_id, parent_area_id, system_level_id) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
-    valid_ids = m_get_valid_time_period_ids()
+    valid_ids = m_get_valid_time_period_ids(),
+    suppress_cli = TRUE
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = system_level_id,
     param_name = "system_level_id",
     required = FALSE,
     valid_ids = m_get_valid_system_level_id_for_time_period_id(
       time_period_id = time_period_id
-    )
+    ),
+    suppress_cli = TRUE
   )
-  validate_input_id(
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
+
+  v3 <- validate_input_id(
     id = parent_area_id,
     param_name = "parent_area_id",
     required = FALSE,
-    valid_ids = m_get_valid_area_ids_for_time_period_id(
-      time_period_id = time_period_id
-    )
+    # NB, I think a child area could have activity without the parent area - so no limit here
+    # valid_ids = m_get_valid_area_ids_for_time_period_id(
+    #   time_period_id = time_period_id
+    # )
   )
+  if (!isTRUE(v3)) {
+    return(v3)
+  }
 
   # compose the request
   req <-
@@ -418,9 +432,17 @@ cvd_area_list <- function(time_period_id, parent_area_id, system_level_id) {
 
   if (base::missing(parent_area_id) && base::missing(system_level_id)) {
     # both optional arguments are missing - but we need at least one
-    cli::cli_abort(
-      "At least one of {.arg parent_area_id} or {.arg system_level_id} must be provided."
-    )
+    # cli::cli_abort(
+    #   "At least one of {.arg parent_area_id} or {.arg system_level_id} must be provided."
+    # )
+    return(cvd_error_tibble(
+      context = "cvd_area_list",
+      error = "At least one of `parent_area_id` or `system_level_id` must be provided.",
+      params = list(
+        parent_area_id = parent_area_id,
+        system_level_id = system_level_id
+      )
+    ))
   } else if (base::missing(parent_area_id)) {
     # system level id provided
     req <- req |>
@@ -441,35 +463,42 @@ cvd_area_list <- function(time_period_id, parent_area_id, system_level_id) {
     )
   }
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)$areaList
+  # processor function
+  process_area_list <- function(parsed) {
+    # defensive check
+    if (!"areaList" %in% names(parsed) || length(parsed[["areaList"]]) < 2) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_area_list",
+          error = "Response does not contain expected `areaList` structure",
+          url = httr2::req_get_url(req)
+        )
+      )
+    }
 
-        if (length(dat) == 0) {
-          cli::cli_alert_danger("No areas returned")
-          return(dplyr::tibble(result = "No areas returned"))
-        } else {
-          dat <-
-            dat |>
-            purrr::compact() |>
-            tibble::as_tibble() |>
-            dplyr::relocate(
-              dplyr::any_of(c("Parents")),
-              .after = dplyr::last_col()
-            ) |>
-            tidyr::unnest(col = dplyr::any_of(c("Parents")))
-        }
+    # continue with processing
+    parsed$areaList |>
+      tibble::as_tibble() |>
+      dplyr::relocate(
+        dplyr::any_of(c("Parents")),
+        .after = dplyr::last_col()
+      ) |>
+      tidyr::unnest(col = dplyr::any_of(c("Parents")))
+  }
 
-        return(dat)
-      },
-      context = "cvd_area_list"
-    )
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_area_list,
+    context = "cvd_area_list"
+  )
 
-  return(data)
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Area details
