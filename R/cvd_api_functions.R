@@ -636,60 +636,6 @@ cvd_area_details <- function(time_period_id, area_id) {
   } else {
     res$tibble
   }
-
-  # # safely perform the request and parse
-  # data <-
-  #   safe_api_call(
-  #     req = req,
-  #     parse_fn = function(resp_body) {
-  #       dat <-
-  #         jsonlite::fromJSON(resp_body, flatten = TRUE)$areaDetails |>
-  #         purrr::compact() |>
-  #         tibble::as_tibble()
-
-  #       # prepare the return object
-  #       return <- list()
-
-  #       # select base fields, exclude any parent or child details
-  #       area_details <-
-  #         dat |>
-  #         dplyr::select(-dplyr::any_of(c("ChildAreaList", "ParentAreaList"))) |>
-  #         unique()
-
-  #       return <-
-  #         return |>
-  #         append(list("area_details" = area_details))
-
-  #       # extract any parent details
-  #       if ('ParentAreaList' %in% names(dat)) {
-  #         area_parent_details <- dat$ParentAreaList |>
-  #           purrr::compact() |>
-  #           dplyr::as_tibble() |>
-  #           unique()
-
-  #         return <-
-  #           return |>
-  #           append(list("area_parent_details" = area_parent_details))
-  #       }
-
-  #       # extract any child details
-  #       if ('ChildAreaList' %in% names(dat)) {
-  #         area_child_details <- dat$ChildAreaList |>
-  #           purrr::compact() |>
-  #           dplyr::as_tibble() |>
-  #           unique()
-
-  #         return <-
-  #           return |>
-  #           append(list("area_child_details" = area_child_details))
-  #       }
-  #       return(return)
-  #     },
-  #     context = "cvd_area_details",
-  #     html500_msg = "{.arg area_id} is invalid"
-  #   )
-
-  # return(data)
 }
 
 #' Unassigned areas
@@ -717,16 +663,18 @@ cvd_area_details <- function(time_period_id, area_id) {
 #' cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>
 #'   dplyr::select(SystemLevelName, AreaID, AreaName)
 cvd_area_unassigned <- function(time_period_id, system_level_id) {
-  # audit_call()
-
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = system_level_id,
     param_name = "system_level_id",
     required = FALSE,
@@ -734,6 +682,9 @@ cvd_area_unassigned <- function(time_period_id, system_level_id) {
       time_period_id = time_period_id
     )
   )
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
 
   # compose the request
   req <-
@@ -754,22 +705,40 @@ cvd_area_unassigned <- function(time_period_id, system_level_id) {
       )
   }
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)$unassignedAreaList |>
-          purrr::compact() |>
-          tibble::as_tibble()
+  # process function
+  process_area_unassigned <- function(parsed) {
+    # defensive check
+    if (
+      !"unassignedAreaList" %in% names(parsed) ||
+        length(parsed[["unassignedAreaList"]]) < 2
+    ) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_area_unassigned",
+          error = "Response does not contain expected `unassignedAreaList` structure",
+          url = httr2::req_get_url(req)
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_area_unassigned"
-    )
+    # continue with processing
+    parsed$unassignedAreaList |>
+      tibble::as_tibble()
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_area_unassigned,
+    context = "cvd_area_unassigned"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Search for matching areas
