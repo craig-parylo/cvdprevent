@@ -320,21 +320,42 @@ cvd_area_system_level_time_periods <- function() {
     httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('area/systemLevel/timePeriods')
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
+  # define a function to process the data
+  process_area_system_level_time_periods <- function(parsed) {
+    # defensive check
+    if (length(parsed) < 2 || !is.list(parsed[[2]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_area_system_level_time_periods",
+          error = "Response does not contain expected `TimePeriods` structure.",
+          status = NA_integer_,
+          url = NA_character_,
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
+
+    # continue with processing
+    parsed[[2]] |>
+      tibble::as_tibble() |>
+      tidyr::unnest(cols = dplyr::any_of(c("TimePeriods")))
+  }
+
+  # safely perform the request and memoise
+  res <-
+    memoised_safe_api_call(
       req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
-          purrr::compact() |>
-          tibble::as_tibble() |>
-          tidyr::unnest(cols = dplyr::any_of(c("TimePeriods")))
-        return(dat)
-      }
+      process_fn = process_area_system_level_time_periods,
+      context = "cvd_area_system_level_time_periods"
     )
 
-  return(data)
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 
