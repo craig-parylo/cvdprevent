@@ -1,151 +1,379 @@
-# validation ------------------------------------------------------------------
-
-#' Validate an 'id' input
+#' Build an error tibble for validators
 #'
-#' @description
-#' Validates the supplied 'id' parameter to ensure it meets expected criteria:
-#' presence (if required), type, length, and optionally, value domain.
+#' Internal helper that constructs a one-row error tibble. If a package-level
+#' cvd_error_tibble() exists, it will be used; otherwise a minimal tibble is
+#' created here.
 #'
-#' @details
-#' This validation function can be used to validate any type of 'id' value, such as:
-#' - `time_period_id`
-#' - `area_id`
-#'
-#' @param id Value provided by the user.
-#' @param param_name Character. Name of the parameter being validated (e.g. "time_period_id")
-#' @param required Logical. If `TRUE`, the parameter must be provided. Defaults to `TRUE`.
-#' @param valid_ids Optional numeric vector of acceptable values. If provided, `id` must match one of them.
-#'
-#' @return Invisibly returns `TRUE` if all checks pass. Otherwise, aborts with a descriptive error.
+#' @param context character short label describing validation context
+#' @param message character error message (plain text)
+#' @param status integer HTTP status (optional)
+#' @param url character request URL (optional)
+#' @param params character parameters summary (optional)
+#' @param resp character response snippet (optional)
+#' @return one-row tibble with columns context, error, status, url, params, resp, timestamp
 #' @noRd
-validate_input_id <- function(
-  id = NA,
-  param_name = "id",
-  required = TRUE,
-  valid_ids = NULL
+ensure_error_tibble <- function(
+  context,
+  message,
+  status = NA_integer_,
+  url = NA_character_,
+  params = NA_character_,
+  resp = NA_character_
 ) {
-  # Check for missing or NULL when required
-  if (required && (missing(id) || is.null(id) || is.na(id))) {
-    cli::cli_abort("{.arg {param_name}} is required but was not provided.")
+  if (exists("cvd_error_tibble", mode = "function")) {
+    return(cvd_error_tibble(
+      context = context,
+      error = message,
+      status = status,
+      url = url,
+      params = params,
+      resp = resp
+    ))
   }
-
-  # Skip further checks if not required and NULL
-  if (!required && (missing(id) || is.null(id) || is.na(id))) {
-    return(invisible(TRUE))
-  }
-
-  # Length check: must be scalar
-  if (length(id) != 1) {
-    cli::cli_abort("{.arg {param_name}} must be a single value.")
-  }
-
-  # Type check: must be numeric and whole number
-  if (!is.numeric(id) || floor(id) != id) {
-    cli::cli_abort("{.arg {param_name}} must be a whole number.")
-  }
-
-  # Domain check: must be in valid_ids if provided
-  if (!is.null(valid_ids) && !(id %in% valid_ids)) {
-    cli::cli_abort("{.arg {param_name}} must be one of: {.val {valid_ids}}")
-  }
-
-  # return
-  invisible(TRUE)
+  tibble::tibble(
+    context = as.character(context),
+    error = as.character(message),
+    status = as.integer(status),
+    url = as.character(url),
+    params = as.character(params),
+    resp = as.character(resp),
+    timestamp = Sys.time()
+  )
 }
 
-#' Validate a string input
+#' Validate a single integer id
 #'
-#' @description
-#' Validates a string parameter to ensure it is present (if required), is a character scalar,
-#' and optionally matches a set of allowed values.
+#' Validate that a scalar id is present (if required), numeric and whole,
+#' optionally within a supplied set of valid ids. On success returns TRUE.
+#' On failure returns a one-row error tibble describing the problem.
 #'
-#' @param value The input value to validate.
-#' @param param_name Character. Name of the parameter being validated (e.g., "area_name").
-#' @param required Logical. If `TRUE`, the parameter must be provided. Defaults to `TRUE`.
-#' @param valid_values Optional character vector of acceptable values.
+#' @param id scalar value to validate (numeric expected)
+#' @param param_name character name shown in messages (default "id")
+#' @param required logical whether the value must be provided (default TRUE)
+#' @param valid_ids optional numeric vector of allowed ids
+#' @param context character short label for the validation context (default "validate_input_id")
+#' @param suppress_cli logical; when FALSE (default) a cli danger alert is emitted on failure
+#' @return TRUE on success, or a one-row tibble describing the validation error on failure
+#' @examples
+#' validate_input_id(5, param_name = "time_period_id")
+#' validate_input_id(NA, required = FALSE)
+#' @noRd
+validate_input_id <- function(
+  id,
+  param_name = "id",
+  required = TRUE,
+  valid_ids = NULL,
+  context = "validate_input_id",
+  suppress_cli = FALSE
+) {
+  show_msg_plain <- function(msg_text) {
+    if (!isTRUE(suppress_cli)) {
+      cli::cli_alert_danger(
+        "{.strong Validation error}: {.field {param_name}} — {.emph {msg_text}}"
+      )
+    }
+  }
+  show_msg_vals <- function(vals_text) {
+    if (!isTRUE(suppress_cli)) {
+      cli::cli_alert_danger(
+        "{.strong Validation error}: {.field {param_name}} — must be one of: {.val {vals_text}}"
+      )
+    }
+  }
+
+  # presence
+  if (
+    required && (missing(id) || is.null(id) || (length(id) == 1L && is.na(id)))
+  ) {
+    msg_text <- glue::glue("{param_name} is required but missing")
+    tib <- ensure_error_tibble(context, as.character(msg_text))
+    show_msg_plain(msg_text)
+    return(tib)
+  }
+  if (
+    !required && (missing(id) || is.null(id) || (length(id) == 1L && is.na(id)))
+  ) {
+    return(TRUE)
+  }
+
+  # scalar length
+  if (length(id) != 1L) {
+    msg_text <- glue::glue("{param_name} must be a single value")
+    tib <- ensure_error_tibble(context, as.character(msg_text))
+    show_msg_plain(msg_text)
+    return(tib)
+  }
+
+  # type & whole-number check
+  if (!is.numeric(id) || is.nan(id)) {
+    msg_text <- glue::glue("{param_name} must be a whole number")
+    tib <- ensure_error_tibble(context, as.character(msg_text))
+    show_msg_plain(msg_text)
+    return(tib)
+  }
+  if (is.na(id)) {
+    return(TRUE)
+  } # allowed only when not required (handled above)
+  if (floor(id) != id) {
+    msg_text <- glue::glue(
+      "{param_name} must be a whole number (no fractional part)"
+    )
+    tib <- ensure_error_tibble(context, as.character(msg_text))
+    show_msg_plain(msg_text)
+    return(tib)
+  }
+
+  # domain check
+  if (!is.null(valid_ids) && !(id %in% valid_ids)) {
+    vals_text <- paste(valid_ids, collapse = ", ")
+    msg_text <- glue::glue("{param_name} must be one of: {vals_text}")
+    tib <- ensure_error_tibble(context, as.character(msg_text))
+    show_msg_vals(vals_text)
+    return(tib)
+  }
+
+  TRUE
+}
+
+#' Validate a single string
 #'
-#' @return Invisibly returns `TRUE` if all checks pass. Otherwise, aborts with a descriptive error.
+#' Validate that a scalar string is present (if required), non-empty, and
+#' optionally one of a set of allowed values. On success returns TRUE. On
+#' failure returns a one-row error tibble describing the problem.
+#'
+#' @param value value to validate (character expected)
+#' @param param_name character name shown in messages (default "value")
+#' @param required logical whether the value must be provided (default TRUE)
+#' @param valid_values optional character vector of allowed values
+#' @param context character short label for the validation context (default "validate_input_string")
+#' @param suppress_cli logical; when FALSE (default) a cli danger alert is emitted on failure
+#' @return TRUE on success, or a one-row tibble describing the validation error on failure
+#' @examples
+#' validate_input_string("leicester", param_name = "area_name")
+#' validate_input_string(NA, required = FALSE)
 #' @noRd
 validate_input_string <- function(
   value,
   param_name = "value",
   required = TRUE,
-  valid_values = NULL
+  valid_values = NULL,
+  context = "validate_input_string",
+  suppress_cli = FALSE
 ) {
-  # Check for missing or NULL when required
-  if (required && (missing(value) || is.null(value) || is.na(value))) {
-    cli::cli_abort("{.arg {param_name}} is required but was not provided.")
+  show_msg_plain <- function(msg_text) {
+    if (!isTRUE(suppress_cli)) {
+      cli::cli_alert_danger(
+        "{.strong Validation error}: {.field {param_name}} — {.emph {msg_text}}"
+      )
+    }
+  }
+  show_msg_vals <- function(vals_text) {
+    if (!isTRUE(suppress_cli)) {
+      cli::cli_alert_danger(
+        "{.strong Validation error}: {.field {param_name}} — must be one of: {.val {vals_text}}"
+      )
+    }
   }
 
-  # Skip further checks if not required and NULL
-  if (!required && (missing(value) || is.null(value) || is.na(value))) {
-    return(invisible(TRUE))
+  # presence
+  if (
+    required &&
+      (missing(value) ||
+        is.null(value) ||
+        (length(value) == 1L && is.na(value)))
+  ) {
+    msg_text <- glue::glue("{param_name} is required but missing")
+    tib <- ensure_error_tibble(context, as.character(msg_text))
+    show_msg_plain(msg_text)
+    return(tib)
+  }
+  if (
+    !required &&
+      (missing(value) ||
+        is.null(value) ||
+        (length(value) == 1L && is.na(value)))
+  ) {
+    return(TRUE)
   }
 
-  # Type check: must be character
-  if (!is.character(value)) {
-    cli::cli_abort("{.arg {param_name}} must be a character string.")
+  # coerce factor
+  if (is.factor(value)) {
+    value <- as.character(value)
   }
 
-  # Length check: must be scalar
-  if (length(value) != 1) {
-    cli::cli_abort("{.arg {param_name}} must be a single string.")
+  # type and scalar
+  if (!is.character(value) || length(value) != 1L) {
+    msg_text <- glue::glue("{param_name} must be a single character string")
+    tib <- ensure_error_tibble(context, as.character(msg_text))
+    show_msg_plain(msg_text)
+    return(tib)
   }
 
-  # Domain check: must be in valid_values if provided
-  if (!is.null(valid_values) && !(value %in% valid_values)) {
-    cli::cli_abort("{.arg {param_name}} must be one of: {.val {valid_values}}")
+  str <- trimws(value)
+  if (nchar(str) == 0L) {
+    msg_text <- glue::glue("{param_name} must not be empty")
+    tib <- ensure_error_tibble(context, as.character(msg_text))
+    show_msg_plain(msg_text)
+    return(tib)
   }
 
-  # return
-  invisible(TRUE)
+  if (!is.null(valid_values) && !(str %in% valid_values)) {
+    vals_text <- paste(valid_values, collapse = ", ")
+    msg_text <- glue::glue("{param_name} must be one of: {vals_text}")
+    tib <- ensure_error_tibble(context, as.character(msg_text))
+    show_msg_vals(vals_text)
+    return(tib)
+  }
+
+  TRUE
 }
 
-#' Validate a vector of numeric tag IDs
+#' Validate a vector of integer ids
 #'
-#' @description
-#' Validates the `tag_id` parameter to ensure it is a numeric vector of whole numbers.
-#' Optionally checks for presence, length, and allowed values.
+#' Validate that a vector of ids is provided (if required), and that each
+#' element is integer-like. Optionally checks membership against valid_ids.
+#' On success returns TRUE. On failure returns a one-row error tibble.
 #'
-#' @param tag_id The input vector to validate.
-#' @param required Logical. If `TRUE`, the parameter must be provided. Defaults to `TRUE`.
-#' @param valid_ids Optional numeric vector of acceptable values.
-#'
-#' @return Invisibly returns `TRUE` if all checks pass. Otherwise, aborts with a descriptive error.
+#' @param ids vector of ids to validate (numeric or character allowed)
+#' @param param_name character name shown in messages (default "ids")
+#' @param required logical whether the value must be provided (default TRUE)
+#' @param valid_ids optional numeric vector of allowed ids
+#' @param context character short label for the validation context (default "validate_input_id_vector")
+#' @param suppress_cli logical; when FALSE (default) a cli danger alert is emitted on failure
+#' @return TRUE on success, or a one-row tibble describing the validation error on failure
+#' @examples
+#' validate_input_id_vector(c(1,2,3), param_name = "tag_ids")
+#' validate_input_id_vector(character(0), required = FALSE)
 #' @noRd
 validate_input_id_vector <- function(
   ids,
   param_name = "ids",
   required = TRUE,
-  valid_ids = NULL
+  valid_ids = NULL,
+  context = "validate_input_id_vector",
+  suppress_cli = FALSE
 ) {
-  # Check for missing or NULL when required
-  if (required && (missing(ids) || is.null(ids) || all(is.na(ids)))) {
-    cli::cli_abort("{.arg param_name} is required but was not provided.")
+  show_msg_plain <- function(msg_text) {
+    if (!isTRUE(suppress_cli)) {
+      cli::cli_alert_danger(
+        "{.strong Validation error}: {.field {param_name}} — {.emph {msg_text}}"
+      )
+    }
+  }
+  show_msg_vals <- function(vals_text, bad_idx = NULL) {
+    if (!isTRUE(suppress_cli)) {
+      if (is.null(bad_idx)) {
+        cli::cli_alert_danger(
+          "{.strong Validation error}: {.field {param_name}} — must be one of: {.val {vals_text}}"
+        )
+      } else {
+        cli::cli_alert_danger(
+          "{.strong Validation error}: {.field {param_name}} — contains invalid ids at positions: {bad_idx}. Allowed: {.val {vals_text}}"
+        )
+      }
+    }
   }
 
-  # Skip further checks if not required and NULL
-  if (!required && (missing(ids) || is.null(ids) || all(is.na(ids)))) {
-    return(invisible(TRUE))
+  # presence
+  if (
+    required &&
+      (missing(ids) || is.null(ids) || (length(ids) == 0L) || all(is.na(ids)))
+  ) {
+    msg_text <- glue::glue("{param_name} is required but missing or empty")
+    tib <- ensure_error_tibble(context, as.character(msg_text))
+    show_msg_plain(msg_text)
+    return(tib)
+  }
+  if (
+    !required &&
+      (missing(ids) || is.null(ids) || (length(ids) == 0L) || all(is.na(ids)))
+  ) {
+    return(TRUE)
   }
 
-  # Type check: must be numeric
-  if (!is.numeric(ids)) {
-    cli::cli_abort("{.arg param_name} must be a numeric vector.")
+  # allow factor -> character
+  if (is.factor(ids)) {
+    ids <- as.character(ids)
   }
 
-  # Whole number check
-  if (any(floor(ids) != ids, na.rm = TRUE)) {
-    cli::cli_abort("{.arg param_name} must contain only whole numbers.")
-  }
-
-  # Domain check: must be in valid_ids if provided
-  if (!is.null(valid_ids) && any(!ids %in% valid_ids, na.rm = TRUE)) {
-    cli::cli_abort(
-      "{.arg param_name} contains invalid values. Must be one of: {.val {valid_ids}}"
+  # allowed types
+  if (!(is.numeric(ids) || is.character(ids))) {
+    msg_text <- glue::glue(
+      "{param_name} must be a numeric or character vector of ids"
     )
+    tib <- ensure_error_tibble(context, as.character(msg_text))
+    show_msg_plain(msg_text)
+    return(tib)
   }
 
-  # return
-  invisible(TRUE)
+  # element-wise checks
+  if (length(ids) == 0L) {
+    return(TRUE)
+  }
+  for (i in seq_along(ids)) {
+    xi <- ids[[i]]
+    if (is.na(xi)) {
+      next
+    }
+    if (is.character(xi)) {
+      xi_trim <- trimws(xi)
+      if (xi_trim == "") {
+        msg_text <- glue::glue(
+          "{param_name} contains an empty string at position {i}"
+        )
+        tib <- ensure_error_tibble(context, as.character(msg_text))
+        show_msg_plain(msg_text)
+        return(tib)
+      }
+      if (!grepl("^[-+]?[0-9]+$", xi_trim)) {
+        msg_text <- glue::glue(
+          "{param_name} contains non-integer-like value at position {i}"
+        )
+        tib <- ensure_error_tibble(context, as.character(msg_text))
+        show_msg_plain(msg_text)
+        return(tib)
+      }
+      next
+    }
+    if (is.numeric(xi)) {
+      if (is.nan(xi)) {
+        msg_text <- glue::glue("{param_name} contains NaN at position {i}")
+        tib <- ensure_error_tibble(context, as.character(msg_text))
+        show_msg_plain(msg_text)
+        return(tib)
+      }
+      if (floor(xi) != xi) {
+        msg_text <- glue::glue(
+          "{param_name} contains fractional value at position {i}"
+        )
+        tib <- ensure_error_tibble(context, as.character(msg_text))
+        show_msg_plain(msg_text)
+        return(tib)
+      }
+      next
+    }
+    msg_text <- glue::glue(
+      "{param_name} contains unsupported type at position {i}"
+    )
+    tib <- ensure_error_tibble(context, as.character(msg_text))
+    show_msg_plain(msg_text)
+    return(tib)
+  }
+
+  # domain check (coerce character to numeric where possible)
+  if (!is.null(valid_ids)) {
+    numeric_ids <- suppressWarnings(as.numeric(ids))
+    bad_idx <- which(!is.na(numeric_ids) & !(numeric_ids %in% valid_ids))
+    if (length(bad_idx) > 0) {
+      vals_text <- paste(valid_ids, collapse = ", ")
+      msg_text <- glue::glue(
+        "{param_name} contains invalid ids at positions: {paste(bad_idx, collapse = \", \")}. Allowed: {vals_text}"
+      )
+      tib <- ensure_error_tibble(context, as.character(msg_text))
+      show_msg_vals(vals_text, bad_idx = paste(bad_idx, collapse = ", "))
+      return(tib)
+    }
+  }
+
+  TRUE
 }
