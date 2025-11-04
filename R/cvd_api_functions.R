@@ -1,6 +1,7 @@
 # setup ------------------------------------------------------------------------
 #' Get the base URL for the CVD Prevent API
 #' @return A character string with the base URL
+#' @noRd
 get_api_base_url <- function() {
   "https://api.cvdprevent.nhs.uk"
 }
@@ -2747,11 +2748,14 @@ cvd_indicator_pathway_group <- function(pathway_group_id) {
 #'   IndicatorID, IndicatorName)
 cvd_indicator_group <- function(indicator_group_id) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = indicator_group_id,
     param_name = "indicator_group_id",
     required = TRUE
   )
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
 
   # compose the request
   req <-
@@ -2760,35 +2764,53 @@ cvd_indicator_group <- function(indicator_group_id) {
       'indicator/indicatorGroup/{indicator_group_id}'
     ))
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
-          purrr::compact() |>
-          tibble::as_tibble() |>
-          # prevent conflicts with columns of the same name in nested data
-          dplyr::select(
-            -dplyr::any_of(c(
-              "NotificationCount",
-              "HighestPriorityNotificationType"
-            ))
-          ) |>
-          dplyr::relocate(
-            dplyr::any_of(c("Indicators")),
-            .after = dplyr::last_col()
-          ) |>
-          tidyr::unnest(cols = dplyr::any_of(c("Indicators")))
+  # process function
+  process_indicator_group <- function(parsed) {
+    # defensive check
+    if (length(parsed[[1]]) < 2 || !is.list(parsed[[1]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_group",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_indicator_group",
-      html500_msg = "invalid `indicator_group_id`"
-    )
+    # continue process
+    parsed[[1]] |>
+      purrr::compact() |>
+      tibble::as_tibble() |>
+      # prevent conflicts with columns of the same name in nested data
+      dplyr::select(
+        -dplyr::any_of(c(
+          "NotificationCount",
+          "HighestPriorityNotificationType"
+        ))
+      ) |>
+      dplyr::relocate(
+        dplyr::any_of(c("Indicators")),
+        .after = dplyr::last_col()
+      ) |>
+      tidyr::unnest(cols = dplyr::any_of(c("Indicators")))
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_group,
+    context = "cvd_indicator_group"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Indicator time series by metric
@@ -2826,16 +2848,23 @@ cvd_indicator_group <- function(indicator_group_id) {
 #'   )
 cvd_indicator_metric_timeseries <- function(metric_id, area_id) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = metric_id,
     param_name = "metric_id",
     required = TRUE
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = area_id,
     param_name = "area_id",
     required = TRUE
   )
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
 
   # compose the request
   req <-
@@ -2847,25 +2876,43 @@ cvd_indicator_metric_timeseries <- function(metric_id, area_id) {
       `areaID` = area_id
     )
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
-          purrr::compact() |>
-          tibble::as_tibble() |>
-          tidyr::unnest(cols = dplyr::any_of(c("Areas"))) |>
-          tidyr::unnest(cols = dplyr::any_of(c("TimeSeriesData")))
+  # process function
+  process_indicator_metric_timeseries <- function(parsed) {
+    # defensive check
+    if (length(parsed[[1]]) < 2 || !is.list(parsed[[1]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_metric_timeseries",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_indicator_metric_timeseries",
-      html500_msg = "invalid `metric_id`"
-    )
+    # continue process
+    parsed[[1]] |>
+      purrr::compact() |>
+      tibble::as_tibble() |>
+      tidyr::unnest(cols = dplyr::any_of(c("Areas"))) |>
+      tidyr::unnest(cols = dplyr::any_of(c("TimeSeriesData")))
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_metric_timeseries,
+    context = "cvd_indicator_metric_timeseries"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Indicator persons time series by indicator
@@ -2909,16 +2956,23 @@ cvd_indicator_metric_timeseries <- function(metric_id, area_id) {
 #'   )
 cvd_indicator_person_timeseries <- function(indicator_id, area_id) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = indicator_id,
     param_name = "indicator_id",
     required = TRUE
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = area_id,
     param_name = "area_id",
     required = TRUE
   )
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
 
   # compose the request
   req <-
@@ -2930,25 +2984,43 @@ cvd_indicator_person_timeseries <- function(indicator_id, area_id) {
       `areaID` = area_id
     )
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
-          purrr::compact() |>
-          tibble::as_tibble() |>
-          tidyr::unnest(cols = dplyr::any_of(c("InequalityMarkers"))) |>
-          tidyr::unnest(cols = dplyr::any_of(c("CategoryData")))
+  # process function
+  process_indicator_person_timeseries <- function(parsed) {
+    # defensive check
+    if (length(parsed[[1]]) < 2 || !is.list(parsed[[1]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_person_timeseries",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_indicator_person_timeseries",
-      html500_msg = "invalid `indicator_id`"
-    )
+    # continue process
+    parsed[[1]] |>
+      purrr::compact() |>
+      tibble::as_tibble() |>
+      tidyr::unnest(cols = dplyr::any_of(c("InequalityMarkers"))) |>
+      tidyr::unnest(cols = dplyr::any_of(c("CategoryData")))
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_person_timeseries,
+    context = "cvd_indicator_person_timeseries"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Indicator metric system level comparison
@@ -2990,13 +3062,17 @@ cvd_indicator_metric_systemlevel_comparison <- function(
   area_id
 ) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = area_id,
     param_name = "area_id",
     required = TRUE,
@@ -3004,7 +3080,11 @@ cvd_indicator_metric_systemlevel_comparison <- function(
       time_period_id = time_period_id
     )
   )
-  validate_input_id(
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
+
+  v3 <- validate_input_id(
     id = metric_id,
     param_name = "metric_id",
     required = TRUE,
@@ -3013,6 +3093,9 @@ cvd_indicator_metric_systemlevel_comparison <- function(
       area_id = area_id
     )
   )
+  if (!isTRUE(v3)) {
+    return(v3)
+  }
 
   # compose the request
   req <-
@@ -3025,29 +3108,47 @@ cvd_indicator_metric_systemlevel_comparison <- function(
       `areaID` = area_id
     )
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
-          purrr::compact() |>
-          tibble::as_tibble() |>
-          tidyr::unnest(cols = dplyr::any_of(c("SystemLevels"))) |>
-          dplyr::relocate(
-            dplyr::any_of(c("ComparisonData")),
-            .after = dplyr::last_col()
-          ) |>
-          tidyr::unnest(cols = dplyr::any_of(c("ComparisonData")))
+  # process function
+  process_indicator_metric_systemlevel_comparison <- function(parsed) {
+    # defensive check
+    if (length(parsed[[1]]) < 2 || !is.list(parsed[[1]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_metric_systemlevel_comparison",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_indicator_metric_systemlevel_comparison",
-      html500_msg = "invalid `metric_id`"
-    )
+    # continue process
+    parsed[[1]] |>
+      purrr::compact() |>
+      tibble::as_tibble() |>
+      tidyr::unnest(cols = dplyr::any_of(c("SystemLevels"))) |>
+      dplyr::relocate(
+        dplyr::any_of(c("ComparisonData")),
+        .after = dplyr::last_col()
+      ) |>
+      tidyr::unnest(cols = dplyr::any_of(c("ComparisonData")))
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_metric_systemlevel_comparison,
+    context = "cvd_indicator_metric_systemlevel_comparison"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Indicator metric area breakdown
@@ -3080,18 +3181,22 @@ cvd_indicator_metric_systemlevel_comparison <- function(
 #'   area_id = 705) |>
 #'   dplyr::select(SystemLevelName, AreaID, AreaName, Value)
 cvd_indicator_metric_area_breakdown <- function(
-  metric_id,
   time_period_id,
-  area_id
+  area_id,
+  metric_id
 ) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = area_id,
     param_name = "area_id",
     required = TRUE,
@@ -3099,7 +3204,11 @@ cvd_indicator_metric_area_breakdown <- function(
       time_period_id = time_period_id
     )
   )
-  validate_input_id(
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
+
+  v3 <- validate_input_id(
     id = metric_id,
     param_name = "metric_id",
     required = TRUE,
@@ -3108,6 +3217,9 @@ cvd_indicator_metric_area_breakdown <- function(
       area_id = area_id
     )
   )
+  if (!isTRUE(v3)) {
+    return(v3)
+  }
 
   # compose the request
   req <-
@@ -3120,32 +3232,51 @@ cvd_indicator_metric_area_breakdown <- function(
       `areaID` = area_id
     )
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
-          purrr::compact() |>
-          tibble::as_tibble() |>
-          tidyr::unnest(cols = dplyr::any_of(c("SystemLevels"))) |>
-          dplyr::relocate(
-            dplyr::any_of(c("ComparisonData")),
-            .after = dplyr::last_col()
-          ) |>
-          tidyr::unnest(cols = dplyr::any_of(c("ComparisonData")))
+  # process function
+  process_indicator_metric_area_breakdown <- function(parsed) {
+    # defensive check
+    if (length(parsed[[1]]) < 2 || !is.list(parsed[[1]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_metric_area_breakdown",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_indicator_metric_area_breakdown",
-      html500_msg = "invalid `metric_id`"
-    )
+    # continue process
+    parsed[[1]] |>
+      purrr::compact() |>
+      tibble::as_tibble() |>
+      tidyr::unnest(cols = dplyr::any_of(c("SystemLevels"))) |>
+      dplyr::relocate(
+        dplyr::any_of(c("ComparisonData")),
+        .after = dplyr::last_col()
+      ) |>
+      tidyr::unnest(cols = dplyr::any_of(c("ComparisonData")))
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_metric_area_breakdown,
+    context = "cvd_indicator_metric_area_breakdown"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 ## external resource -----------------------------------------------------------
+
 #' External resource
 #'
 #' Returns a list of all external resources
@@ -3169,22 +3300,41 @@ cvd_external_resource <- function() {
     httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('externalResource')
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
-          purrr::compact() |>
-          tibble::as_tibble()
+  # process function
+  process_external_resource <- function(parsed) {
+    # defensive check
+    if (length(parsed) < 2 || !is.list(parsed[[2]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_external_resource",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_external_resource"
-    )
+    # continue process
+    parsed[[2]] |>
+      purrr::compact() |>
+      tibble::as_tibble()
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_external_resource,
+    context = "cvd_external_resource"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Data availability
@@ -3216,13 +3366,17 @@ cvd_data_availability <- function(
   metric_category_type_id # optional
 ) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = system_level_id,
     param_name = "system_level_id",
     required = TRUE,
@@ -3230,19 +3384,27 @@ cvd_data_availability <- function(
       time_period_id = time_period_id
     )
   )
-  validate_input_id(
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
+
+  v3 <- validate_input_id(
     id = indicator_id,
     param_name = "indicator_id",
-    required = FALSE,
-    valid_ids = m_get_valid_indicator_ids_for_time_period_id(
-      time_period_id = time_period_id
-    )
+    required = FALSE
   )
-  validate_input_id(
+  if (!isTRUE(v3)) {
+    return(v3)
+  }
+
+  v4 <- validate_input_id(
     id = metric_category_type_id,
     param_name = "metric_category_type_id",
     required = FALSE
   )
+  if (!isTRUE(v4)) {
+    return(v4)
+  }
 
   # compose the request
   req <-
@@ -3274,20 +3436,39 @@ cvd_data_availability <- function(
       )
   }
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
-          purrr::compact() |>
-          dplyr::as_tibble()
+  # process function
+  process_data_availability <- function(parsed) {
+    # defensive check
+    if (length(parsed[[1]]) < 2 || !is.list(parsed[[1]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_data_availability",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_data_availability"
-    )
+    # continue process
+    parsed[[1]] |>
+      purrr::compact() |>
+      dplyr::as_tibble()
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_data_availability,
+    context = "cvd_data_availability"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
