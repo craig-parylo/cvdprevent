@@ -119,7 +119,7 @@ cvd_time_period_list <- function(indicator_type_id = NULL) {
           context = "cvd_time_period_list",
           error = "Response does not contain `timePeriodList`.",
           status = NA_integer_,
-          url = NA_character_,
+          url = httr2::req_get_url(req),
           params = NA_character_,
           resp = NA_character_
         )
@@ -178,7 +178,7 @@ cvd_time_period_system_levels <- function() {
           context = "cvd_time_period_system_levels",
           error = "Response does not contain expected `SystemLevels` structure.",
           status = NA_integer_,
-          url = NA_character_,
+          url = httr2::req_get_url(req),
           params = NA_character_,
           resp = NA_character_
         )
@@ -268,7 +268,7 @@ cvd_area_system_level <- function(time_period_id) {
           context = "cvd_area_system_level",
           error = "Response does not contain expected structure.",
           status = NA_integer_,
-          url = NA_character_,
+          url = httr2::req_get_url(req),
           params = NA_character_,
           resp = NA_character_
         )
@@ -329,7 +329,7 @@ cvd_area_system_level_time_periods <- function() {
           context = "cvd_area_system_level_time_periods",
           error = "Response does not contain expected `TimePeriods` structure.",
           status = NA_integer_,
-          url = NA_character_,
+          url = httr2::req_get_url(req),
           params = NA_character_,
           resp = NA_character_
         )
@@ -864,78 +864,100 @@ cvd_area_search <- function(partial_area_name, time_period_id) {
 #' returned_list$level_2
 cvd_area_nested_subsystems <- function(area_id) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = area_id,
     param_name = "area_id",
     required = TRUE
   )
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
 
   # compose the request
   req <-
     httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue('area/{area_id}/nestedSubSystems'))
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        # gather data from JSON as a tibble
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
-          purrr::compact() |>
-          tibble::as_tibble()
+  # process function
+  process_area_nested_subsystems <- function(parsed) {
+    # defensive check
+    if (length(parsed) < 1 || !is.list(parsed[[1]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_area_nested_subsystems",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        # set up the return object
-        return <- list()
+    # continue with processing
+    dat <- parsed[[1]] |>
+      purrr::compact() |>
+      tibble::as_tibble()
 
-        # `dat` is a complex, multi-layered object that contains details about the
-        # requested area and also potentially its children, nested in a variable
-        # named 'Children'. Each of these children could potentially have nested
-        # children data too.
-        # To tackle this, we will implement a loop to extract details for each
-        # layer before returning all extracted layers in a named list object.
+    # set up the return object
+    return <- list()
 
-        # set up the loop
-        iter <- 0
-        while (length(dat) > 0) {
-          # count iterations
-          iter <- iter + 1
-          iter_name <- glue::glue('level_{iter}')
+    # `dat` is a complex, multi-layered object that contains details about the
+    # requested area and also potentially its children, nested in a variable
+    # named 'Children'. Each of these children could potentially have nested
+    # children data too.
+    # To tackle this, we will implement a loop to extract details for each
+    # layer before returning all extracted layers in a named list object.
 
-          # ensure data is a tibble
-          dat <-
-            dat |>
-            purrr::compact() |>
-            dplyr::as_tibble()
+    # set up the loop
+    iter <- 0
+    while (length(dat) > 0) {
+      # count iterations
+      iter <- iter + 1
+      iter_name <- glue::glue('level_{iter}')
 
-          # extract the details for the current level excluding children
-          level <- dat |>
-            dplyr::select(-dplyr::any_of('Children')) |>
-            dplyr::distinct()
+      # ensure data is a tibble
+      dat <-
+        dat |>
+        purrr::compact() |>
+        dplyr::as_tibble()
 
-          # get the children details
-          child <- dat |>
-            dplyr::select(dplyr::any_of('Children')) |>
-            tidyr::unnest(cols = dplyr::any_of('Children'))
+      # extract the details for the current level excluding children
+      level <- dat |>
+        dplyr::select(-dplyr::any_of('Children')) |>
+        dplyr::distinct()
 
-          # add current level details to the return object if it contains data
-          if (length(dat) > 0) {
-            return <-
-              return |>
-              append(setNames(list(level), iter_name))
-          }
+      # get the children details
+      child <- dat |>
+        dplyr::select(dplyr::any_of('Children')) |>
+        tidyr::unnest(cols = dplyr::any_of('Children'))
 
-          # set data to be children (for the loop)
-          dat <- child
-        }
-        return(return)
-      },
-      context = "cvd_area_nested_subsystems",
-      html500_msg = "{.arg area_id} is invalid"
-    )
+      # add current level details to the return object if it contains data
+      if (length(dat) > 0) {
+        return <-
+          return |>
+          append(setNames(list(level), iter_name))
+      }
 
-  return(data)
+      # set data to be children (for the loop)
+      dat <- child
+    }
+    return(return)
+  }
+
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_area_nested_subsystems,
+    context = "cvd_area_nested_subsystems"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Area flat subsystems
@@ -962,39 +984,60 @@ cvd_area_nested_subsystems <- function(area_id) {
 #'   dplyr::glimpse()
 cvd_area_flat_subsystems <- function(area_id) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = area_id,
     param_name = "area_id",
     required = TRUE
   )
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
 
   # compose the request
   req <-
     httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue('area/{area_id}/flatSubSystems'))
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
-          purrr::compact() |>
-          tibble::as_tibble() |>
-          dplyr::relocate(
-            dplyr::any_of(c('SystemLevels')),
-            .after = dplyr::last_col()
-          ) |>
-          tidyr::unnest(cols = dplyr::any_of(c("SubSystems")), names_sep = "_")
+  # process function
+  process_area_flat_subsystems <- function(parsed) {
+    # defensive check
+    if (length(parsed[[1]]) < 2 || !is.list(parsed[[1]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_area_flat_subsystems",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_area_flat_subsystems",
-      html500_msg = "{.arg area_id} is invalid"
-    )
+    # continue processing
+    parsed[[1]] |>
+      purrr::compact() |>
+      tibble::as_tibble() |>
+      dplyr::relocate(
+        dplyr::any_of(c('SystemLevels')),
+        .after = dplyr::last_col()
+      ) |>
+      tidyr::unnest(cols = dplyr::any_of(c("SubSystems")), names_sep = "_")
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_area_flat_subsystems,
+    context = "cvd_area_flat_subsystems"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 ## indicators ------------------------------------------------------------------
@@ -1029,13 +1072,17 @@ cvd_area_flat_subsystems <- function(area_id) {
 #'   dplyr::slice_head(n = 4)
 cvd_indicator_list <- function(time_period_id, system_level_id) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = system_level_id,
     param_name = "system_level_id",
     required = TRUE,
@@ -1043,6 +1090,9 @@ cvd_indicator_list <- function(time_period_id, system_level_id) {
       time_period_id = time_period_id
     )
   )
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
 
   # compose the request
   req <-
@@ -1053,23 +1103,42 @@ cvd_indicator_list <- function(time_period_id, system_level_id) {
       `systemLevelID` = system_level_id
     )
 
-  # safely perform the request and parse
-  data <- safe_api_call(
-    req = req,
-    parse_fn = function(resp_body) {
-      dat <-
-        jsonlite::fromJSON(resp_body, flatten = TRUE)$indicatorList |>
-        purrr::compact() |>
-        dplyr::as_tibble() |>
-        dplyr::arrange(IndicatorID)
+  # process function
+  process_indicator_list <- function(parsed) {
+    # defensive check
+    if (
+      !"indicatorList" %in% names(parsed) ||
+        length(parsed[["indicatorList"]]) < 2
+    ) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_area_search",
+          error = "Response does not contain expected `indicatorList` structure",
+          url = httr2::req_get_url(req)
+        )
+      )
+    }
 
-      return(dat)
-    },
-    context = "cvd_indicator_list"
+    # continue processing
+    parsed$indicatorList |>
+      purrr::compact() |>
+      dplyr::as_tibble() |>
+      dplyr::arrange(dplyr::pick(dplyr::any_of("IndicatorID")))
+  }
+
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_list,
+    context = "cvd_area_search"
   )
 
-  # return the result
-  return(data)
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' List metrics for indicators
@@ -1105,13 +1174,17 @@ cvd_indicator_list <- function(time_period_id, system_level_id) {
 #'   dplyr::select(-n)
 cvd_indicator_metric_list <- function(time_period_id, system_level_id) {
   # validate_input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = system_level_id,
     param_name = "system_level_id",
     required = TRUE,
@@ -1119,6 +1192,9 @@ cvd_indicator_metric_list <- function(time_period_id, system_level_id) {
       time_period_id = time_period_id
     )
   )
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
 
   # compose the request
   req <-
@@ -1129,32 +1205,54 @@ cvd_indicator_metric_list <- function(time_period_id, system_level_id) {
       `systemLevelID` = system_level_id
     )
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
-          purrr::compact() |>
-          tibble::as_tibble()
+  # process function
+  process_indicator_metric_list <- function(parsed) {
+    # defensive check
+    if (length(parsed[[2]]) < 2 || !is.list(parsed[[2]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_metric_list",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = httr2::req_get_url(req),
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        # move metrics to the last column and expand
-        if ("MetricList" %in% names(dat)) {
-          dat <-
-            dat |>
-            dplyr::relocate(
-              dplyr::any_of(c("MetricList")),
-              .after = dplyr::last_col()
-            ) |>
-            tidyr::unnest(cols = dplyr::any_of(c("MetricList")))
-        }
-        return(dat)
-      },
-      context = "cvd_indicator_metric_list"
-    )
+    # continue process
+    dat <-
+      parsed[[2]] |>
+      purrr::compact() |>
+      tibble::as_tibble()
 
-  return(data)
+    # move metrics to the last column and expand
+    if ("MetricList" %in% names(dat)) {
+      dat <-
+        dat |>
+        dplyr::relocate(
+          dplyr::any_of(c("MetricList")),
+          .after = dplyr::last_col()
+        ) |>
+        tidyr::unnest(cols = dplyr::any_of(c("MetricList")))
+    }
+    return(dat)
+  }
+
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_metric_list,
+    context = "cvd_indicator_metric_list"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Indicators
