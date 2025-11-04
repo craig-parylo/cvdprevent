@@ -1315,16 +1315,18 @@ cvd_indicator_metric_list <- function(time_period_id, system_level_id) {
 #' return_list <-
 #'   cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
 cvd_indicator <- function(time_period_id, area_id, tag_id) {
-  # audit_call()
-
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = area_id,
     param_name = "area_id",
     required = TRUE,
@@ -1332,12 +1334,19 @@ cvd_indicator <- function(time_period_id, area_id, tag_id) {
       time_period_id = time_period_id
     )
   )
-  validate_input_id_vector(
+  if (!isTRUE(v1)) {
+    return(v2)
+  }
+
+  v3 <- validate_input_id_vector(
     ids = tag_id,
     param_name = "tag_id",
     required = FALSE,
     valid_ids = m_get_valid_tag_ids()
   )
+  if (!isTRUE(v3)) {
+    return(v3)
+  }
 
   # compose the request
   if (base::missing(tag_id)) {
@@ -1359,118 +1368,138 @@ cvd_indicator <- function(time_period_id, area_id, tag_id) {
       )
   }
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        # get the data from JSON as a tibble
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)$indicatorList |>
-          purrr::compact() |>
-          tibble::as_tibble()
+  # process function
+  process_indicator <- function(parsed) {
+    # defensive check
+    if (
+      !"indicatorList" %in% names(parsed) ||
+        length(parsed[["indicatorList"]]) < 2
+    ) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_area_search",
+          error = "Response does not contain expected `indicatorList` structure",
+          url = httr2::req_get_url(req)
+        )
+      )
+    }
 
-        # `dat` is a complex, multi-layered object that contains details about the
-        # requested indicator and also potentially related metric categories and data
-        # (nested in a variable named 'Categories') and time series data, (nested in a
-        # variable named 'TimeSeries').
-        # Separate tibbles for indicator, metric categories, metric data and time series
-        # data will be extracted and returned as part of a named list.
+    # continue process
+    dat <-
+      parsed$indicatorList |>
+      purrr::compact() |>
+      tibble::as_tibble()
 
-        # compose the return list
-        return <- list()
+    # `dat` is a complex, multi-layered object that contains details about the
+    # requested indicator and also potentially related metric categories and data
+    # (nested in a variable named 'Categories') and time series data, (nested in a
+    # variable named 'TimeSeries').
+    # Separate tibbles for indicator, metric categories, metric data and time series
+    # data will be extracted and returned as part of a named list.
 
-        # get indicator data
-        indicators <-
-          dat |>
-          dplyr::select(-dplyr::any_of(c("Categories"))) |>
+    # compose the return list
+    return <- list()
+
+    # get indicator data
+    indicators <-
+      dat |>
+      dplyr::select(-dplyr::any_of(c("Categories"))) |>
+      dplyr::distinct()
+
+    # handle where no data is returned
+    if (tibble::is_tibble(indicators) && nrow(indicators) == 0) {
+      cli::cli_alert_danger(
+        "{.fn cvdprevent::cvd_indicator} returned no data"
+      )
+      return(
+        tibble::tibble(
+          context = "cvd_indicator",
+          result = "No data",
+          timestamp = Sys.time()
+        )
+      )
+    } else {
+      return <-
+        return |>
+        append(list("indicators" = indicators))
+    }
+
+    # get metric categories
+    if ("Categories" %in% names(dat)) {
+      # extract metric data
+      metrics <-
+        dat |>
+        dplyr::select(dplyr::any_of(c("IndicatorID", "Categories"))) |>
+        tidyr::unnest(cols = dplyr::any_of(c("Categories")))
+
+      # extract metric categories
+      metric_categories <-
+        metrics |>
+        dplyr::select(
+          -c(dplyr::any_of(c("TimeSeries")), dplyr::starts_with("Data."))
+        ) |>
+        dplyr::distinct()
+
+      return <-
+        return |>
+        append(list('metric_categories' = metric_categories))
+
+      # extract metric data
+      # if ("Data" %in% names(metrics)) {
+      if (any(grepl("^Data.", names(metrics)))) {
+        metric_data <-
+          metrics |>
+          dplyr::select(c(
+            dplyr::any_of("MetricID"),
+            dplyr::starts_with("Data.")
+          )) |>
+          tidyr::unnest(cols = dplyr::any_of("Data")) |>
+          dplyr::rename_with(
+            .cols = dplyr::starts_with("Data."),
+            ~ base::gsub(
+              pattern = "Data.",
+              replacement = "",
+              x = .x,
+              fixed = TRUE
+            )
+          ) |>
           dplyr::distinct()
 
-        # handle where no data is returned
-        if (tibble::is_tibble(indicators) && nrow(indicators) == 0) {
-          cli::cli_alert_danger(
-            "{.fn cvdprevent::cvd_indicator} returned no data"
-          )
-          return(
-            tibble::tibble(
-              context = "cvd_indicator",
-              result = "No data",
-              timestamp = Sys.time()
-            )
-          )
-        } else {
-          return <-
-            return |>
-            append(list("indicators" = indicators))
-        }
+        return <-
+          return |>
+          append(list("metric_data" = metric_data))
+      }
 
-        # get metric categories
-        if ("Categories" %in% names(dat)) {
-          # extract metric data
-          metrics <-
-            dat |>
-            dplyr::select(dplyr::any_of(c("IndicatorID", "Categories"))) |>
-            tidyr::unnest(cols = dplyr::any_of(c("Categories")))
+      # extract timeseries data
+      if ("TimeSeries" %in% names(metrics)) {
+        timeseries <-
+          metrics |>
+          dplyr::select(dplyr::any_of(c("MetricID", "TimeSeries"))) |>
+          tidyr::unnest(cols = dplyr::any_of("TimeSeries")) |>
+          dplyr::distinct()
 
-          # extract metric categories
-          metric_categories <-
-            metrics |>
-            dplyr::select(
-              -c(dplyr::any_of(c("TimeSeries")), dplyr::starts_with("Data."))
-            ) |>
-            dplyr::distinct()
+        return <-
+          return |>
+          append(list("timeseries_data" = timeseries))
+      }
+    }
 
-          return <-
-            return |>
-            append(list('metric_categories' = metric_categories))
+    return(return)
+  }
 
-          # extract metric data
-          # if ("Data" %in% names(metrics)) {
-          if (any(grepl("^Data.", names(metrics)))) {
-            metric_data <-
-              metrics |>
-              dplyr::select(c(
-                dplyr::any_of("MetricID"),
-                dplyr::starts_with("Data.")
-              )) |>
-              tidyr::unnest(cols = dplyr::any_of("Data")) |>
-              dplyr::rename_with(
-                .cols = dplyr::starts_with("Data."),
-                ~ base::gsub(
-                  pattern = "Data.",
-                  replacement = "",
-                  x = .x,
-                  fixed = TRUE
-                )
-              ) |>
-              dplyr::distinct()
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator,
+    context = "cvd_indicator"
+  )
 
-            return <-
-              return |>
-              append(list("metric_data" = metric_data))
-          }
-
-          # extract timeseries data
-          if ("TimeSeries" %in% names(metrics)) {
-            timeseries <-
-              metrics |>
-              dplyr::select(dplyr::any_of(c("MetricID", "TimeSeries"))) |>
-              tidyr::unnest(cols = dplyr::any_of("TimeSeries")) |>
-              dplyr::distinct()
-
-            return <-
-              return |>
-              append(list("timeseries_data" = timeseries))
-          }
-        }
-
-        return(return)
-      },
-      context = "cvd_indicator",
-      timeout_sec = 10
-    )
-
-  return(data)
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Indicator tags
@@ -1501,23 +1530,42 @@ cvd_indicator_tags <- function() {
     httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append('indicator/tags')
 
-  # safely perform the request and parse
-  data <- safe_api_call(
-    req = req,
-    parse_fn = function(resp_body) {
-      dat <-
-        jsonlite::fromJSON(resp_body, flatten = TRUE)$indicatorTagList |>
-        purrr::compact() |>
-        tibble::as_tibble() |>
-        safe_arrange("IndicatorTagID")
+  # process function
+  process_indicator_tags <- function(parsed) {
+    # defensive check
+    if (
+      !"indicatorTagList" %in% names(parsed) ||
+        length(parsed[["indicatorTagList"]]) < 2
+    ) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_tags",
+          error = "Response does not contain expected `indicatorTagList` structure",
+          url = httr2::req_get_url(req)
+        )
+      )
+    }
 
-      return(dat)
-    },
-    context = "Indicator tag list"
+    # continue process
+    parsed$indicatorTagList |>
+      purrr::compact() |>
+      tibble::as_tibble() |>
+      dplyr::arrange(dplyr::pick(dplyr::any_of(c("IndicatorTagID"))))
+  }
+
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_tags,
+    context = "cvd_indicator_tags"
   )
 
-  # return the result
-  return(data)
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Indicator details
