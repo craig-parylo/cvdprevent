@@ -116,3 +116,15 @@ delayedAssign(
   "m_get_valid_tag_ids",
   memoise_lookup(get_valid_tag_ids)
 )
+delayedAssign(
+  "m_get_valid_indicator_ids_for_time_period_id_and_area_id",
+  memoise_lookup(get_valid_indicator_ids_for_time_period_id_and_area_id)
+)
+delayedAssign(
+  "m_get_valid_metric_ids_for_time_period_id_and_area_id",
+  memoise_lookup(get_valid_metric_ids_for_time_period_id_and_area_id)
+)
+delayedAssign(
+  "m_get_valid_indicator_ids_for_time_period_id_and_system_level_id",
+  memoise_lookup(get_valid_indicator_ids_for_time_period_id_and_system_level_id)
+)

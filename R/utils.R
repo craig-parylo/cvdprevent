@@ -254,12 +254,15 @@ get_valid_area_ids_for_time_period_id <- function(time_period_id) {
 #' @noRd
 get_random_valid_area_id_for_time_period_id <- function(n = 1, time_period_id) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
 
   id <-
     get_random_ids(
@@ -325,6 +328,365 @@ get_random_valid_tag_id <- function(n = 1) {
     get_random_ids(
       n = n,
       valid_ids = m_get_valid_tag_ids() # cached list of ids
+    )
+
+  # return
+  return(id)
+}
+
+## indicator_ids --------------------------------------------------------------
+
+#' Get valid indicator IDs for a given time period and area
+#'
+#' @description
+#' Retrieves a unique list of valid `indicator_id` values for a given combination of `time_period_id` and `area_id`.
+#' Results are memoised for performance.
+#'
+#' @return A numeric vector of unique `indicator_id` values.
+#' @noRd
+get_valid_indicator_ids_for_time_period_id_and_area_id <- function(
+  time_period_id,
+  area_id
+) {
+  # validate input
+  v1 <- validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
+    id = area_id,
+    param_name = "area_id",
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
+
+  # get a list of indicator data for this combination of time period and area
+  df_indicator_data <-
+    cvd_indicator(time_period_id = time_period_id, area_id = area_id)
+
+  # check the return includes indicators
+  if (!"indicators" %in% names(df_indicator_data)) {
+    cli::cli_abort("Tibble {.val indicators} not found in the indicator data.")
+  }
+
+  # get a distinct list of indicator ids
+  df_indicator_ids <-
+    df_indicator_data$indicators
+
+  # check the tibble contains a column called 'IndicatorID'
+  if (!"IndicatorID" %in% names(df_indicator_ids)) {
+    cli::cli_abort("Column {.val IndicatorID} not found in the indicator data.")
+  }
+
+  # collect a distinct list of indicator ids
+  ids <-
+    df_indicator_ids |>
+    dplyr::pull(dplyr::any_of("IndicatorID")) |>
+    unique() |>
+    sort()
+
+  # checking the ids are numeric type
+  if (!is.numeric(ids)) {
+    cli::cli_warn(
+      "Returned Indicator IDs are not numeric. Coercing to numeric."
+    )
+    ids <- as.numeric(ids)
+  }
+
+  return(ids)
+}
+
+#' Get one or more random indicator IDs for a given combination of time period ID and area ID
+#'
+#' @description
+#' Randomly selects `n` valid `indicator_id` values from the available list for a
+#' given combination of time period ID and area ID.
+#'
+#' @param n Integer. Number of IDs to return. Defaults to 1.
+#'
+#' @return A numeric vector of `n` randomly selected valid indicator IDs.
+#' @noRd
+get_random_valid_indicator_id_for_time_period_id_and_area_id <- function(
+  n = 1,
+  time_period_id,
+  area_id
+) {
+  # validate input
+  v1 <- validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
+    id = area_id,
+    param_name = "area_id",
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
+
+  id <-
+    get_random_ids(
+      n = n,
+      valid_ids = m_get_valid_indicator_ids_for_time_period_id_and_area_id(
+        time_period_id = time_period_id,
+        area_id = area_id
+      ) # cached list of indicator ids
+    )
+
+  # return
+  return(id)
+}
+
+#' Get valid indicator IDs for a given time period and system level
+#'
+#' @description
+#' Retrieves a unique list of valid `indicator_id` values for a given combination of `time_period_id` and `system_level_id`.
+#' Results are memoised for performance.
+#'
+#' @return A numeric vector of unique `indicator_id` values.
+#' @noRd
+get_valid_indicator_ids_for_time_period_id_and_system_level_id <- function(
+  time_period_id,
+  system_level_id
+) {
+  # validate input
+  v1 <- validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
+    id = system_level_id,
+    param_name = "system_level_id",
+    required = TRUE,
+    valid_ids = m_get_valid_system_level_id_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
+
+  # get a list of indicator data for this combination of time period and system level
+  df_indicator_data <-
+    cvd_indicator_list(
+      time_period_id = time_period_id,
+      system_level_id = system_level_id
+    )
+
+  # check the tibble contains a column called 'IndicatorID'
+  if (!"IndicatorID" %in% names(df_indicator_data)) {
+    cli::cli_abort("Column {.val IndicatorID} not found in the indicator data.")
+  }
+
+  # collect a distinct list of indicator ids
+  ids <-
+    df_indicator_data |>
+    dplyr::pull(dplyr::any_of("IndicatorID")) |>
+    unique() |>
+    sort()
+
+  # checking the ids are numeric type
+  if (!is.numeric(ids)) {
+    cli::cli_warn(
+      "Returned Indicator IDs are not numeric. Coercing to numeric."
+    )
+    ids <- as.numeric(ids)
+  }
+
+  return(ids)
+}
+
+#' Get one or more random indicator IDs for a given combination of time period ID and system level ID
+#'
+#' @description
+#' Randomly selects `n` valid `indicator_id` values from the available list for a
+#' given combination of time period ID and system level ID.
+#'
+#' @param n Integer. Number of IDs to return. Defaults to 1.
+#'
+#' @return A numeric vector of `n` randomly selected valid indicator IDs.
+#' @noRd
+get_random_valid_indicator_id_for_time_period_id_and_system_level_id <- function(
+  n = 1,
+  time_period_id,
+  system_level_id
+) {
+  # validate input
+  v1 <- validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
+    id = system_level_id,
+    param_name = "system_level_id",
+    required = TRUE,
+    valid_ids = m_get_valid_system_level_id_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
+
+  id <-
+    get_random_ids(
+      n = n,
+      valid_ids = m_get_valid_indicator_ids_for_time_period_id_and_system_level_id(
+        time_period_id = time_period_id,
+        system_level_id = system_level_id
+      ) # cached list of indicator ids
+    )
+
+  # return
+  return(id)
+}
+
+## metric_ids -----------------------------------------------------------------
+
+#' Get valid metric IDs for a combination of time period and area
+#'
+#' @description
+#' Retrieves a unique list of valid `metric_id` values for a given combination of `time_period_id` and `area_id`.
+#' Results are memoised for performance.
+#'
+#' @return A numeric vector of unique `metric_id` values.
+#' @noRd
+get_valid_metric_ids_for_time_period_id_and_area_id <- function(
+  time_period_id,
+  area_id
+) {
+  # validate input
+  v1 <- validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
+    id = area_id,
+    param_name = "area_id",
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
+
+  # get a list of metric data for this combination of time period and area
+  df_metric_data <-
+    cvd_indicator(time_period_id = time_period_id, area_id = area_id)
+
+  # check the return includes metrics
+  if (!"metric_categories" %in% names(df_metric_data)) {
+    cli::cli_abort(
+      "Tibble {.val metric_categories} not found in the metric data."
+    )
+  }
+
+  # get a distinct list of metric ids
+  df_metric_ids <-
+    df_metric_data$metric_categories
+
+  # check the tibble contains a column called 'MetricID'
+  if (!"MetricID" %in% names(df_metric_ids)) {
+    cli::cli_abort("Column {.val MetricID} not found in the metric data.")
+  }
+
+  # collect a distinct list of indicator ids
+  ids <-
+    df_metric_ids |>
+    dplyr::pull(dplyr::any_of("MetricID")) |>
+    unique() |>
+    sort()
+
+  # checking the ids are numeric type
+  if (!is.numeric(ids)) {
+    cli::cli_warn(
+      "Returned Metric IDs are not numeric. Coercing to numeric."
+    )
+    ids <- as.numeric(ids)
+  }
+
+  return(ids)
+}
+
+#' Get one or more random metric IDs for a given combination of time period ID and area ID
+#'
+#' @description
+#' Randomly selects `n` valid `metric_id` values from the available list for a given
+#' combination of time period ID and area ID.
+#'
+#' @param n Integer. Number of IDs to return. Defaults to 1.
+#'
+#' @return A numeric vector of `n` randomly selected valid metric IDs.
+#' @noRd
+get_random_valid_metric_id_for_time_period_id_and_area_id <- function(
+  n = 1,
+  time_period_id,
+  area_id
+) {
+  # validate input
+  validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+  validate_input_id(
+    id = area_id,
+    param_name = "area_id",
+    required = TRUE,
+    valid_ids = m_get_valid_area_ids_for_time_period_id(
+      time_period_id = time_period_id
+    )
+  )
+
+  id <-
+    get_random_ids(
+      n = n,
+      valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
+        time_period_id = time_period_id,
+        area_id = area_id
+      ) # cached list of metric ids
     )
 
   # return
@@ -485,114 +847,6 @@ get_random_valid_tag_id <- function(n = 1) {
 #   return(id)
 # }
 
-# #' Get valid indicator IDs for a given time period
-# #'
-# #' @description
-# #' Retrieves a unique list of valid `indicator_id` values for a given combination of `time_period_id` and `area_id`.
-# #' Results are memoised for performance.
-# #'
-# #' @return A numeric vector of unique `indicator_id` values.
-# #' @noRd
-# get_valid_indicator_ids_for_time_period_id_and_area_id <- function(
-#   time_period_id,
-#   area_id
-# ) {
-#   # validate input
-#   validate_input_id(
-#     id = time_period_id,
-#     param_name = "time_period_id",
-#     required = TRUE,
-#     valid_ids = m_get_valid_time_period_ids()
-#   )
-#   validate_input_id(
-#     id = area_id,
-#     param_name = "area_id",
-#     required = TRUE,
-#     valid_ids = m_get_valid_area_ids_for_time_period_id(
-#       time_period_id = time_period_id
-#     )
-#   )
-
-#   # get a list of indicator data for this combination of time period and area
-#   df_indicator_data <-
-#     m_cvd_indicator(time_period_id = time_period_id, area_id = area_id)
-
-#   # check the return includes indicators
-#   if (!"indicators" %in% names(df_indicator_data)) {
-#     cli::cli_abort("Tibble {.val indicators} not found in the indicator data.")
-#   }
-
-#   # get a distinct list of indicator ids
-#   df_indicator_ids <-
-#     df_indicator_data$indicators
-
-#   # check the tibble contains a column called 'IndicatorID'
-#   if (!"IndicatorID" %in% names(df_indicator_ids)) {
-#     cli::cli_abort("Column {.val IndicatorID} not found in the indicator data.")
-#   }
-
-#   # collect a distinct list of indicator ids
-#   ids <-
-#     df_indicator_ids |>
-#     dplyr::pull(dplyr::any_of("IndicatorID")) |>
-#     unique() |>
-#     sort()
-
-#   # checking the ids are numeric type
-#   if (!is.numeric(ids)) {
-#     cli::cli_warn(
-#       "Returned Indicator IDs are not numeric. Coercing to numeric."
-#     )
-#     ids <- as.numeric(ids)
-#   }
-
-#   return(ids)
-# }
-
-# #' Get one or more random indicator IDs for a given combination of time period ID and area ID
-# #'
-# #' @description
-# #' Randomly selects `n` valid `indicator_id` values from the available list for a
-# #' given combination of time period ID and area ID.
-# #'
-# #' @param n Integer. Number of IDs to return. Defaults to 1.
-# #'
-# #' @return A numeric vector of `n` randomly selected valid indicator IDs.
-# #' @noRd
-# get_random_valid_indicator_id_for_time_period_id_and_area_id <- function(
-#   n = 1,
-#   time_period_id,
-#   area_id
-# ) {
-#   # validate input
-#   validate_input_id(
-#     id = time_period_id,
-#     param_name = "time_period_id",
-#     required = TRUE,
-#     valid_ids = m_get_valid_time_period_ids()
-#   )
-#   validate_input_id(
-#     id = area_id,
-#     param_name = "area_id",
-#     required = TRUE,
-#     valid_ids = m_get_valid_area_ids_for_time_period_id(
-#       time_period_id = time_period_id
-#     )
-#   )
-
-#   id <-
-#     get_random_ids(
-#       n = n,
-#       valid_ids = m_get_valid_indicator_ids_for_time_period_id_and_area_id(
-#         time_period_id = time_period_id,
-#         area_id = area_id
-#       ) # cached list of indicator ids
-#     )
-
-#   # return
-#   return(id)
-# }
-
 # ## metric_ids ----
 
 # #' Get valid metric IDs for a given time period
@@ -682,116 +936,6 @@ get_random_valid_tag_id <- function(n = 1) {
 #       n = n,
 #       valid_ids = m_get_valid_metric_ids_for_time_period_id(
 #         time_period_id = time_period_id
-#       ) # cached list of metric ids
-#     )
-
-#   # return
-#   return(id)
-# }
-
-# #' Get valid metric IDs for a combination of time period and area
-# #'
-# #' @description
-# #' Retrieves a unique list of valid `metric_id` values for a given combination of `time_period_id` and `area_id`.
-# #' Results are memoised for performance.
-# #'
-# #' @return A numeric vector of unique `metric_id` values.
-# #' @noRd
-# get_valid_metric_ids_for_time_period_id_and_area_id <- function(
-#   time_period_id,
-#   area_id
-# ) {
-#   # validate input
-#   validate_input_id(
-#     id = time_period_id,
-#     param_name = "time_period_id",
-#     required = TRUE,
-#     valid_ids = m_get_valid_time_period_ids()
-#   )
-#   validate_input_id(
-#     id = area_id,
-#     param_name = "area_id",
-#     required = TRUE,
-#     valid_ids = m_get_valid_area_ids_for_time_period_id(
-#       time_period_id = time_period_id
-#     )
-#   )
-
-#   # get a list of metric data for this combination of time period and area
-#   df_metric_data <-
-#     m_cvd_indicator(time_period_id = time_period_id, area_id = area_id)
-
-#   # check the return includes metrics
-#   if (!"metric_categories" %in% names(df_metric_data)) {
-#     cli::cli_abort(
-#       "Tibble {.val metric_categories} not found in the metric data."
-#     )
-#   }
-
-#   # get a distinct list of metric ids
-#   df_metric_ids <-
-#     df_metric_data$metric_categories
-
-#   # check the tibble contains a column called 'MetricID'
-#   if (!"MetricID" %in% names(df_metric_ids)) {
-#     cli::cli_abort("Column {.val MetricID} not found in the metric data.")
-#   }
-
-#   # collect a distinct list of indicator ids
-#   ids <-
-#     df_metric_ids |>
-#     dplyr::pull(dplyr::any_of("MetricID")) |>
-#     unique() |>
-#     sort()
-
-#   # checking the ids are numeric type
-#   if (!is.numeric(ids)) {
-#     cli::cli_warn(
-#       "Returned Metric IDs are not numeric. Coercing to numeric."
-#     )
-#     ids <- as.numeric(ids)
-#   }
-
-#   return(ids)
-# }
-
-# #' Get one or more random metric IDs for a given combination of time period ID and area ID
-# #'
-# #' @description
-# #' Randomly selects `n` valid `metric_id` values from the available list for a given
-# #' combination of time period ID and area ID.
-# #'
-# #' @param n Integer. Number of IDs to return. Defaults to 1.
-# #'
-# #' @return A numeric vector of `n` randomly selected valid metric IDs.
-# #' @noRd
-# get_random_valid_metric_id_for_time_period_id_and_area_id <- function(
-#   n = 1,
-#   time_period_id,
-#   area_id
-# ) {
-#   # validate input
-#   validate_input_id(
-#     id = time_period_id,
-#     param_name = "time_period_id",
-#     required = TRUE,
-#     valid_ids = m_get_valid_time_period_ids()
-#   )
-#   validate_input_id(
-#     id = area_id,
-#     param_name = "area_id",
-#     required = TRUE,
-#     valid_ids = m_get_valid_area_ids_for_time_period_id(
-#       time_period_id = time_period_id
-#     )
-#   )
-
-#   id <-
-#     get_random_ids(
-#       n = n,
-#       valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
-#         time_period_id = time_period_id,
-#         area_id = area_id
 #       ) # cached list of metric ids
 #     )
 
