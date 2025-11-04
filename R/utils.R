@@ -719,7 +719,7 @@ get_valid_pathway_group_ids <- function() {
     df_pathway_groups |>
     dplyr::pull(dplyr::any_of("PathwayGroupID")) |>
     unique() |>
-    na.omit() |>
+    stats::na.omit() |>
     sort()
 
   # checking the ids are numeric type

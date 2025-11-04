@@ -4,14 +4,14 @@
 \alias{cvd_indicator_data}
 \title{Indicator data}
 \usage{
-cvd_indicator_data(indicator_id, time_period_id, area_id)
+cvd_indicator_data(time_period_id, area_id, indicator_id)
 }
 \arguments{
-\item{indicator_id}{integer - indicator for which to return data (compulsory)}
-
 \item{time_period_id}{integer - time period for which to return data for (compulsory)}
 
 \item{area_id}{integer - area for which to return data for (compulsory)}
+
+\item{indicator_id}{integer - indicator for which to return data (compulsory)}
 }
 \value{
 Tibble of details for the indicator in the area and a national comparison
@@ -29,9 +29,7 @@ CVD Prevent API documentation:
 # period 17 for  'Leicester Central PCN' (area_id 701) focussed on metrics
 # by gender:
 cvd_indicator_data(time_period_id = 17, indicator_id = 7, area_id = 701) |>
-  dplyr::filter(MetricCategoryTypeName == 'Sex') |>
-  dplyr::select(MetricID, MetricCategoryName, AreaData.AreaName,
-  AreaData.Value, NationalData.AreaName, NationalData.Value)
+  dplyr::glimpse()
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},

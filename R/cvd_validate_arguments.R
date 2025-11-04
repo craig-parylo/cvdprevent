@@ -69,14 +69,14 @@ validate_input_id <- function(
   show_msg_plain <- function(msg_text) {
     if (!isTRUE(suppress_cli)) {
       cli::cli_alert_danger(
-        "{.strong Validation error}: {.field {param_name}} — {.emph {msg_text}}"
+        "{.strong Validation error}: {.field {param_name}} - {.emph {msg_text}}"
       )
     }
   }
   show_msg_vals <- function(vals_text) {
     if (!isTRUE(suppress_cli)) {
       cli::cli_alert_danger(
-        "{.strong Validation error}: {.field {param_name}} — must be one of: {.val {vals_text}}"
+        "{.strong Validation error}: {.field {param_name}} - must be one of: {.val {vals_text}}"
       )
     }
   }
@@ -163,14 +163,14 @@ validate_input_string <- function(
   show_msg_plain <- function(msg_text) {
     if (!isTRUE(suppress_cli)) {
       cli::cli_alert_danger(
-        "{.strong Validation error}: {.field {param_name}} — {.emph {msg_text}}"
+        "{.strong Validation error}: {.field {param_name}} - {.emph {msg_text}}"
       )
     }
   }
   show_msg_vals <- function(vals_text) {
     if (!isTRUE(suppress_cli)) {
       cli::cli_alert_danger(
-        "{.strong Validation error}: {.field {param_name}} — must be one of: {.val {vals_text}}"
+        "{.strong Validation error}: {.field {param_name}} - must be one of: {.val {vals_text}}"
       )
     }
   }
@@ -256,7 +256,7 @@ validate_input_id_vector <- function(
   show_msg_plain <- function(msg_text) {
     if (!isTRUE(suppress_cli)) {
       cli::cli_alert_danger(
-        "{.strong Validation error}: {.field {param_name}} — {.emph {msg_text}}"
+        "{.strong Validation error}: {.field {param_name}} - {.emph {msg_text}}"
       )
     }
   }
@@ -264,11 +264,11 @@ validate_input_id_vector <- function(
     if (!isTRUE(suppress_cli)) {
       if (is.null(bad_idx)) {
         cli::cli_alert_danger(
-          "{.strong Validation error}: {.field {param_name}} — must be one of: {.val {vals_text}}"
+          "{.strong Validation error}: {.field {param_name}} - must be one of: {.val {vals_text}}"
         )
       } else {
         cli::cli_alert_danger(
-          "{.strong Validation error}: {.field {param_name}} — contains invalid ids at positions: {bad_idx}. Allowed: {.val {vals_text}}"
+          "{.strong Validation error}: {.field {param_name}} - contains invalid ids at positions: {bad_idx}. Allowed: {.val {vals_text}}"
         )
       }
     }

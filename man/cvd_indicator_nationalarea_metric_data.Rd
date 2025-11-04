@@ -4,18 +4,14 @@
 \alias{cvd_indicator_nationalarea_metric_data}
 \title{Indicator national vs area metric data}
 \usage{
-cvd_indicator_nationalarea_metric_data(
-  metric_id = 1,
-  time_period_id = 17,
-  area_id = 739
-)
+cvd_indicator_nationalarea_metric_data(time_period_id, area_id, metric_id)
 }
 \arguments{
-\item{metric_id}{integer - metric for which to return data (compulsory)}
-
 \item{time_period_id}{integer - time period for which to return data (compulsory)}
 
 \item{area_id}{integer - area for which to return data (compulsory)}
+
+\item{metric_id}{integer - metric for which to return data (compulsory)}
 }
 \value{
 List of named tibbles (\code{area}, \code{target}) where \code{target} is only provided if data is available.

@@ -7,6 +7,8 @@
 #' The cache is stored in a user-specific directory and configured to expire items after one week.
 #'
 #' @returns A `cachem::cache_disk` object
+#' @import cachem
+#' @import rappdirs
 #' @noRd
 m_cache <- cachem::cache_disk(
   dir = rappdirs::user_cache_dir("R_cvdprevent"),

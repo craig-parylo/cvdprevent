@@ -1330,10 +1330,10 @@ cvd_indicator <- function(time_period_id, area_id, tag_id) {
   v2 <- validate_input_id(
     id = area_id,
     param_name = "area_id",
-    required = TRUE,
-    valid_ids = m_get_valid_area_ids_for_time_period_id(
-      time_period_id = time_period_id
-    )
+    required = TRUE
+    # valid_ids = m_get_valid_area_ids_for_time_period_id(
+    #   time_period_id = time_period_id
+    # )
   )
   if (!isTRUE(v1)) {
     return(v2)
@@ -1437,22 +1437,22 @@ cvd_indicator <- function(time_period_id, area_id, tag_id) {
       metric_categories <-
         metrics |>
         dplyr::select(
-          -c(dplyr::any_of(c("TimeSeries")), dplyr::starts_with("Data."))
+          -dplyr::any_of(c("TimeSeries")),
+          -dplyr::starts_with("Data.")
         ) |>
         dplyr::distinct()
 
       return <-
         return |>
-        append(list('metric_categories' = metric_categories))
+        append(list("metric_categories" = metric_categories))
 
       # extract metric data
-      # if ("Data" %in% names(metrics)) {
-      if (any(grepl("^Data.", names(metrics)))) {
+      if ("Data" %in% names(metrics)) {
         metric_data <-
           metrics |>
           dplyr::select(c(
-            dplyr::any_of("MetricID"),
-            dplyr::starts_with("Data.")
+            dplyr::any_of(c("MetricID", "Data"))
+            # dplyr::starts_with("Data")
           )) |>
           tidyr::unnest(cols = dplyr::any_of("Data")) |>
           dplyr::rename_with(
@@ -1920,9 +1920,7 @@ cvd_indicator_child_data <- function(
 #' # period 17 for  'Leicester Central PCN' (area_id 701) focussed on metrics
 #' # by gender:
 #' cvd_indicator_data(time_period_id = 17, indicator_id = 7, area_id = 701) |>
-#'   dplyr::filter(MetricCategoryTypeName == 'Sex') |>
-#'   dplyr::select(MetricID, MetricCategoryName, AreaData.AreaName,
-#'   AreaData.Value, NationalData.AreaName, NationalData.Value)
+#'   dplyr::glimpse()
 cvd_indicator_data <- function(
   time_period_id,
   area_id,
@@ -2095,8 +2093,7 @@ cvd_indicator_data <- function(
 #' # PCN' (area ID 399) in time period 1 for metric 126 (breakdown by age group:
 #' # males aged 40-59):
 #' cvd_indicator_metric_data(metric_id = 126, time_period_id = 1, area_id = 399) |>
-#'   dplyr::select(IndicatorShortName, CategoryAttribute, MetricCategoryName,
-#'   AreaData.Value, NationalData.Value)
+#'   dplyr::glimpse()
 cvd_indicator_metric_data <- function(
   metric_id,
   time_period_id,
@@ -2116,10 +2113,10 @@ cvd_indicator_metric_data <- function(
   v2 <- validate_input_id(
     id = area_id,
     param_name = "area_id",
-    required = TRUE,
-    valid_ids = m_get_valid_area_ids_for_time_period_id(
-      time_period_id = time_period_id
-    )
+    required = TRUE
+    # valid_ids = m_get_valid_area_ids_for_time_period_id(
+    #   time_period_id = time_period_id
+    # )
   )
   if (!isTRUE(v2)) {
     return(v2)
@@ -2128,11 +2125,11 @@ cvd_indicator_metric_data <- function(
   v3 <- validate_input_id(
     id = metric_id,
     param_name = "metric_id",
-    required = TRUE,
-    valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
-      time_period_id = time_period_id,
-      area_id = area_id
-    )
+    required = TRUE
+    # valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
+    #   time_period_id = time_period_id,
+    #   area_id = area_id
+    # )
   )
   if (!isTRUE(v3)) {
     return(v3)
