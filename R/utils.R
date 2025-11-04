@@ -273,6 +273,64 @@ get_random_valid_area_id_for_time_period_id <- function(n = 1, time_period_id) {
   return(id)
 }
 
+## indicator_tag_id ----
+
+#' Get valid indicator tag IDs
+#'
+#' @description
+#' Retrieves a unique list of valid `tag_id` values from the time period metadata.
+#' Results are memoised for performance.
+#'
+#' @return A numeric vector of unique `tag_id` values.
+#' @noRd
+get_valid_tag_ids <- function() {
+  # get a tibble containing valid time periods from the API
+  df_tags <- cvd_indicator_tags()
+
+  # check the tibble contains a column called 'IndicatorTagID'
+  if (!"IndicatorTagID" %in% names(df_tags)) {
+    cli::cli_abort(
+      "Column {.val IndicatorTagID} not found in the indicator tag data."
+    )
+  }
+
+  # collect a distinct list of time period ids
+  ids <- df_tags |>
+    dplyr::pull(.data$IndicatorTagID) |>
+    unique()
+
+  # checking the ids are numeric type
+  if (!is.numeric(ids)) {
+    cli::cli_warn(
+      "Returned Indicator Tag IDs are not numeric. Coercing to numeric."
+    )
+    ids <- as.numeric(ids)
+  }
+
+  # return the result
+  return(ids)
+}
+
+#' Get one or more random indicator tag IDs
+#'
+#' @description
+#' Randomly selects `n` valid `tag_id` values from the available list.
+#'
+#' @param n Integer. Number of IDs to return. Defaults to 1.
+#'
+#' @return A numeric vector of `n` randomly selected valid indicator tag IDs.
+#' @noRd
+get_random_valid_tag_id <- function(n = 1) {
+  id <-
+    get_random_ids(
+      n = n,
+      valid_ids = m_get_valid_tag_ids() # cached list of ids
+    )
+
+  # return
+  return(id)
+}
+
 # ## indicator_type_id ----
 # #' Get valid indicator type IDs
 # #'
@@ -325,63 +383,6 @@ get_random_valid_area_id_for_time_period_id <- function(n = 1, time_period_id) {
 #     get_random_ids(
 #       n = n,
 #       valid_ids = m_get_valid_indicator_type_ids() # cached list of indicator type ids
-#     )
-
-#   # return
-#   return(id)
-# }
-
-# ## indicator_tag_id ----
-# #' Get valid indicator tag IDs
-# #'
-# #' @description
-# #' Retrieves a unique list of valid `tag_id` values from the time period metadata.
-# #' Results are memoised for performance.
-# #'
-# #' @return A numeric vector of unique `tag_id` values.
-# #' @noRd
-# get_valid_tag_ids <- function() {
-#   # get a tibble containing valid time periods from the API
-#   df_tags <- cvd_indicator_tags()
-
-#   # check the tibble contains a column called 'IndicatorTagID'
-#   if (!"IndicatorTagID" %in% names(df_tags)) {
-#     cli::cli_abort(
-#       "Column {.val IndicatorTagID} not found in the indicator tag data."
-#     )
-#   }
-
-#   # collect a distinct list of time period ids
-#   ids <- df_tags |>
-#     dplyr::pull(.data$IndicatorTagID) |>
-#     unique()
-
-#   # checking the ids are numeric type
-#   if (!is.numeric(ids)) {
-#     cli::cli_warn(
-#       "Returned Indicator Tag IDs are not numeric. Coercing to numeric."
-#     )
-#     ids <- as.numeric(ids)
-#   }
-
-#   # return the result
-#   return(ids)
-# }
-
-# #' Get one or more random indicator tag IDs
-# #'
-# #' @description
-# #' Randomly selects `n` valid `tag_id` values from the available list.
-# #'
-# #' @param n Integer. Number of IDs to return. Defaults to 1.
-# #'
-# #' @return A numeric vector of `n` randomly selected valid indicator tag IDs.
-# #' @noRd
-# get_random_valid_tag_id <- function(n = 1) {
-#   id <-
-#     get_random_ids(
-#       n = n,
-#       valid_ids = m_get_valid_tag_ids() # cached list of ids
 #     )
 
 #   # return
