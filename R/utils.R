@@ -53,10 +53,10 @@
 #     cache = m_cache
 #   )
 # )
-delayedAssign(
-  "m_get_valid_time_period_ids",
-  memoise_lookup(get_valid_time_period_ids)
-)
+# delayedAssign(
+#   "m_get_valid_time_period_ids",
+#   memoise_lookup(get_valid_time_period_ids)
+# )
 
 # # delayedAssign(
 # #   "m_get_valid_tag_ids",
@@ -569,82 +569,86 @@ get_random_valid_time_period_id <- function(n = 1) {
 
 # ## system_level_id -----
 
-# #' Get valid system level IDs for a given time period
-# #'
-# #' @description
-# #' Retrieves a unique list of valid `system_level_id` values for a given value of `time_period_id`.
-# #' Results are memoised for performance.
-# #'
-# #' @return A numeric vector of unique `system_level_id` values.
-# #' @noRd
-# get_valid_system_level_id_for_time_period_id <- function(time_period_id) {
-#   # validate input
-#   validate_input_id(
-#     id = time_period_id,
-#     param_name = "time_period_id",
-#     required = TRUE,
-#     valid_ids = m_get_valid_time_period_ids()
-#   )
+#' Get valid system level IDs for a given time period
+#'
+#' @description
+#' Retrieves a unique list of valid `system_level_id` values for a given value of `time_period_id`.
+#' Results are memoised for performance.
+#'
+#' @return A numeric vector of unique `system_level_id` values.
+#' @noRd
+get_valid_system_level_id_for_time_period_id <- function(time_period_id) {
+  # validate input
+  v <- validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+  if (!identical(v, TRUE)) {
+    return(v)
+  }
 
-#   # get a tibble containing valid system levels from the API
-#   df_system_levels <- cvd_area_system_level(time_period_id = time_period_id)
+  # get a tibble containing valid system levels from the API
+  df_system_levels <- cvd_area_system_level(time_period_id = time_period_id)
 
-#   # check the tibble contains a column called 'SystemLevelID'
-#   if (!"SystemLevelID" %in% names(df_system_levels)) {
-#     cli::cli_abort(
-#       "Column {.val SystemLevelID} not found in the system level data."
-#     )
-#   }
+  # check the tibble contains a column called 'SystemLevelID'
+  if (!"SystemLevelID" %in% names(df_system_levels)) {
+    cli::cli_abort(
+      "Column {.val SystemLevelID} not found in the system level data."
+    )
+  }
 
-#   # collect a distinct list of system level ids
-#   ids <- df_system_levels |>
-#     dplyr::pull(.data$SystemLevelID) |>
-#     unique()
+  # collect a distinct list of system level ids
+  ids <- df_system_levels |>
+    dplyr::pull(.data$SystemLevelID) |>
+    unique() |>
+    sort()
 
-#   # checking the ids are numeric type
-#   if (!is.numeric(ids)) {
-#     cli::cli_warn(
-#       "Returned System Level IDs are not numeric. Coercing to numeric."
-#     )
-#     ids <- as.numeric(ids)
-#   }
+  # checking the ids are numeric type
+  if (!is.numeric(ids)) {
+    cli::cli_warn(
+      "Returned System Level IDs are not numeric. Coercing to numeric."
+    )
+    ids <- as.numeric(ids)
+  }
 
-#   # return the result
-#   return(ids)
-# }
+  # return the result
+  return(ids)
+}
 
-# #' Get one or more random indicator tag IDs
-# #'
-# #' @description
-# #' Randomly selects `n` valid `tag_id` values from the available list.
-# #'
-# #' @param n Integer. Number of IDs to return. Defaults to 1.
-# #'
-# #' @return A numeric vector of `n` randomly selected valid indicator tag IDs.
-# #' @noRd
-# get_random_valid_system_level_id_for_time_period_id <- function(
-#   n = 1,
-#   time_period_id
-# ) {
-#   # validate input
-#   validate_input_id(
-#     id = time_period_id,
-#     param_name = "time_period_id",
-#     required = TRUE,
-#     valid_ids = m_get_valid_time_period_ids()
-#   )
+#' Get one or more random system level IDs
+#'
+#' @description
+#' Randomly selects `n` valid `system_level_id` values from the available list.
+#'
+#' @param n Integer. Number of IDs to return. Defaults to 1.
+#'
+#' @return A numeric vector of `n` randomly selected valid indicator tag IDs.
+#' @noRd
+get_random_valid_system_level_id_for_time_period_id <- function(
+  n = 1,
+  time_period_id
+) {
+  # validate input
+  validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
 
-#   id <-
-#     get_random_ids(
-#       n = n,
-#       valid_ids = m_get_valid_system_level_id_for_time_period_id(
-#         time_period_id = time_period_id
-#       ) # cached list of ids
-#     )
+  id <-
+    get_random_ids(
+      n = n,
+      valid_ids = m_get_valid_system_level_id_for_time_period_id(
+        time_period_id = time_period_id
+      ) # cached list of ids
+    )
 
-#   # return
-#   return(id)
-# }
+  # return
+  return(id)
+}
 
 # ## area_ids ----
 

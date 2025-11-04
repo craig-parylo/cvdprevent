@@ -104,3 +104,7 @@ delayedAssign(
   "m_get_valid_time_period_ids",
   memoise_lookup(get_valid_time_period_ids)
 )
+delayedAssign(
+  "m_get_valid_system_level_id_for_time_period_id",
+  memoise_lookup(get_valid_system_level_id_for_time_period_id)
+)
