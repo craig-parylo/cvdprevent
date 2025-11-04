@@ -533,13 +533,17 @@ cvd_area_list <- function(time_period_id, parent_area_id, system_level_id) {
 #'   dplyr::select(AreaID, AreaName, SystemLevelID)
 cvd_area_details <- function(time_period_id, area_id) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = area_id,
     param_name = "area_id",
     required = TRUE,
@@ -547,6 +551,9 @@ cvd_area_details <- function(time_period_id, area_id) {
       time_period_id = time_period_id
     )
   )
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
 
   # compose the request
   req <-
@@ -556,59 +563,133 @@ cvd_area_details <- function(time_period_id, area_id) {
       `timePeriodID` = time_period_id
     )
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)$areaDetails |>
-          purrr::compact() |>
-          tibble::as_tibble()
+  # processor function
+  process_area_details <- function(parsed) {
+    # defensive check
+    if (
+      !"areaDetails" %in% names(parsed) || length(parsed[["areaDetails"]]) < 2
+    ) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_area_details",
+          error = "Response does not contain expected `areaDetails` structure",
+          url = httr2::req_get_url(req)
+        )
+      )
+    }
 
-        # prepare the return object
-        return <- list()
+    # continue with processing
+    dat <-
+      parsed$areaDetails |>
+      purrr::compact() |>
+      tibble::as_tibble()
 
-        # select base fields, exclude any parent or child details
-        area_details <-
-          dat |>
-          dplyr::select(-dplyr::any_of(c("ChildAreaList", "ParentAreaList"))) |>
-          unique()
+    # prepare the return object
+    return <- list()
 
-        return <-
-          return |>
-          append(list("area_details" = area_details))
+    # select base fields, exclude any parent or child details
+    area_details <-
+      dat |>
+      dplyr::select(-dplyr::any_of(c("ChildAreaList", "ParentAreaList"))) |>
+      unique()
 
-        # extract any parent details
-        if ('ParentAreaList' %in% names(dat)) {
-          area_parent_details <- dat$ParentAreaList |>
-            purrr::compact() |>
-            dplyr::as_tibble() |>
-            unique()
+    return <-
+      return |>
+      append(list("area_details" = area_details))
 
-          return <-
-            return |>
-            append(list("area_parent_details" = area_parent_details))
-        }
+    # extract any parent details
+    if ('ParentAreaList' %in% names(dat)) {
+      area_parent_details <- dat$ParentAreaList |>
+        purrr::compact() |>
+        dplyr::as_tibble() |>
+        unique()
 
-        # extract any child details
-        if ('ChildAreaList' %in% names(dat)) {
-          area_child_details <- dat$ChildAreaList |>
-            purrr::compact() |>
-            dplyr::as_tibble() |>
-            unique()
+      return <-
+        return |>
+        append(list("area_parent_details" = area_parent_details))
+    }
 
-          return <-
-            return |>
-            append(list("area_child_details" = area_child_details))
-        }
-        return(return)
-      },
-      context = "cvd_area_details",
-      html500_msg = "{.arg area_id} is invalid"
-    )
+    # extract any child details
+    if ('ChildAreaList' %in% names(dat)) {
+      area_child_details <- dat$ChildAreaList |>
+        purrr::compact() |>
+        dplyr::as_tibble() |>
+        unique()
 
-  return(data)
+      return <-
+        return |>
+        append(list("area_child_details" = area_child_details))
+    }
+    return(return)
+  }
+
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_area_details,
+    context = "cvd_area_details"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
+
+  # # safely perform the request and parse
+  # data <-
+  #   safe_api_call(
+  #     req = req,
+  #     parse_fn = function(resp_body) {
+  #       dat <-
+  #         jsonlite::fromJSON(resp_body, flatten = TRUE)$areaDetails |>
+  #         purrr::compact() |>
+  #         tibble::as_tibble()
+
+  #       # prepare the return object
+  #       return <- list()
+
+  #       # select base fields, exclude any parent or child details
+  #       area_details <-
+  #         dat |>
+  #         dplyr::select(-dplyr::any_of(c("ChildAreaList", "ParentAreaList"))) |>
+  #         unique()
+
+  #       return <-
+  #         return |>
+  #         append(list("area_details" = area_details))
+
+  #       # extract any parent details
+  #       if ('ParentAreaList' %in% names(dat)) {
+  #         area_parent_details <- dat$ParentAreaList |>
+  #           purrr::compact() |>
+  #           dplyr::as_tibble() |>
+  #           unique()
+
+  #         return <-
+  #           return |>
+  #           append(list("area_parent_details" = area_parent_details))
+  #       }
+
+  #       # extract any child details
+  #       if ('ChildAreaList' %in% names(dat)) {
+  #         area_child_details <- dat$ChildAreaList |>
+  #           purrr::compact() |>
+  #           dplyr::as_tibble() |>
+  #           unique()
+
+  #         return <-
+  #           return |>
+  #           append(list("area_child_details" = area_child_details))
+  #       }
+  #       return(return)
+  #     },
+  #     context = "cvd_area_details",
+  #     html500_msg = "{.arg area_id} is invalid"
+  #   )
+
+  # return(data)
 }
 
 #' Unassigned areas

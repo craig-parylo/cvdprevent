@@ -183,6 +183,96 @@ get_random_valid_system_level_id_for_time_period_id <- function(
   return(id)
 }
 
+## area_ids ----
+
+#' Get valid area IDs for a given time period
+#'
+#' @description
+#' Retrieves a unique list of valid `area_id` values for a given value of `time_period_id`.
+#' Results are memoised for performance.
+#'
+#' @return A numeric vector of unique `area_id` values.
+#' @noRd
+get_valid_area_ids_for_time_period_id <- function(time_period_id) {
+  # validate input
+  validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+
+  # list the system levels for this time period id
+  valid_system_level_ids <-
+    m_get_valid_system_level_id_for_time_period_id(
+      time_period_id = time_period_id
+    )
+
+  # for each system level id, get a list of area ids and collate them
+  df_area_ids <-
+    purrr::map_dfr(
+      .x = valid_system_level_ids,
+      .f = \(.x) {
+        dat <-
+          cvd_area_list(
+            time_period_id = time_period_id,
+            system_level_id = .x
+          ) |>
+          dplyr::select(dplyr::any_of("AreaID"))
+      }
+    )
+
+  # check the tibble contains a column called 'AreaID'
+  if (!"AreaID" %in% names(df_area_ids)) {
+    cli::cli_abort("Column {.val AreaID} not found in the area data.")
+  }
+
+  # collect a distinct list of area ids
+  ids <-
+    df_area_ids |>
+    dplyr::pull(dplyr::any_of("AreaID")) |>
+    unique() |>
+    sort()
+
+  # checking the ids are numeric type
+  if (!is.numeric(ids)) {
+    cli::cli_warn("Returned Area IDs are not numeric. Coercing to numeric.")
+    ids <- as.numeric(ids)
+  }
+
+  return(ids)
+}
+
+#' Get one or more random area IDs
+#'
+#' @description
+#' Randomly selects `n` valid `area_id` values from the available list.
+#'
+#' @param n Integer. Number of IDs to return. Defaults to 1.
+#'
+#' @return A numeric vector of `n` randomly selected valid area IDs.
+#' @noRd
+get_random_valid_area_id_for_time_period_id <- function(n = 1, time_period_id) {
+  # validate input
+  validate_input_id(
+    id = time_period_id,
+    param_name = "time_period_id",
+    required = TRUE,
+    valid_ids = m_get_valid_time_period_ids()
+  )
+
+  id <-
+    get_random_ids(
+      n = n,
+      valid_ids = m_get_valid_area_ids_for_time_period_id(
+        time_period_id = time_period_id
+      ) # cached list of area ids
+    )
+
+  # return
+  return(id)
+}
+
 # ## indicator_type_id ----
 # #' Get valid indicator type IDs
 # #'
@@ -292,96 +382,6 @@ get_random_valid_system_level_id_for_time_period_id <- function(
 #     get_random_ids(
 #       n = n,
 #       valid_ids = m_get_valid_tag_ids() # cached list of ids
-#     )
-
-#   # return
-#   return(id)
-# }
-
-# ## area_ids ----
-
-# #' Get valid area IDs for a given time period
-# #'
-# #' @description
-# #' Retrieves a unique list of valid `area_id` values for a given value of `time_period_id`.
-# #' Results are memoised for performance.
-# #'
-# #' @return A numeric vector of unique `area_id` values.
-# #' @noRd
-# get_valid_area_ids_for_time_period_id <- function(time_period_id) {
-#   # validate input
-#   validate_input_id(
-#     id = time_period_id,
-#     param_name = "time_period_id",
-#     required = TRUE,
-#     valid_ids = m_get_valid_time_period_ids()
-#   )
-
-#   # list the system levels for this time period id
-#   valid_system_level_ids <-
-#     m_get_valid_system_level_id_for_time_period_id(
-#       time_period_id = time_period_id
-#     )
-
-#   # for each system level id, get a list of area ids and collate them
-#   df_area_ids <-
-#     purrr::map_dfr(
-#       .x = valid_system_level_ids,
-#       .f = \(.x) {
-#         dat <-
-#           m_cvd_area_list(
-#             time_period_id = time_period_id,
-#             system_level_id = .x
-#           ) |>
-#           dplyr::select(dplyr::any_of("AreaID"))
-#       }
-#     )
-
-#   # check the tibble contains a column called 'AreaID'
-#   if (!"AreaID" %in% names(df_area_ids)) {
-#     cli::cli_abort("Column {.val AreaID} not found in the area data.")
-#   }
-
-#   # collect a distinct list of area ids
-#   ids <-
-#     df_area_ids |>
-#     dplyr::pull(dplyr::any_of("AreaID")) |>
-#     unique() |>
-#     sort()
-
-#   # checking the ids are numeric type
-#   if (!is.numeric(ids)) {
-#     cli::cli_warn("Returned Area IDs are not numeric. Coercing to numeric.")
-#     ids <- as.numeric(ids)
-#   }
-
-#   return(ids)
-# }
-
-# #' Get one or more random area IDs
-# #'
-# #' @description
-# #' Randomly selects `n` valid `area_id` values from the available list.
-# #'
-# #' @param n Integer. Number of IDs to return. Defaults to 1.
-# #'
-# #' @return A numeric vector of `n` randomly selected valid area IDs.
-# #' @noRd
-# get_random_valid_area_id_for_time_period_id <- function(n = 1, time_period_id) {
-#   # validate input
-#   validate_input_id(
-#     id = time_period_id,
-#     param_name = "time_period_id",
-#     required = TRUE,
-#     valid_ids = m_get_valid_time_period_ids()
-#   )
-
-#   id <-
-#     get_random_ids(
-#       n = n,
-#       valid_ids = m_get_valid_area_ids_for_time_period_id(
-#         time_period_id = time_period_id
-#       ) # cached list of area ids
 #     )
 
 #   # return
