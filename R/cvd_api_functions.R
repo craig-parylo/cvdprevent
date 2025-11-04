@@ -1594,39 +1594,60 @@ cvd_indicator_tags <- function() {
 #'   dplyr::slice_head(n=5)
 cvd_indicator_details <- function(indicator_id) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = indicator_id,
     param_name = "indicator_id",
     required = TRUE
   )
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
 
   # compose the request
   req <-
     httr2::request(get_api_base_url()) |>
     httr2::req_url_path_append(glue::glue('indicator/{indicator_id}/details'))
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)$indicatorDetails |>
-          purrr::compact() |>
-          tibble::as_tibble() |>
-          dplyr::relocate(
-            dplyr::any_of("MetaData"),
-            .after = dplyr::last_col()
-          ) |>
-          tidyr::unnest(cols = dplyr::any_of("MetaData"))
+  # process function
+  process_indicator_details <- function(parsed) {
+    # defensive check
+    if (
+      !"indicatorDetails" %in% names(parsed) ||
+        length(parsed[["indicatorDetails"]]) < 2
+    ) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_details",
+          error = "Response does not contain expected `indicatorDetails` structure",
+          url = httr2::req_get_url(req)
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_indicator_details",
-      html500_msg = "invalid `indicator_id`"
-    )
+    # continue process
+    parsed$indicatorDetails |>
+      purrr::compact() |>
+      tibble::as_tibble() |>
+      dplyr::relocate(
+        dplyr::any_of("MetaData"),
+        .after = dplyr::last_col()
+      ) |>
+      tidyr::unnest(cols = dplyr::any_of("MetaData"))
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_details,
+    context = "cvd_indicator_details"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Indicator sibling data
@@ -1662,29 +1683,40 @@ cvd_indicator_sibling <- function(
   metric_id
 ) {
   # validate input
-  validate_input_id(
+  v1 <- validate_input_id(
     id = time_period_id,
     param_name = "time_period_id",
     required = TRUE,
     valid_ids = m_get_valid_time_period_ids()
   )
-  validate_input_id(
+  if (!isTRUE(v1)) {
+    return(v1)
+  }
+
+  v2 <- validate_input_id(
     id = area_id,
     param_name = "area_id",
-    required = TRUE,
-    valid_ids = m_get_valid_area_ids_for_time_period_id(
-      time_period_id = time_period_id
-    )
+    required = TRUE
+    # valid_ids = m_get_valid_area_ids_for_time_period_id(
+    #   time_period_id = time_period_id
+    # )
   )
-  validate_input_id(
+  if (!isTRUE(v2)) {
+    return(v2)
+  }
+
+  v3 <- validate_input_id(
     id = metric_id,
     param_name = "metric_id",
-    required = TRUE,
-    valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
-      time_period_id = time_period_id,
-      area_id = area_id
-    )
+    required = TRUE
+    # valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
+    #   time_period_id = time_period_id,
+    #   area_id = area_id
+    # )
   )
+  if (!isTRUE(v3)) {
+    return(v3)
+  }
 
   # compose the request
   req <-
@@ -1696,30 +1728,49 @@ cvd_indicator_sibling <- function(
       `metricID` = metric_id
     )
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[2]] |>
-          purrr::compact() |>
-          tibble::as_tibble() |>
-          dplyr::select(
-            -dplyr::any_of(c(
-              "NotificationCount",
-              "HighestPriorityNotificationType"
-            ))
-          ) |>
-          dplyr::relocate(dplyr::any_of("Data"), .after = dplyr::last_col()) |>
-          tidyr::unnest(col = dplyr::any_of("Data"))
+  # process function
+  process_indicator_sibling <- function(parsed) {
+    # defensive check
+    if (length(parsed) < 2 || !is.list(parsed[[2]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_sibling",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = NA_character_,
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        return(dat)
-      },
-      context = "cvd_indicator_sibling"
-    )
+    # continue process
+    parsed[[2]] |>
+      purrr::compact() |>
+      tibble::as_tibble() |>
+      dplyr::select(
+        -dplyr::any_of(c(
+          "NotificationCount",
+          "HighestPriorityNotificationType"
+        ))
+      ) |>
+      dplyr::relocate(dplyr::any_of("Data"), .after = dplyr::last_col()) |>
+      tidyr::unnest(col = dplyr::any_of("Data"))
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_sibling,
+    context = "cvd_indicator_sibling"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Indicator child data
@@ -1755,8 +1806,6 @@ cvd_indicator_child_data <- function(
   area_id,
   metric_id
 ) {
-  # audit_call()
-
   # validate input
   validate_input_id(
     id = time_period_id,
@@ -1768,18 +1817,11 @@ cvd_indicator_child_data <- function(
     id = area_id,
     param_name = "area_id",
     required = TRUE
-    # valid_ids = m_get_valid_area_ids_for_time_period_id(
-    #   time_period_id = time_period_id
-    # )
   )
   validate_input_id(
     id = metric_id,
     param_name = "metric_id",
     required = TRUE
-    # valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
-    #   time_period_id = time_period_id,
-    #   area_id = area_id
-    # )
   )
 
   # compose the request
@@ -1792,41 +1834,61 @@ cvd_indicator_child_data <- function(
       `metricID` = metric_id
     )
 
-  # safely perform the request and parse
-  data <-
-    safe_api_call(
-      req = req,
-      parse_fn = function(resp_body) {
-        dat <-
-          jsonlite::fromJSON(resp_body, flatten = TRUE)[[1]] |>
-          purrr::compact() |>
-          tibble::as_tibble()
+  process_indicator_child_data <- function(parsed) {
+    # defensive check
+    if (length(parsed[[1]]) < 2 || !is.list(parsed[[1]])) {
+      return(
+        cvd_error_tibble(
+          context = "cvd_indicator_child_data",
+          error = "Response does not contain expected structure.",
+          status = NA_integer_,
+          url = NA_character_,
+          params = NA_character_,
+          resp = NA_character_
+        )
+      )
+    }
 
-        # only proceed if `dat` is a tibble and contains at least one column
-        if (tibble::is_tibble(dat) && ncol(dat) > 0) {
-          dat <-
-            dat |>
-            # prevent conflicts with columns of the same name in nested data
-            dplyr::select(
-              -dplyr::any_of(c(
-                "NotificationCount",
-                "HighestPriorityNotificationType"
-              ))
-            ) |>
-            # move 'Data' to the end and unpack
-            dplyr::relocate(
-              dplyr::any_of(c("Data")),
-              .after = dplyr::last_col()
-            ) |>
-            tidyr::unnest(col = dplyr::any_of("Data"))
-        }
+    # continue process
+    dat <-
+      parsed[[1]] |>
+      purrr::compact() |>
+      tibble::as_tibble()
 
-        return(dat)
-      },
-      context = "cvd_indicator_child_data"
-    )
+    # only proceed if `dat` is a tibble and contains at least one column
+    if (tibble::is_tibble(dat) && ncol(dat) > 0) {
+      dat <-
+        dat |>
+        # prevent conflicts with columns of the same name in nested data
+        dplyr::select(
+          -dplyr::any_of(c(
+            "NotificationCount",
+            "HighestPriorityNotificationType"
+          ))
+        ) |>
+        # move 'Data' to the end and unpack
+        dplyr::relocate(
+          dplyr::any_of(c("Data")),
+          .after = dplyr::last_col()
+        ) |>
+        tidyr::unnest(col = dplyr::any_of("Data"))
+    }
+    return(dat)
+  }
 
-  return(data)
+  # safely perform the request and memoise
+  res <- memoised_safe_api_call(
+    req = req,
+    process_fn = process_indicator_child_data,
+    context = "cvd_indicator_child_data"
+  )
+
+  # if successful return the result, otherwise the error tibble
+  if (res$success) {
+    res$result
+  } else {
+    res$tibble
+  }
 }
 
 #' Indicator data
