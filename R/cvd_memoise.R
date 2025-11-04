@@ -6,7 +6,7 @@
 #' Initialises a disk-based cache for storing memoised data across R sessions.
 #' The cache is stored in a user-specific directory and configured to expire items after one week.
 #'
-#' @returns A `cachem::cache_disk` object
+#' @return A `cachem::cache_disk` object
 #' @import cachem
 #' @import rappdirs
 #' @noRd
