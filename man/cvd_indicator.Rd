@@ -22,11 +22,74 @@ A named list containing up to four tibbles:
 \item{timeseries_data}{Tibble of time series data for metrics and indicators across time periods.}
 }
 If no indicators are found, returns a tibble describing the error.
+
+\strong{indicators} contains the following columns:
+\describe{
+\item{AxisCharacter}{Character. Symbol used to represent the metric axis (e.g., "\%").}
+\item{DataUpdateInterval}{Character. Frequency or interval at which the indicator data is updated. Often blank.}
+\item{FormatDisplayName}{Character. Display format for the metric (e.g., "Proportion \%").}
+\item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+\item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP009CHOL").}
+\item{IndicatorFormatID}{Integer. Internal ID for the indicator's format type.}
+\item{IndicatorID}{Integer. Unique identifier for the indicator.}
+\item{IndicatorName}{Character. Full descriptive name of the indicator.}
+\item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+\item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+\item{IndicatorStatus}{Character. Status of the indicator (e.g., active, discontinued). Often blank.}
+\item{IndicatorTypeID}{Integer. Unique identifier for the indicator type (e.g., 1 = Standard).}
+\item{IndicatorTypeName}{Character. Name of the indicator type (e.g., "Standard").}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+}
+
+\strong{metric_categories} contains the following columns:
+\describe{
+\item{IndicatorID}{Integer. Unique identifier for the indicator. Links to the corresponding entry in the indicators table.}
+\item{CategoryAttribute}{Character. Grouping label used to define the population subset (e.g., "Male", "Persons").}
+\item{MetricCategoryID}{Integer. Unique identifier for the metric category.}
+\item{MetricCategoryName}{Character. Name of the subgroup or category (e.g., "80+", "Mixed", "Female").}
+\item{MetricCategoryOrder}{Integer. Display order for the category within its type.}
+\item{MetricCategoryTypeName}{Character. Type of category used for breakdown (e.g., "Age group", "Sex", "Ethnicity").}
+\item{MetricID}{Integer. Unique identifier for the specific metric instance.}
+}
+
+\strong{metric_data} contains the following columns:
+\describe{
+\item{MetricID}{Integer. Unique identifier for the metric instance. Links to the corresponding entry in the metric categories table.}
+\item{AreaID}{Integer. Unique identifier for the NHS area.}
+\item{Count}{Integer. Number of records included in the calculation.}
+\item{DataID}{Integer. Unique identifier for the data point.}
+\item{Denominator}{Numeric. Denominator used in the metric calculation.}
+\item{Factor}{Numeric. Scaling factor applied to the metric, if applicable. Often blank.}
+\item{LowerConfidenceLimit}{Numeric. Lower bound of the confidence interval.}
+\item{Max}{Numeric. Maximum observed value for the metric.}
+\item{Median}{Numeric. Median value for the metric.}
+\item{Min}{Numeric. Minimum observed value for the metric.}
+\item{Numerator}{Numeric. Numerator used in the metric calculation.}
+\item{Q20}{Numeric. 20th percentile value.}
+\item{Q40}{Numeric. 40th percentile value.}
+\item{Q60}{Numeric. 60th percentile value.}
+\item{Q80}{Numeric. 80th percentile value.}
+\item{TimePeriodID}{Integer. Identifier for the time period associated with the metric.}
+\item{UpperConfidenceLimit}{Numeric. Upper bound of the confidence interval.}
+\item{Value}{Numeric. Final calculated value for the metric.}
+\item{ValueNote}{Character. Notes or flags associated with the value (e.g., suppression warnings).}
+}
+
+\strong{timeseries_data} contains the following columns:
+\describe{
+\item{MetricID}{Integer. Unique identifier for the metric instance. Links to the corresponding entry in the metric data table.}
+\item{EndDate}{POSIXct. End date of the reporting period (e.g., "2025-06-30").}
+\item{Median}{Numeric. Median value for the metric during the specified time period.}
+\item{StartDate}{POSIXct. Start date of the reporting period. Typically set to a default baseline (e.g., "1900-01-01").}
+\item{TimePeriodID}{Integer. Unique identifier for the time period.}
+\item{TimePeriodName}{Character. Display label for the time period (e.g., "To June 2025").}
+\item{Value}{Numeric. Final calculated value for the metric in the given time period.}
+}
 }
 \description{
 Returns all CVD indicators and related data for a specified reporting period (\code{time_period_id}) and NHS area (\code{area_id}) from the CVDPREVENT API. Also retrieves time series data for all available periods. Optionally, you can filter results by one or more indicator tags.
 
-The returned object is a nemd list of tibbles, including details about indicators, metric categories, metric data and time series, making this function ideal for comprehensive data extraction and downstream analysis.
+The returned object is a named list of tibbles, including details about indicators, metric categories, metric data and time series, making this function ideal for comprehensive data extraction and downstream analysis.
 }
 \details{
 This function is useful for extracting all indicator data for a given area and period, including breakdowns by category and time series. The list output allows easy access to different data tables for further analysis or visualisation. Filtering by tag enables targeted queries for specific subsets of indicators.

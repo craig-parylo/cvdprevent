@@ -2,17 +2,19 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_types}
 \alias{cvd_indicator_types}
-\title{List indicator types}
+\title{Retrieve available indicator types}
 \usage{
 cvd_indicator_types()
 }
 \value{
-Tibble of indicator types
+A tibble of indicator types with the following columns:
+\describe{
+\item{IndicatorTypeID}{Integer. Unique identifier for the indicator type.}
+\item{IndicatorTypeName}{Character. Name of the indicator type (e.g., "Standard", "Outcomes").}
+}
 }
 \description{
-Returns IDs and descriptions for indicator types.
-This is a helper function for the \code{cvd_time_period_list()} which permits the
-optional parameter of \code{indicator_type_id}.
+Returns a tibble of indicator type IDs and their corresponding names, used to categorise CVD indicators in the CVDPREVENT API. This function is primarily a helper for \code{\link[=cvd_time_period_list]{cvd_time_period_list()}}, which accepts \code{indicator_type_id} as an optional parameter.
 }
 \examples{
 # NB, the following example is not tested because it takes longer than
@@ -20,6 +22,7 @@ optional parameter of \code{indicator_type_id}.
 
 # List available indicator types
 \donttest{cvd_indicator_types()}
+
 }
 \seealso{
 \code{\link[=cvd_time_period_list]{cvd_time_period_list()}}

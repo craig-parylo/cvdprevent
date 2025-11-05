@@ -7,7 +7,18 @@
 cvd_area_system_level_time_periods()
 }
 \value{
-A tibble with one row per system level and time period, including columns such as \code{SystemLevelID}, \code{SystemLevelName}, \code{TimePeriodID} and \code{TimePeriodName}.
+A tibble with one row per system level and time period, with the following columns:
+\describe{
+\item{IsVisible}{Logical or character. Indicates whether the time period is visible in the API or dashboard ("Y" or "N").}
+\item{NationalLevel}{Logical or character. Indicates whether the data is available at the national level ("Y" or "N").}
+\item{SystemLevelID}{Integer. Unique identifier for the system level (e.g., 1 = England, 4 = PCN).}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "England", "ICB", "Sub-ICB", "STP").}
+\item{EndDate}{POSIXct. End date of the reporting period (e.g., "2023-06-30").}
+\item{StartDate}{POSIXct. Start date of the reporting period. Typically set to a default baseline (e.g., "1900-01-01").}
+\item{TimePeriodID}{Integer. Unique identifier for the time period.}
+\item{TimePeriodName}{Character. Display label for the time period (e.g., "To June 2025", "Apr 2022 – Mar 2023").}
+}
+If no data is found, returns a tibble describing the error.
 }
 \description{
 Retrieves all available NHS system levels from the CVDPREVENT API, along with the reporting periods (time periods) in which each system level has data available.

@@ -43,14 +43,16 @@ globalVariables(
 
 ## time period -----------------------------------------------------------------
 
-#' List indicator types
+#' Retrieve available indicator types
 #'
-#' Returns IDs and descriptions for indicator types.
-#' This is a helper function for the `cvd_time_period_list()` which permits the
-#' optional parameter of `indicator_type_id`.
+#' @description
+#' Returns a tibble of indicator type IDs and their corresponding names, used to categorise CVD indicators in the CVDPREVENT API. This function is primarily a helper for [cvd_time_period_list()], which accepts `indicator_type_id` as an optional parameter.
 #'
-#' @return Tibble of indicator types
-#' @export
+#' @return A tibble of indicator types with the following columns:
+#' \describe{
+#'   \item{IndicatorTypeID}{Integer. Unique identifier for the indicator type.}
+#'   \item{IndicatorTypeName}{Character. Name of the indicator type (e.g., "Standard", "Outcomes").}
+#' }
 #' @seealso [cvd_time_period_list()]
 #'
 #' @examples
@@ -59,6 +61,8 @@ globalVariables(
 #'
 #' # List available indicator types
 #' \donttest{cvd_indicator_types()}
+#'
+#' @export
 cvd_indicator_types <- function() {
   # get the data from the function - no parameters to return all types
   data <- cvd_time_period_list() |>
@@ -76,7 +80,15 @@ cvd_indicator_types <- function() {
 #'
 #' @param indicator_type_id Optional integer. If provided, restricts the returned time periods to those containing data of the given indicator type.
 #'
-#' @return A tibble with details of available time periods, including fields such as `TimePeriodID`, `TimePeriodName`, and associated indicator type information.
+#' @return A tibble containing details of available time periods with the following columns:
+#' \describe{
+#'   \item{EndDate}{POSIXct. End date of the reporting period (e.g., "2025-06-30").}
+#'   \item{IndicatorTypeID}{Integer. Unique identifier for the indicator type (e.g., 1 = Standard, 2 = Outcomes).}
+#'   \item{IndicatorTypeName}{Character. Descriptive name of the indicator type (e.g., "Standard", "Outcomes").}
+#'   \item{StartDate}{POSIXct. Start date of the reporting period. Typically set to a default baseline (e.g., "1900-01-01").}
+#'   \item{TimePeriodID}{Integer. Unique identifier for the time period.}
+#'   \item{TimePeriodName}{Character. Display label for the time period (e.g., "To June 2025", "Apr 2024 – Mar 2025").}
+#' }
 #' If no data is found, returns a tibble describing the error.
 #'
 #' @details
@@ -158,7 +170,19 @@ cvd_time_period_list <- function(indicator_type_id = NULL) {
 #' See the [CVDPREVENT API documentation: Time period system levels](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*-%2FtimePeriod%2FsystemLevels) for technical details.
 #'
 #' @return
-#' A tibble containing time periods and the corresponding system levels available for each, with columns including (but not limited to) `TimePeriodID`, `TimePeriodName`, `SystemLevelID` and `SystemLevelName`.
+#' A tibble containing time periods and the corresponding system levels with the following columns:
+#' @return A tibble with the following columns:
+#' \describe{
+#'   \item{EndDate}{POSIXct. End date of the reporting period (e.g., "2023-12-31").}
+#'   \item{StartDate}{POSIXct. Start date of the reporting period. Typically set to a default baseline (e.g., "1900-01-01").}
+#'   \item{TimePeriodID}{Integer. Unique identifier for the time period.}
+#'   \item{TimePeriodName}{Character. Display label for the time period (e.g., "To December 2023", "Apr 2022 – Mar 2023").}
+#'   \item{IsVisible}{Logical or character. Indicates whether the time period is visible in the API or dashboard ("Y" or "N").}
+#'   \item{NationalLevel}{Logical or character. Indicates whether the data is available at the national level ("Y" or "N").}
+#'   \item{SystemLevelID}{Integer. Unique identifier for the system level (e.g., 1 = England, 4 = PCN).}
+#'   \item{SystemLevelName}{Character. Name of the system level (e.g., "England", "Region", "Sub-ICB", "PCN").}
+#' }
+#' If no data is found, returns a tibble describing the error.
 #'
 #' @details
 #' This function is helpful for understanding the data structure of each reporting period, especially if you need to filter or subset data by system level and time period in downstream API calls.
@@ -245,8 +269,15 @@ cvd_time_period_system_levels <- function() {
 #'
 #' @param time_period_id Integer (required). The ID of the reporting time period for which system levels should be returned. Use [cvd_time_period_list()] to find valid IDs.
 #'
-#' @return A tibble containing system level details for the specified time period, with columns such as `SystemLevelID` and `SystemLevelName`.
-#' If there are no results, returns a tibble with a single column `result` describing the error.
+#' @return A tibble containing system level details for the specified time period, with the following columns:
+#' \describe{
+#'   \item{IsVisible}{Logical or character. Indicates whether the system level is visible in the API or dashboard ("Y" or "N").}
+#'   \item{NationalLevel}{Logical or character. Indicates whether the system level represents national coverage ("Y" or "N").}
+#'   \item{SystemLevelID}{Integer. Unique identifier for the system level (e.g., 1 = England, 4 = PCN).}
+#'   \item{SystemLevelName}{Character. Name of the system level (e.g., "England", "Region", "ICB", "Practice").}
+#'   \item{SystemLevelOrder}{Integer. Display order for the system level in dashboards or reports.}
+#' }
+#' If no data is found, returns a tibble describing the error.
 #'
 #' @details
 #' This function is useful in workflows where you need to filter or subset NHS areas or data by both time period and system level. It is often used as a precursor to more detailed area or indicator queries.
@@ -333,7 +364,18 @@ cvd_area_system_level <- function(time_period_id) {
 #' @section API Documentation:
 #' [CVDPREVENT API documentation: All system levels and time periods](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*%2Farea%2FsystemLevel%2FtimePeriods) for details.
 #'
-#' @return A tibble with one row per system level and time period, including columns such as `SystemLevelID`, `SystemLevelName`, `TimePeriodID` and `TimePeriodName`.
+#' @return A tibble with one row per system level and time period, with the following columns:
+#' \describe{
+#'   \item{IsVisible}{Logical or character. Indicates whether the time period is visible in the API or dashboard ("Y" or "N").}
+#'   \item{NationalLevel}{Logical or character. Indicates whether the data is available at the national level ("Y" or "N").}
+#'   \item{SystemLevelID}{Integer. Unique identifier for the system level (e.g., 1 = England, 4 = PCN).}
+#'   \item{SystemLevelName}{Character. Name of the system level (e.g., "England", "ICB", "Sub-ICB", "STP").}
+#'   \item{EndDate}{POSIXct. End date of the reporting period (e.g., "2023-06-30").}
+#'   \item{StartDate}{POSIXct. Start date of the reporting period. Typically set to a default baseline (e.g., "1900-01-01").}
+#'   \item{TimePeriodID}{Integer. Unique identifier for the time period.}
+#'   \item{TimePeriodName}{Character. Display label for the time period (e.g., "To June 2025", "Apr 2022 – Mar 2023").}
+#' }
+#' If no data is found, returns a tibble describing the error.
 #'
 #' @details
 #' Use this function to determine which reporting periods are available for each NHS system level. This is useful for dynamically generating data selections or validating user input in dashboards or scripts.
@@ -413,8 +455,19 @@ cvd_area_system_level_time_periods <- function() {
 #' @param system_level_id Integer (optional). The system level ID for which to return all areas (e.g., Practice, PCN, ICB). Ignored if `parent_area_id` is specified. Use [cvd_area_system_level()] to find valid IDs for a given time period.
 #'
 #' @return
-#' A tibble containing area details for the specified criteria. Columns typically include `SystemLevelName`, `AreaID`, `AreaCode`, `AreaName`, and (if available) parent area details.
-#' If no areas are found, returns a tibble describing the error.
+#' A tibble containing area details for the specified criteria with the following columns:
+#' \describe{
+#'   \item{AreaCode}{Character. ONS code for the NHS area (e.g., "U91471").}
+#'   \item{AreaID}{Integer. Unique identifier for the NHS area.}
+#'   \item{AreaName}{Character. Name of the NHS area (e.g., "Inclusive Health PCN").}
+#'   \item{AreaOdsCode}{Character. ODS (Organisation Data Service) code for the area, if available. Often blank.}
+#'   \item{ParticipationRate}{Numeric. Percentage of practices or organisations participating in the CVDPREVENT program within the area.}
+#'   \item{PopulationRate}{Numeric. Percentage of the population covered by participating organisations in the area.}
+#'   \item{SystemLevelID}{Integer. Unique identifier for the system level (e.g., 4 = PCN).}
+#'   \item{SystemLevelName}{Character. Name of the system level (e.g., "PCN").}
+#'   \item{Parents}{Integer. ID of the parent organisation or grouping (e.g., ICB or region).}
+#' }
+#' If no data is found, returns a tibble describing the error.
 #'
 #' @details
 #' - At least one of `parent_area_id` or `system_level_id` must be supplied, otherwise an error is thrown.
@@ -469,11 +522,7 @@ cvd_area_list <- function(
   v3 <- validate_input_id(
     id = parent_area_id,
     param_name = "parent_area_id",
-    required = FALSE,
-    # NB, I think a child area could have activity without the parent area - so no limit here
-    # valid_ids = m_get_valid_area_ids_for_time_period_id(
-    #   time_period_id = time_period_id
-    # )
+    required = FALSE
   )
   if (!isTRUE(v3)) {
     return(v3)
@@ -570,7 +619,17 @@ cvd_area_list <- function(
 #'   \item{area_parent_details}{A tibble with details about the parent area(s), if available.}
 #'   \item{area_child_details}{A tibble with details about child area(s), if available.}
 #' }
-#' If no details are found, returns a tibble describing the error.
+#' If no data is found, returns a tibble describing the error.
+#'
+#' \strong{area_details}, \strong{area_parent_details} and \strong{area_child_details} typically contain the following columns:
+#' \describe{
+#'   \item{AreaCode}{Character. ONS or internal code for the NHS area (e.g., "E54000015").}
+#'   \item{AreaID}{Integer. Unique identifier for the NHS area.}
+#'   \item{AreaName}{Character. Full name of the NHS area (e.g., "NHS Leicester, Leicestershire and Rutland Integrated Care Board").}
+#'   \item{AreaOdsCode}{Character. ODS (Organisation Data Service) code for the area (e.g., "QK1").}
+#'   \item{SystemLevelID}{Integer. Unique identifier for the system level (e.g., 7 = ICB).}
+#'   \item{SystemLevelName}{Character. Name of the system level (e.g., "ICB").}
+#' }
 #'
 #' @details
 #' This function is useful for navigating NHS area heirarchies, such as finding all practices within a PCN, or determining the parent ICB for a given area. The result is a list of tibbles, so you can extract and work with each component separately.
@@ -712,8 +771,16 @@ cvd_area_details <- function(time_period_id, area_id) {
 #' @param system_level_id Integer (optional). Restrict the search to areas at a specific system level (e.g., Practice, PCN, ICB). Use [cvd_area_system_level()] to find valid IDs for a given time period.
 #'
 #' @return
-#' A tibble containing details for all areas without parent assignments in the selected time period (and system leve, if specified). Typical columns include `SystemLevelName`, `AreaID`, `AreaName`, etc.
-#' If no unassigned areas are found, returns a tibble describing the error.
+#' A tibble containing details for all areas without parent assignments in the selected time period (and system level, if specified). Typical columns include:
+#' \describe{
+#'   \item{AreaCode}{Character. Unique code for the NHS area (e.g., "L81117").}
+#'   \item{AreaID}{Integer. Unique identifier for the NHS area}
+#'   \item{AreaName}{Character. Name of the NHS area (e.g., "Pilning Surgery").}
+#'   \item{OdsCode}{Character. ODS (Organisation Data Service) code for the practice, if available. Often blank.}
+#'   \item{SystemLevelID}{Integer. Identifier for the system level (5 = GP practices).}
+#'   \item{SystemLevelName}{Character. Name of the system level (e.g., "Practice").}
+#' }
+#' If no data is found, returns a tibble describing the error.
 #'
 #' @details
 #' - Use this function to identify "orphaned" NHS areas or to understand top-level areas (e.g., England).
@@ -825,8 +892,19 @@ cvd_area_unassigned <- function(time_period_id, system_level_id = NULL) {
 #' @param time_period_id Integer (required). The reporting period (time period) to restrict the search to areas with data. use [cvd_time_period_list()] to obtain valid IDs.
 #'
 #' @return
-#' A tibble containing details of areas matching the search term and having data for the specified time period. Typical columns include `AreaID`, `AreaName`, `AreaCode`, etc.
-#' If no areas are found, returns a tibble describing the error.
+#' A tibble containing details of areas matching the search term and having data for the specified time period. Typical columns include:
+#' \describe{
+#'   \item{AreaCode}{Character. Unique code for the NHS area (e.g., "P86619").}
+#'   \item{AreaID}{Integer. Unique identifier for the NHS area}
+#'   \item{AreaName}{Character. Name of the NHS area (e.g., "Dr Mb Ghafoor & Partners").}
+#'   \item{IsVisible}{Logical or character. Indicates whether the area is visible in the API or dashboard ("Y" or "N").}
+#'   \item{NationalLevel}{Logical or character. Indicates whether the area is included in national-level aggregations ("Y" or "N").}
+#'   \item{OdsCode}{Character. ODS (Organisation Data Service) code for the area, if available. Often blank.}
+#'   \item{SystemLevelID}{Integer. Identifier for the system level (5 = GP Practices).}
+#'   \item{SystemLevelName}{Character. Name of the system level (e.g., "Practice").}
+#'   \item{SystemLevelOrder}{Integer. Display order for the system level in dashboards or reports.}
+#' }
+#' If no data is found, returns a tibble describing the error.
 #'
 #' @details
 #' - The search is case-insensitive and matches anywhere in the area name.
@@ -926,7 +1004,19 @@ cvd_area_search <- function(partial_area_name, time_period_id) {
 #' @param area_id Integer (required). The AreaID for which to retrieve nested sub-system data. Use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
 #'
 #' @return
-#' A named list of tibbles, where each element (`level_1`, `level_2`, etc.) contains details for the specified area and each subsequent child level. If no data is found, returns a tibble describing the error.
+#' A named list of tibbles, where each element (`level_1`, `level_2`, etc.) contains details for the specified area and each subsequent child level.
+#' If no data is found, returns a tibble describing the error.
+#'
+#' Each tibble contains the following columns:
+#' \describe{
+#'   \item{AreaCode}{Character. Unique code for the NHS area (e.g., "U11103").}
+#'   \item{AreaID}{Integer. Unique identifier for the NHS area.}
+#'   \item{AreaName}{Character. Name of the NHS area (e.g., "Yeovil PCN").}
+#'   \item{AreaOdsCode}{Character. ODS (Organisation Data Service) code for the area, if available. Often blank.}
+#'   \item{ParentAreaID}{Integer. ID of the parent NHS area or organisation (e.g., ICB or region).}
+#'   \item{SystemLevelID}{Integer. Identifier for the system level (e.g., 4 = PCN).}
+#'   \item{SystemLevelName}{Character. Name of the system level (e.g., "PCN").}
+#' }
 #'
 #' @details
 #' This function is helpful for visualising or programmatically traversing the full nested structure beneath a given NHS area. For example, given an ICB, you can see all PCNs, then all practices beneath those PCNs, and so on.
@@ -1061,8 +1151,26 @@ cvd_area_nested_subsystems <- function(area_id) {
 #' @param area_id Integer (required). The AreaID for which to retrieve flat sub-system data. use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
 #'
 #' @return
-#' A tibble containing details for the specified area and its child areas, with columns such as `AreaID`, `AreaName`, `SystemLevelID`, `SystemLevelName`, and child area details (e.g., via `SubSystems_*` columns).
-#' If no areas are found, returns a tibble describing the error.
+#' A tibble containing details for the specified area and its child areas and child area details (e.g., via `SubSystems_*` columns). Typical columns include:
+#' \describe{
+#'   \item{AreaCode}{Character. Code for the parent NHS area (e.g., "E54000038").}
+#'   \item{AreaID}{Integer. Unique identifier for the parent NHS area.}
+#'   \item{AreaName}{Character. Name of the parent NHS area (e.g., "Somerset").}
+#'   \item{AreaOdsCode}{Character. ODS (Organisation Data Service) code for the parent area (e.g., "QSL").}
+#'   \item{ParentAreaID}{Integer. Identifier for the higher-level parent area (e.g., regional or national grouping).}
+#'
+#'   \item{SubSystems_AreaCode}{Character. Code for the subsystem NHS area (e.g., practice or PCN).}
+#'   \item{SubSystems_AreaID}{Integer. Unique identifier for the subsystem NHS area.}
+#'   \item{SubSystems_AreaName}{Character. Name of the subsystem NHS area (e.g., "Church Street Surgery, Martock").}
+#'   \item{SubSystems_AreaOdsCode}{Character. ODS code for the subsystem area, if available. Often blank.}
+#'   \item{SubSystems_ParentAreaID}{Integer. ID of the immediate parent area for the subsystem (e.g., PCN or ICB).}
+#'   \item{SubSystems_SystemLevelID}{Integer. Identifier for the system level of the subsystem (e.g., 5 = Practice, 4 = PCN).}
+#'   \item{SubSystems_SystemLevelName}{Character. Name of the system level for the subsystem (e.g., "Practice", "PCN").}
+#'
+#'   \item{SystemLevelID}{Integer. Identifier for the system level of the parent area (e.g., 2 = STP).}
+#'   \item{SystemLevelName}{Character. Name of the system level for the parent area (e.g., "STP").}
+#' }
+#' If no data is found, returns a tibble describing the error.
 #'
 #' @details
 #' This function is useful for quickly listing all areas beneath a parent, grouped by system level, for reporting or selection purposes. For a fully nested view, see [cvd_area_nested_subsystems()].
@@ -1150,7 +1258,21 @@ cvd_area_flat_subsystems <- function(area_id) {
 #' @param system_level_id Integer (required). The system level (e.g., National, Region, ICB, PCN, Practice) for which to return indicators. Use [cvd_area_system_level()] to find valid IDs for a given time period.
 #'
 #' @return
-#' A tibble with one row per available indicator for the specified system level and time period. Typical columns include (but are not limited to) `IndicatorID`, `IndicatorCode`, `IndicatorShortName`, `IndicatorName`, `IndicatorStatus`, `IndicatorFormatID`, and others describing indicator properties.
+#' A tibble with one row per available indicator for the specified system level and time period. Typical columns include:
+#' \describe{
+#'   \item{AxisCharacter}{Character. Symbol used to represent the metric axis (e.g., "%").}
+#'   \item{DataUpdateInterval}{Character. Frequency or interval at which the indicator data is updated. Often blank.}
+#'   \item{FormatDisplayName}{Character. Display format for the metric (e.g., "Proportion %").}
+#'   \item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+#'   \item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP005CKD").}
+#'   \item{IndicatorFormatID}{Integer. Internal ID for the indicator's format type.}
+#'   \item{IndicatorID}{Integer. Unique identifier for the indicator.}
+#'   \item{IndicatorName}{Character. Full descriptive name of the indicator.}
+#'   \item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+#'   \item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+#'   \item{IndicatorStatus}{Character. Status of the indicator (e.g., active, retired). Often blank.}
+#'   \item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+#' }
 #' If no indicators are found, returns a tibble describing the error.
 #'
 #' @details
@@ -1171,7 +1293,7 @@ cvd_area_flat_subsystems <- function(area_id) {
 #' cvd_indicator_list(time_period_id = 17, system_level_id = valid_levels$SystemLevelID[1])
 #'
 #' @export
-cvd_indicator_list <- function(time_period_id = NULL, system_level_id = NULL) {
+cvd_indicator_list <- function(time_period_id, system_level_id) {
   # validate input
   v1 <- validate_input_id(
     id = time_period_id,
@@ -1256,7 +1378,23 @@ cvd_indicator_list <- function(time_period_id = NULL, system_level_id = NULL) {
 #' @param system_level_id Integer (required). The system level (e.g., National, Region, ICB, PCN, Practice) for which to return indicators and metrics. Use [cvd_area_system_level()] to find valid IDs for a given time period.
 #'
 #' @return
-#' A tibble containing one row for each indicator-metric pair avialable for the specified system level and time period. Columns typically include `IndicatorID`, `IndicatorShortName`, `MetricID`, `MetricCategoryName`, `CategoryAttribute`, and other metric-related fields.
+#' A tibble containing one row for each indicator-metric pair avialable for the specified system level and time period. Columns typically include:
+#' \describe{
+#'   \item{AxisCharacter}{Character. Symbol used to represent the metric axis (e.g., "%").}
+#'   \item{FormatDisplayName}{Character. Display format for the metric (e.g., "Proportion %").}
+#'   \item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+#'   \item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002SMOK").}
+#'   \item{IndicatorFormatID}{Integer. Internal ID for the indicator's format type.}
+#'   \item{IndicatorID}{Integer. Unique identifier for the indicator.}
+#'   \item{IndicatorName}{Character. Full descriptive name of the indicator.}
+#'   \item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+#'   \item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+#'   \item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+#'   \item{CategoryAttribute}{Character. Label used to group individuals (e.g., "Male", "Persons").}
+#'   \item{MetricCategoryName}{Character. Name of the subgroup or category (e.g., "40–59", "Mixed").}
+#'   \item{MetricCategoryTypeName}{Character. Type of subgroup (e.g., "Age group", "Sex", "Ethnicity").}
+#'   \item{MetricID}{Integer. Unique identifier for the specific metric being measured.}
+#' }
 #' If no indicators or metrics are found returns a tibble describing the error.
 #'
 #' @details
@@ -1362,7 +1500,7 @@ cvd_indicator_metric_list <- function(time_period_id, system_level_id) {
 #' @description
 #' Returns all CVD indicators and related data for a specified reporting period (`time_period_id`) and NHS area (`area_id`) from the CVDPREVENT API. Also retrieves time series data for all available periods. Optionally, you can filter results by one or more indicator tags.
 #'
-#' The returned object is a nemd list of tibbles, including details about indicators, metric categories, metric data and time series, making this function ideal for comprehensive data extraction and downstream analysis.
+#' The returned object is a named list of tibbles, including details about indicators, metric categories, metric data and time series, making this function ideal for comprehensive data extraction and downstream analysis.
 #'
 #' @section API Documentation:
 #' See the [CVDPREVENT API documentation: Indicator](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator)
@@ -1380,6 +1518,69 @@ cvd_indicator_metric_list <- function(time_period_id, system_level_id) {
 #'   \item{timeseries_data}{Tibble of time series data for metrics and indicators across time periods.}
 #' }
 #' If no indicators are found, returns a tibble describing the error.
+#'
+#' \strong{indicators} contains the following columns:
+#' \describe{
+#'   \item{AxisCharacter}{Character. Symbol used to represent the metric axis (e.g., "%").}
+#'   \item{DataUpdateInterval}{Character. Frequency or interval at which the indicator data is updated. Often blank.}
+#'   \item{FormatDisplayName}{Character. Display format for the metric (e.g., "Proportion %").}
+#'   \item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+#'   \item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP009CHOL").}
+#'   \item{IndicatorFormatID}{Integer. Internal ID for the indicator's format type.}
+#'   \item{IndicatorID}{Integer. Unique identifier for the indicator.}
+#'   \item{IndicatorName}{Character. Full descriptive name of the indicator.}
+#'   \item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+#'   \item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+#'   \item{IndicatorStatus}{Character. Status of the indicator (e.g., active, discontinued). Often blank.}
+#'   \item{IndicatorTypeID}{Integer. Unique identifier for the indicator type (e.g., 1 = Standard).}
+#'   \item{IndicatorTypeName}{Character. Name of the indicator type (e.g., "Standard").}
+#'   \item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+#' }
+#'
+#' \strong{metric_categories} contains the following columns:
+#' \describe{
+#'   \item{IndicatorID}{Integer. Unique identifier for the indicator. Links to the corresponding entry in the indicators table.}
+#'   \item{CategoryAttribute}{Character. Grouping label used to define the population subset (e.g., "Male", "Persons").}
+#'   \item{MetricCategoryID}{Integer. Unique identifier for the metric category.}
+#'   \item{MetricCategoryName}{Character. Name of the subgroup or category (e.g., "80+", "Mixed", "Female").}
+#'   \item{MetricCategoryOrder}{Integer. Display order for the category within its type.}
+#'   \item{MetricCategoryTypeName}{Character. Type of category used for breakdown (e.g., "Age group", "Sex", "Ethnicity").}
+#'   \item{MetricID}{Integer. Unique identifier for the specific metric instance.}
+#' }
+#'
+#' \strong{metric_data} contains the following columns:
+#' \describe{
+#'   \item{MetricID}{Integer. Unique identifier for the metric instance. Links to the corresponding entry in the metric categories table.}
+#'   \item{AreaID}{Integer. Unique identifier for the NHS area.}
+#'   \item{Count}{Integer. Number of records included in the calculation.}
+#'   \item{DataID}{Integer. Unique identifier for the data point.}
+#'   \item{Denominator}{Numeric. Denominator used in the metric calculation.}
+#'   \item{Factor}{Numeric. Scaling factor applied to the metric, if applicable. Often blank.}
+#'   \item{LowerConfidenceLimit}{Numeric. Lower bound of the confidence interval.}
+#'   \item{Max}{Numeric. Maximum observed value for the metric.}
+#'   \item{Median}{Numeric. Median value for the metric.}
+#'   \item{Min}{Numeric. Minimum observed value for the metric.}
+#'   \item{Numerator}{Numeric. Numerator used in the metric calculation.}
+#'   \item{Q20}{Numeric. 20th percentile value.}
+#'   \item{Q40}{Numeric. 40th percentile value.}
+#'   \item{Q60}{Numeric. 60th percentile value.}
+#'   \item{Q80}{Numeric. 80th percentile value.}
+#'   \item{TimePeriodID}{Integer. Identifier for the time period associated with the metric.}
+#'   \item{UpperConfidenceLimit}{Numeric. Upper bound of the confidence interval.}
+#'   \item{Value}{Numeric. Final calculated value for the metric.}
+#'   \item{ValueNote}{Character. Notes or flags associated with the value (e.g., suppression warnings).}
+#' }
+#'
+#' \strong{timeseries_data} contains the following columns:
+#' \describe{
+#'   \item{MetricID}{Integer. Unique identifier for the metric instance. Links to the corresponding entry in the metric data table.}
+#'   \item{EndDate}{POSIXct. End date of the reporting period (e.g., "2025-06-30").}
+#'   \item{Median}{Numeric. Median value for the metric during the specified time period.}
+#'   \item{StartDate}{POSIXct. Start date of the reporting period. Typically set to a default baseline (e.g., "1900-01-01").}
+#'   \item{TimePeriodID}{Integer. Unique identifier for the time period.}
+#'   \item{TimePeriodName}{Character. Display label for the time period (e.g., "To June 2025").}
+#'   \item{Value}{Numeric. Final calculated value for the metric in the given time period.}
+#' }
 #'
 #' @details
 #' This function is useful for extracting all indicator data for a given area and period, including breakdowns by category and time series. The list output allows easy access to different data tables for further analysis or visualisation. Filtering by tag enables targeted queries for specific subsets of indicators.
@@ -1550,8 +1751,7 @@ cvd_indicator <- function(time_period_id, area_id, tag_id = NULL) {
       metric_categories <-
         metrics |>
         dplyr::select(
-          -dplyr::any_of(c("TimeSeries")),
-          -dplyr::starts_with("Data.")
+          -dplyr::any_of(c("TimeSeries", "Data")),
         ) |>
         dplyr::distinct()
 
@@ -1565,7 +1765,6 @@ cvd_indicator <- function(time_period_id, area_id, tag_id = NULL) {
           metrics |>
           dplyr::select(c(
             dplyr::any_of(c("MetricID", "Data"))
-            # dplyr::starts_with("Data")
           )) |>
           tidyr::unnest(cols = dplyr::any_of("Data")) |>
           dplyr::rename_with(
@@ -1627,7 +1826,11 @@ cvd_indicator <- function(time_period_id, area_id, tag_id = NULL) {
 #' See the [CVDPREVENT API documentation: Indicator tags](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2Ftags)
 #'
 #' @return
-#' A tibble with one row per available indicator tag. Typical columns include `IndicatorTagID`, `IndicatorTagName` and other descriptive fields.
+#' A tibble with one row per available indicator tag, containing the following colunns:
+#' \describe{
+#'   \item{IndicatorTagID}{Integer. Unique identifier for the tag associated with an indicator.}
+#'   \item{IndicatorTagName}{Character. Descriptive label categorising the indicator (e.g., "monitoring", "prevention", "smoking").}
+#' }
 #' If no tags are found, returns a tibble describing the error.
 #'
 #' @details
@@ -1700,10 +1903,23 @@ cvd_indicator_tags <- function() {
 #' @section API Documentation:
 #' See the [CVDPREVENT API documentation: Indicator details](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2F%3Cindicator_ID%3E%2Fdetails)
 #'
-#' @param indicator_id Integer (required). The IndicatorID for which to return details. Used [cvd_indicator_list()] or [cvd_indicator_metric_list()] to find valid IDs.
+#' @param indicator_id Integer (required). The IndicatorID for which to return details. Use [cvd_indicator_list()] or [cvd_indicator_metric_list()] to find valid IDs.
 #'
 #' @return
-#' A tibble containing metadata and details for the specified indicator. Typical columns include `IndicatorID`, `MetaDataTitle`, `MetaData`, and other descriptive fields.
+#' A tibble containing metadata and details for the specified indicator containing the following columns:
+#' \describe{
+#'   \item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002AF").}
+#'   \item{IndicatorID}{Integer. Unique identifier for the indicator.}
+#'   \item{IndicatorName}{Character. Full descriptive name of the indicator.}
+#'   \item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+#'   \item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+#'   \item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+#'   \item{AgeStandardised}{Character. Indicates whether the indicator is age-standardised ("Y" or "N").}
+#'   \item{CategoryName}{Character. Section heading or thematic grouping for the metadata (e.g., "Section 2: Data and Construction").}
+#'   \item{MetaData}{Character. Detailed explanatory text or notes associated with the indicator. May include rationale, definitions, sources, or caveats.}
+#'   \item{MetaDataCategoryID}{Integer. Unique identifier for the metadata category.}
+#'   \item{MetaDataTitle}{Character. Title or label describing the metadata content (e.g., "Rationale", "Disclosure control").}
+#' }
 #' If no indicator details are found, returns a tibble describing the error.
 #'
 #' @details

@@ -10,8 +10,26 @@ cvd_area_flat_subsystems(area_id)
 \item{area_id}{Integer (required). The AreaID for which to retrieve flat sub-system data. use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid IDs.}
 }
 \value{
-A tibble containing details for the specified area and its child areas, with columns such as \code{AreaID}, \code{AreaName}, \code{SystemLevelID}, \code{SystemLevelName}, and child area details (e.g., via \verb{SubSystems_*} columns).
-If no areas are found, returns a tibble describing the error.
+A tibble containing details for the specified area and its child areas and child area details (e.g., via \verb{SubSystems_*} columns). Typical columns include:
+\describe{
+\item{AreaCode}{Character. Code for the parent NHS area (e.g., "E54000038").}
+\item{AreaID}{Integer. Unique identifier for the parent NHS area.}
+\item{AreaName}{Character. Name of the parent NHS area (e.g., "Somerset").}
+\item{AreaOdsCode}{Character. ODS (Organisation Data Service) code for the parent area (e.g., "QSL").}
+\item{ParentAreaID}{Integer. Identifier for the higher-level parent area (e.g., regional or national grouping).}
+
+\item{SubSystems_AreaCode}{Character. Code for the subsystem NHS area (e.g., practice or PCN).}
+\item{SubSystems_AreaID}{Integer. Unique identifier for the subsystem NHS area.}
+\item{SubSystems_AreaName}{Character. Name of the subsystem NHS area (e.g., "Church Street Surgery, Martock").}
+\item{SubSystems_AreaOdsCode}{Character. ODS code for the subsystem area, if available. Often blank.}
+\item{SubSystems_ParentAreaID}{Integer. ID of the immediate parent area for the subsystem (e.g., PCN or ICB).}
+\item{SubSystems_SystemLevelID}{Integer. Identifier for the system level of the subsystem (e.g., 5 = Practice, 4 = PCN).}
+\item{SubSystems_SystemLevelName}{Character. Name of the system level for the subsystem (e.g., "Practice", "PCN").}
+
+\item{SystemLevelID}{Integer. Identifier for the system level of the parent area (e.g., 2 = STP).}
+\item{SystemLevelName}{Character. Name of the system level for the parent area (e.g., "STP").}
+}
+If no data is found, returns a tibble describing the error.
 }
 \description{
 Returns a "flat" list of the specified NHS area and all its immediate child areas from the CVDPREVENT API, with child areas grouped by their system level rather than by strict heirarchical nesting. This function provides a convenient overview when you want to see all sub-areas organised by level (e.g., all PCNs and all GP practices beneath an ICB) without traversing the full heirarchy.

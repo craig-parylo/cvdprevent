@@ -4,7 +4,7 @@
 \alias{cvd_indicator_list}
 \title{List available indicators for a system level and time period}
 \usage{
-cvd_indicator_list(time_period_id = NULL, system_level_id = NULL)
+cvd_indicator_list(time_period_id, system_level_id)
 }
 \arguments{
 \item{time_period_id}{Integer (required). The reporting period (time period) for which to return indicators. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
@@ -12,7 +12,21 @@ cvd_indicator_list(time_period_id = NULL, system_level_id = NULL)
 \item{system_level_id}{Integer (required). The system level (e.g., National, Region, ICB, PCN, Practice) for which to return indicators. Use \code{\link[=cvd_area_system_level]{cvd_area_system_level()}} to find valid IDs for a given time period.}
 }
 \value{
-A tibble with one row per available indicator for the specified system level and time period. Typical columns include (but are not limited to) \code{IndicatorID}, \code{IndicatorCode}, \code{IndicatorShortName}, \code{IndicatorName}, \code{IndicatorStatus}, \code{IndicatorFormatID}, and others describing indicator properties.
+A tibble with one row per available indicator for the specified system level and time period. Typical columns include:
+\describe{
+\item{AxisCharacter}{Character. Symbol used to represent the metric axis (e.g., "\%").}
+\item{DataUpdateInterval}{Character. Frequency or interval at which the indicator data is updated. Often blank.}
+\item{FormatDisplayName}{Character. Display format for the metric (e.g., "Proportion \%").}
+\item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+\item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP005CKD").}
+\item{IndicatorFormatID}{Integer. Internal ID for the indicator's format type.}
+\item{IndicatorID}{Integer. Unique identifier for the indicator.}
+\item{IndicatorName}{Character. Full descriptive name of the indicator.}
+\item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+\item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+\item{IndicatorStatus}{Character. Status of the indicator (e.g., active, retired). Often blank.}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+}
 If no indicators are found, returns a tibble describing the error.
 }
 \description{

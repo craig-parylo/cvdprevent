@@ -7,7 +7,11 @@
 cvd_indicator_tags()
 }
 \value{
-A tibble with one row per available indicator tag. Typical columns include \code{IndicatorTagID}, \code{IndicatorTagName} and other descriptive fields.
+A tibble with one row per available indicator tag, containing the following colunns:
+\describe{
+\item{IndicatorTagID}{Integer. Unique identifier for the tag associated with an indicator.}
+\item{IndicatorTagName}{Character. Descriptive label categorising the indicator (e.g., "monitoring", "prevention", "smoking").}
+}
 If no tags are found, returns a tibble describing the error.
 }
 \description{

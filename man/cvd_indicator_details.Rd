@@ -7,10 +7,23 @@
 cvd_indicator_details(indicator_id)
 }
 \arguments{
-\item{indicator_id}{Integer (required). The IndicatorID for which to return details. Used \code{\link[=cvd_indicator_list]{cvd_indicator_list()}} or \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} to find valid IDs.}
+\item{indicator_id}{Integer (required). The IndicatorID for which to return details. Use \code{\link[=cvd_indicator_list]{cvd_indicator_list()}} or \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} to find valid IDs.}
 }
 \value{
-A tibble containing metadata and details for the specified indicator. Typical columns include \code{IndicatorID}, \code{MetaDataTitle}, \code{MetaData}, and other descriptive fields.
+A tibble containing metadata and details for the specified indicator containing the following columns:
+\describe{
+\item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002AF").}
+\item{IndicatorID}{Integer. Unique identifier for the indicator.}
+\item{IndicatorName}{Character. Full descriptive name of the indicator.}
+\item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+\item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+\item{AgeStandardised}{Character. Indicates whether the indicator is age-standardised ("Y" or "N").}
+\item{CategoryName}{Character. Section heading or thematic grouping for the metadata (e.g., "Section 2: Data and Construction").}
+\item{MetaData}{Character. Detailed explanatory text or notes associated with the indicator. May include rationale, definitions, sources, or caveats.}
+\item{MetaDataCategoryID}{Integer. Unique identifier for the metadata category.}
+\item{MetaDataTitle}{Character. Title or label describing the metadata content (e.g., "Rationale", "Disclosure control").}
+}
 If no indicator details are found, returns a tibble describing the error.
 }
 \description{

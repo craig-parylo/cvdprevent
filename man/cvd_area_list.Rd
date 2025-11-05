@@ -14,8 +14,19 @@ cvd_area_list(time_period_id, parent_area_id = NULL, system_level_id = NULL)
 \item{system_level_id}{Integer (optional). The system level ID for which to return all areas (e.g., Practice, PCN, ICB). Ignored if \code{parent_area_id} is specified. Use \code{\link[=cvd_area_system_level]{cvd_area_system_level()}} to find valid IDs for a given time period.}
 }
 \value{
-A tibble containing area details for the specified criteria. Columns typically include \code{SystemLevelName}, \code{AreaID}, \code{AreaCode}, \code{AreaName}, and (if available) parent area details.
-If no areas are found, returns a tibble describing the error.
+A tibble containing area details for the specified criteria with the following columns:
+\describe{
+\item{AreaCode}{Character. ONS code for the NHS area (e.g., "U91471").}
+\item{AreaID}{Integer. Unique identifier for the NHS area.}
+\item{AreaName}{Character. Name of the NHS area (e.g., "Inclusive Health PCN").}
+\item{AreaOdsCode}{Character. ODS (Organisation Data Service) code for the area, if available. Often blank.}
+\item{ParticipationRate}{Numeric. Percentage of practices or organisations participating in the CVDPREVENT program within the area.}
+\item{PopulationRate}{Numeric. Percentage of the population covered by participating organisations in the area.}
+\item{SystemLevelID}{Integer. Unique identifier for the system level (e.g., 4 = PCN).}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "PCN").}
+\item{Parents}{Integer. ID of the parent organisation or grouping (e.g., ICB or region).}
+}
+If no data is found, returns a tibble describing the error.
 }
 \description{
 Retrieves all NHS geographical areas (e.g., England, Region, ICB, PCN, Practice) that have data avialable for a specified reporting period and either a pareent area or system level. Only areas with data for the chosen time period are returned.

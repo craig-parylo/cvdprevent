@@ -12,7 +12,23 @@ cvd_indicator_metric_list(time_period_id, system_level_id)
 \item{system_level_id}{Integer (required). The system level (e.g., National, Region, ICB, PCN, Practice) for which to return indicators and metrics. Use \code{\link[=cvd_area_system_level]{cvd_area_system_level()}} to find valid IDs for a given time period.}
 }
 \value{
-A tibble containing one row for each indicator-metric pair avialable for the specified system level and time period. Columns typically include \code{IndicatorID}, \code{IndicatorShortName}, \code{MetricID}, \code{MetricCategoryName}, \code{CategoryAttribute}, and other metric-related fields.
+A tibble containing one row for each indicator-metric pair avialable for the specified system level and time period. Columns typically include:
+\describe{
+\item{AxisCharacter}{Character. Symbol used to represent the metric axis (e.g., "\%").}
+\item{FormatDisplayName}{Character. Display format for the metric (e.g., "Proportion \%").}
+\item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+\item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002SMOK").}
+\item{IndicatorFormatID}{Integer. Internal ID for the indicator's format type.}
+\item{IndicatorID}{Integer. Unique identifier for the indicator.}
+\item{IndicatorName}{Character. Full descriptive name of the indicator.}
+\item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+\item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+\item{CategoryAttribute}{Character. Label used to group individuals (e.g., "Male", "Persons").}
+\item{MetricCategoryName}{Character. Name of the subgroup or category (e.g., "40–59", "Mixed").}
+\item{MetricCategoryTypeName}{Character. Type of subgroup (e.g., "Age group", "Sex", "Ethnicity").}
+\item{MetricID}{Integer. Unique identifier for the specific metric being measured.}
+}
 If no indicators or metrics are found returns a tibble describing the error.
 }
 \description{

@@ -10,7 +10,19 @@ cvd_area_nested_subsystems(area_id)
 \item{area_id}{Integer (required). The AreaID for which to retrieve nested sub-system data. Use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid IDs.}
 }
 \value{
-A named list of tibbles, where each element (\code{level_1}, \code{level_2}, etc.) contains details for the specified area and each subsequent child level. If no data is found, returns a tibble describing the error.
+A named list of tibbles, where each element (\code{level_1}, \code{level_2}, etc.) contains details for the specified area and each subsequent child level.
+If no data is found, returns a tibble describing the error.
+
+Each tibble contains the following columns:
+\describe{
+\item{AreaCode}{Character. Unique code for the NHS area (e.g., "U11103").}
+\item{AreaID}{Integer. Unique identifier for the NHS area.}
+\item{AreaName}{Character. Name of the NHS area (e.g., "Yeovil PCN").}
+\item{AreaOdsCode}{Character. ODS (Organisation Data Service) code for the area, if available. Often blank.}
+\item{ParentAreaID}{Integer. ID of the parent NHS area or organisation (e.g., ICB or region).}
+\item{SystemLevelID}{Integer. Identifier for the system level (e.g., 4 = PCN).}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "PCN").}
+}
 }
 \description{
 Returns a hierarchical (nested) structure of the specified NHS area and all of its descendent (child) areas from the CVDPREVENT API. This function is useful for exploring the parent-child relationships within NHS geographies, such as seeing a PCN and all of its practices, or an ICB with all subordinate structures.

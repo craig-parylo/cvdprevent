@@ -12,8 +12,16 @@ cvd_area_unassigned(time_period_id, system_level_id = NULL)
 \item{system_level_id}{Integer (optional). Restrict the search to areas at a specific system level (e.g., Practice, PCN, ICB). Use \code{\link[=cvd_area_system_level]{cvd_area_system_level()}} to find valid IDs for a given time period.}
 }
 \value{
-A tibble containing details for all areas without parent assignments in the selected time period (and system leve, if specified). Typical columns include \code{SystemLevelName}, \code{AreaID}, \code{AreaName}, etc.
-If no unassigned areas are found, returns a tibble describing the error.
+A tibble containing details for all areas without parent assignments in the selected time period (and system level, if specified). Typical columns include:
+\describe{
+\item{AreaCode}{Character. Unique code for the NHS area (e.g., "L81117").}
+\item{AreaID}{Integer. Unique identifier for the NHS area}
+\item{AreaName}{Character. Name of the NHS area (e.g., "Pilning Surgery").}
+\item{OdsCode}{Character. ODS (Organisation Data Service) code for the practice, if available. Often blank.}
+\item{SystemLevelID}{Integer. Identifier for the system level (5 = GP practices).}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "Practice").}
+}
+If no data is found, returns a tibble describing the error.
 }
 \description{
 Retrieves all NHS areas that have data in the specified reporting time period but do not have any parent areas assigned. These "unassigned" areas are unreachable via standard heirarchical navigation and may represent data issues or exceptional cases (e.g., England as the highest-level system).

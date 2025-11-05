@@ -12,8 +12,19 @@ cvd_area_search(partial_area_name, time_period_id)
 \item{time_period_id}{Integer (required). The reporting period (time period) to restrict the search to areas with data. use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to obtain valid IDs.}
 }
 \value{
-A tibble containing details of areas matching the search term and having data for the specified time period. Typical columns include \code{AreaID}, \code{AreaName}, \code{AreaCode}, etc.
-If no areas are found, returns a tibble describing the error.
+A tibble containing details of areas matching the search term and having data for the specified time period. Typical columns include:
+\describe{
+\item{AreaCode}{Character. Unique code for the NHS area (e.g., "P86619").}
+\item{AreaID}{Integer. Unique identifier for the NHS area}
+\item{AreaName}{Character. Name of the NHS area (e.g., "Dr Mb Ghafoor & Partners").}
+\item{IsVisible}{Logical or character. Indicates whether the area is visible in the API or dashboard ("Y" or "N").}
+\item{NationalLevel}{Logical or character. Indicates whether the area is included in national-level aggregations ("Y" or "N").}
+\item{OdsCode}{Character. ODS (Organisation Data Service) code for the area, if available. Often blank.}
+\item{SystemLevelID}{Integer. Identifier for the system level (5 = GP Practices).}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "Practice").}
+\item{SystemLevelOrder}{Integer. Display order for the system level in dashboards or reports.}
+}
+If no data is found, returns a tibble describing the error.
 }
 \description{
 Searches for NHS areas whose names match a given partial string, within a specified reporting time period. This function uses a case-insensitive "LIKE" search (i.e., matches any area containing the search term) and returns only areas for which data is available in the specified period.

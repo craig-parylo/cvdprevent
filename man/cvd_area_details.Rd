@@ -18,7 +18,17 @@ A named list with up to three tibbles:
 \item{area_parent_details}{A tibble with details about the parent area(s), if available.}
 \item{area_child_details}{A tibble with details about child area(s), if available.}
 }
-If no details are found, returns a tibble describing the error.
+If no data is found, returns a tibble describing the error.
+
+\strong{area_details}, \strong{area_parent_details} and \strong{area_child_details} typically contain the following columns:
+\describe{
+\item{AreaCode}{Character. ONS or internal code for the NHS area (e.g., "E54000015").}
+\item{AreaID}{Integer. Unique identifier for the NHS area.}
+\item{AreaName}{Character. Full name of the NHS area (e.g., "NHS Leicester, Leicestershire and Rutland Integrated Care Board").}
+\item{AreaOdsCode}{Character. ODS (Organisation Data Service) code for the area (e.g., "QK1").}
+\item{SystemLevelID}{Integer. Unique identifier for the system level (e.g., 7 = ICB).}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "ICB").}
+}
 }
 \description{
 Returns detailed information about a single NHS area for a given reporting period, including its own details, as well as any parent and child areas. This allows you to understand the heirarchical context (e.g., parent ICB, child PCNs or Practices) for the specified area.

@@ -10,7 +10,15 @@ cvd_time_period_list(indicator_type_id = NULL)
 \item{indicator_type_id}{Optional integer. If provided, restricts the returned time periods to those containing data of the given indicator type.}
 }
 \value{
-A tibble with details of available time periods, including fields such as \code{TimePeriodID}, \code{TimePeriodName}, and associated indicator type information.
+A tibble containing details of available time periods with the following columns:
+\describe{
+\item{EndDate}{POSIXct. End date of the reporting period (e.g., "2025-06-30").}
+\item{IndicatorTypeID}{Integer. Unique identifier for the indicator type (e.g., 1 = Standard, 2 = Outcomes).}
+\item{IndicatorTypeName}{Character. Descriptive name of the indicator type (e.g., "Standard", "Outcomes").}
+\item{StartDate}{POSIXct. Start date of the reporting period. Typically set to a default baseline (e.g., "1900-01-01").}
+\item{TimePeriodID}{Integer. Unique identifier for the time period.}
+\item{TimePeriodName}{Character. Display label for the time period (e.g., "To June 2025", "Apr 2024 – Mar 2025").}
+}
 If no data is found, returns a tibble describing the error.
 }
 \description{

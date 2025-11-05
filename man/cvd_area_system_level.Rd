@@ -10,8 +10,15 @@ cvd_area_system_level(time_period_id)
 \item{time_period_id}{Integer (required). The ID of the reporting time period for which system levels should be returned. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
 }
 \value{
-A tibble containing system level details for the specified time period, with columns such as \code{SystemLevelID} and \code{SystemLevelName}.
-If there are no results, returns a tibble with a single column \code{result} describing the error.
+A tibble containing system level details for the specified time period, with the following columns:
+\describe{
+\item{IsVisible}{Logical or character. Indicates whether the system level is visible in the API or dashboard ("Y" or "N").}
+\item{NationalLevel}{Logical or character. Indicates whether the system level represents national coverage ("Y" or "N").}
+\item{SystemLevelID}{Integer. Unique identifier for the system level (e.g., 1 = England, 4 = PCN).}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "England", "Region", "ICB", "Practice").}
+\item{SystemLevelOrder}{Integer. Display order for the system level in dashboards or reports.}
+}
+If no data is found, returns a tibble describing the error.
 }
 \description{
 Retrieves all available NHS system levels (e.g., National, Region, ICB, PCN, Practice) for a specified reporting time period from the CVDPREVENT API.
