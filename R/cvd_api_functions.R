@@ -3620,38 +3620,61 @@ cvd_indicator_metric_timeseries <- function(metric_id, area_id) {
   }
 }
 
-#' Indicator persons time series by indicator
+#' Retrieve inequality time series data for a specific indicator and area
 #'
-#' Returns data for the Inequalities Markers Time Series chart for the provided
-#' indicator ID and area ID. `Data` contains information about the chosen
-#' target value as well as an array `InequalityMarkers` which contains all the
-#' time series data grouped into metric category types e.g. age group,
-#' ethnicity, etc.
+#' @description
+#' Returns a tibble containing time series data for a specified indicator and NHS area, broken down by inequality markers such as age group, ethnicity, deprivation quintile, and sex. This function supports the Inequalities Markers Time Series chart used in CVDPREVENT reporting.
 #'
-#' CVD Prevent API documentation:
-#' [Indicator person time series](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpersonsTimeSeriesByIndicator%2F%3Cindicator_ID%3E)
+#' @details
+#' The output includes:
+#' - Time series values for each subgroup within the selected indicator
+#' - Target thresholds (if defined) for benchmarking
+#' - Metric category metadata (e.g., "Age group", "Ethnicity")
 #'
-#' @param indicator_id integer - the indicator to return data for (compulsory)
-#' @param area_id integer - the area to return data for (compulsory)
+#' This function is useful for:
+#' - Analysing disparities in indicator performance across population subgroups
+#' - Tracking progress toward clinical targets over time
+#' - Supporting equity-focused reporting and visualisation
 #'
-#' @return Tibble of metric performance for the specified indicator in the area
-#' @export
-#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
-#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
-#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
-#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
-#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
-#' [cvd_indicator_metric_systemlevel_comparison()],
-#' [cvd_indicator_metric_area_breakdown()]
+#' To find valid `indicator_id` values, use [cvd_indicator_list()] or [cvd_indicator_priority_groups()].
+#' For valid `area_id` values, use [cvd_area_list()] or [cvd_area_search()].
+#'
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Indicator person time series](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpersonsTimeSeriesByIndicator%2F%3Cindicator_ID%3E)
+#'
+#' @param indicator_id Integer (required). The ID of the indicator to retrieve. Use [cvd_indicator_list()] or [cvd_indicator_priority_groups()] to find valid IDs.
+#' @param area_id Integer (required). The ID of the NHS area to retrieve data for. Use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
+#'
+#' @return A tibble where each row represents a time period for a specific NHS area and inequality subgroup.
+#' Columns include:
+#' \describe{
+#'   \item{AreaCode}{Character. Code for the NHS area (e.g., "U60510" for a PCN).}
+#'   \item{AreaID}{Integer. Unique identifier for the NHS area.}
+#'   \item{AreaName}{Character. Name of the NHS area (e.g., "Salford South East PCN").}
+#'   \item{MetricCategoryID}{Integer. Unique identifier for the subgroup category (e.g., age band, ethnicity).}
+#'   \item{MetricCategoryName}{Character. Label for the subgroup (e.g., "Female", "80+", "White").}
+#'   \item{TimePeriodID}{Integer. Identifier for the reporting period.}
+#'   \item{TimePeriodName}{Character. Display label for the time period (e.g., "To March 2025").}
+#'   \item{Value}{Numeric. Final calculated value for the metric in the given subgroup and time period. May be blank if unavailable.}
+#'   \item{MetricCategoryTypeID}{Integer. Identifier for the type of inequality marker (e.g., 1 = Age group, 3 = Ethnicity).}
+#'   \item{MetricCategoryTypeName}{Character. Descriptive name of the inequality marker type (e.g., "Sex", "Age group", "Ethnicity").}
+#'   \item{TargetLabel}{Character. Descriptive label for the target threshold (e.g., "Upper threshold for QOF").}
+#'   \item{TargetValue}{Numeric. Target value to be achieved (e.g., 95).}
+#' }
+#' If no data is available for the given parameters, a tibble describing the error is returned.
+#'
+#' @seealso
+#' [cvd_indicator_list()] to browse indicators,
+#' [cvd_indicator_priority_groups()] to explore indicator groupings,
+#' [cvd_area_list()] and [cvd_area_search()] to find valid area IDs,
+#' [cvd_indicator_metric_timeseries()] for overall time series data,
+#' [cvd_indicator_metric_area_breakdown()] for area-level comparisons
 #'
 #' @examples
-#' # View the details of the time-series performance for indicator 'AF:
-#' # treatment with anticoagulants' (ID 7) in Salford South East PCN (area ID
-#' # 705), focussed just on the age group inequalities metrics:
+#' # View age group inequalities for indicator ID 7 in Salford South East PCN (area ID 705)
 #' cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
 #'   dplyr::filter(
-#'     MetricCategoryTypeName == 'Age group',
+#'     MetricCategoryTypeName == "Age group",
 #'     !is.na(Value)
 #'   ) |>
 #'   dplyr::select(MetricCategoryName, TimePeriodName, TimePeriodID, Value) |>
@@ -3659,6 +3682,8 @@ cvd_indicator_metric_timeseries <- function(metric_id, area_id) {
 #'     names_from = MetricCategoryName,
 #'     values_from = Value
 #'   )
+#'
+#' @export
 cvd_indicator_person_timeseries <- function(indicator_id, area_id) {
   # validate input
   v1 <- validate_input_id(
@@ -3728,39 +3753,66 @@ cvd_indicator_person_timeseries <- function(indicator_id, area_id) {
   }
 }
 
-#' Indicator metric system level comparison
+#' Compare metric performance across system-level areas
 #'
-#' Returns data for the SystemLevel Comparison chart for provided metric, area
-#' and time period. `Data` contains the target value as well as an array
-#' `SystemLevels` which contains data grouped by system level.
+#' @description
+#' Returns a tibble comparing the performance of a specified metric across all areas within the same system level (e.g., all PCNs within an ICB) for a given time period. This function powers the System Level Comparison chart in CVDPREVENT reporting.
 #'
-#' CVD Prevent API documentation:
-#' [Indicator metric system level comparison](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FmetricSystemLevelComparison%2F%3Cmetric_ID%3E)
+#' @details
+#' The output includes:
+#' - Metric values for the selected area and its system-level peers
+#' - Target thresholds (if defined)
+#' - System-level metadata (e.g., "PCN", "ICB")
 #'
+#' This function is useful for:
+#' - Benchmarking local performance against peer organisations
+#' - Identifying variation across system-level areas
+#' - Supporting equity and improvement initiatives at regional levels
 #'
-#' @param metric_id integer - the metric to return data for (compulsory)
-#' @param time_period_id integer - the time period to return data for (compulsory)
-#' @param area_id integer - the area to return data for (compulsory)
+#' To find valid `metric_id` values, use [cvd_indicator_metric_list()] or [cvd_indicator_data()].
+#' For valid `area_id` values, use [cvd_area_list()] or [cvd_area_search()].
+#' For valid `time_period_id` values, use [cvd_time_period_list()].
 #'
-#' @return Tibble of metric performance for the specified area and all other areas in the same system level in the time period
-#' @export
-#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
-#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
-#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
-#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
-#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
-#' [cvd_indicator_person_timeseries()],
-#' [cvd_indicator_metric_area_breakdown()]
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Indicator metric system level comparison](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FmetricSystemLevelComparison%2F%3Cmetric_ID%3E)
+#'
+#' @param metric_id Integer (required). The ID of the metric to compare. Use [cvd_indicator_metric_list()] or [cvd_indicator_data()] to find valid IDs.
+#' @param time_period_id Integer (required). The ID of the reporting period. Use [cvd_time_period_list()] to find valid IDs.
+#' @param area_id Integer (required). The ID of the NHS area to anchor the comparison. Use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
+#'
+#' @return A tibble where each row represents an NHS area within the same system level, showing its performance for a specified metric. Columns include:
+#' \describe{
+#'   \item{NationalLevel}{Character. Indicates whether the row represents national-level data ("Y" or "N").}
+#'   \item{SystemLevelID}{Integer. Identifier for the system level (e.g., 4 = PCN).}
+#'   \item{SystemLevelMedian}{Numeric. Median value for the metric across all areas in the system level.}
+#'   \item{SystemLevelName}{Character. Name of the system level (e.g., "PCN").}
+#'   \item{SystemLevelOrder}{Integer. Display order for the system level.}
+#'   \item{AreaCode}{Character. Code for the NHS area (e.g., "U55387").}
+#'   \item{AreaID}{Integer. Unique identifier for the NHS area.}
+#'   \item{AreaName}{Character. Name of the NHS area (e.g., "Barking & Dagenham North PCN").}
+#'   \item{Value}{Numeric. Final calculated value for the metric in the area.}
+#' }
+#' If no data is available for the given parameters, a tibble describing the error is returned.
+#'
+#' @seealso
+#' [cvd_indicator_metric_list()] to browse available metrics,
+#' [cvd_area_list()] and [cvd_area_search()] to find valid area IDs,
+#' [cvd_time_period_list()] to explore reporting periods,
+#' [cvd_indicator_metric_timeseries()] for longitudinal analysis,
+#' [cvd_indicator_metric_area_breakdown()] for localised comparisons,
+#' [cvd_indicator_priority_groups()] for grouped indicator metadata
 #'
 #' @examples
-#' # return performance for metric 'AF: DOAC & VitK' in people aged 40-59 years
-#' # (metric ID 1270) in time period 17 for Salford South East PCN (area ID 705)
-#' # and all other PCNs - truncated to a sample of four PCN performances:
-#' cvd_indicator_metric_systemlevel_comparison(metric_id = 1270,
-#' time_period_id = 17, area_id = 705) |>
+#' # Compare performance for metric ID 1270 in time period 17 for Salford South East PCN (area ID 705)
+#' cvd_indicator_metric_systemlevel_comparison(
+#'   metric_id = 1270,
+#'   time_period_id = 17,
+#'   area_id = 705
+#' ) |>
 #'   dplyr::filter(AreaID %in% c(705:709), !is.na(Value)) |>
 #'   dplyr::select(SystemLevelName, AreaID, AreaName, Value)
+#'
+#' @export
 cvd_indicator_metric_systemlevel_comparison <- function(
   metric_id,
   time_period_id,
@@ -3856,35 +3908,69 @@ cvd_indicator_metric_systemlevel_comparison <- function(
   }
 }
 
-#' Indicator metric area breakdown
+#' Compare metric performance for an area against national and system-level peers
 #'
-#' Returns data for the Area Breakdown chart for provided metric, area and time
-#' period. `Data` contains the target value as well as an array `SystemLevels`
-#' which contains data grouped by system level.
+#' @description
+#' Returns a tibble showing the performance of a specified metric for a given NHS area, alongside national-level data and other areas within the same system level (e.g., PCNs within an ICB). This function powers the Area Breakdown chart in CVDPREVENT reporting.
 #'
-#' CVD Prevent API documentation:
-#' [Indicator metric area breakdown](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FmetricAreaBreakdown%2F%3Cmetric_ID%3E)
+#' @details
+#' The output includes:
+#' - Metric values for the selected area
+#' - Comparison with national performance (AreaID = 1)
+#' - Peer areas within the same system level
+#' - Target thresholds (if defined)
 #'
-#' @param metric_id integer - the metric to return data for (compulsory)
-#' @param time_period_id integer - the time period to return data for (compulsory)
-#' @param area_id integer - the area to return data for (compulsory)
+#' This function is useful for:
+#' - Benchmarking local performance against national and peer averages
+#' - Identifying variation within a system level
+#' - Supporting targeted improvement and equity analysis
 #'
-#' @return Tibble of metric performance for the specified area compared with National level
-#' @export
-#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
-#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
-#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
-#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
-#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
-#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()]
+#' To find valid `metric_id` values, use [cvd_indicator_metric_list()] or [cvd_indicator_data()].
+#' For valid `area_id` values, use [cvd_area_list()] or [cvd_area_search()].
+#' For valid `time_period_id` values, use [cvd_time_period_list()].
+#'
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Indicator metric area breakdown](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FmetricAreaBreakdown%2F%3Cmetric_ID%3E)
+#'
+#' @param metric_id Integer (required). The ID of the metric to retrieve. Use [cvd_indicator_metric_list()] or [cvd_indicator_data()] to find valid IDs.
+#' @param time_period_id Integer (required). The ID of the reporting period. Use [cvd_time_period_list()] to find valid IDs.
+#' @param area_id Integer (required). The ID of the NHS area to anchor the comparison. Use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
+#'
+#' @return A tibble comparing metric performance for a specified NHS area and the national aggregate. Each row represents one area (local or national) and includes the following columns:
+#' \describe{
+#'   \item{NationalLevel}{Character. Indicates whether the row represents national-level data ("Y" for national, "N" for local).}
+#'   \item{SystemLevelID}{Integer. Identifier for the system level (e.g., 1 = England, 4 = PCN).}
+#'   \item{SystemLevelMedian}{Numeric. Median value for the metric across all areas in the system level.}
+#'   \item{SystemLevelName}{Character. Name of the system level (e.g., "England", "PCN").}
+#'   \item{SystemLevelOrder}{Integer. Display order for the system level.}
+#'   \item{TargetLabel}{Character. Descriptive label for the target threshold (e.g., "Upper threshold for QOF").}
+#'   \item{TargetValue}{Numeric. Target value to be achieved (e.g., 95).}
+#'   \item{AreaCode}{Character. Code for the NHS area (e.g., "U60510" for a PCN, "E92000001" for England).}
+#'   \item{AreaID}{Integer. Unique identifier for the NHS area.}
+#'   \item{AreaName}{Character. Name of the NHS area (e.g., "Salford South East PCN").}
+#'   \item{Value}{Numeric. Final calculated value for the metric in the area.}
+#' }
+#' If no data is available for the given parameters, a tibble describing the error is returned.
+#'
+#' @seealso
+#' [cvd_indicator_metric_list()] to browse available metrics,
+#' [cvd_area_list()] and [cvd_area_search()] to find valid area IDs,
+#' [cvd_time_period_list()] to explore reporting periods,
+#' [cvd_indicator_metric_systemlevel_comparison()] for peer-level comparisons,
+#' [cvd_indicator_metric_timeseries()] for longitudinal analysis,
+#' [cvd_indicator_priority_groups()] for grouped indicator metadata
 #'
 #' @examples
-#' # Return performance for metric 'AF: DOAC & VitK' in men aged 60-79 years
-#' # (metric ID 128) in time period 17 for Salford South East PCN (area ID 705):
-#' cvd_indicator_metric_area_breakdown(metric_id = 128, time_period_id = 17,
-#'   area_id = 705) |>
+#' # Compare performance for metric ID 128 in time period 17 for
+#' # Salford South East PCN (area ID 705)
+#' cvd_indicator_metric_area_breakdown(
+#'   metric_id = 128,
+#'   time_period_id = 17,
+#'   area_id = 705
+#' ) |>
 #'   dplyr::select(SystemLevelName, AreaID, AreaName, Value)
+#'
+#' @export
 cvd_indicator_metric_area_breakdown <- function(
   time_period_id,
   area_id,
@@ -3982,23 +4068,52 @@ cvd_indicator_metric_area_breakdown <- function(
 
 ## external resource -----------------------------------------------------------
 
-#' External resource
+#' Retrieve metadata for external resources linked to CVDPREVENT
 #'
-#' Returns a list of all external resources
+#' @description
+#' Returns a tibble containing metadata for all external resources referenced by the CVDPREVENT programme. These resources may include clinical guidelines, research papers, policy documents, and third-party datasets used to support indicator definitions and reporting.
 #'
-#' CVD Prevent API documentation:
-#' [External resources](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FexternalResource)
+#' @details
+#' Each resource is categorised and includes source information, title, and descriptive metadata.
+#' This function is useful for:
+#' - Auditing external references used in CVDPREVENT indicators
+#' - Linking indicators to supporting evidence or policy
+#' - Building documentation or dashboards that reference external sources
 #'
-#' @return Tibble of details for external resources
-#' @export
-#' @seealso [cvd_data_availability()]
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: External resources](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FexternalResource)
+#'
+#' @return A tibble where each row represents an external resource referenced by CVDPREVENT.
+#' Columns include:
+#' \describe{
+#'   \item{ExternalResourceCategory}{Character. Thematic category of the resource (e.g., "Toolkits", "Resources for patients").}
+#'   \item{ExternalResourceID}{Integer. Unique identifier for the resource.}
+#'   \item{ExternalResourceOrder}{Integer. Display order for the resource within its category.}
+#'   \item{ExternalResourceSource}{Character. Organisation or publisher of the resource (e.g., "NHS England", "UCLPartners").}
+#'   \item{ExternalResourceTitle}{Character. Title of the resource (e.g., "Cardiovascular Disease Prevention Data Packs").}
+#'   \item{ExternalResourceType}{Character. Type of resource (e.g., "website", "document").}
+#'   \item{ExternalResourceURL}{Character. Direct URL to the resource.}
+#'   \item{Tags}{List-column of data frames. Each entry contains one or more indicator tags associated with the resource, including:
+#'     \describe{
+#'       \item{IndicatorTagID}{Integer. Unique identifier for the tag.}
+#'       \item{IndicatorTagName}{Character. Descriptive name of the tag (e.g., "prevention", "digital tools").}
+#'     }
+#'     May be empty or contain NA if no tags are assigned.
+#'   }
+#' }
+#' If the request fails, a tibble describing the error is returned instead.
+#'
+#' @seealso
+#' [cvd_data_availability()] for checking data coverage across indicators
 #'
 #' @examples
-#' # Here we show the first five external resources:
+#' # Show the first five external resources grouped by category
 #' cvd_external_resource() |>
 #'   dplyr::filter(ExternalResourceID < 10) |>
 #'   dplyr::select(ExternalResourceCategory, ExternalResourceSource, ExternalResourceTitle) |>
 #'   dplyr::group_by(ExternalResourceCategory)
+#'
+#' @export
 cvd_external_resource <- function() {
   # compose the request
   req <-
