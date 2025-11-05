@@ -61,42 +61,131 @@
 </div>
 <!-- badges: start -->
 
-<p><a href="https://cran.r-project.org/package=cvdprevent" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/cvdprevent"></a> <!-- badges: end --></p>
-<p>The goal of CVD Prevent is to provide an R wrapper to the CVD Prevent <a href="https://www.cvdprevent.nhs.uk/home" class="external-link">application programming interface</a> (API). Users can make API requests through built-in R functions.</p>
-<p>The Cardiovascular Disease Prevention Audit (CVDPREVENT) is an England-wide primary care audit that automatically extracts routinely held GP data. The Data &amp; Improvement Tool provides open access to the data, with clear, actionable insights for those tasked with improving cardiovascular health.</p>
+<p><strong>CVD Prevent</strong> is an R package that provides a user-friendly interface to the <a href="https://www.cvdprevent.nhs.uk/home" class="external-link">NHS CVDPREVENT API</a>. This enables analysts, researchers and healthcare professionals to access and work with England-wide primary care cardiovascular disease (CVD) audit data directly from R.</p>
+<p>The <a href="https://www.cvdprevent.nhs.uk/home" class="external-link">Cardiovascular Disease Prevention Audit (CVDPREVENT)</a> automatically extracts routinely held GP data. The Data &amp; Improvement Tool provides open access to the data, with clear, actionable insights for those tasked with improving cardiovascular health.</p>
+<hr>
+<div class="section level2">
+<h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
+</h2>
+<ul>
+<li>Simple R functions to make API requests and retrieve CVD indicator and area data<br>
+</li>
+<li>Tidyverse-friendly outputs (mostly <a href="https://tibble.tidyverse.org/" class="external-link">tibble</a>s)<br>
+</li>
+<li>Support for listing indicators, metrics, time periods, areas and more<br>
+</li>
+<li>Helper functions for searching and exploring heirarchical NHS area structures<br>
+</li>
+<li>See <a href="https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation" class="external-link">full API documentation</a> for endpoints and reference</li>
+</ul>
+<hr>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of cvdprevent from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>You can install the latest <strong>development version</strong> from <a href="https://github.com/craig-parylo/cvdprevent" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"craig-parylo/cvdprevent"</span><span class="op">)</span></span></code></pre></div>
-<p>Alternatively, install the latest stable release from <a href="https://cran.r-project.org/" class="external-link">CRAN</a> with:</p>
+<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"craig-parylo/cvdprevent"</span><span class="op">)</span></span></code></pre></div>
+<p>Or install the <strong>latest stable release</strong> from <a href="https://cran.r-project.org/package=cvdprevent" class="external-link">CRAN</a>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"cvdprevent"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"cvdprevent"</span><span class="op">)</span></span></code></pre></div>
+<hr>
 </div>
 <div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+<h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craig-parylo/cvdprevent" class="external-link">cvdprevent</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## basic example code</span></span>
-<span><span class="fu"><a href="reference/cvd_indicator_list.html">cvd_indicator_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 4 × 12</span></span>
-<span><span class="co">#&gt;   AxisCharacter DataUpdateInterval FormatDisplayName HighestPriorityNotificati…¹</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;         &lt;lgl&gt;              &lt;chr&gt;             &lt;chr&gt;                      </span></span>
-<span><span class="co">#&gt; 1 %             NA                 Proportion %      &lt;NA&gt;                       </span></span>
-<span><span class="co">#&gt; 2 %             NA                 Proportion %      &lt;NA&gt;                       </span></span>
-<span><span class="co">#&gt; 3 %             NA                 Proportion %      &lt;NA&gt;                       </span></span>
-<span><span class="co">#&gt; 4 %             NA                 Proportion %      &lt;NA&gt;                       </span></span>
-<span><span class="co">#&gt; # ℹ abbreviated name: ¹​HighestPriorityNotificationType</span></span>
-<span><span class="co">#&gt; # ℹ 8 more variables: IndicatorCode &lt;chr&gt;, IndicatorFormatID &lt;int&gt;,</span></span>
-<span><span class="co">#&gt; #   IndicatorID &lt;int&gt;, IndicatorName &lt;chr&gt;, IndicatorOrder &lt;int&gt;,</span></span>
-<span><span class="co">#&gt; #   IndicatorShortName &lt;chr&gt;, IndicatorStatus &lt;chr&gt;, NotificationCount &lt;int&gt;</span></span></code></pre></div>
-<p>See <code><a href="articles/using_cvdprevent.html">vignette('using_cvdprevent', package = 'cvdprevent')</a></code> for more guidance on use</p>
+<span><span class="co"># List all available indicators (first 4 shown)</span></span>
+<span><span class="fu"><a href="reference/cvd_indicator_list.html">cvd_indicator_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<p>Typical outputs are <a href="https://tibble.tidyverse.org/" class="external-link">tibble</a>s, making them easy to filter and manipulate:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># List the latest four time periods for 'Standard' indicators</span></span>
+<span><span class="fu"><a href="reference/cvd_time_period_list.html">cvd_time_period_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorTypeName</span> <span class="op">==</span> <span class="st">"Standard"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>order_by <span class="op">=</span> <span class="va">TimePeriodID</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">TimePeriodID</span>, <span class="va">TimePeriodName</span><span class="op">)</span></span></code></pre></div>
+<p>See the package vignette for more examples and guidance:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"using_cvdprevent"</span>, package <span class="op">=</span> <span class="st">"cvdprevent"</span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
+<ul>
+<li>
+<strong>Function reference:</strong> <a href="https://craig-parylo.github.io/cvdprevent/reference/index.html">CVD Prevent Reference</a><br>
+</li>
+<li>
+<strong>API details:</strong> <a href="https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation" class="external-link">CVDPREVENT API Docs</a><br>
+</li>
+<li>
+<strong>See also:</strong> <a href="vignettes/using_cvdprevent.Rmd">Detailed function overview</a>
+</li>
+</ul>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="dependencies">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a>
+</h2>
+<p><code>cvdprevent</code> is designed to work seamlessly with the <a href="https://www.tidyverse.org/" class="external-link">tidyverse</a>, and depends on:</p>
+<ul>
+<li><a href="https://httr2.r-lib.org/" class="external-link">httr2</a></li>
+<li><a href="https://cran.r-project.org/web/packages/jsonlite/" class="external-link">jsonlite</a></li>
+<li><a href="https://dplyr.tidyverse.org/" class="external-link">dplyr</a></li>
+<li><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></li>
+<li><a href="https://tidyr.tidyverse.org/" class="external-link">tidyr</a></li>
+<li><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></li>
+<li><a href="https://cli.r-lib.org/" class="external-link">cli</a></li>
+<li><a href="https://glue.tidyverse.org/" class="external-link">glue</a></li>
+</ul>
+<p>Install these with:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install the packages</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"httr2"</span>,</span>
+<span>  <span class="st">"jsonlite"</span>,</span>
+<span>  <span class="st">"dplyr"</span>,</span>
+<span>  <span class="st">"purrr"</span>,</span>
+<span>  <span class="st">"tidyr"</span>,</span>
+<span>  <span class="st">"tibble"</span>,</span>
+<span>  <span class="st">"cli"</span>,</span>
+<span>  <span class="st">"glue"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
+</h2>
+<p>Contributions, suggestions or bug reports are welcome! Please:</p>
+<ul>
+<li>Submit issues or pull requests via <a href="https://github.com/craig-parylo/cvdprevent/issues" class="external-link">GitHub Issues</a><br>
+</li>
+<li>Follow the function documentation style (see source files)<br>
+</li>
+<li>Add examples and tests for new functionality</li>
+</ul>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+</h2>
+<p>This package is licensed under the MIT License. See <a href="LICENSE">LICENSE</a> for details.</p>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
+</h2>
+<ul>
+<li>NHS England - CVDPREVENT Audit Team<br>
+</li>
+<li><a href="https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation" class="external-link">CVDPREVENT API Documentation</a></li>
+</ul>
+<hr>
+<p><em>For more information, see the <a href="https://craig-parylo.github.io/cvdprevent/">package website</a> or the <a href="https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation" class="external-link">API documentation</a>.</em></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -136,6 +225,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=cvdprevent" class="external-link"><img src="https://www.r-pkg.org/badges/version/cvdprevent" alt="CRAN status"></a></li>
+<li><a href="https://cran.r-project.org/package=cvdprevent" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/cvdprevent"></a></li>
 </ul>
 </div>
 
