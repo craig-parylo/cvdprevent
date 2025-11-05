@@ -2,43 +2,57 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_metric_list}
 \alias{cvd_indicator_metric_list}
-\title{List metrics for indicators}
+\title{List indicators and associated metrics for a system level and time period}
 \usage{
 cvd_indicator_metric_list(time_period_id, system_level_id)
 }
 \arguments{
-\item{time_period_id}{integer - time period to return data for (compulsory)}
+\item{time_period_id}{Integer (required). The reporting period (time period) for which to return indicators and metrics. use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
 
-\item{system_level_id}{integer - system level to return data for (compulsory)}
+\item{system_level_id}{Integer (required). The system level (e.g., National, Region, ICB, PCN, Practice) for which to return indicators and metrics. Use \code{\link[=cvd_area_system_level]{cvd_area_system_level()}} to find valid IDs for a given time period.}
 }
 \value{
-Tibble of details for indicators and associated metrics
+A tibble containing one row for each indicator-metric pair avialable for the specified system level and time period. Columns typically include:
+\describe{
+\item{AxisCharacter}{Character. Symbol used to represent the metric axis (e.g., "\%").}
+\item{FormatDisplayName}{Character. Display format for the metric (e.g., "Proportion \%").}
+\item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+\item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002SMOK").}
+\item{IndicatorFormatID}{Integer. Internal ID for the indicator's format type.}
+\item{IndicatorID}{Integer. Unique identifier for the indicator.}
+\item{IndicatorName}{Character. Full descriptive name of the indicator.}
+\item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+\item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+\item{CategoryAttribute}{Character. Label used to group individuals (e.g., "Male", "Persons").}
+\item{MetricCategoryName}{Character. Name of the subgroup or category (e.g., "40–59", "Mixed").}
+\item{MetricCategoryTypeName}{Character. Type of subgroup (e.g., "Age group", "Sex", "Ethnicity").}
+\item{MetricID}{Integer. Unique identifier for the specific metric being measured.}
+}
+If no indicators or metrics are found returns a tibble describing the error.
 }
 \description{
-Returns same data as cvd_indicator_list() but adds a 'MetricList' array for
-each indicator, containing details of the relevant metrics. Only returns
-indicators for which data exists in selected time period, and on selected
-system level.
+Retrieves all CVD indicators available for a given reporting period and given system level from the CVDPREVENT API, with an expanded view that includes 'MetricList' array for each indicator. This allows you to see not only which indicators are available, but also the specific metrics (e.g., breakdowns by age, sex or other attributes) associated with each indicator in the selected context.
+
+Only indicators with available data for the specified time period and system level are returned. This function is useful for determining what granular metric breakdowns are provided for each indicator.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*\%2Findicator\%2FmetricList}{Indicator metric list}
+Use this function to explore the detailed metric breakdowns available for each indicator before performing data extraction or analysis. The \code{MetricList} column is unnested for convenience, so each row represents a single metric linked to an indicator.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*\%2Findicator\%2FmetricList}{CVDPREVENT API documentation: Indicator metric list}
+}
+
 \examples{
 # List metrics for the prevalence of atrial fibrillation (indicator ID 1),
-# focussing on just those metrics for the 40-59 years age group:
+# focusing on metrics for the 40-59 years age group at the national level:
 cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
-  dplyr::filter(IndicatorID == 1, MetricCategoryName == '40-59') |>
+  dplyr::filter(IndicatorID == 1, MetricCategoryName == "40-59") |>
   dplyr::count(IndicatorID, IndicatorShortName, MetricID, MetricCategoryName, CategoryAttribute) |>
   dplyr::select(-n)
-}
-\seealso{
-\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
-\code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}},
-\code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
-\code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}},
-\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}},
-\code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}},
-\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
+
+# Get all indicator-metric pairs for GP practice level (system level 5) in a given period
+cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
+
 }

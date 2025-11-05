@@ -7,59 +7,155 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/cvdprevent)](https://CRAN.R-project.org/package=cvdprevent)
-
 [![](https://cranlogs.r-pkg.org/badges/cvdprevent)](https://cran.r-project.org/package=cvdprevent)
 <!-- badges: end -->
 
-The goal of CVD Prevent is to provide an R wrapper to the CVD Prevent
-[application programming interface](https://www.cvdprevent.nhs.uk/home)
-(API). Users can make API requests through built-in R functions.
+**CVD Prevent** is an R package that provides a user-friendly interface
+to the [NHS CVDPREVENT API](https://www.cvdprevent.nhs.uk/home). This
+enables analysts, researchers and healthcare professionals to access and
+work with England-wide primary care cardiovascular disease (CVD) audit
+data directly from R.
 
-The Cardiovascular Disease Prevention Audit (CVDPREVENT) is an
-England-wide primary care audit that automatically extracts routinely
-held GP data. The Data & Improvement Tool provides open access to the
-data, with clear, actionable insights for those tasked with improving
-cardiovascular health.
+The [Cardiovascular Disease Prevention Audit
+(CVDPREVENT)](https://www.cvdprevent.nhs.uk/home) automatically extracts
+routinely held GP data. The Data & Improvement Tool provides open access
+to the data, with clear, actionable insights for those tasked with
+improving cardiovascular health.
+
+------------------------------------------------------------------------
+
+## Features
+
+- Simple R functions to make API requests and retrieve CVD indicator and
+  area data  
+- Tidyverse-friendly outputs (mostly
+  [tibble](https://tibble.tidyverse.org/)s)  
+- Support for listing indicators, metrics, time periods, areas and
+  more  
+- Helper functions for searching and exploring heirarchical NHS area
+  structures  
+- See [full API
+  documentation](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)
+  for endpoints and reference
+
+------------------------------------------------------------------------
 
 ## Installation
 
-You can install the development version of cvdprevent from
-[GitHub](https://github.com/) with:
+You can install the latest **development version** from
+[GitHub](https://github.com/craig-parylo/cvdprevent) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("craig-parylo/cvdprevent")
+# install.packages("pak")
+pak::pak("craig-parylo/cvdprevent")
 ```
 
-Alternatively, install the latest stable release from
-[CRAN](https://cran.r-project.org/) with:
+Or install the **latest stable release** from
+[CRAN](https://cran.r-project.org/package=cvdprevent):
 
 ``` r
-utils::install.packages("cvdprevent")
+pak::pak("cvdprevent")
 ```
 
-## Example
+------------------------------------------------------------------------
 
-This is a basic example which shows you how to solve a common problem:
+## Getting started
 
 ``` r
 library(cvdprevent)
 
-## basic example code
-cvd_indicator_list() |> 
-  head(n = 4)
-#> # A tibble: 4 × 12
-#>   AxisCharacter DataUpdateInterval FormatDisplayName HighestPriorityNotificati…¹
-#>   <chr>         <lgl>              <chr>             <chr>                      
-#> 1 %             NA                 Proportion %      <NA>                       
-#> 2 %             NA                 Proportion %      <NA>                       
-#> 3 %             NA                 Proportion %      <NA>                       
-#> 4 %             NA                 Proportion %      <NA>                       
-#> # ℹ abbreviated name: ¹​HighestPriorityNotificationType
-#> # ℹ 8 more variables: IndicatorCode <chr>, IndicatorFormatID <int>,
-#> #   IndicatorID <int>, IndicatorName <chr>, IndicatorOrder <int>,
-#> #   IndicatorShortName <chr>, IndicatorStatus <chr>, NotificationCount <int>
+# List all available indicators (first 4 shown)
+cvd_indicator_list() |> head(4)
 ```
 
-See `vignette('using_cvdprevent', package = 'cvdprevent')` for more
-guidance on use
+Typical outputs are [tibble](https://tibble.tidyverse.org/)s, making
+them easy to filter and manipulate:
+
+``` r
+# List the latest four time periods for 'Standard' indicators
+cvd_time_period_list() |> 
+  dplyr::filter(IndicatorTypeName == "Standard") |> 
+  dplyr::slice_max(order_by = TimePeriodID, n = 4) |> 
+  dplyr::select(TimePeriodID, TimePeriodName)
+```
+
+See the package vignette for more examples and guidance:
+
+``` r
+vignette("using_cvdprevent", package = "cvdprevent")
+```
+
+------------------------------------------------------------------------
+
+## Documentation
+
+- **Function reference:** [CVD Prevent
+  Reference](https://craig-parylo.github.io/cvdprevent/reference/index.html)  
+- **API details:** [CVDPREVENT API
+  Docs](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)  
+- **See also:** [Detailed function
+  overview](vignettes/using_cvdprevent.Rmd)
+
+------------------------------------------------------------------------
+
+## Dependencies
+
+`cvdprevent` is designed to work seamlessly with the
+[tidyverse](https://www.tidyverse.org/), and depends on:
+
+- [httr2](https://httr2.r-lib.org/)
+- [jsonlite](https://cran.r-project.org/web/packages/jsonlite/)
+- [dplyr](https://dplyr.tidyverse.org/)
+- [purrr](https://purrr.tidyverse.org/)
+- [tidyr](https://tidyr.tidyverse.org/)
+- [tibble](https://tibble.tidyverse.org/)
+- [cli](https://cli.r-lib.org/)
+- [glue](https://glue.tidyverse.org/)
+
+Install these with:
+
+``` r
+# install the packages
+pak::pak(c(
+  "httr2",
+  "jsonlite",
+  "dplyr",
+  "purrr",
+  "tidyr",
+  "tibble",
+  "cli",
+  "glue"
+))
+```
+
+------------------------------------------------------------------------
+
+## Contributing
+
+Contributions, suggestions or bug reports are welcome! Please:
+
+- Submit issues or pull requests via [GitHub
+  Issues](https://github.com/craig-parylo/cvdprevent/issues)  
+- Follow the function documentation style (see source files)  
+- Add examples and tests for new functionality
+
+------------------------------------------------------------------------
+
+## License
+
+This package is licensed under the MIT License. See [LICENSE](LICENSE)
+for details.
+
+------------------------------------------------------------------------
+
+## Acknowledgements
+
+- NHS England - CVDPREVENT Audit Team  
+- [CVDPREVENT API
+  Documentation](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)
+
+------------------------------------------------------------------------
+
+*For more information, see the [package
+website](https://craig-parylo.github.io/cvdprevent/) or the [API
+documentation](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation).*

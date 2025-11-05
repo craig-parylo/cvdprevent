@@ -2,32 +2,43 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_tags}
 \alias{cvd_indicator_tags}
-\title{Indicator tags}
+\title{List all available indicator tags}
 \usage{
 cvd_indicator_tags()
 }
 \value{
-Tibble of details for indicator tags
+A tibble with one row per available indicator tag, containing the following colunns:
+\describe{
+\item{IndicatorTagID}{Integer. Unique identifier for the tag associated with an indicator.}
+\item{IndicatorTagName}{Character. Descriptive label categorising the indicator (e.g., "monitoring", "prevention", "smoking").}
+}
+If no tags are found, returns a tibble describing the error.
 }
 \description{
-Returns a list of all available tags, which can be used to filter indicators.
+Retrieves a list of all tags from the CVDPREVENT API that can be used to filter indicators. Tags provide a way to categorise and search for indicators by clinical or reporting groupings (such as "Priority Group", "Pathway Group" or other clinical categories).
+
+Use this function to obtain valid tag IDs for use in functions that support filtering by tag, such as \code{\link[=cvd_indicator]{cvd_indicator()}}.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2Ftags}{Indicator tags}
+Tags are useful for grouping or filtering indicators in dashboards, reports or scripted analyses. Tag IDs returned by this function can be supplied to functions like \code{\link[=cvd_indicator]{cvd_indicator()}} via the \code{tag_id} argument for targeted queries.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2Ftags}{CVDPREVENT API documentation: Indicator tags}
+}
+
 \examples{
+# List the first five indicator tags
 cvd_indicator_tags() |>
   dplyr::arrange(IndicatorTagID) |>
   dplyr::slice_head(n = 5)
+
+# Use a tag ID to filter indicators in another query
+tags <- cvd_indicator_tags()
+tag_id <- tags$IndicatorTagID[1]
+cvd_indicator(time_period_id = 17, area_id = 3, tag_id = tag_id)
+
 }
 \seealso{
-\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
-\code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}},
-\code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
-\code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}},
-\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, #
-\code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}},
-\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
+\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}}, \code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}}, \code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}}, \code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, \code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}}, \code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}}, \code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
 }

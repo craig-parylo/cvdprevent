@@ -2,41 +2,85 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_child_data}
 \alias{cvd_indicator_child_data}
-\title{Indicator child data}
+\title{Retrieve child area data for a specific metric, time period and area}
 \usage{
 cvd_indicator_child_data(time_period_id, area_id, metric_id)
 }
 \arguments{
-\item{time_period_id}{integer - time period for which to return data (compulsory)}
+\item{time_period_id}{Integer (required). The reporting period (time period) for which to return child data. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
 
-\item{area_id}{integer - area for which all children data will be returned (compulsory)}
+\item{area_id}{Integer (required). The AreaID for which to find child areas. Use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid IDs.}
 
-\item{metric_id}{integer - metric for which to return data (compulsory)}
+\item{metric_id}{Integer (required). The MetricID for which to retrieve values. Use \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} or \code{\link[=cvd_indicator_data]{cvd_indicator_data()}} to find valid MetricIDs.}
 }
 \value{
-Tibble of details for the specified metric in the child areas of the specified area
+A tibble with the value of the specified metric for the given area and all its child areas, for the specified time period. Columns include:
+\describe{
+\item{CategoryAttribute}{Character. Grouping label used to define the population subset (e.g., "Male").}
+\item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002AF").}
+\item{IndicatorID}{Integer. Unique identifier for the indicator.}
+\item{IndicatorName}{Character. Full descriptive name of the indicator.}
+\item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+\item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+\item{MetricCategoryID}{Integer. Unique identifier for the metric category.}
+\item{MetricCategoryName}{Character. Name of the subgroup or category (e.g., "40–59").}
+\item{MetricCategoryOrder}{Integer. Display order for the category within its type.}
+\item{MetricCategoryTypeName}{Character. Type of category used for breakdown (e.g., "Age group").}
+
+\item{AreaCode}{Character. Code for the child NHS area (e.g., PCN).}
+\item{AreaID}{Integer. Unique identifier for the child NHS area.}
+\item{AreaName}{Character. Name of the child NHS area (e.g., "Teldoc PCN").}
+
+\item{Count}{Integer. Number of records included in the calculation.}
+\item{DataID}{Integer. Unique identifier for the data point.}
+\item{Denominator}{Numeric. Denominator used in the metric calculation.}
+\item{Factor}{Numeric. Scaling factor applied to the metric, if applicable. Often blank.}
+\item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+\item{LowerConfidenceLimit}{Numeric. Lower bound of the confidence interval.}
+\item{Max}{Numeric. Maximum observed value for the metric.}
+\item{Median}{Numeric. Median value for the metric.}
+\item{Min}{Numeric. Minimum observed value for the metric.}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+\item{Numerator}{Numeric. Numerator used in the metric calculation.}
+\item{Q20}{Numeric. 20th percentile value.}
+\item{Q40}{Numeric. 40th percentile value.}
+\item{Q60}{Numeric. 60th percentile value.}
+\item{Q80}{Numeric. 80th percentile value.}
+
+\item{SystemLevelID}{Integer. Identifier for the system level (e.g., 4 = PCN).}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "PCN").}
+\item{TimePeriodID}{Integer. Identifier for the time period associated with the metric.}
+\item{TimePeriodName}{Character. Display label for the time period (e.g., "To March 2024").}
+\item{UpperConfidenceLimit}{Numeric. Upper bound of the confidence interval.}
+\item{Value}{Numeric. Final calculated value for the metric.}
+\item{ValueNote}{Character. Notes or flags associated with the value (e.g., suppression warnings).}
+}
+If no child data is found, returns a tibble describing the error.
 }
 \description{
-Returns all children areas and their data for specified time period, area
-and metric. This endpoint is intended to only return data for selected
-metric, and not all metrics for indicators, hence the metricID query
-parameter.
+Returns the value of a single metric for all child areas of a specified NHS area (and the specified area itself) for a chosen reporting period, using the CVDPREVENT API. This function enables direct comparison of a specific metric across all subordinate areas (e.g., all GP practices within a PCN, or all PCNs within an ICB).
+
+Only the selected metric is returned for each child area.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FchildData}{Indicator child data}
+Use this function to compare a metric across all immediate child areas under a parent (for example, to benchmark all GP practices within a PCN for a specific indicator and reporting period).
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FchildData}{CVDPREVENT API documentation: Indicator child data}
+}
+
 \examples{
-cvd_indicator_child_data(time_period_id = 17, area_id = 74, metric_id = 126) |>
+# Compare the value of metric 126 for area 74 and all its child areas in time period 22
+cvd_indicator_child_data(time_period_id = 22, area_id = 74, metric_id = 126) |>
   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit)
+
+# Find a valid metric ID for an indicator, then get child area data
+metrics <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
+metric_id <- metrics$MetricID[1]
+cvd_indicator_child_data(time_period_id = 17, area_id = 1103, metric_id = metric_id)
+
 }
 \seealso{
-\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
-\code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}},
-\code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
-\code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}},
-\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, #
-\code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}},
-\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
+\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}}, \code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}}, \code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}}, \code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, \code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}}, \code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}}, \code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
 }

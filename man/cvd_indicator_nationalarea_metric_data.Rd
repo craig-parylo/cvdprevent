@@ -2,69 +2,78 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_nationalarea_metric_data}
 \alias{cvd_indicator_nationalarea_metric_data}
-\title{Indicator national vs area metric data}
+\title{Retrieve metric data for a specific area and for national (England) comparison}
 \usage{
 cvd_indicator_nationalarea_metric_data(time_period_id, area_id, metric_id)
 }
 \arguments{
-\item{time_period_id}{integer - time period for which to return data (compulsory)}
+\item{time_period_id}{Integer (required). The reporting period (time period) for which to retrieve metric data. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
 
-\item{area_id}{integer - area for which to return data (compulsory)}
+\item{area_id}{Integer (required). The AreaID for which to retrieve data in addition to the national aggregate. use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid IDs.}
 
-\item{metric_id}{integer - metric for which to return data (compulsory)}
+\item{metric_id}{Integer (required). The MetricID for which to retrieve values. Use \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} or \code{\link[=cvd_indicator_data]{cvd_indicator_data()}} to find valid MetricIDs.}
 }
 \value{
-List of named tibbles (\code{area}, \code{target}) where \code{target} is only provided if data is available.
+A named list with up to two tibbles:
+\describe{
+\item{area}{Tibble with one or more rows, summarising the metric for the specified area and the England aggregate (AreaID = 1).}
+\item{target}{Tibble (if available) with target-setting details for the area}
+}
+If no data exists for both the area and the national aggregate for the given parameters, returns a tibble describing the error.
+
+\strong{area} contains the following columns:
+\describe{
+\item{AreaCode}{Character. Code for the NHS area (e.g., "U68943" for Chester South PCN, "E92000001" for England).}
+\item{AreaID}{Integer. Unique identifier for the NHS area.}
+\item{AreaName}{Character. Name of the NHS area (e.g., "Chester South PCN", "England").}
+\item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+\item{NationalLevel}{Character. Indicates whether the area represents national-level data ("Y" or "N").}
+\item{NotificationCount}{Integer. Count of notifications associated with the area for the given metric.}
+\item{Value}{Numeric. Final calculated value for the metric in the specified area.}
+}
+
+\strong{target} contains the following columns:
+\describe{
+\item{TargetLabel}{Character. Descriptive label for the target (e.g., "Upper threshold for QOF").}
+\item{TargetPatients}{Integer. Number of additional patients needed to achieve the target threshold.}
+\item{TargetValue}{Numeric. Target value or threshold to be achieved (e.g., 95).}
+}
 }
 \description{
-Returns national and area data for the provided metric, area, and time period.
+Returns a named list of tibbles containing: (1) metric data for the specified NHS area and the national (England, AreaID = 1) aggregate, and (2) details achieving the target value (if defined), including the target percentage and the additional number of patients needed to reach the target. This function supports benchmarking local performance vs. the national average, and helps quantify gaps to clinical targets.
+
+If there is no data for either national or the chosen area for the given parameters, an error tibble is returned.
 }
 \details{
-The returned object is a list containing named tibbles. The two possible
-tibbles are:
-\itemize{
-\item \code{area}: contains metric data for the specified area in comparison with national metric data.
-\item \code{target}: contains details on how to reach target values, including:
-\itemize{
-\item target value as a percentage (stored as a whole number up to 100)
-\item target patients (the number of additional patients needed to reach the target percentage)
+Use this function to benchmark a local area's metric value against the national figure and to understand the actual gap to a clinically meaningful target.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FnationalAreaMetricData}{CVDPREVENT API documentation: Indicator national area metric data}
 }
 
-Note that the \code{target} tibble is only provided if data is available for both
-national and the chosen area.
-
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FnationalVsAreaMetricData\%2F\%3Cmetric_ID\%3E}{Indicator national vs area metric data}
-}
 \examples{
 # Compare performance against metric 150  (AF: treatment with anticoagulants
 # - all people) in 'Chester South PCN' (area ID 553) with national
 # performance:
-return_list <- cvd_indicator_nationalarea_metric_data(
+returned_list <- cvd_indicator_nationalarea_metric_data(
     metric_id = 150,
     time_period_id = 17,
     area_id = 553
 )
 
 # See what the list contains
-return_list |> summary()
+returned_list |> summary()
 
 # Extract the `area` details
-area_data <- return_list$area
-area_data |> gt::gt()
+area_data <- returned_list$area
+area_data
 
 # Extract `target` details
-target_data <- return_list$target
-target_data |> gt::gt()
+target_data <- returned_list$target
+target_data
+
 }
 \seealso{
-\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
-\code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}},
-\code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
-\code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}},
-\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}},
-\code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}},
-\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
+\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_area_list]{cvd_area_list()}}
 }

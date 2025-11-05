@@ -2,37 +2,54 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_area_search}
 \alias{cvd_area_search}
-\title{Search for matching areas}
+\title{Search for NHS areas by partial name and time period}
 \usage{
 cvd_area_search(partial_area_name, time_period_id)
 }
 \arguments{
-\item{partial_area_name}{string - string to use to search for an Area (compulsory)}
+\item{partial_area_name}{String (required). The substring to search for within area names (case-insensitive). This may be any part of an area name, e.g., "practice", "PCN", or a specific place.}
 
-\item{time_period_id}{integer - limits the search to Areas which have data in specified time period (compulsory)}
+\item{time_period_id}{Integer (required). The reporting period (time period) to restrict the search to areas with data. use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to obtain valid IDs.}
 }
 \value{
-Tibble of details for areas matching the search term
+A tibble containing details of areas matching the search term and having data for the specified time period. Typical columns include:
+\describe{
+\item{AreaCode}{Character. Unique code for the NHS area (e.g., "P86619").}
+\item{AreaID}{Integer. Unique identifier for the NHS area}
+\item{AreaName}{Character. Name of the NHS area (e.g., "Dr Mb Ghafoor & Partners").}
+\item{IsVisible}{Logical or character. Indicates whether the area is visible in the API or dashboard ("Y" or "N").}
+\item{NationalLevel}{Logical or character. Indicates whether the area is included in national-level aggregations ("Y" or "N").}
+\item{OdsCode}{Character. ODS (Organisation Data Service) code for the area, if available. Often blank.}
+\item{SystemLevelID}{Integer. Identifier for the system level (5 = GP Practices).}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "Practice").}
+\item{SystemLevelOrder}{Integer. Display order for the system level in dashboards or reports.}
+}
+If no data is found, returns a tibble describing the error.
 }
 \description{
-Returns a list of Areas that match a partial name for a given time period.
-Uses simple LIKE '\%<partial_area_name>\%' comparison.
+Searches for NHS areas whose names match a given partial string, within a specified reporting time period. This function uses a case-insensitive "LIKE" search (i.e., matches any area containing the search term) and returns only areas for which data is available in the specified period.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2Fsearch}{Area search}
+\itemize{
+\item The search is case-insensitive and matches anywhere in the area name.
+\item Only areas with available data in the chosen time period will be returned.
+\item Use this function to quickly locate AreaIDs or codes for use in other \code{cvdprevent} API calls.
 }
+}
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2Fsearch}{CVDPREVENT API documentation: Area search}
+}
+
 \examples{
-# NB, the following examples are not tested because they take longer than
-# expected to return the results
+# Search for areas containing "practice" in their name for time period 17
+cvd_area_search(partial_area_name = "practice", time_period_id = 17) |>
+  dplyr::select(AreaID, AreaName, AreaCode)
 
-# search for areas matching the term 'practice'
-\donttest{cvd_area_search(partial_area_name = 'practice', time_period_id = 17) |>
-  dplyr::select(AreaID, AreaName, AreaCode)}
+# Search for areas containing "PCN" for time period 17
+cvd_area_search(partial_area_name = "PCN", time_period_id = 17) |>
+  dplyr::select(AreaID, AreaName, AreaCode)
 
-# search for areas matching the term 'PCN'
-\donttest{cvd_area_search(partial_area_name = 'PCN', time_period_id = 17) |>
-  dplyr::select(AreaID, AreaName, AreaCode)}
 }
 \seealso{
 \code{\link[=cvd_area_list]{cvd_area_list()}}, \code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}

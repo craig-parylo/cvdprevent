@@ -2,36 +2,65 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_person_timeseries}
 \alias{cvd_indicator_person_timeseries}
-\title{Indicator persons time series by indicator}
+\title{Retrieve inequality time series data for a specific indicator and area}
 \usage{
 cvd_indicator_person_timeseries(indicator_id, area_id)
 }
 \arguments{
-\item{indicator_id}{integer - the indicator to return data for (compulsory)}
+\item{indicator_id}{Integer (required). The ID of the indicator to retrieve. Use \code{\link[=cvd_indicator_list]{cvd_indicator_list()}} or \code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}} to find valid IDs.}
 
-\item{area_id}{integer - the area to return data for (compulsory)}
+\item{area_id}{Integer (required). The ID of the NHS area to retrieve data for. Use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid IDs.}
 }
 \value{
-Tibble of metric performance for the specified indicator in the area
+A tibble where each row represents a time period for a specific NHS area and inequality subgroup.
+Columns include:
+\describe{
+\item{AreaCode}{Character. Code for the NHS area (e.g., "U60510" for a PCN).}
+\item{AreaID}{Integer. Unique identifier for the NHS area.}
+\item{AreaName}{Character. Name of the NHS area (e.g., "Salford South East PCN").}
+\item{MetricCategoryID}{Integer. Unique identifier for the subgroup category (e.g., age band, ethnicity).}
+\item{MetricCategoryName}{Character. Label for the subgroup (e.g., "Female", "80+", "White").}
+\item{TimePeriodID}{Integer. Identifier for the reporting period.}
+\item{TimePeriodName}{Character. Display label for the time period (e.g., "To March 2025").}
+\item{Value}{Numeric. Final calculated value for the metric in the given subgroup and time period. May be blank if unavailable.}
+\item{MetricCategoryTypeID}{Integer. Identifier for the type of inequality marker (e.g., 1 = Age group, 3 = Ethnicity).}
+\item{MetricCategoryTypeName}{Character. Descriptive name of the inequality marker type (e.g., "Sex", "Age group", "Ethnicity").}
+\item{TargetLabel}{Character. Descriptive label for the target threshold (e.g., "Upper threshold for QOF").}
+\item{TargetValue}{Numeric. Target value to be achieved (e.g., 95).}
+}
+If no data is available for the given parameters, a tibble describing the error is returned.
 }
 \description{
-Returns data for the Inequalities Markers Time Series chart for the provided
-indicator ID and area ID. \code{Data} contains information about the chosen
-target value as well as an array \code{InequalityMarkers} which contains all the
-time series data grouped into metric category types e.g. age group,
-ethnicity, etc.
+Returns a tibble containing time series data for a specified indicator and NHS area, broken down by inequality markers such as age group, ethnicity, deprivation quintile, and sex. This function supports the Inequalities Markers Time Series chart used in CVDPREVENT reporting.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FpersonsTimeSeriesByIndicator\%2F\%3Cindicator_ID\%3E}{Indicator person time series}
+The output includes:
+\itemize{
+\item Time series values for each subgroup within the selected indicator
+\item Target thresholds (if defined) for benchmarking
+\item Metric category metadata (e.g., "Age group", "Ethnicity")
 }
+
+This function is useful for:
+\itemize{
+\item Analysing disparities in indicator performance across population subgroups
+\item Tracking progress toward clinical targets over time
+\item Supporting equity-focused reporting and visualisation
+}
+
+To find valid \code{indicator_id} values, use \code{\link[=cvd_indicator_list]{cvd_indicator_list()}} or \code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}.
+For valid \code{area_id} values, use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}}.
+}
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FpersonsTimeSeriesByIndicator\%2F\%3Cindicator_ID\%3E}{CVDPREVENT API documentation: Indicator person time series}
+}
+
 \examples{
-# View the details of the time-series performance for indicator 'AF:
-# treatment with anticoagulants' (ID 7) in Salford South East PCN (area ID
-# 705), focussed just on the age group inequalities metrics:
+# View age group inequalities for indicator ID 7 in Salford South East PCN (area ID 705)
 cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
   dplyr::filter(
-    MetricCategoryTypeName == 'Age group',
+    MetricCategoryTypeName == "Age group",
     !is.na(Value)
   ) |>
   dplyr::select(MetricCategoryName, TimePeriodName, TimePeriodID, Value) |>
@@ -39,14 +68,12 @@ cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
     names_from = MetricCategoryName,
     values_from = Value
   )
+
 }
 \seealso{
-\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
-\code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}},
-\code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
-\code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}},
-\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, #
-\code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}},
-\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
+\code{\link[=cvd_indicator_list]{cvd_indicator_list()}} to browse indicators,
+\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}} to explore indicator groupings,
+\code{\link[=cvd_area_list]{cvd_area_list()}} and \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid area IDs,
+\code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}} for overall time series data,
+\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}} for area-level comparisons
 }

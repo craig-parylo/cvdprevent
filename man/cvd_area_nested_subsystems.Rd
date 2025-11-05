@@ -2,38 +2,56 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_area_nested_subsystems}
 \alias{cvd_area_nested_subsystems}
-\title{Area nested sub systems}
+\title{Retrieve nested sub-systems for an NHS area}
 \usage{
 cvd_area_nested_subsystems(area_id)
 }
 \arguments{
-\item{area_id}{integer - the area to return data for (compulsory)}
+\item{area_id}{Integer (required). The AreaID for which to retrieve nested sub-system data. Use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid IDs.}
 }
 \value{
-List of named tibbles containing details for the area and each sub-level areas
+A named list of tibbles, where each element (\code{level_1}, \code{level_2}, etc.) contains details for the specified area and each subsequent child level.
+If no data is found, returns a tibble describing the error.
+
+Each tibble contains the following columns:
+\describe{
+\item{AreaCode}{Character. Unique code for the NHS area (e.g., "U11103").}
+\item{AreaID}{Integer. Unique identifier for the NHS area.}
+\item{AreaName}{Character. Name of the NHS area (e.g., "Yeovil PCN").}
+\item{AreaOdsCode}{Character. ODS (Organisation Data Service) code for the area, if available. Often blank.}
+\item{ParentAreaID}{Integer. ID of the parent NHS area or organisation (e.g., ICB or region).}
+\item{SystemLevelID}{Integer. Identifier for the system level (e.g., 4 = PCN).}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "PCN").}
+}
 }
 \description{
-Returns given area and children areas in a nested structure
+Returns a hierarchical (nested) structure of the specified NHS area and all of its descendent (child) areas from the CVDPREVENT API. This function is useful for exploring the parent-child relationships within NHS geographies, such as seeing a PCN and all of its practices, or an ICB with all subordinate structures.
+
+The output is a list of tibbles, one for each "level" in the heirarchy, named as \code{level_1}, \code{level_2}, etc. Each tibble contains the details for the areas at that level.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2FnestedSubSystems}{Area nested subsystems}
+This function is helpful for visualising or programmatically traversing the full nested structure beneath a given NHS area. For example, given an ICB, you can see all PCNs, then all practices beneath those PCNs, and so on.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2FnestedSubSystems}{CVDPREVENT API documentation: Area nested subsystems}
+}
+
 \examples{
-# View details for for Somerset STP
+# View the nested structure for Somerset STP (area_id = 5)
 returned_list <- cvd_area_nested_subsystems(area_id = 5)
 returned_list |> summary()
 
-# see details for five of the immediate children of Somerset STP
-returned_list$level_2 |>
-  dplyr::slice_head(n = 5)
+# See details for the first five immediate children of Somerset STP
+returned_list$level_2 |> dplyr::slice_head(n = 5)
 
-# View details for Leicester Central PCN
+# View the nested structure for Leicester Central PCN (area_id = 701)
 returned_list <- cvd_area_nested_subsystems(area_id = 701)
 returned_list |> summary()
 
-# see details for the GP practice children of the PCN
+# See the GP practice children of the PCN
 returned_list$level_2
+
 }
 \seealso{
 \code{\link[=cvd_area_list]{cvd_area_list()}}, \code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}

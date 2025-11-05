@@ -2,41 +2,59 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_area_details}
 \alias{cvd_area_details}
-\title{Area details}
+\title{Retrieve details for a specific NHS area and time period}
 \usage{
 cvd_area_details(time_period_id, area_id)
 }
 \arguments{
-\item{time_period_id}{integer - specified time period for which to return details for, i.e. population and participation rate (compulsory)}
+\item{time_period_id}{Integer (required). The reporting period for which area details should be returned. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
 
-\item{area_id}{integer - specified area id for which to return details for.}
+\item{area_id}{Integer (required). The AreaID to return details for. Use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid IDs.}
 }
 \value{
-Named list of tibbles containing area 'area_details', child 'area_child_details' (where appropriate) and parent 'area_parent_details' (where appropriate)
+A named list with up to three tibbles:
+\describe{
+\item{area_details}{A tibble with details about the specified area.}
+\item{area_parent_details}{A tibble with details about the parent area(s), if available.}
+\item{area_child_details}{A tibble with details about child area(s), if available.}
+}
+If no data is found, returns a tibble describing the error.
+
+\strong{area_details}, \strong{area_parent_details} and \strong{area_child_details} typically contain the following columns:
+\describe{
+\item{AreaCode}{Character. ONS or internal code for the NHS area (e.g., "E54000015").}
+\item{AreaID}{Integer. Unique identifier for the NHS area.}
+\item{AreaName}{Character. Full name of the NHS area (e.g., "NHS Leicester, Leicestershire and Rutland Integrated Care Board").}
+\item{AreaOdsCode}{Character. ODS (Organisation Data Service) code for the area (e.g., "QK1").}
+\item{SystemLevelID}{Integer. Unique identifier for the system level (e.g., 7 = ICB).}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "ICB").}
+}
 }
 \description{
-Returns details of a specific area at a given time period, including details about any parent and child areas.
+Returns detailed information about a single NHS area for a given reporting period, including its own details, as well as any parent and child areas. This allows you to understand the heirarchical context (e.g., parent ICB, child PCNs or Practices) for the specified area.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2Fdetails}{Area details}
+This function is useful for navigating NHS area heirarchies, such as finding all practices within a PCN, or determining the parent ICB for a given area. The result is a list of tibbles, so you can extract and work with each component separately.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2Fdetails}{CVDPREVENT API documentation: Area details}
+}
+
 \examples{
-# to see details for 'Leicester, Leicestershire and Rutland ICB' (area_id = 8037) use the following:
-# get the list of tibbles from the function
+# Retrieve details for 'Leicester, Leicestershire and Rutland ICB' (area_id = 8037)
+# in time period 17
 returned_list <- cvd_area_details(time_period_id = 17, area_id = 8037)
 
-# view area details
-returned_list$area_details |>
-  dplyr::select(AreaCode, AreaName)
+# View details for the area
+returned_list$area_details |> dplyr::select(AreaCode, AreaName)
 
-# view details for the parent of this area
-returned_list$area_parent_details |>
-  dplyr::select(AreaID, AreaName, SystemLevelID)
+# View details for the parent area(s)
+returned_list$area_parent_details |> dplyr::select(AreaID, AreaName, SystemLevelID)
 
-# view details for the children of this area
-returned_list$area_child_details |>
-  dplyr::select(AreaID, AreaName, SystemLevelID)
+# View details for the child area(s)
+returned_list$area_child_details |> dplyr::select(AreaID, AreaName, SystemLevelID)
+
 }
 \seealso{
 \code{\link[=cvd_area_list]{cvd_area_list()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}

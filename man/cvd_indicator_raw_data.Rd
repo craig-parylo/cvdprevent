@@ -2,42 +2,69 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_raw_data}
 \alias{cvd_indicator_raw_data}
-\title{Indicator raw data (JSON)}
+\title{Retrieve raw metric values for multiple metrics, a specified area and time period}
 \usage{
-cvd_indicator_raw_data(indicator_id, time_period_id, system_level_id)
+cvd_indicator_raw_data(time_period_id, system_level_id, indicator_id)
 }
 \arguments{
-\item{indicator_id}{integer - indicator for which to return data for (compulsory)}
+\item{time_period_id}{Integer (required). The reporting period (time period) for which to retrieve data. Use \code{\link[=cvd_time_period_system_levels]{cvd_time_period_system_levels()}} to find valid IDs.}
 
-\item{time_period_id}{integer - time period for which to return data for (compulsory)}
+\item{system_level_id}{Integer (required). The SystemLevelID for which to retrieve data. Use \code{\link[=cvd_time_period_system_levels]{cvd_time_period_system_levels()}} to find valid IDs.}
 
-\item{system_level_id}{integer - system level for which to return data for (compulsory)}
+\item{indicator_id}{Integer vector (required). One or more IndicatorIDs specifying which indicator and its associated metrics to return. Use \code{\link[=cvd_indicator_list]{cvd_indicator_list()}} to find valid IndicatorIDs.}
 }
 \value{
-Tibble of metric performance details for a specified indicator across the system level
+A tibble with one row per metric breakdown for all requested metrics. The tibble has the following columns:
+\describe{
+\item{AreaCode}{Character. ONS geographic code for the area (e.g., "E92000001" for England).}
+\item{AreaName}{Character. Name of the geographic area.}
+\item{CategoryAttribute}{Character. Subgroup label (e.g., "Male", "Female", "Persons").}
+\item{Denominator}{Numeric. Population or count used as the denominator in metric calculation.}
+\item{Factor}{Numeric. Scaling factor applied to the metric, if applicable. May be NA.}
+\item{HighestPriorityNotificationType}{Character. Notification priority level, if available. Often NA.}
+\item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002AF").}
+\item{IndicatorName}{Character. Full descriptive name of the indicator.}
+\item{IndicatorShortName}{Character. Abbreviated name of the indicator.}
+\item{LowerConfidenceLimit}{Numeric. Lower bound of the confidence interval for the metric value.}
+\item{MetricCategoryName}{Character. Name of the subgroup or category (e.g., "40–59", "Female").}
+\item{MetricCategoryTypeName}{Character. Type of subgroup (e.g., "Age group", "Sex", "Ethnicity").}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator. Often zero.}
+\item{Numerator}{Numeric. Count used as the numerator in metric calculation.}
+\item{TimePeriodName}{Character. Label for the time period (e.g., "To December 2024").}
+\item{UpperConfidenceLimit}{Numeric. Upper bound of the confidence interval for the metric value.}
+\item{Value}{Numeric. Calculated metric value (e.g., percentage of patients treated).}
+\item{ValueNote}{Character. Additional notes or flags about the value. Often NA.}
+}
 }
 \description{
-Returns all metric data for a specified indicator, system level and time
-period.
+Returns raw values for multiple metrics within an indicator (specified as \code{indicator_id}) for a single NHS system level and reporting period using the CVDPREVENT API. This function fetches unfiltered raw data at the metric level, allowing comprehensive extraction for all selected metrics and their available breakdowns (such as by age, sex or other category) within the chosen context.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2F\%3Cindicator_ID\%3E\%2FrawDataJSON}{Indicator raw data JSON}
+Use this function to retrieve a wide set of metric breakdowns for a given indicator in a single area and time period - useful for broad data extractions, dashboards or advanced analytics.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2F\%3Cindicator_ID\%3E\%2FrawDataJSON}{CVDPREVENT API documentation: Indicator raw data}
+}
+
 \examples{
-# return all metric data for indicator 'AF: treatment with anticoagulants'
-# (indicator ID 7) in time period 17 at GP practice level (system level ID 5):
-cvd_indicator_raw_data(indicator_id = 7, time_period_id = 17, system_level_id = 5) |>
-  dplyr::slice_head(n = 5) |>
-  dplyr::select(AreaCode, AreaName, Value)
-}
-\seealso{
-\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
-\code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}},
-\code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
-\code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}},
-\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, #
-\code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}},
-\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
+# Retrieve metric data for 'CVD: All-cause mortality' (IndicatorID = 35) across
+# NHS Regions (SystemLevelID = 6) in the period April 2024 to
+# March 2025 (TimePeriodID = 27) and view a sample of 4 rows:
+cvd_indicator_raw_data(
+  time_period_id = 27,
+  system_level_id = 6,
+  indicator_id = 35
+) |>
+  dplyr::slice_sample(n = 4)
+
+# Find a valid indicator IDs for a specified time period and system level,
+# then retrieve raw data for one of these
+indicators <- cvd_indicator_list(time_period_id = 22, system_level_id = 4)
+cvd_indicator_raw_data(
+  time_period_id = 22,
+  system_level_id = 4,
+  indicator_id = indicators$IndicatorID[1]
+)
+
 }

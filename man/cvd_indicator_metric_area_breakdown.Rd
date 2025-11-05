@@ -2,42 +2,78 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_metric_area_breakdown}
 \alias{cvd_indicator_metric_area_breakdown}
-\title{Indicator metric area breakdown}
+\title{Compare metric performance for an area against national and system-level peers}
 \usage{
 cvd_indicator_metric_area_breakdown(time_period_id, area_id, metric_id)
 }
 \arguments{
-\item{time_period_id}{integer - the time period to return data for (compulsory)}
+\item{time_period_id}{Integer (required). The ID of the reporting period. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
 
-\item{area_id}{integer - the area to return data for (compulsory)}
+\item{area_id}{Integer (required). The ID of the NHS area to anchor the comparison. Use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid IDs.}
 
-\item{metric_id}{integer - the metric to return data for (compulsory)}
+\item{metric_id}{Integer (required). The ID of the metric to retrieve. Use \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} or \code{\link[=cvd_indicator_data]{cvd_indicator_data()}} to find valid IDs.}
 }
 \value{
-Tibble of metric performance for the specified area compared with National level
+A tibble comparing metric performance for a specified NHS area and the national aggregate. Each row represents one area (local or national) and includes the following columns:
+\describe{
+\item{NationalLevel}{Character. Indicates whether the row represents national-level data ("Y" for national, "N" for local).}
+\item{SystemLevelID}{Integer. Identifier for the system level (e.g., 1 = England, 4 = PCN).}
+\item{SystemLevelMedian}{Numeric. Median value for the metric across all areas in the system level.}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "England", "PCN").}
+\item{SystemLevelOrder}{Integer. Display order for the system level.}
+\item{TargetLabel}{Character. Descriptive label for the target threshold (e.g., "Upper threshold for QOF").}
+\item{TargetValue}{Numeric. Target value to be achieved (e.g., 95).}
+\item{AreaCode}{Character. Code for the NHS area (e.g., "U60510" for a PCN, "E92000001" for England).}
+\item{AreaID}{Integer. Unique identifier for the NHS area.}
+\item{AreaName}{Character. Name of the NHS area (e.g., "Salford South East PCN").}
+\item{Value}{Numeric. Final calculated value for the metric in the area.}
+}
+If no data is available for the given parameters, a tibble describing the error is returned.
 }
 \description{
-Returns data for the Area Breakdown chart for provided metric, area and time
-period. \code{Data} contains the target value as well as an array \code{SystemLevels}
-which contains data grouped by system level.
+Returns a tibble showing the performance of a specified metric for a given NHS area, alongside national-level data and other areas within the same system level (e.g., PCNs within an ICB). This function powers the Area Breakdown chart in CVDPREVENT reporting.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FmetricAreaBreakdown\%2F\%3Cmetric_ID\%3E}{Indicator metric area breakdown}
+The output includes:
+\itemize{
+\item Metric values for the selected area
+\item Comparison with national performance (AreaID = 1)
+\item Peer areas within the same system level
+\item Target thresholds (if defined)
 }
+
+This function is useful for:
+\itemize{
+\item Benchmarking local performance against national and peer averages
+\item Identifying variation within a system level
+\item Supporting targeted improvement and equity analysis
+}
+
+To find valid \code{metric_id} values, use \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} or \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}.
+For valid \code{area_id} values, use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}}.
+For valid \code{time_period_id} values, use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}}.
+}
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FmetricAreaBreakdown\%2F\%3Cmetric_ID\%3E}{CVDPREVENT API documentation: Indicator metric area breakdown}
+}
+
 \examples{
-# Return performance for metric 'AF: DOAC & VitK' in men aged 60-79 years
-# (metric ID 128) in time period 17 for Salford South East PCN (area ID 705):
-cvd_indicator_metric_area_breakdown(metric_id = 128, time_period_id = 17,
-  area_id = 705) |>
+# Compare performance for metric ID 128 in time period 17 for
+# Salford South East PCN (area ID 705)
+cvd_indicator_metric_area_breakdown(
+  metric_id = 128,
+  time_period_id = 17,
+  area_id = 705
+) |>
   dplyr::select(SystemLevelName, AreaID, AreaName, Value)
+
 }
 \seealso{
-\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
-\code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}},
-\code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
-\code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}},
-\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, #
-\code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}}
+\code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} to browse available metrics,
+\code{\link[=cvd_area_list]{cvd_area_list()}} and \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid area IDs,
+\code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to explore reporting periods,
+\code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}} for peer-level comparisons,
+\code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}} for longitudinal analysis,
+\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}} for grouped indicator metadata
 }

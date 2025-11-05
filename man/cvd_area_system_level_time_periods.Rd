@@ -2,29 +2,47 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_area_system_level_time_periods}
 \alias{cvd_area_system_level_time_periods}
-\title{List all system levels and available time periods}
+\title{List all system levels and their available time periods}
 \usage{
 cvd_area_system_level_time_periods()
 }
 \value{
-tibble of system levels and reporting periods
+A tibble with one row per system level and time period, with the following columns:
+\describe{
+\item{IsVisible}{Logical or character. Indicates whether the time period is visible in the API or dashboard ("Y" or "N").}
+\item{NationalLevel}{Logical or character. Indicates whether the data is available at the national level ("Y" or "N").}
+\item{SystemLevelID}{Integer. Unique identifier for the system level (e.g., 1 = England, 4 = PCN).}
+\item{SystemLevelName}{Character. Name of the system level (e.g., "England", "ICB", "Sub-ICB", "STP").}
+\item{EndDate}{POSIXct. End date of the reporting period (e.g., "2023-06-30").}
+\item{StartDate}{POSIXct. Start date of the reporting period. Typically set to a default baseline (e.g., "1900-01-01").}
+\item{TimePeriodID}{Integer. Unique identifier for the time period.}
+\item{TimePeriodName}{Character. Display label for the time period (e.g., "To June 2025", "Apr 2022 – Mar 2023").}
+}
+If no data is found, returns a tibble describing the error.
 }
 \description{
-Returns all available system levels along with the time periods where the
-system levels occur.
+Retrieves all available NHS system levels from the CVDPREVENT API, along with the reporting periods (time periods) in which each system level has data available.
+
+This function is the inverse of \code{\link[=cvd_time_period_system_levels]{cvd_time_period_system_levels()}}, allowing you to see, for each system level (e.g., National, Region, ICB, PCN, Practice), the set of time periods for which data exists.
 }
 \details{
-Note: this is the inverse of \code{cvd_time_period_system_levels()}.
-
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*\%2Farea\%2FsystemLevel\%2FtimePeriods}{All system levels and time periods}
+Use this function to determine which reporting periods are available for each NHS system level. This is useful for dynamically generating data selections or validating user input in dashboards or scripts.
 }
+\section{API Documentation}{
+
+\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*\%2Farea\%2FsystemLevel\%2FtimePeriods}{CVDPREVENT API documentation: All system levels and time periods} for details.
+}
+
 \examples{
-# list the latest four reporting periods at GP practice level
+# List the latest four reporting periods at GP practice level
 cvd_area_system_level_time_periods() |>
-  dplyr::filter(SystemLevelName == 'Practice') |>
+  dplyr::filter(SystemLevelName == "Practice") |>
   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
   dplyr::select(SystemLevelName, TimePeriodID, TimePeriodName)
+
+# Explore all system levels and their available time periods
+cvd_area_system_level_time_periods()
+
 }
 \seealso{
 \code{\link[=cvd_time_period_system_levels]{cvd_time_period_system_levels()}}, \code{\link[=cvd_area_details]{cvd_area_details()}}, \code{\link[=cvd_area_unassigned]{cvd_area_unassigned()}}, \code{\link[=cvd_area_search]{cvd_area_search()}}, \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}, \code{\link[=cvd_area_flat_subsystems]{cvd_area_flat_subsystems()}}

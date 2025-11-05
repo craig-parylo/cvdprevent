@@ -2,35 +2,52 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_details}
 \alias{cvd_indicator_details}
-\title{Indicator details}
+\title{Retrieve details for a specific indicator}
 \usage{
 cvd_indicator_details(indicator_id)
 }
 \arguments{
-\item{indicator_id}{integer - the ID for the indicator (compulsory)}
+\item{indicator_id}{Integer (required). The IndicatorID for which to return details. Use \code{\link[=cvd_indicator_list]{cvd_indicator_list()}} or \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} to find valid IDs.}
 }
 \value{
-Tibble of details for the specified indicator
+A tibble containing metadata and details for the specified indicator containing the following columns:
+\describe{
+\item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002AF").}
+\item{IndicatorID}{Integer. Unique identifier for the indicator.}
+\item{IndicatorName}{Character. Full descriptive name of the indicator.}
+\item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+\item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+\item{AgeStandardised}{Character. Indicates whether the indicator is age-standardised ("Y" or "N").}
+\item{CategoryName}{Character. Section heading or thematic grouping for the metadata (e.g., "Section 2: Data and Construction").}
+\item{MetaData}{Character. Detailed explanatory text or notes associated with the indicator. May include rationale, definitions, sources, or caveats.}
+\item{MetaDataCategoryID}{Integer. Unique identifier for the metadata category.}
+\item{MetaDataTitle}{Character. Title or label describing the metadata content (e.g., "Rationale", "Disclosure control").}
+}
+If no indicator details are found, returns a tibble describing the error.
 }
 \description{
-Returns details of a single indicator
+Returns metadata and descriptive information for a single CVD indicator, identified by its IndicatorID, from the CVDPREVENT API. This function allows you to programmatically access the definitions, titles and metadata fields associated with specific indicators for use in reporting, dashboards or documentation.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2F\%3Cindicator_ID\%3E\%2Fdetails}{Indicator details}
+Use this function to retrieve indicator definitions, full names, and metadata fields for use in custom reports or to provide documentation / tooltips in analytical applications. Metadata fields are unnested for convenience.
 }
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2F\%3Cindicator_ID\%3E\%2Fdetails}{CVDPREVENT API documentation: Indicator details}
+}
+
 \examples{
+# Retrieve details for indicator with ID 7
 cvd_indicator_details(indicator_id = 7) |>
   dplyr::select(IndicatorID, MetaDataTitle, MetaData) |>
-  dplyr::slice_head(n=5)
+  dplyr::slice_head(n = 5)
+
+# Find a valid indicator ID, then get its details
+indicators <- cvd_indicator_list(time_period_id = 17, system_level_id = 5)
+cvd_indicator_details(indicator_id = indicators$IndicatorID[1])
+
 }
 \seealso{
-\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
-\code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}},
-\code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
-\code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}},
-\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, #
-\code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}},
-\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
+\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}}, \code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}}, \code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}}, \code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}}, \code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, \code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}}, \code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}}, \code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
 }

@@ -2,27 +2,56 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_external_resource}
 \alias{cvd_external_resource}
-\title{External resource}
+\title{Retrieve metadata for external resources linked to CVDPREVENT}
 \usage{
 cvd_external_resource()
 }
 \value{
-Tibble of details for external resources
+A tibble where each row represents an external resource referenced by CVDPREVENT.
+Columns include:
+\describe{
+\item{ExternalResourceCategory}{Character. Thematic category of the resource (e.g., "Toolkits", "Resources for patients").}
+\item{ExternalResourceID}{Integer. Unique identifier for the resource.}
+\item{ExternalResourceOrder}{Integer. Display order for the resource within its category.}
+\item{ExternalResourceSource}{Character. Organisation or publisher of the resource (e.g., "NHS England", "UCLPartners").}
+\item{ExternalResourceTitle}{Character. Title of the resource (e.g., "Cardiovascular Disease Prevention Data Packs").}
+\item{ExternalResourceType}{Character. Type of resource (e.g., "website", "document").}
+\item{ExternalResourceURL}{Character. Direct URL to the resource.}
+\item{Tags}{List-column of data frames. Each entry contains one or more indicator tags associated with the resource, including:
+\describe{
+\item{IndicatorTagID}{Integer. Unique identifier for the tag.}
+\item{IndicatorTagName}{Character. Descriptive name of the tag (e.g., "prevention", "digital tools").}
+}
+May be empty or contain NA if no tags are assigned.
+}
+}
+If the request fails, a tibble describing the error is returned instead.
 }
 \description{
-Returns a list of all external resources
+Returns a tibble containing metadata for all external resources referenced by the CVDPREVENT programme. These resources may include clinical guidelines, research papers, policy documents, and third-party datasets used to support indicator definitions and reporting.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FexternalResource}{External resources}
+Each resource is categorised and includes source information, title, and descriptive metadata.
+This function is useful for:
+\itemize{
+\item Auditing external references used in CVDPREVENT indicators
+\item Linking indicators to supporting evidence or policy
+\item Building documentation or dashboards that reference external sources
 }
+}
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FexternalResource}{CVDPREVENT API documentation: External resources}
+}
+
 \examples{
-# Here we show the first five external resources:
+# Show the first five external resources grouped by category
 cvd_external_resource() |>
   dplyr::filter(ExternalResourceID < 10) |>
   dplyr::select(ExternalResourceCategory, ExternalResourceSource, ExternalResourceTitle) |>
   dplyr::group_by(ExternalResourceCategory)
+
 }
 \seealso{
-\code{\link[=cvd_data_availability]{cvd_data_availability()}}
+\code{\link[=cvd_data_availability]{cvd_data_availability()}} for checking data coverage across indicators
 }
