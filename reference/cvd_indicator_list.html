@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">cvdprevent</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,7 +32,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>List available indicators for a system level and time period</h1>
-      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/v0.2.3/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
       <div class="d-none name"><code>cvd_indicator_list.Rd</code></div>
     </div>
 
@@ -103,6 +103,10 @@
     <p>Use this function to discover which indicators are available for a specific combination of system level and time period. The results can be joined with other outputs for further analysis, or used as the basis for more detailed indicator, metric, or data queries.</p>
     </div>
     <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>This function may take longer than 5 seconds to complete due to API response time.</p>
+    </div>
+    <div class="section level2">
     <h2 id="api-docuemtnation">API Docuemtnation<a class="anchor" aria-label="anchor" href="#api-docuemtnation"></a></h2>
 
 
@@ -115,7 +119,8 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># List four indicators for time period 17 and GP practice level (system level 5)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># List four indicators for time period 17 and GP practice level (system level 5)</span></span></span>
 <span class="r-in"><span><span class="fu">cvd_indicator_list</span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">IndicatorID</span>, <span class="va">IndicatorCode</span>, <span class="va">IndicatorShortName</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
@@ -149,6 +154,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: IndicatorCode &lt;chr&gt;, IndicatorFormatID &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   IndicatorID &lt;int&gt;, IndicatorName &lt;chr&gt;, IndicatorOrder &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   IndicatorShortName &lt;chr&gt;, IndicatorStatus &lt;lgl&gt;, NotificationCount &lt;int&gt;</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -9,7 +9,7 @@ The output is a list of tibbles, one for each "level" in the heirarchy, named as
 
     <a class="navbar-brand me-2" href="../index.html">cvdprevent</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@ The output is a list of tibbles, one for each "level" in the heirarchy, named as
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Retrieve nested sub-systems for an NHS area</h1>
-      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/v0.2.3/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
       <div class="d-none name"><code>cvd_area_nested_subsystems.Rd</code></div>
     </div>
 
@@ -88,6 +88,10 @@ If no data is found, returns a tibble describing the error.</p>
     <p>This function is helpful for visualising or programmatically traversing the full nested structure beneath a given NHS area. For example, given an ICB, you can see all PCNs, then all practices beneath those PCNs, and so on.</p>
     </div>
     <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>This function may take longer than 5 seconds to complete due to API response time.</p>
+    </div>
+    <div class="section level2">
     <h2 id="api-documentation">API Documentation<a class="anchor" aria-label="anchor" href="#api-documentation"></a></h2>
 
 
@@ -100,7 +104,8 @@ If no data is found, returns a tibble describing the error.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># View the nested structure for Somerset STP (area_id = 5)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># View the nested structure for Somerset STP (area_id = 5)</span></span></span>
 <span class="r-in"><span><span class="va">returned_list</span> <span class="op">&lt;-</span> <span class="fu">cvd_area_nested_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">returned_list</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Length Class  Mode</span>
@@ -135,6 +140,7 @@ If no data is found, returns a tibble describing the error.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Y02686     <span style="text-decoration: underline;">6</span>653 Bowling Green Street S… <span style="color: #BB0000;">NA</span>                   701             5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> C82080     <span style="text-decoration: underline;">7</span>323 SHEFA MEDICAL PRACTICE  <span style="color: #BB0000;">NA</span>                   701             5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: SystemLevelName &lt;chr&gt;</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

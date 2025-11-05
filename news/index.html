@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">cvdprevent</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,9 +32,34 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/v0.2.3/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.3" id="version-023-2025-11-05">Version 0.2.3 (2025-11-05)<a class="anchor" aria-label="anchor" href="#version-023-2025-11-05"></a></h2>
+<div class="section level3">
+<h3 id="added-0-2-3">Added<a class="anchor" aria-label="anchor" href="#added-0-2-3"></a></h3>
+<ul><li>New function <code><a href="../reference/cvd_external_resource.html">cvd_external_resource()</a></code> to retrieve metadata for external resources linked to CVDPREVENT, including category, source, type, and tags.</li>
+<li>Support for inequality marker breakdowns via <code><a href="../reference/cvd_indicator_person_timeseries.html">cvd_indicator_person_timeseries()</a></code> with expanded documentation and return structure.</li>
+<li>
+<code>@return</code> documentation blocks added for all major functions to improve clarity and usability.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changed-0-2-3">Changed<a class="anchor" aria-label="anchor" href="#changed-0-2-3"></a></h3>
+<ul><li>Improved documentation across all indicator-related functions, including clearer <code>@description</code>, <code>@details</code>, and <code>@seealso</code> sections.</li>
+<li>Enhanced validation logic for <code>metric_id</code>, <code>area_id</code>, and <code>time_period_id</code> parameters to ensure API compatibility.</li>
+<li>Refactored internal processing of nested API responses for better stability and readability.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fixed-0-2-3">Fixed<a class="anchor" aria-label="anchor" href="#fixed-0-2-3"></a></h3>
+<ul><li>Corrected handling of empty or malformed API responses in <code><a href="../reference/cvd_indicator_group.html">cvd_indicator_group()</a></code> and <code><a href="../reference/cvd_indicator_pathway_group.html">cvd_indicator_pathway_group()</a></code>.</li>
+<li>Resolved issue where system-level comparison functions failed to relocate nested <code>ComparisonData</code> correctly.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="deprecated-0-2-3">Deprecated<a class="anchor" aria-label="anchor" href="#deprecated-0-2-3"></a></h3>
+<ul><li>None in this release.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.2" id="cvdprevent-022">cvdprevent 0.2.2<a class="anchor" aria-label="anchor" href="#cvdprevent-022"></a></h2><p class="text-muted">CRAN release: 2025-05-25</p>
 </div>

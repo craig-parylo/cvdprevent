@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Wrapper for the CVD Prevent Application Programming Interface • cvdprevent</title>
+<title>Access and Analyse Data from the CVD Prevent API • cvdprevent</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Wrapper for the CVD Prevent Application Programming Interface">
-<meta name="description" content="Provides an R wrapper to the CVD Prevent application programming interface (API). Users can make API requests through built-in R functions. The Cardiovascular Disease Prevention Audit (CVDPREVENT) is an England-wide primary care audit that automatically extracts routinely held GP health data. &lt;https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation&gt;.">
-<meta property="og:description" content="Provides an R wrapper to the CVD Prevent application programming interface (API). Users can make API requests through built-in R functions. The Cardiovascular Disease Prevention Audit (CVDPREVENT) is an England-wide primary care audit that automatically extracts routinely held GP health data. &lt;https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation&gt;.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Access and Analyse Data from the CVD Prevent API">
+<meta name="description" content="Provides an R interface to the CVD Prevent application programming interface (API), allowing users to retrieve and analyse cardiovascular disease prevention data from primary care records across England. The Cardiovascular Disease Prevention Audit (CVDPREVENT) automatically extracts routinely held GP health data to support national reporting and improvement initiatives. See the API documentation for details: &lt;https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation&gt;.">
+<meta property="og:description" content="Provides an R interface to the CVD Prevent application programming interface (API), allowing users to retrieve and analyse cardiovascular disease prevention data from primary care records across England. The Cardiovascular Disease Prevention Audit (CVDPREVENT) automatically extracts routinely held GP health data to support national reporting and improvement initiatives. See the API documentation for details: &lt;https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation&gt;.">
 <meta property="og:image" content="https://craig-parylo.github.io/cvdprevent/logo.png">
 </head>
 <body>
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">cvdprevent</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@
 </div>
 <!-- badges: start -->
 
+<!-- badges: end -->
 <p><strong>CVD Prevent</strong> is an R package that provides a user-friendly interface to the <a href="https://www.cvdprevent.nhs.uk/home" class="external-link">NHS CVDPREVENT API</a>. This enables analysts, researchers and healthcare professionals to access and work with England-wide primary care cardiovascular disease (CVD) audit data directly from R.</p>
 <p>The <a href="https://www.cvdprevent.nhs.uk/home" class="external-link">Cardiovascular Disease Prevention Audit (CVDPREVENT)</a> automatically extracts routinely held GP data. The Data &amp; Improvement Tool provides open access to the data, with clear, actionable insights for those tasked with improving cardiovascular health.</p>
 <hr>
@@ -99,14 +100,26 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craig-parylo/cvdprevent" class="external-link">cvdprevent</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># List all available indicators (first 4 shown)</span></span>
-<span><span class="fu"><a href="reference/cvd_indicator_list.html">cvd_indicator_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/cvd_indicator_list.html">cvd_indicator_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ✖ Validation error: time_period_id - time_period_id is required but missing</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 7</span></span>
+<span><span class="co">#&gt;   context           error          status url   params resp  timestamp          </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;             &lt;chr&gt;           &lt;int&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;dttm&gt;             </span></span>
+<span><span class="co">#&gt; 1 validate_input_id time_period_i…     NA &lt;NA&gt;  &lt;NA&gt;   &lt;NA&gt;  2025-11-05 19:46:25</span></span></code></pre></div>
 <p>Typical outputs are <a href="https://tibble.tidyverse.org/" class="external-link">tibble</a>s, making them easy to filter and manipulate:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># List the latest four time periods for 'Standard' indicators</span></span>
-<span><span class="fu"><a href="reference/cvd_time_period_list.html">cvd_time_period_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorTypeName</span> <span class="op">==</span> <span class="st">"Standard"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>order_by <span class="op">=</span> <span class="va">TimePeriodID</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">TimePeriodID</span>, <span class="va">TimePeriodName</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/cvd_time_period_list.html">cvd_time_period_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorTypeName</span> <span class="op">==</span> <span class="st">"Standard"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>order_by <span class="op">=</span> <span class="va">TimePeriodID</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">TimePeriodID</span>, <span class="va">TimePeriodName</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 2</span></span>
+<span><span class="co">#&gt;   TimePeriodID TimePeriodName   </span></span>
+<span><span class="co">#&gt;          &lt;int&gt; &lt;chr&gt;            </span></span>
+<span><span class="co">#&gt; 1           26 To June 2025     </span></span>
+<span><span class="co">#&gt; 2           24 To March 2025    </span></span>
+<span><span class="co">#&gt; 3           22 To December 2024 </span></span>
+<span><span class="co">#&gt; 4           20 To September 2024</span></span></code></pre></div>
 <p>See the package vignette for more examples and guidance:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"using_cvdprevent"</span>, package <span class="op">=</span> <span class="st">"cvdprevent"</span><span class="op">)</span></span></code></pre></div>
@@ -123,7 +136,7 @@
 <strong>API details:</strong> <a href="https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation" class="external-link">CVDPREVENT API Docs</a><br>
 </li>
 <li>
-<strong>See also:</strong> <a href="vignettes/using_cvdprevent.Rmd">Detailed function overview</a>
+<strong>See also:</strong> <a href="https://craig-parylo.github.io/cvdprevent/articles/using_cvdprevent.html">Detailed function overview</a>
 </li>
 </ul>
 <hr>
@@ -131,10 +144,10 @@
 <div class="section level2">
 <h2 id="dependencies">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a>
 </h2>
-<p><code>cvdprevent</code> is designed to work seamlessly with the <a href="https://www.tidyverse.org/" class="external-link">tidyverse</a>, and depends on:</p>
+<p><code>cvdprevent</code> is designed to work seamlessly with the <a href="https://tidyverse.org/" class="external-link">tidyverse</a>, and depends on:</p>
 <ul>
 <li><a href="https://httr2.r-lib.org/" class="external-link">httr2</a></li>
-<li><a href="https://cran.r-project.org/web/packages/jsonlite/" class="external-link">jsonlite</a></li>
+<li><a href="https://cran.r-project.org/package=jsonlite" class="external-link">jsonlite</a></li>
 <li><a href="https://dplyr.tidyverse.org/" class="external-link">dplyr</a></li>
 <li><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></li>
 <li><a href="https://tidyr.tidyverse.org/" class="external-link">tidyr</a></li>

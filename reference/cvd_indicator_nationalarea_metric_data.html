@@ -9,7 +9,7 @@ If there is no data for either national or the chosen area for the given paramet
 
     <a class="navbar-brand me-2" href="../index.html">cvdprevent</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@ If there is no data for either national or the chosen area for the given paramet
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Retrieve metric data for a specific area and for national (England) comparison</h1>
-      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/v0.2.3/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
       <div class="d-none name"><code>cvd_indicator_nationalarea_metric_data.Rd</code></div>
     </div>
 
@@ -112,6 +112,10 @@ If there is no data for either national or the chosen area for the given paramet
     <p>Use this function to benchmark a local area's metric value against the national figure and to understand the actual gap to a clinically meaningful target.</p>
     </div>
     <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>This function may take longer than 5 seconds to complete due to API response time.</p>
+    </div>
+    <div class="section level2">
     <h2 id="api-documentation">API Documentation<a class="anchor" aria-label="anchor" href="#api-documentation"></a></h2>
 
 
@@ -124,7 +128,8 @@ If there is no data for either national or the chosen area for the given paramet
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Compare performance against metric 150  (AF: treatment with anticoagulants</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Compare performance against metric 150  (AF: treatment with anticoagulants</span></span></span>
 <span class="r-in"><span><span class="co"># - all people) in 'Chester South PCN' (area ID 553) with national</span></span></span>
 <span class="r-in"><span><span class="co"># performance:</span></span></span>
 <span class="r-in"><span><span class="va">returned_list</span> <span class="op">&lt;-</span> <span class="fu">cvd_indicator_nationalarea_metric_data</span><span class="op">(</span></span></span>
@@ -157,6 +162,7 @@ If there is no data for either national or the chosen area for the given paramet
 <span class="r-out co"><span class="r-pr">#&gt;</span>   TargetLabel             TargetPatients TargetValue</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Upper threshold for QOF             45          95</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
