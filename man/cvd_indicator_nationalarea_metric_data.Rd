@@ -47,12 +47,16 @@ If there is no data for either national or the chosen area for the given paramet
 \details{
 Use this function to benchmark a local area's metric value against the national figure and to understand the actual gap to a clinically meaningful target.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FnationalAreaMetricData}{CVDPREVENT API documentation: Indicator national area metric data}
 }
 
 \examples{
+\donttest{
 # Compare performance against metric 150  (AF: treatment with anticoagulants
 # - all people) in 'Chester South PCN' (area ID 553) with national
 # performance:
@@ -72,6 +76,7 @@ area_data
 # Extract `target` details
 target_data <- returned_list$target
 target_data
+}
 
 }
 \seealso{

@@ -33,12 +33,16 @@ Retrieves all NHS areas that have data in the specified reporting time period bu
 \item This can help with data quality checks or to ensure all areas are accessible via parent/child navigation.
 }
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2Funassigned}{CVDPREVENT API documentation: Areas unassigned}
 }
 
 \examples{
+\donttest{
 # Report four GP practices (system level ID = 5) without parent PCN details for time period 17:
 cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
   dplyr::slice_head(n = 4) |>
@@ -47,6 +51,7 @@ cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
 # List unassigned top-level areas (system level ID = 1, England) for time period 17:
 cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>
   dplyr::select(SystemLevelName, AreaID, AreaName)
+}
 
 }
 \seealso{

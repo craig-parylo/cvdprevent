@@ -51,12 +51,16 @@ The result includes one row per time period per area, allowing users to:
 To find valid \code{metric_id} values, use \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} or \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}.
 For valid \code{area_id} values, use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}}.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FtimeSeriesByMetric\%2F\%3Cmetric_ID\%3E}{CVDPREVENT API documentation: Indicator time series metrics}
 }
 
 \examples{
+\donttest{
 # List data for Salford South East PCN (area ID 705) for 'AF: treatment with
 # anticoagulants' for women people aged 60-79 years (metric ID 130):
 cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
@@ -65,6 +69,7 @@ cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
     names_from = AreaName,
     values_from = Value
   )
+}
 
 }
 \seealso{

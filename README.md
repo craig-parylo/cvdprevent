@@ -71,7 +71,7 @@ cvd_indicator_list() |> head(4)
 #> # A tibble: 1 × 7
 #>   context           error          status url   params resp  timestamp          
 #>   <chr>             <chr>           <int> <chr> <chr>  <chr> <dttm>             
-#> 1 validate_input_id time_period_i…     NA <NA>  <NA>   <NA>  2025-11-05 18:55:58
+#> 1 validate_input_id time_period_i…     NA <NA>  <NA>   <NA>  2025-11-05 19:46:25
 ```
 
 Typical outputs are [tibble](https://tibble.tidyverse.org/)s, making

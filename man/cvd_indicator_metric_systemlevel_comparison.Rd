@@ -50,12 +50,16 @@ To find valid \code{metric_id} values, use \code{\link[=cvd_indicator_metric_lis
 For valid \code{area_id} values, use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}}.
 For valid \code{time_period_id} values, use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}}.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FmetricSystemLevelComparison\%2F\%3Cmetric_ID\%3E}{CVDPREVENT API documentation: Indicator metric system level comparison}
 }
 
 \examples{
+\donttest{
 # Compare performance for metric ID 1270 in time period 17 for Salford South East PCN (area ID 705)
 cvd_indicator_metric_systemlevel_comparison(
   metric_id = 1270,
@@ -64,6 +68,7 @@ cvd_indicator_metric_systemlevel_comparison(
 ) |>
   dplyr::filter(AreaID \%in\% c(705:709), !is.na(Value)) |>
   dplyr::select(SystemLevelName, AreaID, AreaName, Value)
+}
 
 }
 \seealso{

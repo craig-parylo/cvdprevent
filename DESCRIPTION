@@ -45,7 +45,6 @@ VignetteBuilder:
     knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
-Keywords: API, health, cardiovascular, NHS, audit, data
 LazyData: true
 NeedsCompilation: no
 Roxygen: list(markdown = TRUE)

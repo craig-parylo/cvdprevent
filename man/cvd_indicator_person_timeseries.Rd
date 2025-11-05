@@ -51,12 +51,16 @@ This function is useful for:
 To find valid \code{indicator_id} values, use \code{\link[=cvd_indicator_list]{cvd_indicator_list()}} or \code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}.
 For valid \code{area_id} values, use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}}.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FpersonsTimeSeriesByIndicator\%2F\%3Cindicator_ID\%3E}{CVDPREVENT API documentation: Indicator person time series}
 }
 
 \examples{
+\donttest{
 # View age group inequalities for indicator ID 7 in Salford South East PCN (area ID 705)
 cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
   dplyr::filter(
@@ -68,6 +72,7 @@ cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
     names_from = MetricCategoryName,
     values_from = Value
   )
+}
 
 }
 \seealso{

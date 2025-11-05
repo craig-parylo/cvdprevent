@@ -32,12 +32,16 @@ The output is a list of tibbles, one for each "level" in the heirarchy, named as
 \details{
 This function is helpful for visualising or programmatically traversing the full nested structure beneath a given NHS area. For example, given an ICB, you can see all PCNs, then all practices beneath those PCNs, and so on.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2FnestedSubSystems}{CVDPREVENT API documentation: Area nested subsystems}
 }
 
 \examples{
+\donttest{
 # View the nested structure for Somerset STP (area_id = 5)
 returned_list <- cvd_area_nested_subsystems(area_id = 5)
 returned_list |> summary()
@@ -51,6 +55,7 @@ returned_list |> summary()
 
 # See the GP practice children of the PCN
 returned_list$level_2
+}
 
 }
 \seealso{

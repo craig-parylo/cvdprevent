@@ -65,12 +65,16 @@ Only the selected metric is returned for each sibling area.
 \details{
 Use this function to compare a metric across all areas at the same hierarchical level (e.g., compare all practices in a PCN or all PCNs in an ICB) for benchmarking and visualisation purposes.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FsiblingData}{CVDPREVENT API documentation: Indicator sibling data}
 }
 
 \examples{
+\donttest{
 # Compare the value of metric 126 for area 1103 and all its siblings in time period 17
 cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = 126) |>
   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit)
@@ -79,6 +83,7 @@ cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = 126) |>
 metrics <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
 metric_id <- metrics$MetricID[1]
 cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = metric_id)
+}
 
 }
 \seealso{

@@ -36,12 +36,16 @@ Searches for NHS areas whose names match a given partial string, within a specif
 \item Use this function to quickly locate AreaIDs or codes for use in other \code{cvdprevent} API calls.
 }
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2Fsearch}{CVDPREVENT API documentation: Area search}
 }
 
 \examples{
+\donttest{
 # Search for areas containing "practice" in their name for time period 17
 cvd_area_search(partial_area_name = "practice", time_period_id = 17) |>
   dplyr::select(AreaID, AreaName, AreaCode)
@@ -49,6 +53,7 @@ cvd_area_search(partial_area_name = "practice", time_period_id = 17) |>
 # Search for areas containing "PCN" for time period 17
 cvd_area_search(partial_area_name = "PCN", time_period_id = 17) |>
   dplyr::select(AreaID, AreaName, AreaCode)
+}
 
 }
 \seealso{

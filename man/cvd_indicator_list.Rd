@@ -35,12 +35,16 @@ Retrieves basic details for all CVD indicators available for a given system leve
 \details{
 Use this function to discover which indicators are available for a specific combination of system level and time period. The results can be joined with other outputs for further analysis, or used as the basis for more detailed indicator, metric, or data queries.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Docuemtnation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2Flist}{CVDPREVENT API documentation: Indicator list}
 }
 
 \examples{
+\donttest{
 # List four indicators for time period 17 and GP practice level (system level 5)
 cvd_indicator_list(time_period_id = 17, system_level_id = 5) |>
   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
@@ -50,6 +54,7 @@ cvd_indicator_list(time_period_id = 17, system_level_id = 5) |>
 valid_periods <- cvd_time_period_list()
 valid_levels <- cvd_area_system_level(time_period_id = 17)
 cvd_indicator_list(time_period_id = 17, system_level_id = valid_levels$SystemLevelID[1])
+}
 
 }
 \seealso{

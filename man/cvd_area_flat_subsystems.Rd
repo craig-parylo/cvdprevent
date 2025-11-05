@@ -39,17 +39,22 @@ The output is a tibble where each row represents an area or sub-area, and child 
 \details{
 This function is useful for quickly listing all areas beneath a parent, grouped by system level, for reporting or selection purposes. For a fully nested view, see \code{\link[=cvd_area_nested_subsystems]{cvd_area_nested_subsystems()}}.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2FflatSubSystems}{CVDPREVENT API documentation: Area flat subsystems}
 }
 
 \examples{
+\donttest{
 # View flat sub-systems for Somerset STP (area_id = 5)
 cvd_area_flat_subsystems(area_id = 5) |> dplyr::glimpse()
 
 # View flat sub-systems for Lincolnshire ICB (area_id = 8042)
 cvd_area_flat_subsystems(area_id = 8042) |> dplyr::glimpse()
+}
 
 }
 \seealso{
