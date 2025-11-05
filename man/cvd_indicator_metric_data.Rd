@@ -80,12 +80,16 @@ Returns detailed area data for a single CVD metric (\code{metric_id}) for a spec
 \details{
 Use this function to retrieve all available breakdowns for a metric in a specific area and period, such as for in-depth local reporting, dashboard figures, or subgroup analysis. It is best used when you know the exact metric required for your query.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FmetricData}{CVDPREVENT API documentation: Indicator metric data}
 }
 
 \examples{
+\donttest{
 # Retrieve  a single metric breakdown showing how men aged 40-59 years
 # are treated with anticoagulants (MetricID = 126) for 3 Centres PCN
 # (AreaID = 1103) to March 2020 (TimePeriodID = 1)
@@ -107,6 +111,7 @@ dplyr::bind_rows(
   returned_list$national_data
 ) |>
 dplyr::glimpse()
+}
 
 }
 \seealso{

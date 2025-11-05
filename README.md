@@ -8,6 +8,7 @@
 [![CRAN
 status](https://www.r-pkg.org/badges/version/cvdprevent)](https://CRAN.R-project.org/package=cvdprevent)
 [![](https://cranlogs.r-pkg.org/badges/cvdprevent)](https://cran.r-project.org/package=cvdprevent)
+
 <!-- badges: end -->
 
 **CVD Prevent** is an R package that provides a user-friendly interface
@@ -66,6 +67,11 @@ library(cvdprevent)
 
 # List all available indicators (first 4 shown)
 cvd_indicator_list() |> head(4)
+#> ✖ Validation error: time_period_id - time_period_id is required but missing
+#> # A tibble: 1 × 7
+#>   context           error          status url   params resp  timestamp          
+#>   <chr>             <chr>           <int> <chr> <chr>  <chr> <dttm>             
+#> 1 validate_input_id time_period_i…     NA <NA>  <NA>   <NA>  2025-11-05 19:46:25
 ```
 
 Typical outputs are [tibble](https://tibble.tidyverse.org/)s, making
@@ -73,10 +79,17 @@ them easy to filter and manipulate:
 
 ``` r
 # List the latest four time periods for 'Standard' indicators
-cvd_time_period_list() |> 
-  dplyr::filter(IndicatorTypeName == "Standard") |> 
-  dplyr::slice_max(order_by = TimePeriodID, n = 4) |> 
+cvd_time_period_list() |>
+  dplyr::filter(IndicatorTypeName == "Standard") |>
+  dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
   dplyr::select(TimePeriodID, TimePeriodName)
+#> # A tibble: 4 × 2
+#>   TimePeriodID TimePeriodName   
+#>          <int> <chr>            
+#> 1           26 To June 2025     
+#> 2           24 To March 2025    
+#> 3           22 To December 2024 
+#> 4           20 To September 2024
 ```
 
 See the package vignette for more examples and guidance:
@@ -94,17 +107,17 @@ vignette("using_cvdprevent", package = "cvdprevent")
 - **API details:** [CVDPREVENT API
   Docs](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)  
 - **See also:** [Detailed function
-  overview](vignettes/using_cvdprevent.Rmd)
+  overview](https://craig-parylo.github.io/cvdprevent/articles/using_cvdprevent.html)
 
 ------------------------------------------------------------------------
 
 ## Dependencies
 
 `cvdprevent` is designed to work seamlessly with the
-[tidyverse](https://www.tidyverse.org/), and depends on:
+[tidyverse](https://tidyverse.org/), and depends on:
 
 - [httr2](https://httr2.r-lib.org/)
-- [jsonlite](https://cran.r-project.org/web/packages/jsonlite/)
+- [jsonlite](https://cran.r-project.org/package=jsonlite)
 - [dplyr](https://dplyr.tidyverse.org/)
 - [purrr](https://purrr.tidyverse.org/)
 - [tidyr](https://tidyr.tidyverse.org/)

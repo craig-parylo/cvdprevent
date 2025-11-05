@@ -80,12 +80,16 @@ Fetches all available metric breakdowns for a single cardiovascular disease (CVD
 \details{
 Use this function to obtain all metric values for a single indicator in a particular area and time period, such as for a local dashboard or a focussed report. For broader queries across multiple indicators, see \code{\link[=cvd_indicator]{cvd_indicator()}} or \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2Fdata}{CVDPREVENT API documentation: Indicator data}
 }
 
 \examples{
+\donttest{
 # Retrieve all metric breakdowns for indicator 7 in area 1103 for time period 17
 returned_list <- cvd_indicator_data(time_period_id = 17, area_id = 1103, indicator_id = 7)
 
@@ -104,6 +108,7 @@ dplyr::bind_rows(
   returned_list$national_data
 ) |>
 dplyr::filter(MetricID == 132)
+}
 
 }
 \seealso{

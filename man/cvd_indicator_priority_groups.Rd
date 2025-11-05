@@ -33,12 +33,16 @@ Retrieves a tibble of indicator priority groups from the CVDPREVENT API. Priorit
 \details{
 Use this function to provide grouping / filtering options for dashboards or reports, or to explore which indicator themes are tracked in CVDPREVENT. Typically, you will select the priority group's name and ID for grouping or filtering tasks.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FpriorityGroup}{CVDPREVENT API documentation: Indicator priority groups}
 }
 
 \examples{
+\donttest{
 # List all available priority group display names and their IDs
 cvd_indicator_priority_groups() |>
   dplyr::select(PriorityGroupID, PriorityGroup)
@@ -46,6 +50,7 @@ cvd_indicator_priority_groups() |>
 # Preview group names for a sidebar filter in a dashboard
 groups <- cvd_indicator_priority_groups()
 unique(groups$PriorityGroup)
+}
 
 }
 \seealso{

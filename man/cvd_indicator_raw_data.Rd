@@ -42,12 +42,16 @@ Returns raw values for multiple metrics within an indicator (specified as \code{
 \details{
 Use this function to retrieve a wide set of metric breakdowns for a given indicator in a single area and time period - useful for broad data extractions, dashboards or advanced analytics.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2F\%3Cindicator_ID\%3E\%2FrawDataJSON}{CVDPREVENT API documentation: Indicator raw data}
 }
 
 \examples{
+\donttest{
 # Retrieve metric data for 'CVD: All-cause mortality' (IndicatorID = 35) across
 # NHS Regions (SystemLevelID = 6) in the period April 2024 to
 # March 2025 (TimePeriodID = 27) and view a sample of 4 rows:
@@ -66,5 +70,6 @@ cvd_indicator_raw_data(
   system_level_id = 4,
   indicator_id = indicators$IndicatorID[1]
 )
+}
 
 }

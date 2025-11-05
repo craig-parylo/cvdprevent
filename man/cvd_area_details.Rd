@@ -36,12 +36,16 @@ Returns detailed information about a single NHS area for a given reporting perio
 \details{
 This function is useful for navigating NHS area heirarchies, such as finding all practices within a PCN, or determining the parent ICB for a given area. The result is a list of tibbles, so you can extract and work with each component separately.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2F\%3Carea_id\%3E\%2Fdetails}{CVDPREVENT API documentation: Area details}
 }
 
 \examples{
+\donttest{
 # Retrieve details for 'Leicester, Leicestershire and Rutland ICB' (area_id = 8037)
 # in time period 17
 returned_list <- cvd_area_details(time_period_id = 17, area_id = 8037)
@@ -54,6 +58,7 @@ returned_list$area_parent_details |> dplyr::select(AreaID, AreaName, SystemLevel
 
 # View details for the child area(s)
 returned_list$area_child_details |> dplyr::select(AreaID, AreaName, SystemLevelID)
+}
 
 }
 \seealso{

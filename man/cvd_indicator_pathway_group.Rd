@@ -32,12 +32,16 @@ If the request fails or the ID is invalid, a tibble with error details is return
 Returns a tibble of indicators associated with a single pathway group, identified by its ID.
 Pathway groups are thematic sub-groupings of priority groups and are visible in the Regional & ICS Insights page. This function enables users to retrieve all indicators linked to a specific pathway group (e.g., "Chronic Kidney Disease").
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FpathwayGroup\%2F\%3Cpathway_group_id\%3E}{CVDPREVENT API documentation: indicator pathway group}
 }
 
 \examples{
+\donttest{
 # Return indicators for the 'Chronic Kidney Disease' Pathway Group (ID 9):
 cvd_indicator_pathway_group(pathway_group_id = 9) |>
   dplyr::select(
@@ -47,6 +51,7 @@ cvd_indicator_pathway_group(pathway_group_id = 9) |>
     IndicatorID,
     IndicatorName
   )
+}
 
 }
 \seealso{

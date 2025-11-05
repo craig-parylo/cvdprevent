@@ -16,6 +16,9 @@ A tibble of indicator types with the following columns:
 \description{
 Returns a tibble of indicator type IDs and their corresponding names, used to categorise CVD indicators in the CVDPREVENT API. This function is primarily a helper for \code{\link[=cvd_time_period_list]{cvd_time_period_list()}}, which accepts \code{indicator_type_id} as an optional parameter.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \examples{
 # NB, the following example is not tested because it takes longer than
 # expected to return the results

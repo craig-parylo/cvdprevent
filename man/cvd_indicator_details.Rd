@@ -32,12 +32,16 @@ Returns metadata and descriptive information for a single CVD indicator, identif
 \details{
 Use this function to retrieve indicator definitions, full names, and metadata fields for use in custom reports or to provide documentation / tooltips in analytical applications. Metadata fields are unnested for convenience.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2F\%3Cindicator_ID\%3E\%2Fdetails}{CVDPREVENT API documentation: Indicator details}
 }
 
 \examples{
+\donttest{
 # Retrieve details for indicator with ID 7
 cvd_indicator_details(indicator_id = 7) |>
   dplyr::select(IndicatorID, MetaDataTitle, MetaData) |>
@@ -46,6 +50,7 @@ cvd_indicator_details(indicator_id = 7) |>
 # Find a valid indicator ID, then get its details
 indicators <- cvd_indicator_list(time_period_id = 17, system_level_id = 5)
 cvd_indicator_details(indicator_id = indicators$IndicatorID[1])
+}
 
 }
 \seealso{

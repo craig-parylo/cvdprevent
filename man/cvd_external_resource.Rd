@@ -39,17 +39,22 @@ This function is useful for:
 \item Building documentation or dashboards that reference external sources
 }
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FexternalResource}{CVDPREVENT API documentation: External resources}
 }
 
 \examples{
+\donttest{
 # Show the first five external resources grouped by category
 cvd_external_resource() |>
   dplyr::filter(ExternalResourceID < 10) |>
   dplyr::select(ExternalResourceCategory, ExternalResourceSource, ExternalResourceTitle) |>
   dplyr::group_by(ExternalResourceCategory)
+}
 
 }
 \seealso{

@@ -28,12 +28,16 @@ This function helps users determine which system levels are available for data e
 \details{
 This function is useful in workflows where you need to filter or subset NHS areas or data by both time period and system level. It is often used as a precursor to more detailed area or indicator queries.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea\%2FsystemLevel}{CVDPREVENT API documentation: System levels per time period}
 }
 
 \examples{
+\donttest{
 # List all system levels available for time period 4 (activity to March 2022)
 cvd_area_system_level(time_period_id = 4) |>
   dplyr::select(SystemLevelID, SystemLevelName)
@@ -46,6 +50,7 @@ latest_period <-
 
 cvd_area_system_level(time_period_id = latest_period) |>
   dplyr::select(SystemLevelID, SystemLevelName)
+}
 
 }
 \seealso{

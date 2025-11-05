@@ -39,12 +39,16 @@ Only indicators with available data for the specified time period and system lev
 \details{
 Use this function to explore the detailed metric breakdowns available for each indicator before performing data extraction or analysis. The \code{MetricList} column is unnested for convenience, so each row represents a single metric linked to an indicator.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*\%2Findicator\%2FmetricList}{CVDPREVENT API documentation: Indicator metric list}
 }
 
 \examples{
+\donttest{
 # List metrics for the prevalence of atrial fibrillation (indicator ID 1),
 # focusing on metrics for the 40-59 years age group at the national level:
 cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
@@ -54,5 +58,6 @@ cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
 
 # Get all indicator-metric pairs for GP practice level (system level 5) in a given period
 cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
+}
 
 }

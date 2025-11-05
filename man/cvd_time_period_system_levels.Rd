@@ -30,12 +30,16 @@ This function is useful to determine which system levels (e.g., national, region
 \details{
 This function is helpful for understanding the data structure of each reporting period, especially if you need to filter or subset data by system level and time period in downstream API calls.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*-\%2FtimePeriod\%2FsystemLevels}{CVDPREVENT API documentation: Time period system levels} for technical details.
 }
 
 \examples{
+\donttest{
 # Retrieve all time periods and associated system levels
 periods_levels <- cvd_time_period_system_levels()
 
@@ -43,6 +47,7 @@ periods_levels <- cvd_time_period_system_levels()
 periods_levels |>
   dplyr::slice_max(order_by = TimePeriodID) |>
   dplyr::select(TimePeriodID, TimePeriodName, SystemLevelID, SystemLevelName)
+}
 
 }
 \seealso{
