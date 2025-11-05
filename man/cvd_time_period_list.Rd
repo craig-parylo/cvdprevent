@@ -4,7 +4,7 @@
 \alias{cvd_time_period_list}
 \title{List available time periods for CVD indicators}
 \usage{
-cvd_time_period_list(indicator_type_id)
+cvd_time_period_list(indicator_type_id = NULL)
 }
 \arguments{
 \item{indicator_type_id}{Optional integer. If provided, restricts the returned time periods to those containing data of the given indicator type.}

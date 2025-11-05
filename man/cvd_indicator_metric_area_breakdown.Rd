@@ -4,14 +4,14 @@
 \alias{cvd_indicator_metric_area_breakdown}
 \title{Indicator metric area breakdown}
 \usage{
-cvd_indicator_metric_area_breakdown(metric_id, time_period_id, area_id)
+cvd_indicator_metric_area_breakdown(time_period_id, area_id, metric_id)
 }
 \arguments{
-\item{metric_id}{integer - the metric to return data for (compulsory)}
-
 \item{time_period_id}{integer - the time period to return data for (compulsory)}
 
 \item{area_id}{integer - the area to return data for (compulsory)}
+
+\item{metric_id}{integer - the metric to return data for (compulsory)}
 }
 \value{
 Tibble of metric performance for the specified area compared with National level

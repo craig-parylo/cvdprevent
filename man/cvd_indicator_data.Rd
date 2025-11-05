@@ -4,7 +4,7 @@
 \alias{cvd_indicator_data}
 \title{Retrieve indicator data for a specific area, time period and indicator}
 \usage{
-cvd_indicator_data(indicator_id, time_period_id, area_id)
+cvd_indicator_data(time_period_id, area_id, indicator_id)
 }
 \arguments{
 \item{indicator_id}{Integer (required). The IndicatorID for which to retrieve data. use \code{\link[=cvd_indicator_list]{cvd_indicator_list()}} or \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} to find valid IDs.}

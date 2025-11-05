@@ -4,11 +4,7 @@
 \alias{cvd_indicator_nationalarea_metric_data}
 \title{Retrieve metric data for a specific area and for national (England) comparison}
 \usage{
-cvd_indicator_nationalarea_metric_data(
-  metric_id = 1,
-  time_period_id = 17,
-  area_id = 739
-)
+cvd_indicator_nationalarea_metric_data(time_period_id, area_id, metric_id)
 }
 \arguments{
 \item{metric_id}{Integer (required). The MetricID for which to retrieve values. Use \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} or \code{\link[=cvd_indicator_data]{cvd_indicator_data()}} to find valid MetricIDs.}
