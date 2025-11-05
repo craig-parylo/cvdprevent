@@ -28,7 +28,7 @@ periods_levels <- cvd_time_period_system_levels()
 
 # Show available system levels for the latest time period
 periods_levels |>
-  plyr::slice_max(order_by = TimePeriodID) |>
+  dplyr::slice_max(order_by = TimePeriodID) |>
   dplyr::select(TimePeriodID, TimePeriodName, SystemLevelID, SystemLevelName)
 
 }

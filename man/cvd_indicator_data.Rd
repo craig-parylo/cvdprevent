@@ -2,23 +2,80 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_data}
 \alias{cvd_indicator_data}
-\title{Retrieve indicator data for a specific area, time period and indicator}
+\title{Retrieve CVD indicator data for a specific area and time period}
 \usage{
 cvd_indicator_data(time_period_id, area_id, indicator_id)
 }
 \arguments{
-\item{indicator_id}{Integer (required). The IndicatorID for which to retrieve data. use \code{\link[=cvd_indicator_list]{cvd_indicator_list()}} or \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} to find valid IDs.}
-
 \item{time_period_id}{Integer (required). The reporting period (time period) to retrieve data for. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
 
 \item{area_id}{Integer (required). The AreaID for which to retrieve indicator data. use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid IDs.}
+
+\item{indicator_id}{Integer (required). The IndicatorID for which to retrieve data. use \code{\link[=cvd_indicator_list]{cvd_indicator_list()}} or \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} to find valid IDs.}
 }
 \value{
-A tibble with one row per metric breakdown for the requested indicator, area and period. Typical columns include \code{IndicatorID}, \code{MetricID}, \code{MetricCategoryName}, \code{CategoryAttribute}, \code{Value}, \code{Numerator}, \code{Denominator}, \code{LowerConfidenceLimit}, \code{UpperConfidenceLimit} and others.
+A named list containing three tibbles:
+\describe{
+\item{indicator_metrics}{Tibble. Metadata and definitions for the selected indicator and its associated metrics.}
+\item{area_data}{Tibble. Metric values for the specified NHS area (\code{area_id}) across all available breakdowns.}
+\item{national_data}{Tibble. Metric values for England, used for benchmarking and comparison.}
+}
 If no indicator data is found, returns a tibble describing the error.
+
+\strong{indicator_metrics} contains the following items:
+\describe{
+\item{AxisCharacter}{Character. Symbol used to represent the metric axis (e.g., "\%").}
+\item{FormatDisplayName}{Character. Display format for the metric (e.g., "Proportion \%").}
+\item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002AF").}
+\item{IndicatorFormatID}{Integer. Internal ID for the indicator's format type.}
+\item{IndicatorID}{Integer. Unique identifier for the indicator.}
+\item{IndicatorName}{Character. Full descriptive name of the indicator.}
+\item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+\item{IndicatorShortName}{Character. Abbreviated name of the indicator for display.}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator. Often zero.}
+\item{TimePeriodID}{Integer. ID of the reporting time period.}
+\item{TimePeriodName}{Character. Label for the reporting time period (e.g., "To March 2024").}
+\item{CategoryAttribute}{Character. Subgroup label (e.g., "Male", "Female", "Persons").}
+\item{MetricCategoryID}{Integer. Unique ID for the metric category.}
+\item{MetricCategoryName}{Character. Name of the subgroup or category (e.g., "18–39", "Sex").}
+\item{MetricCategoryOrder}{Integer. Display order for the metric category.}
+\item{MetricCategoryTypeName}{Character. Type of subgroup (e.g., "Age group", "Sex").}
+\item{MetricID}{Integer. Unique ID for the specific metric being measured.}
+}
+
+\strong{area_data} and \strong{national_data} contain the following items:
+\describe{
+\item{MetricID}{Integer. Unique identifier for the metric being measured.}
+\item{MetricCategoryTypeName}{Character. Type of subgroup (e.g., "Sex", "Age group").}
+\item{MetricCategoryName}{Character. Name of the subgroup (e.g., "Female", "18–39").}
+\item{CategoryAttribute}{Character. Label used to group individuals (e.g., "Male", "Persons").}
+\item{AreaCode}{Character. ONS code for the NHS area (e.g., "U60176").}
+\item{AreaID}{Integer. Internal ID for the NHS area.}
+\item{AreaName}{Character. Name of the NHS area (e.g., "3 Centres PCN").}
+\item{Count}{Integer. Total number of individuals in the subgroup.}
+\item{DataID}{Integer. Unique identifier for the data record.}
+\item{Denominator}{Numeric. Population or count used as the denominator in metric calculation.}
+\item{Factor}{Numeric. Scaling factor applied to the metric, if applicable. Often NA.}
+\item{HighestPriorityNotificationType}{Character. Notification priority level, if available. Often NA.}
+\item{LowerConfidenceLimit}{Numeric. Lower bound of the confidence interval for the metric value.}
+\item{Max}{Numeric. Maximum observed value for the metric across comparable areas.}
+\item{Median}{Numeric. Median value for the metric across comparable areas.}
+\item{Min}{Numeric. Minimum observed value for the metric across comparable areas.}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator. Often zero.}
+\item{Numerator}{Numeric. Count used as the numerator in metric calculation.}
+\item{Q20}{Numeric. 20th percentile value across comparable areas.}
+\item{Q40}{Numeric. 40th percentile value across comparable areas.}
+\item{Q60}{Numeric. 60th percentile value across comparable areas.}
+\item{Q80}{Numeric. 80th percentile value across comparable areas.}
+\item{TimePeriodID}{Integer. ID of the reporting time period.}
+\item{TimePeriodName}{Character. Label for the reporting time period (e.g., "To March 2024").}
+\item{UpperConfidenceLimit}{Numeric. Upper bound of the confidence interval for the metric value.}
+\item{Value}{Numeric. Calculated metric value (e.g., percentage of patients treated).}
+\item{ValueNote}{Character. Additional notes or flags about the value. Often NA.}
+}
 }
 \description{
-Returns data for all metric associated with a single CVD indicator for a specified NHS area and reporting period from the CVDPREVENT API. This allows you to access all breakdowns (e.g., age, sex, ethnicity) of a given indicator for a single area in a single time period.
+Fetches all available metric breakdowns for a single cardiovascular disease (CVD) indicator from the CVDPREVENT API, scoped to a specified NHS area and reporting period. This includes subgroup data such as age, sex, ethnicity, deprivation quintile, and more.
 }
 \details{
 Use this function to obtain all metric values for a single indicator in a particular area and time period, such as for a local dashboard or a focussed report. For broader queries across multiple indicators, see \code{\link[=cvd_indicator]{cvd_indicator()}} or \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}.
@@ -30,12 +87,23 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 
 \examples{
 # Retrieve all metric breakdowns for indicator 7 in area 1103 for time period 17
-cvd_indicator_data(time_period_id = 17, area_id = 1103, indicator_id = 7) |>
-  dplyr::select(IndicatorID, MetricID, MetricCategoryName, CategoryAttribute, Value)
+returned_list <- cvd_indicator_data(time_period_id = 17, area_id = 1103, indicator_id = 7)
 
-# Find valid indicator ID, then retrieve its data
-indicators <- cvd_indicator_list(time_period_id = 17, system_level_id = 5)
-cvd_indicator_data(time_period_id = 17, area_id = 1103, indicator_id = indicators$IndicatorID[1])
+# See the structure of this data
+returned_list |> dplyr::glimpse()
+
+# See the definition for one metric
+returned_list$indicator_metrics |>
+  dplyr::slice_head(n = 1) |>
+  dplyr::glimpse()
+
+# Compare performance in the specified area (AreaID = 1103) with national results for
+# women aged 40-59 years (MetricID = 132)
+dplyr::bind_rows(
+  returned_list$area_data,
+  returned_list$national_data
+) |>
+dplyr::filter(MetricID == 132)
 
 }
 \seealso{

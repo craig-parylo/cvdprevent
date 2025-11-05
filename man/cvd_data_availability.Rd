@@ -7,8 +7,8 @@
 cvd_data_availability(
   time_period_id,
   system_level_id,
-  indicator_id,
-  metric_category_type_id
+  indicator_id = NULL,
+  metric_category_type_id = NULL
 )
 }
 \arguments{

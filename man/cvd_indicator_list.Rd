@@ -4,7 +4,7 @@
 \alias{cvd_indicator_list}
 \title{List available indicators for a system level and time period}
 \usage{
-cvd_indicator_list(time_period_id, system_level_id)
+cvd_indicator_list(time_period_id = NULL, system_level_id = NULL)
 }
 \arguments{
 \item{time_period_id}{Integer (required). The reporting period (time period) for which to return indicators. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}

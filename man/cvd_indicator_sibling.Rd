@@ -2,7 +2,7 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_sibling}
 \alias{cvd_indicator_sibling}
-\title{Retrieve sibling area data for a specific metric, time period, and area}
+\title{Indicator sibling data}
 \usage{
 cvd_indicator_sibling(time_period_id, area_id, metric_id)
 }

@@ -4,7 +4,7 @@
 \alias{cvd_indicator}
 \title{Retrieve all indicators and their data for a given time period and area}
 \usage{
-cvd_indicator(time_period_id, area_id, tag_id)
+cvd_indicator(time_period_id, area_id, tag_id = NULL)
 }
 \arguments{
 \item{time_period_id}{Integer (required). The reporting period (time period) for which to return indicator data. Use the \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
@@ -54,7 +54,13 @@ indicators |>
 categories <- return_list$metric_categories
 categories |>
   dplyr::filter(IndicatorID == 7, MetricCategoryID \%in\% c(7, 8)) |>
-  dplyr::select(IndicatorID, MetricCategoryTypeName, CategoryAttribute, MetricCategoryName, MetricID)
+  dplyr::select(
+    IndicatorID,
+    MetricCategoryTypeName,
+    CategoryAttribute,
+    MetricCategoryName,
+    MetricID
+  )
 
 # Extract metric data for specific metrics
 metric_data <- return_list$metric_data

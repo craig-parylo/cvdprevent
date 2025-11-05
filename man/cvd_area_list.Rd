@@ -4,7 +4,7 @@
 \alias{cvd_area_list}
 \title{List NHS areas for a given time period and parent or system level}
 \usage{
-cvd_area_list(time_period_id, parent_area_id, system_level_id)
+cvd_area_list(time_period_id, parent_area_id = NULL, system_level_id = NULL)
 }
 \arguments{
 \item{time_period_id}{Integer (required). The reporting period ID for which to return areas. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}

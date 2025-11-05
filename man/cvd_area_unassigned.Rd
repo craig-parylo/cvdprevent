@@ -4,7 +4,7 @@
 \alias{cvd_area_unassigned}
 \title{List NHS areas without parent assignments for a given time period}
 \usage{
-cvd_area_unassigned(time_period_id, system_level_id)
+cvd_area_unassigned(time_period_id, system_level_id = NULL)
 }
 \arguments{
 \item{time_period_id}{Integer (required). The reporting period (time period) for which to find unassigned areas. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to obtain valid IDs.}

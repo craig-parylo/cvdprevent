@@ -7,11 +7,11 @@
 cvd_indicator_nationalarea_metric_data(time_period_id, area_id, metric_id)
 }
 \arguments{
-\item{metric_id}{Integer (required). The MetricID for which to retrieve values. Use \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} or \code{\link[=cvd_indicator_data]{cvd_indicator_data()}} to find valid MetricIDs.}
-
 \item{time_period_id}{Integer (required). The reporting period (time period) for which to retrieve metric data. Use \code{\link[=cvd_time_period_list]{cvd_time_period_list()}} to find valid IDs.}
 
 \item{area_id}{Integer (required). The AreaID for which to retrieve data in addition to the national aggregate. use \code{\link[=cvd_area_list]{cvd_area_list()}} or \code{\link[=cvd_area_search]{cvd_area_search()}} to find valid IDs.}
+
+\item{metric_id}{Integer (required). The MetricID for which to retrieve values. Use \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}} or \code{\link[=cvd_indicator_data]{cvd_indicator_data()}} to find valid MetricIDs.}
 }
 \value{
 A named list with up to two tibbles:
