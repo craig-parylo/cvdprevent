@@ -65,12 +65,16 @@ Only the selected metric is returned for each child area.
 \details{
 Use this function to compare a metric across all immediate child areas under a parent (for example, to benchmark all GP practices within a PCN for a specific indicator and reporting period).
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FchildData}{CVDPREVENT API documentation: Indicator child data}
 }
 
 \examples{
+\donttest{
 # Compare the value of metric 126 for area 74 and all its child areas in time period 22
 cvd_indicator_child_data(time_period_id = 22, area_id = 74, metric_id = 126) |>
   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit)
@@ -79,6 +83,7 @@ cvd_indicator_child_data(time_period_id = 22, area_id = 74, metric_id = 126) |>
 metrics <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
 metric_id <- metrics$MetricID[1]
 cvd_indicator_child_data(time_period_id = 17, area_id = 1103, metric_id = metric_id)
+}
 
 }
 \seealso{

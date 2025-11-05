@@ -43,12 +43,16 @@ You must specify at least one of \code{parent_area_id} or \code{system_level_id}
 \item This function is commonly used to list all practices within a given PCN, all PCNs within an ICB, or all areas at a specific system level for a chosen time period.
 }
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Farea}{CVDPREVENT API documentation: Area lists}
 }
 
 \examples{
+\donttest{
 # List four PCNs (system level 4) with data available at time period 17
 cvd_area_list(time_period_id = 17, system_level_id = 4) |>
   dplyr::select(SystemLevelName, AreaID, AreaCode, AreaName) |>
@@ -57,8 +61,10 @@ cvd_area_list(time_period_id = 17, system_level_id = 4) |>
 # List all child areas of parent area 8037 (e.g., an ICB) in time period 17
 cvd_area_list(time_period_id = 17, parent_area_id = 8037)
 
-# Attempting to call without either optional argument will result in an error
+# Attempting to call without either optional argument will result in a
+# tibble explaining the error.
 # cvd_area_list(time_period_id = 17)
+}
 
 }
 \seealso{

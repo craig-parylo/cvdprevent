@@ -62,6 +62,8 @@ globalVariables(
 #' # List available indicator types
 #' \donttest{cvd_indicator_types()}
 #'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
+#'
 #' @export
 cvd_indicator_types <- function() {
   # get the data from the function - no parameters to return all types
@@ -105,6 +107,8 @@ cvd_indicator_types <- function() {
 #'
 #' # List time periods with data for a specific indicator type (e.g., Standard)
 #' \donttest{cvd_time_period_list(indicator_type_id = 1)}
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_time_period_list <- function(indicator_type_id = NULL) {
@@ -190,6 +194,7 @@ cvd_time_period_list <- function(indicator_type_id = NULL) {
 #' @seealso [cvd_time_period_list()], [cvd_area_system_level_time_periods()]
 #'
 #' @examples
+#' \donttest{
 #' # Retrieve all time periods and associated system levels
 #' periods_levels <- cvd_time_period_system_levels()
 #'
@@ -197,6 +202,9 @@ cvd_time_period_list <- function(indicator_type_id = NULL) {
 #' periods_levels |>
 #'   dplyr::slice_max(order_by = TimePeriodID) |>
 #'   dplyr::select(TimePeriodID, TimePeriodName, SystemLevelID, SystemLevelName)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_time_period_system_levels <- function() {
@@ -285,6 +293,7 @@ cvd_time_period_system_levels <- function() {
 #' @seealso [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()], [cvd_time_period_system_levels()]
 #'
 #' @examples
+#' \donttest{
 #' # List all system levels available for time period 4 (activity to March 2022)
 #' cvd_area_system_level(time_period_id = 4) |>
 #'   dplyr::select(SystemLevelID, SystemLevelName)
@@ -297,6 +306,9 @@ cvd_time_period_system_levels <- function() {
 #'
 #' cvd_area_system_level(time_period_id = latest_period) |>
 #'   dplyr::select(SystemLevelID, SystemLevelName)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_area_system_level <- function(time_period_id) {
@@ -383,6 +395,7 @@ cvd_area_system_level <- function(time_period_id) {
 #' @seealso [cvd_time_period_system_levels()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
+#' \donttest{
 #' # List the latest four reporting periods at GP practice level
 #' cvd_area_system_level_time_periods() |>
 #'   dplyr::filter(SystemLevelName == "Practice") |>
@@ -391,6 +404,9 @@ cvd_area_system_level <- function(time_period_id) {
 #'
 #' # Explore all system levels and their available time periods
 #' cvd_area_system_level_time_periods()
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_area_system_level_time_periods <- function() {
@@ -477,6 +493,7 @@ cvd_area_system_level_time_periods <- function() {
 #' [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
+#' \donttest{
 #' # List four PCNs (system level 4) with data available at time period 17
 #' cvd_area_list(time_period_id = 17, system_level_id = 4) |>
 #'   dplyr::select(SystemLevelName, AreaID, AreaCode, AreaName) |>
@@ -485,8 +502,12 @@ cvd_area_system_level_time_periods <- function() {
 #' # List all child areas of parent area 8037 (e.g., an ICB) in time period 17
 #' cvd_area_list(time_period_id = 17, parent_area_id = 8037)
 #'
-#' # Attempting to call without either optional argument will result in an error
+#' # Attempting to call without either optional argument will result in a
+#' # tibble explaining the error.
 #' # cvd_area_list(time_period_id = 17)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_area_list <- function(
@@ -638,6 +659,7 @@ cvd_area_list <- function(
 #' [cvd_area_list()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
+#' \donttest{
 #' # Retrieve details for 'Leicester, Leicestershire and Rutland ICB' (area_id = 8037)
 #' # in time period 17
 #' returned_list <- cvd_area_details(time_period_id = 17, area_id = 8037)
@@ -650,6 +672,9 @@ cvd_area_list <- function(
 #'
 #' # View details for the child area(s)
 #' returned_list$area_child_details |> dplyr::select(AreaID, AreaName, SystemLevelID)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_area_details <- function(time_period_id, area_id) {
@@ -791,6 +816,7 @@ cvd_area_details <- function(time_period_id, area_id) {
 #' [cvd_area_list()], [cvd_area_details()], [cvd_area_search()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
+#' \donttest{
 #' # Report four GP practices (system level ID = 5) without parent PCN details for time period 17:
 #' cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
 #'   dplyr::slice_head(n = 4) |>
@@ -799,6 +825,9 @@ cvd_area_details <- function(time_period_id, area_id) {
 #' # List unassigned top-level areas (system level ID = 1, England) for time period 17:
 #' cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>
 #'   dplyr::select(SystemLevelName, AreaID, AreaName)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_area_unassigned <- function(time_period_id, system_level_id = NULL) {
@@ -915,6 +944,7 @@ cvd_area_unassigned <- function(time_period_id, system_level_id = NULL) {
 #' [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_nested_subsystems()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
+#' \donttest{
 #' # Search for areas containing "practice" in their name for time period 17
 #' cvd_area_search(partial_area_name = "practice", time_period_id = 17) |>
 #'   dplyr::select(AreaID, AreaName, AreaCode)
@@ -922,6 +952,9 @@ cvd_area_unassigned <- function(time_period_id, system_level_id = NULL) {
 #' # Search for areas containing "PCN" for time period 17
 #' cvd_area_search(partial_area_name = "PCN", time_period_id = 17) |>
 #'   dplyr::select(AreaID, AreaName, AreaCode)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_area_search <- function(partial_area_name, time_period_id) {
@@ -1025,6 +1058,7 @@ cvd_area_search <- function(partial_area_name, time_period_id) {
 #' [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_flat_subsystems()]
 #'
 #' @examples
+#' \donttest{
 #' # View the nested structure for Somerset STP (area_id = 5)
 #' returned_list <- cvd_area_nested_subsystems(area_id = 5)
 #' returned_list |> summary()
@@ -1038,6 +1072,9 @@ cvd_area_search <- function(partial_area_name, time_period_id) {
 #'
 #' # See the GP practice children of the PCN
 #' returned_list$level_2
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_area_nested_subsystems <- function(area_id) {
@@ -1179,11 +1216,15 @@ cvd_area_nested_subsystems <- function(area_id) {
 #' [cvd_area_list()], [cvd_area_details()], [cvd_area_unassigned()], [cvd_area_search()], [cvd_area_nested_subsystems()]
 #'
 #' @examples
+#' \donttest{
 #' # View flat sub-systems for Somerset STP (area_id = 5)
 #' cvd_area_flat_subsystems(area_id = 5) |> dplyr::glimpse()
 #'
 #' # View flat sub-systems for Lincolnshire ICB (area_id = 8042)
 #' cvd_area_flat_subsystems(area_id = 8042) |> dplyr::glimpse()
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_area_flat_subsystems <- function(area_id) {
@@ -1282,6 +1323,7 @@ cvd_area_flat_subsystems <- function(area_id) {
 #' [cvd_indicator_metric_list()], [cvd_indicator()], [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()], [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
+#' \donttest{
 #' # List four indicators for time period 17 and GP practice level (system level 5)
 #' cvd_indicator_list(time_period_id = 17, system_level_id = 5) |>
 #'   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
@@ -1291,6 +1333,9 @@ cvd_area_flat_subsystems <- function(area_id) {
 #' valid_periods <- cvd_time_period_list()
 #' valid_levels <- cvd_area_system_level(time_period_id = 17)
 #' cvd_indicator_list(time_period_id = 17, system_level_id = valid_levels$SystemLevelID[1])
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_list <- function(time_period_id, system_level_id) {
@@ -1401,6 +1446,7 @@ cvd_indicator_list <- function(time_period_id, system_level_id) {
 #' Use this function to explore the detailed metric breakdowns available for each indicator before performing data extraction or analysis. The `MetricList` column is unnested for convenience, so each row represents a single metric linked to an indicator.
 #'
 #' @examples
+#' \donttest{
 #' # List metrics for the prevalence of atrial fibrillation (indicator ID 1),
 #' # focusing on metrics for the 40-59 years age group at the national level:
 #' cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
@@ -1410,6 +1456,9 @@ cvd_indicator_list <- function(time_period_id, system_level_id) {
 #'
 #' # Get all indicator-metric pairs for GP practice level (system level 5) in a given period
 #' cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_metric_list <- function(time_period_id, system_level_id) {
@@ -1589,6 +1638,7 @@ cvd_indicator_metric_list <- function(time_period_id, system_level_id) {
 #' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()], [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
+#' \donttest{
 #' # Get all indicator data for area_id = 1103 in time period 17
 #' return_list <- cvd_indicator(time_period_id = 17, area_id = 1103)
 #'
@@ -1627,6 +1677,9 @@ cvd_indicator_metric_list <- function(time_period_id, system_level_id) {
 #'
 #' # Filter by tags: get indicators tagged with either tag 3 or 4 in area 3, time period 17
 #' return_list <- cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator <- function(time_period_id, area_id, tag_id = NULL) {
@@ -1840,6 +1893,7 @@ cvd_indicator <- function(time_period_id, area_id, tag_id = NULL) {
 #' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()], [cvd_indicator_details()], [cvd_indicator_sibling()], [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
+#' \donttest{
 #' # List the first five indicator tags
 #' cvd_indicator_tags() |>
 #'   dplyr::arrange(IndicatorTagID) |>
@@ -1849,6 +1903,9 @@ cvd_indicator <- function(time_period_id, area_id, tag_id = NULL) {
 #' tags <- cvd_indicator_tags()
 #' tag_id <- tags$IndicatorTagID[1]
 #' cvd_indicator(time_period_id = 17, area_id = 3, tag_id = tag_id)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_tags <- function() {
@@ -1929,6 +1986,7 @@ cvd_indicator_tags <- function() {
 #' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()], [cvd_indicator_tags()], [cvd_indicator_sibling()], [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
+#' \donttest{
 #' # Retrieve details for indicator with ID 7
 #' cvd_indicator_details(indicator_id = 7) |>
 #'   dplyr::select(IndicatorID, MetaDataTitle, MetaData) |>
@@ -1937,6 +1995,9 @@ cvd_indicator_tags <- function() {
 #' # Find a valid indicator ID, then get its details
 #' indicators <- cvd_indicator_list(time_period_id = 17, system_level_id = 5)
 #' cvd_indicator_details(indicator_id = indicators$IndicatorID[1])
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_details <- function(indicator_id) {
@@ -2062,6 +2123,7 @@ cvd_indicator_details <- function(indicator_id) {
 #' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()], [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
+#' \donttest{
 #' # Compare the value of metric 126 for area 1103 and all its siblings in time period 17
 #' cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = 126) |>
 #'   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit)
@@ -2070,6 +2132,9 @@ cvd_indicator_details <- function(indicator_id) {
 #' metrics <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
 #' metric_id <- metrics$MetricID[1]
 #' cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = metric_id)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_sibling <- function(
@@ -2233,6 +2298,7 @@ cvd_indicator_sibling <- function(
 #' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()], [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()], [cvd_indicator_data()], [cvd_indicator_metric_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
+#' \donttest{
 #' # Compare the value of metric 126 for area 74 and all its child areas in time period 22
 #' cvd_indicator_child_data(time_period_id = 22, area_id = 74, metric_id = 126) |>
 #'   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit)
@@ -2241,6 +2307,9 @@ cvd_indicator_sibling <- function(
 #' metrics <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
 #' metric_id <- metrics$MetricID[1]
 #' cvd_indicator_child_data(time_period_id = 17, area_id = 1103, metric_id = metric_id)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_child_data <- function(
@@ -2413,6 +2482,7 @@ cvd_indicator_child_data <- function(
 #' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()], [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()], [cvd_indicator_child_data()], [cvd_indicator_metric_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
+#' \donttest{
 #' # Retrieve all metric breakdowns for indicator 7 in area 1103 for time period 17
 #' returned_list <- cvd_indicator_data(time_period_id = 17, area_id = 1103, indicator_id = 7)
 #'
@@ -2431,6 +2501,9 @@ cvd_indicator_child_data <- function(
 #'   returned_list$national_data
 #' ) |>
 #' dplyr::filter(MetricID == 132)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_data <- function(
@@ -2657,6 +2730,7 @@ cvd_indicator_data <- function(
 #' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()], [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()], [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
+#' \donttest{
 #' # Retrieve  a single metric breakdown showing how men aged 40-59 years
 #' # are treated with anticoagulants (MetricID = 126) for 3 Centres PCN
 #' # (AreaID = 1103) to March 2020 (TimePeriodID = 1)
@@ -2678,6 +2752,9 @@ cvd_indicator_data <- function(
 #'   returned_list$national_data
 #' ) |>
 #' dplyr::glimpse()
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_metric_data <- function(
@@ -2857,6 +2934,7 @@ cvd_indicator_metric_data <- function(
 #' Use this function to retrieve a wide set of metric breakdowns for a given indicator in a single area and time period - useful for broad data extractions, dashboards or advanced analytics.
 #'
 #' @examples
+#' \donttest{
 #' # Retrieve metric data for 'CVD: All-cause mortality' (IndicatorID = 35) across
 #' # NHS Regions (SystemLevelID = 6) in the period April 2024 to
 #' # March 2025 (TimePeriodID = 27) and view a sample of 4 rows:
@@ -2875,6 +2953,9 @@ cvd_indicator_metric_data <- function(
 #'   system_level_id = 4,
 #'   indicator_id = indicators$IndicatorID[1]
 #' )
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_raw_data <- function(
@@ -3013,6 +3094,7 @@ cvd_indicator_raw_data <- function(
 #' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator_metric_data()], [cvd_indicator_data()], [cvd_indicator_raw_data()], [cvd_area_list()]
 #'
 #' @examples
+#' \donttest{
 #' # Compare performance against metric 150  (AF: treatment with anticoagulants
 #' # - all people) in 'Chester South PCN' (area ID 553) with national
 #' # performance:
@@ -3032,6 +3114,9 @@ cvd_indicator_raw_data <- function(
 #' # Extract `target` details
 #' target_data <- returned_list$target
 #' target_data
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_nationalarea_metric_data <- function(
@@ -3200,6 +3285,7 @@ cvd_indicator_nationalarea_metric_data <- function(
 #' [cvd_indicator_list()], [cvd_indicator_group()], [cvd_area_list()], [cvd_time_period_list()]
 #'
 #' @examples
+#' \donttest{
 #' # List all available priority group display names and their IDs
 #' cvd_indicator_priority_groups() |>
 #'   dplyr::select(PriorityGroupID, PriorityGroup)
@@ -3207,6 +3293,9 @@ cvd_indicator_nationalarea_metric_data <- function(
 #' # Preview group names for a sidebar filter in a dashboard
 #' groups <- cvd_indicator_priority_groups()
 #' unique(groups$PriorityGroup)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_priority_groups <- function() {
@@ -3295,6 +3384,7 @@ cvd_indicator_priority_groups <- function() {
 #' [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
+#' \donttest{
 #' # Return indicators for the 'Chronic Kidney Disease' Pathway Group (ID 9):
 #' cvd_indicator_pathway_group(pathway_group_id = 9) |>
 #'   dplyr::select(
@@ -3304,6 +3394,9 @@ cvd_indicator_priority_groups <- function() {
 #'     IndicatorID,
 #'     IndicatorName
 #'   )
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_pathway_group <- function(pathway_group_id) {
@@ -3415,11 +3508,15 @@ cvd_indicator_pathway_group <- function(pathway_group_id) {
 #' [cvd_indicator_pathway_group()] for pathway-based groupings
 #'
 #' @examples
+#' \donttest{
 #' #  list the indicators under Indicator Group ID 13 (Monitoring) which lists
 #' # 'Key Question' Indicator Group indicators:
 #' cvd_indicator_group(indicator_group_id = 13) |>
 #'   dplyr::select(IndicatorGroupID, IndicatorGroupName, IndicatorGroupTypeName,
 #'   IndicatorID, IndicatorName)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_group <- function(indicator_group_id) {
@@ -3541,6 +3638,7 @@ cvd_indicator_group <- function(indicator_group_id) {
 #' [cvd_indicator_person_timeseries()] for person-level time series data
 #'
 #' @examples
+#' \donttest{
 #' # List data for Salford South East PCN (area ID 705) for 'AF: treatment with
 #' # anticoagulants' for women people aged 60-79 years (metric ID 130):
 #' cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
@@ -3549,6 +3647,9 @@ cvd_indicator_group <- function(indicator_group_id) {
 #'     names_from = AreaName,
 #'     values_from = Value
 #'   )
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_metric_timeseries <- function(metric_id, area_id) {
@@ -3671,6 +3772,7 @@ cvd_indicator_metric_timeseries <- function(metric_id, area_id) {
 #' [cvd_indicator_metric_area_breakdown()] for area-level comparisons
 #'
 #' @examples
+#' \donttest{
 #' # View age group inequalities for indicator ID 7 in Salford South East PCN (area ID 705)
 #' cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
 #'   dplyr::filter(
@@ -3682,6 +3784,9 @@ cvd_indicator_metric_timeseries <- function(metric_id, area_id) {
 #'     names_from = MetricCategoryName,
 #'     values_from = Value
 #'   )
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_person_timeseries <- function(indicator_id, area_id) {
@@ -3803,6 +3908,7 @@ cvd_indicator_person_timeseries <- function(indicator_id, area_id) {
 #' [cvd_indicator_priority_groups()] for grouped indicator metadata
 #'
 #' @examples
+#' \donttest{
 #' # Compare performance for metric ID 1270 in time period 17 for Salford South East PCN (area ID 705)
 #' cvd_indicator_metric_systemlevel_comparison(
 #'   metric_id = 1270,
@@ -3811,6 +3917,9 @@ cvd_indicator_person_timeseries <- function(indicator_id, area_id) {
 #' ) |>
 #'   dplyr::filter(AreaID %in% c(705:709), !is.na(Value)) |>
 #'   dplyr::select(SystemLevelName, AreaID, AreaName, Value)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_metric_systemlevel_comparison <- function(
@@ -3961,6 +4070,7 @@ cvd_indicator_metric_systemlevel_comparison <- function(
 #' [cvd_indicator_priority_groups()] for grouped indicator metadata
 #'
 #' @examples
+#' \donttest{
 #' # Compare performance for metric ID 128 in time period 17 for
 #' # Salford South East PCN (area ID 705)
 #' cvd_indicator_metric_area_breakdown(
@@ -3969,6 +4079,9 @@ cvd_indicator_metric_systemlevel_comparison <- function(
 #'   area_id = 705
 #' ) |>
 #'   dplyr::select(SystemLevelName, AreaID, AreaName, Value)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_indicator_metric_area_breakdown <- function(
@@ -4107,11 +4220,15 @@ cvd_indicator_metric_area_breakdown <- function(
 #' [cvd_data_availability()] for checking data coverage across indicators
 #'
 #' @examples
+#' \donttest{
 #' # Show the first five external resources grouped by category
 #' cvd_external_resource() |>
 #'   dplyr::filter(ExternalResourceID < 10) |>
 #'   dplyr::select(ExternalResourceCategory, ExternalResourceSource, ExternalResourceTitle) |>
 #'   dplyr::group_by(ExternalResourceCategory)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
 #'
 #' @export
 cvd_external_resource <- function() {
@@ -4174,11 +4291,16 @@ cvd_external_resource <- function() {
 #' @param metric_category_type_id integer - the metric category to return data for (optional)
 #'
 #' @return Tibble of data availability
-#' @export
 #' @seealso [cvd_external_resource()]
 #'
 #' @examples
+#' \donttest{
 #' cvd_data_availability(time_period_id = 3, system_level_id = 5)
+#' }
+#'
+#' @note This function may take longer than 5 seconds to complete due to API response time.
+#'
+#' @export
 cvd_data_availability <- function(
   time_period_id,
   system_level_id,

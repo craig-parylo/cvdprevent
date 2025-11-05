@@ -47,17 +47,22 @@ This function is useful for:
 
 To find valid \code{indicator_group_id} values, use \code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FindicatorGroup\%2F\%3Cindicator_group_ID\%3E}{CVDPREVENT API documentation: indicator group}
 }
 
 \examples{
+\donttest{
 #  list the indicators under Indicator Group ID 13 (Monitoring) which lists
 # 'Key Question' Indicator Group indicators:
 cvd_indicator_group(indicator_group_id = 13) |>
   dplyr::select(IndicatorGroupID, IndicatorGroupName, IndicatorGroupTypeName,
   IndicatorID, IndicatorName)
+}
 
 }
 \seealso{

@@ -28,12 +28,16 @@ This function is the inverse of \code{\link[=cvd_time_period_system_levels]{cvd_
 \details{
 Use this function to determine which reporting periods are available for each NHS system level. This is useful for dynamically generating data selections or validating user input in dashboards or scripts.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#*Proposed*\%2Farea\%2FsystemLevel\%2FtimePeriods}{CVDPREVENT API documentation: All system levels and time periods} for details.
 }
 
 \examples{
+\donttest{
 # List the latest four reporting periods at GP practice level
 cvd_area_system_level_time_periods() |>
   dplyr::filter(SystemLevelName == "Practice") |>
@@ -42,6 +46,7 @@ cvd_area_system_level_time_periods() |>
 
 # Explore all system levels and their available time periods
 cvd_area_system_level_time_periods()
+}
 
 }
 \seealso{

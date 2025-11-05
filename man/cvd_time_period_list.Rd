@@ -27,6 +27,9 @@ Retrieves all available reporting periods from the CVDPREVENT API. Optionally, y
 \details{
 This function is often used to determine valid values for time period parameters in other API queries. It is a building block for most higher-level data retrieval functions in this package.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2FtimePeriod}{CVDPREVENT API documentation: Time period} for endpoint details.

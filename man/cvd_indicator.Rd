@@ -94,12 +94,16 @@ The returned object is a named list of tibbles, including details about indicato
 \details{
 This function is useful for extracting all indicator data for a given area and period, including breakdowns by category and time series. The list output allows easy access to different data tables for further analysis or visualisation. Filtering by tag enables targeted queries for specific subsets of indicators.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator}{CVDPREVENT API documentation: Indicator}
 }
 
 \examples{
+\donttest{
 # Get all indicator data for area_id = 1103 in time period 17
 return_list <- cvd_indicator(time_period_id = 17, area_id = 1103)
 
@@ -138,6 +142,7 @@ timeseries_data |>
 
 # Filter by tags: get indicators tagged with either tag 3 or 4 in area 3, time period 17
 return_list <- cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
+}
 
 }
 \seealso{

@@ -22,12 +22,16 @@ Use this function to obtain valid tag IDs for use in functions that support filt
 \details{
 Tags are useful for grouping or filtering indicators in dashboards, reports or scripted analyses. Tag IDs returned by this function can be supplied to functions like \code{\link[=cvd_indicator]{cvd_indicator()}} via the \code{tag_id} argument for targeted queries.
 }
+\note{
+This function may take longer than 5 seconds to complete due to API response time.
+}
 \section{API Documentation}{
 
 See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2Ftags}{CVDPREVENT API documentation: Indicator tags}
 }
 
 \examples{
+\donttest{
 # List the first five indicator tags
 cvd_indicator_tags() |>
   dplyr::arrange(IndicatorTagID) |>
@@ -37,6 +41,7 @@ cvd_indicator_tags() |>
 tags <- cvd_indicator_tags()
 tag_id <- tags$IndicatorTagID[1]
 cvd_indicator(time_period_id = 17, area_id = 3, tag_id = tag_id)
+}
 
 }
 \seealso{
