@@ -2,39 +2,59 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_pathway_group}
 \alias{cvd_indicator_pathway_group}
-\title{Pathway groups}
+\title{Retrieve indicators for a specified pathway group}
 \usage{
 cvd_indicator_pathway_group(pathway_group_id)
 }
 \arguments{
-\item{pathway_group_id}{integer - the pathway to return data for (compulsory)}
+\item{pathway_group_id}{Integer (required). The ID of the pathway group to retrieve. Use \code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}} to find valid IDs.}
 }
 \value{
-Tibble of indicators grouped by pathway groups
+A tibble containing indicators associated with the specified pathway group. Each row represents a single indicator and includes the following columns:
+\describe{
+\item{PathwayGroupID}{Integer. Unique identifier for the pathway group (e.g., 9 for "Chronic Kidney Disease").}
+\item{PathwayGroupName}{Character. Name of the pathway group (e.g., "Chronic Kidney Disease").}
+\item{AxisCharacter}{Character. Symbol used to represent the metric axis (e.g., "\%").}
+\item{FormatDisplayName}{Character. Display format for the metric (e.g., "Proportion \%").}
+\item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+\item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP006CKD").}
+\item{IndicatorFormatID}{Integer. Internal ID for the indicator's format type.}
+\item{IndicatorID}{Integer. Unique identifier for the indicator.}
+\item{IndicatorName}{Character. Full descriptive name of the indicator.}
+\item{MetricID}{Integer. Unique identifier for the specific metric instance.}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+\item{PathwayGroupDisplayOrder}{Integer. Display order of the indicator within the pathway group.}
+\item{QuestionGroupName}{Character. Thematic label for the indicator's clinical focus (e.g., "Diagnosis", "Monitoring", "Management").}
+}
+If the request fails or the ID is invalid, a tibble with error details is returned instead.
 }
 \description{
-Pathway groups are sub-groupings of Priority Groups, visible in the Regional
-& ICS Insights page. This endpoint returns a single pathway group for a given
-group ID. An error will be returned if there is no pathway group associated
-with the given ID. For a valid request, Pathway Group ID and named are
-returned as key value pairs and the Indicators populate an array.
+Returns a tibble of indicators associated with a single pathway group, identified by its ID.
+Pathway groups are thematic sub-groupings of priority groups and are visible in the Regional & ICS Insights page. This function enables users to retrieve all indicators linked to a specific pathway group (e.g., "Chronic Kidney Disease").
 }
-\details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FpathwayGroup\%2F\%3Cpathway_group_id\%3E}{Indicator pathway group}
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FpathwayGroup\%2F\%3Cpathway_group_id\%3E}{CVDPREVENT API documentation: indicator pathway group}
 }
+
 \examples{
 # Return indicators for the 'Chronic Kidney Disease' Pathway Group (ID 9):
 cvd_indicator_pathway_group(pathway_group_id = 9) |>
-  dplyr::select(PathwayGroupName, PathwayGroupID, IndicatorCode, IndicatorID, IndicatorName)
+  dplyr::select(
+    PathwayGroupName,
+    PathwayGroupID,
+    IndicatorCode,
+    IndicatorID,
+    IndicatorName
+  )
+
 }
 \seealso{
 \code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
 \code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}},
 \code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
 \code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}},
-\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}},
-\code{\link[=cvd_indicator_group]{cvd_indicator_group()}}, \code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}},
-\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
+\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_group]{cvd_indicator_group()}},
+\code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}}, \code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}},
+\code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}}, \code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
 }

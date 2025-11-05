@@ -2000,7 +2000,7 @@ cvd_indicator_details <- function(indicator_id) {
 #' Indicator sibling data
 #'
 #' @description
-#' Returns data for all sibling areas (i.e., areas sharing the same parent) and the specified area itself, for a given metric and reporting period from the CVDPREVENT API. This endpoint is intended to provide a direct comparison of a single metric across related areas (e.g., all PCNs within an ICB, or all practices within an PCN).
+#' Returns data for all sibling areas (i.e., areas sharing the same parent) and the specified area itself, for a given metric and reporting period from the CVDPREVENT API. This endpoint is intended to provide a direct comparison of a single metric across related areas (e.g., all PCNs within an ICB, or all practices within a PCN).
 #'
 #' Only the selected metric is returned for each sibling area.
 #'
@@ -2012,11 +2012,51 @@ cvd_indicator_details <- function(indicator_id) {
 #' @param metric_id Integer (required). The MetricID for which to return data. Use [cvd_indicator_metric_list()] or [cvd_indicator_data()] to find valid MetricIDs.
 #'
 #' @return
-#' A tibble containing the data for the specified metric in the selected area and all its siblings for the given reporting period. Columns typically include `AreaID`, `AreaName`, `Value`, `LowerConfidenceLimit`, `UpperConfidenceLimit`, and other relevant metric information.
+#' A tibble containing the data for the specified metric in the selected area and all its siblings for the given reporting period. Columns include:
+#' \describe{
+#'   \item{CategoryAttribute}{Character. Grouping label used to define the population subset (e.g., "Male").}
+#'   \item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002AF").}
+#'   \item{IndicatorID}{Integer. Unique identifier for the indicator.}
+#'   \item{IndicatorName}{Character. Full descriptive name of the indicator.}
+#'   \item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+#'   \item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+#'   \item{MetricCategoryID}{Integer. Unique identifier for the metric category.}
+#'   \item{MetricCategoryName}{Character. Name of the subgroup or category (e.g., "40–59").}
+#'   \item{MetricCategoryOrder}{Integer. Display order for the category within its type.}
+#'   \item{MetricCategoryTypeName}{Character. Type of category used for breakdown (e.g., "Age group").}
+#'
+#'   \item{AreaCode}{Character. Code for the NHS area (e.g., PCN).}
+#'   \item{AreaID}{Integer. Unique identifier for the NHS area.}
+#'   \item{AreaName}{Character. Name of the NHS area (e.g., "Greenwood PCN").}
+#'
+#'   \item{Count}{Integer. Number of records included in the calculation.}
+#'   \item{DataID}{Integer. Unique identifier for the data point.}
+#'   \item{Denominator}{Numeric. Denominator used in the metric calculation.}
+#'   \item{Factor}{Numeric. Scaling factor applied to the metric, if applicable. Often blank.}
+#'   \item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+#'   \item{LowerConfidenceLimit}{Numeric. Lower bound of the confidence interval.}
+#'   \item{Max}{Numeric. Maximum observed value for the metric.}
+#'   \item{Median}{Numeric. Median value for the metric.}
+#'   \item{Min}{Numeric. Minimum observed value for the metric.}
+#'   \item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+#'   \item{Numerator}{Numeric. Numerator used in the metric calculation.}
+#'   \item{Q20}{Numeric. 20th percentile value.}
+#'   \item{Q40}{Numeric. 40th percentile value.}
+#'   \item{Q60}{Numeric. 60th percentile value.}
+#'   \item{Q80}{Numeric. 80th percentile value.}
+#'
+#'   \item{SystemLevelID}{Integer. Identifier for the system level (e.g., 4 = PCN).}
+#'   \item{SystemLevelName}{Character. Name of the system level (e.g., "PCN").}
+#'   \item{TimePeriodID}{Integer. Identifier for the time period associated with the metric.}
+#'   \item{TimePeriodName}{Character. Display label for the time period (e.g., "To March 2024").}
+#'   \item{UpperConfidenceLimit}{Numeric. Upper bound of the confidence interval.}
+#'   \item{Value}{Numeric. Final calculated value for the metric.}
+#'   \item{ValueNote}{Character. Notes or flags associated with the value (e.g., suppression warnings).}
+#' }
 #' If no sibling data is found, returns a tibble describing the error.
 #'
 #' @details
-#' Use this function to compare a metric across all areas at the same heirarchical level (e.g., compare all practices in a PCN or all PCNs in an ICB) for benchmarking and visualisation purposes.
+#' Use this function to compare a metric across all areas at the same hierarchical level (e.g., compare all practices in a PCN or all PCNs in an ICB) for benchmarking and visualisation purposes.
 #'
 #' @seealso
 #' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()], [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()], [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()], [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], [cvd_indicator_group()], [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
@@ -2143,7 +2183,47 @@ cvd_indicator_sibling <- function(
 #' @param metric_id Integer (required). The MetricID for which to retrieve values. Use [cvd_indicator_metric_list()] or [cvd_indicator_data()] to find valid MetricIDs.
 #'
 #' @return
-#' A tibble with the value of the specified metric for the given area and all its child areas, for the specified time period. Typical columns include `AreaID`, `AreaName`, `Value`, `LowerConfidenceLimit`, `UpperConfidenceLimit` and other relevant metric information.
+#' A tibble with the value of the specified metric for the given area and all its child areas, for the specified time period. Columns include:
+#' \describe{
+#'   \item{CategoryAttribute}{Character. Grouping label used to define the population subset (e.g., "Male").}
+#'   \item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002AF").}
+#'   \item{IndicatorID}{Integer. Unique identifier for the indicator.}
+#'   \item{IndicatorName}{Character. Full descriptive name of the indicator.}
+#'   \item{IndicatorOrder}{Integer. Display order for the indicator in dashboards or reports.}
+#'   \item{IndicatorShortName}{Character. Abbreviated name of the indicator for display purposes.}
+#'   \item{MetricCategoryID}{Integer. Unique identifier for the metric category.}
+#'   \item{MetricCategoryName}{Character. Name of the subgroup or category (e.g., "40–59").}
+#'   \item{MetricCategoryOrder}{Integer. Display order for the category within its type.}
+#'   \item{MetricCategoryTypeName}{Character. Type of category used for breakdown (e.g., "Age group").}
+#'
+#'   \item{AreaCode}{Character. Code for the child NHS area (e.g., PCN).}
+#'   \item{AreaID}{Integer. Unique identifier for the child NHS area.}
+#'   \item{AreaName}{Character. Name of the child NHS area (e.g., "Teldoc PCN").}
+#'
+#'   \item{Count}{Integer. Number of records included in the calculation.}
+#'   \item{DataID}{Integer. Unique identifier for the data point.}
+#'   \item{Denominator}{Numeric. Denominator used in the metric calculation.}
+#'   \item{Factor}{Numeric. Scaling factor applied to the metric, if applicable. Often blank.}
+#'   \item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+#'   \item{LowerConfidenceLimit}{Numeric. Lower bound of the confidence interval.}
+#'   \item{Max}{Numeric. Maximum observed value for the metric.}
+#'   \item{Median}{Numeric. Median value for the metric.}
+#'   \item{Min}{Numeric. Minimum observed value for the metric.}
+#'   \item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+#'   \item{Numerator}{Numeric. Numerator used in the metric calculation.}
+#'   \item{Q20}{Numeric. 20th percentile value.}
+#'   \item{Q40}{Numeric. 40th percentile value.}
+#'   \item{Q60}{Numeric. 60th percentile value.}
+#'   \item{Q80}{Numeric. 80th percentile value.}
+#'
+#'   \item{SystemLevelID}{Integer. Identifier for the system level (e.g., 4 = PCN).}
+#'   \item{SystemLevelName}{Character. Name of the system level (e.g., "PCN").}
+#'   \item{TimePeriodID}{Integer. Identifier for the time period associated with the metric.}
+#'   \item{TimePeriodName}{Character. Display label for the time period (e.g., "To March 2024").}
+#'   \item{UpperConfidenceLimit}{Numeric. Upper bound of the confidence interval.}
+#'   \item{Value}{Numeric. Final calculated value for the metric.}
+#'   \item{ValueNote}{Character. Notes or flags associated with the value (e.g., suppression warnings).}
+#' }
 #' If no child data is found, returns a tibble describing the error.
 #'
 #' @details
@@ -2620,9 +2700,6 @@ cvd_indicator_metric_data <- function(
     id = area_id,
     param_name = "area_id",
     required = TRUE
-    # valid_ids = m_get_valid_area_ids_for_time_period_id(
-    #   time_period_id = time_period_id
-    # )
   )
   if (!isTRUE(v2)) {
     return(v2)
@@ -2632,10 +2709,6 @@ cvd_indicator_metric_data <- function(
     id = metric_id,
     param_name = "metric_id",
     required = TRUE
-    # valid_ids = m_get_valid_metric_ids_for_time_period_id_and_area_id(
-    #   time_period_id = time_period_id,
-    #   area_id = area_id
-    # )
   )
   if (!isTRUE(v3)) {
     return(v3)
@@ -2910,10 +2983,28 @@ cvd_indicator_raw_data <- function(
 #' @return
 #' A named list with up to two tibbles:
 #' \describe{
-#'   \item{area}{Tibble with one or more rows, summarising the metric for the specified area and the England aggregate (AreaID = 1). Typical columns include `AreaID`, `AreaName`, `MetricID`, `Value`, `Numerator`, `Denominator`, `LowerConfidenceLimit`, `UpperConfidenceLimit`, `MetricCategoryName`, `CategoryAttribute`, etc.}
-#'   \item{target}{Tibble (if available) with target-setting details for the area, including columns such as: `TargetValue` (target as a percentage up to 100, integer), and `TargetPatients` (number of additional patients required to reach the target).}
+#'   \item{area}{Tibble with one or more rows, summarising the metric for the specified area and the England aggregate (AreaID = 1).}
+#'   \item{target}{Tibble (if available) with target-setting details for the area}
 #' }
 #' If no data exists for both the area and the national aggregate for the given parameters, returns a tibble describing the error.
+#'
+#' \strong{area} contains the following columns:
+#' \describe{
+#'   \item{AreaCode}{Character. Code for the NHS area (e.g., "U68943" for Chester South PCN, "E92000001" for England).}
+#'   \item{AreaID}{Integer. Unique identifier for the NHS area.}
+#'   \item{AreaName}{Character. Name of the NHS area (e.g., "Chester South PCN", "England").}
+#'   \item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+#'   \item{NationalLevel}{Character. Indicates whether the area represents national-level data ("Y" or "N").}
+#'   \item{NotificationCount}{Integer. Count of notifications associated with the area for the given metric.}
+#'   \item{Value}{Numeric. Final calculated value for the metric in the specified area.}
+#' }
+#'
+#' \strong{target} contains the following columns:
+#' \describe{
+#'   \item{TargetLabel}{Character. Descriptive label for the target (e.g., "Upper threshold for QOF").}
+#'   \item{TargetPatients}{Integer. Number of additional patients needed to achieve the target threshold.}
+#'   \item{TargetValue}{Numeric. Target value or threshold to be achieved (e.g., 95).}
+#' }
 #'
 #' @details
 #' Use this function to benchmark a local area's metric value against the national figure and to understand the actual gap to a clinically meaningful target.
@@ -2925,21 +3016,21 @@ cvd_indicator_raw_data <- function(
 #' # Compare performance against metric 150  (AF: treatment with anticoagulants
 #' # - all people) in 'Chester South PCN' (area ID 553) with national
 #' # performance:
-#' return_list <- cvd_indicator_nationalarea_metric_data(
+#' returned_list <- cvd_indicator_nationalarea_metric_data(
 #'     metric_id = 150,
 #'     time_period_id = 17,
 #'     area_id = 553
 #' )
 #'
 #' # See what the list contains
-#' return_list |> summary()
+#' returned_list |> summary()
 #'
 #' # Extract the `area` details
-#' area_data <- return_list$area
+#' area_data <- returned_list$area
 #' area_data
 #'
 #' # Extract `target` details
-#' target_data <- return_list$target
+#' target_data <- returned_list$target
 #' target_data
 #'
 #' @export
@@ -3082,7 +3173,24 @@ cvd_indicator_nationalarea_metric_data <- function(
 #' See the [CVDPREVENT API documentation: Indicator priority groups](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpriorityGroup)
 #'
 #' @return
-#' A tibble with one row per indicator / priority group. Key columns typically include `PriorityGroupID`, `PriorityGroup` (the display name), `PriorityGroupDisplayOrder`, and `IndicatorName`. Other columns may be present to support specialised reporting or grouping.
+#' A tibble with one row per indicator / priority group containing the following columns:
+#' \describe{
+#'   \item{PriorityGroup}{Character. High-level grouping label for the indicator (e.g., "CKD", "Prevalence", "ABC").}
+#'   \item{AxisCharacter}{Character. Symbol used to represent the metric axis (e.g., "%").}
+#'   \item{FormatDisplayName}{Character. Display format for the metric (e.g., "Proportion %", "Rate per 10,000 patients").}
+#'   \item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Blue"). Often blank.}
+#'   \item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002AF").}
+#'   \item{IndicatorFormatID}{Integer. Internal ID for the indicator's format type.}
+#'   \item{IndicatorID}{Integer. Unique identifier for the indicator.}
+#'   \item{IndicatorName}{Character. Full descriptive name of the indicator.}
+#'   \item{MetricID}{Integer. Unique identifier for the specific metric instance.}
+#'   \item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+#'   \item{PathwayGroupID}{Integer. Unique identifier for the clinical pathway group.}
+#'   \item{PathwayGroupName}{Character. Name of the clinical pathway group (e.g., "Chronic Kidney Disease", "Hypertension").}
+#'   \item{PriorityGroupDisplayOrder}{Integer. Display order for the priority group within its pathway.}
+#'   \item{PriorityGroupID}{Integer. Unique identifier for the priority group.}
+#'   \item{QuestionGroupName}{Character. Thematic label for the indicator's clinical focus (e.g., "Diagnosis", "Management", "Monitoring").}
+#' }
 #' If no priority groups are found, returns a tibble describing the error.
 #'
 #' @details
@@ -3148,35 +3256,56 @@ cvd_indicator_priority_groups <- function() {
 }
 
 
-#' Pathway groups
+#' Retrieve indicators for a specified pathway group
 #'
-#' Pathway groups are sub-groupings of Priority Groups, visible in the Regional
-#' & ICS Insights page. This endpoint returns a single pathway group for a given
-#' group ID. An error will be returned if there is no pathway group associated
-#' with the given ID. For a valid request, Pathway Group ID and named are
-#' returned as key value pairs and the Indicators populate an array.
+#' @description
+#' Returns a tibble of indicators associated with a single pathway group, identified by its ID.
+#' Pathway groups are thematic sub-groupings of priority groups and are visible in the Regional & ICS Insights page. This function enables users to retrieve all indicators linked to a specific pathway group (e.g., "Chronic Kidney Disease").
 #'
-#' CVD Prevent API documentation:
-#' [Indicator pathway group](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpathwayGroup%2F%3Cpathway_group_id%3E)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: indicator pathway group](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FpathwayGroup%2F%3Cpathway_group_id%3E)
 #'
+#' @param pathway_group_id Integer (required). The ID of the pathway group to retrieve. Use [cvd_indicator_priority_groups()] to find valid IDs.
 #'
-#' @param pathway_group_id integer - the pathway to return data for (compulsory)
+#' @return A tibble containing indicators associated with the specified pathway group. Each row represents a single indicator and includes the following columns:
+#' \describe{
+#'   \item{PathwayGroupID}{Integer. Unique identifier for the pathway group (e.g., 9 for "Chronic Kidney Disease").}
+#'   \item{PathwayGroupName}{Character. Name of the pathway group (e.g., "Chronic Kidney Disease").}
+#'   \item{AxisCharacter}{Character. Symbol used to represent the metric axis (e.g., "%").}
+#'   \item{FormatDisplayName}{Character. Display format for the metric (e.g., "Proportion %").}
+#'   \item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+#'   \item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP006CKD").}
+#'   \item{IndicatorFormatID}{Integer. Internal ID for the indicator's format type.}
+#'   \item{IndicatorID}{Integer. Unique identifier for the indicator.}
+#'   \item{IndicatorName}{Character. Full descriptive name of the indicator.}
+#'   \item{MetricID}{Integer. Unique identifier for the specific metric instance.}
+#'   \item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+#'   \item{PathwayGroupDisplayOrder}{Integer. Display order of the indicator within the pathway group.}
+#'   \item{QuestionGroupName}{Character. Thematic label for the indicator's clinical focus (e.g., "Diagnosis", "Monitoring", "Management").}
+#' }
+#' If the request fails or the ID is invalid, a tibble with error details is returned instead.
 #'
-#' @return Tibble of indicators grouped by pathway groups
-#' @export
-#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
+#' @seealso
+#' [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
 #' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
 #' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
 #' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()],
-#' [cvd_indicator_group()], [cvd_indicator_metric_timeseries()],
-#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
-#' [cvd_indicator_metric_area_breakdown()]
+#' [cvd_indicator_priority_groups()], [cvd_indicator_group()],
+#' [cvd_indicator_metric_timeseries()], [cvd_indicator_person_timeseries()],
+#' [cvd_indicator_metric_systemlevel_comparison()], [cvd_indicator_metric_area_breakdown()]
 #'
 #' @examples
 #' # Return indicators for the 'Chronic Kidney Disease' Pathway Group (ID 9):
 #' cvd_indicator_pathway_group(pathway_group_id = 9) |>
-#'   dplyr::select(PathwayGroupName, PathwayGroupID, IndicatorCode, IndicatorID, IndicatorName)
+#'   dplyr::select(
+#'     PathwayGroupName,
+#'     PathwayGroupID,
+#'     IndicatorCode,
+#'     IndicatorID,
+#'     IndicatorName
+#'   )
+#'
+#' @export
 cvd_indicator_pathway_group <- function(pathway_group_id) {
   # validate input
   v1 <- validate_input_id(
@@ -3238,35 +3367,52 @@ cvd_indicator_pathway_group <- function(pathway_group_id) {
   }
 }
 
-#' Indicator group
+#' Retrieve indicators for a specified indicator group
 #'
-#' Returns a single indicator group for a given group ID. An error will be
-#' returned if there is no indicator group associated with the given ID.
-#' `IndicatorGroup` is the primary key in the IndicatorGroup table, which also
-#' contains `IndicatorGroupName` and `IndicatorGroupTypeID`. The group type ID
-#' tells you what type of indicator group you're dealing with, e.g. a Priority
-#' Group.
-#' `IndicatorGroupTypeID` is the primary key of IndicatorGroupType and so
-#' `IndicatorGroupTypeName` is the associated name for the given group type ID.
-#' Finally, there is the array of indicators which are contained in this group,
-#' including display orders for the given group.
+#' @description
+#' Returns a tibble of indicators belonging to a single indicator group, identified by its group ID. Indicator groups are thematic collections of indicators used throughout CVDPREVENT reporting, such as "Monitoring", "Diagnosis", or "Management". This function enables users to explore the structure and contents of these groups, including their type and display order.
 #'
-#' CVD Prevent API documentation:
-#' [Indicator group](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FindicatorGroup%2F%3Cindicator_group_ID%3E)
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: indicator group](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FindicatorGroup%2F%3Cindicator_group_ID%3E)
 #'
+#' @details
+#' Indicator groups are defined in the CVDPREVENT IndicatorGroup table and include metadata such as:
+#' - `IndicatorGroupName`: the name of the group (e.g., "Monitoring")
+#' - `IndicatorGroupTypeID`: the type of group (e.g., Priority Group, Key Question Group)
+#' - `IndicatorGroupTypeName`: the readable label for the group type
 #'
-#' @param indicator_group_id integer - the group to return data for (compulsory)
+#' Each group contains an array of indicators, which are returned with their associated metadata.
+#' This function is useful for:
+#' - Exploring which indicators belong to a specific clinical theme
+#' - Building dashboards or reports based on grouped indicators
+#' - Understanding how indicators are organised within the CVDPREVENT framework
 #'
-#' @return Tibble of indicators grouped by indicator group
-#' @export
-#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
-#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
-#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
-#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
-#' [cvd_indicator_metric_timeseries()],
-#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
-#' [cvd_indicator_metric_area_breakdown()]
+#' To find valid `indicator_group_id` values, use [cvd_indicator_priority_groups()].
+#'
+#' @param indicator_group_id Integer (required). The ID of the indicator group to retrieve.
+#'
+#' @return A tibble where each row represents an indicator within the specified indicator group. Columns include:
+#' \describe{
+#'   \item{IndicatorGroupID}{Integer. Unique identifier for the indicator group (e.g., 1 for "ABC").}
+#'   \item{IndicatorGroupName}{Character. Name of the indicator group (e.g., "Prevalence", "Smoking and BMI").}
+#'   \item{IndicatorGroupTypeID}{Integer. Identifier for the type of indicator group (e.g., 1 = Priority Group).}
+#'   \item{IndicatorGroupTypeName}{Character. Descriptive name of the group type (e.g., "Priority Group").}
+#'   \item{DisplayOrder}{Integer. Display order of the indicator within the group.}
+#'   \item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red", "Blue"). Often blank.}
+#'   \item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP004HYP").}
+#'   \item{IndicatorID}{Integer. Unique identifier for the indicator.}
+#'   \item{IndicatorName}{Character. Full descriptive name of the indicator.}
+#'   \item{MetricID}{Integer. Unique identifier for the associated metric.}
+#'   \item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+#' }
+#' If the request fails or the ID is invalid, a tibble with error details is returned instead.
+#'
+#' @seealso
+#' [cvd_indicator_priority_groups()] to browse available indicator groups,
+#' [cvd_indicator_list()] to view all indicators,
+#' [cvd_indicator_data()] to retrieve metric values,
+#' [cvd_indicator_details()] for indicator metadata,
+#' [cvd_indicator_pathway_group()] for pathway-based groupings
 #'
 #' @examples
 #' #  list the indicators under Indicator Group ID 13 (Monitoring) which lists
@@ -3274,6 +3420,8 @@ cvd_indicator_pathway_group <- function(pathway_group_id) {
 #' cvd_indicator_group(indicator_group_id = 13) |>
 #'   dplyr::select(IndicatorGroupID, IndicatorGroupName, IndicatorGroupTypeName,
 #'   IndicatorID, IndicatorName)
+#'
+#' @export
 cvd_indicator_group <- function(indicator_group_id) {
   # validate input
   v1 <- validate_input_id(
@@ -3341,29 +3489,56 @@ cvd_indicator_group <- function(indicator_group_id) {
   }
 }
 
-#' Indicator time series by metric
+#' Retrieve time series data for a specific metric and area
 #'
-#' Returns data for the time series chart for specified metric ID and area ID.
-#' Contains an array of two areas in `Areas`, one of which is the National data
-#' with the other corresponding to the provided area ID. `TargetValue` is also
-#' returned in the `Data` dictionary.
+#' @description
+#' Returns a tibble containing time series data for a specified metric and NHS area. The output includes both national-level (England) and local-level values across reporting periods, enabling direct comparison and trend analysis.
 #'
-#' CVD Prevent API documentation:
-#' [Indicator time series metrics](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FtimeSeriesByMetric%2F%3Cmetric_ID%3E)
+#' @details
+#' This function is designed to support longitudinal analysis of indicator performance.
+#' It returns:
+#' - Time series values for the selected metric in the specified area
+#' - Corresponding national values (AreaID = 1)
+#' - Target thresholds (if defined) for benchmarking
 #'
-#' @param metric_id integer - the metric to return data for (compulsory)
-#' @param area_id integer - the area to return data for (compulsory)
+#' The result includes one row per time period per area, allowing users to:
+#' - Visualise trends over time
+#' - Compare local performance against national averages
+#' - Track progress toward clinical targets
 #'
-#' @return Tibble of time-series data for the specified metric in the area
-#' @export
-#' @seealso [cvd_indicator_list()], [cvd_indicator_metric_list()], [cvd_indicator()],
-#' [cvd_indicator_tags()], [cvd_indicator_details()], [cvd_indicator_sibling()],
-#' [cvd_indicator_child_data()], [cvd_indicator_data()], [cvd_indicator_metric_data()],
-#' [cvd_indicator_raw_data()], [cvd_indicator_nationalarea_metric_data()],
-#' [cvd_indicator_priority_groups()], [cvd_indicator_pathway_group()], #
-#' [cvd_indicator_group()],
-#' [cvd_indicator_person_timeseries()], [cvd_indicator_metric_systemlevel_comparison()],
-#' [cvd_indicator_metric_area_breakdown()]
+#' To find valid `metric_id` values, use [cvd_indicator_metric_list()] or [cvd_indicator_data()].
+#' For valid `area_id` values, use [cvd_area_list()] or [cvd_area_search()].
+#'
+#' @section API Documentation:
+#' See the [CVDPREVENT API documentation: Indicator time series metrics](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2Findicator%2FtimeSeriesByMetric%2F%3Cmetric_ID%3E)
+#'
+#' @param metric_id Integer (required). The ID of the metric to retrieve. Use [cvd_indicator_metric_list()] or [cvd_indicator_data()] to find valid IDs.
+#' @param area_id Integer (required). The ID of the NHS area to retrieve data for. Use [cvd_area_list()] or [cvd_area_search()] to find valid IDs.
+#'
+#' @return A tibble where each row represents a time period for a specific NHS area, including the observed metric value and associated target threshold. Columns include:
+#' \describe{
+#'   \item{AreaCode}{Character. Code for the NHS area (e.g., "U60510" for a PCN, "E92000001" for England).}
+#'   \item{AreaID}{Integer. Unique identifier for the NHS area.}
+#'   \item{AreaName}{Character. Name of the NHS area (e.g., "Salford South East PCN").}
+#'   \item{Count}{Integer. Number of records included in the calculation (e.g., eligible patients).}
+#'   \item{Denominator}{Numeric. Denominator used in the metric calculation.}
+#'   \item{Factor}{Numeric. Scaling factor applied to the metric, if applicable. Often blank.}
+#'   \item{Numerator}{Numeric. Numerator used in the metric calculation.}
+#'   \item{TimePeriodID}{Integer. Identifier for the reporting period.}
+#'   \item{TimePeriodName}{Character. Display label for the time period (e.g., "To June 2024").}
+#'   \item{Value}{Numeric. Final calculated value for the metric in the given period.}
+#'   \item{TargetLabel}{Character. Descriptive label for the target threshold (e.g., "Upper threshold for QOF").}
+#'   \item{TargetValue}{Numeric. Target value to be achieved (e.g., 95).}
+#' }
+#' If no data is available for the given parameters, a tibble describing the error is returned.
+#'
+#' @seealso
+#' [cvd_indicator_metric_list()] to browse available metrics,
+#' [cvd_area_list()] and [cvd_area_search()] to find valid area IDs,
+#' [cvd_indicator_data()] to retrieve current metric values,
+#' [cvd_indicator_priority_groups()] for grouped indicator metadata,
+#' [cvd_indicator_metric_area_breakdown()] for area-level comparisons,
+#' [cvd_indicator_person_timeseries()] for person-level time series data
 #'
 #' @examples
 #' # List data for Salford South East PCN (area ID 705) for 'AF: treatment with
@@ -3374,6 +3549,8 @@ cvd_indicator_group <- function(indicator_group_id) {
 #'     names_from = AreaName,
 #'     values_from = Value
 #'   )
+#'
+#' @export
 cvd_indicator_metric_timeseries <- function(metric_id, area_id) {
   # validate input
   v1 <- validate_input_id(

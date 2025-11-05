@@ -2,46 +2,68 @@
 % Please edit documentation in R/cvd_api_functions.R
 \name{cvd_indicator_group}
 \alias{cvd_indicator_group}
-\title{Indicator group}
+\title{Retrieve indicators for a specified indicator group}
 \usage{
 cvd_indicator_group(indicator_group_id)
 }
 \arguments{
-\item{indicator_group_id}{integer - the group to return data for (compulsory)}
+\item{indicator_group_id}{Integer (required). The ID of the indicator group to retrieve.}
 }
 \value{
-Tibble of indicators grouped by indicator group
+A tibble where each row represents an indicator within the specified indicator group. Columns include:
+\describe{
+\item{IndicatorGroupID}{Integer. Unique identifier for the indicator group (e.g., 1 for "ABC").}
+\item{IndicatorGroupName}{Character. Name of the indicator group (e.g., "Prevalence", "Smoking and BMI").}
+\item{IndicatorGroupTypeID}{Integer. Identifier for the type of indicator group (e.g., 1 = Priority Group).}
+\item{IndicatorGroupTypeName}{Character. Descriptive name of the group type (e.g., "Priority Group").}
+\item{DisplayOrder}{Integer. Display order of the indicator within the group.}
+\item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red", "Blue"). Often blank.}
+\item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP004HYP").}
+\item{IndicatorID}{Integer. Unique identifier for the indicator.}
+\item{IndicatorName}{Character. Full descriptive name of the indicator.}
+\item{MetricID}{Integer. Unique identifier for the associated metric.}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+}
+If the request fails or the ID is invalid, a tibble with error details is returned instead.
 }
 \description{
-Returns a single indicator group for a given group ID. An error will be
-returned if there is no indicator group associated with the given ID.
-\code{IndicatorGroup} is the primary key in the IndicatorGroup table, which also
-contains \code{IndicatorGroupName} and \code{IndicatorGroupTypeID}. The group type ID
-tells you what type of indicator group you're dealing with, e.g. a Priority
-Group.
-\code{IndicatorGroupTypeID} is the primary key of IndicatorGroupType and so
-\code{IndicatorGroupTypeName} is the associated name for the given group type ID.
-Finally, there is the array of indicators which are contained in this group,
-including display orders for the given group.
+Returns a tibble of indicators belonging to a single indicator group, identified by its group ID. Indicator groups are thematic collections of indicators used throughout CVDPREVENT reporting, such as "Monitoring", "Diagnosis", or "Management". This function enables users to explore the structure and contents of these groups, including their type and display order.
 }
 \details{
-CVD Prevent API documentation:
-\href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FindicatorGroup\%2F\%3Cindicator_group_ID\%3E}{Indicator group}
+Indicator groups are defined in the CVDPREVENT IndicatorGroup table and include metadata such as:
+\itemize{
+\item \code{IndicatorGroupName}: the name of the group (e.g., "Monitoring")
+\item \code{IndicatorGroupTypeID}: the type of group (e.g., Priority Group, Key Question Group)
+\item \code{IndicatorGroupTypeName}: the readable label for the group type
 }
+
+Each group contains an array of indicators, which are returned with their associated metadata.
+This function is useful for:
+\itemize{
+\item Exploring which indicators belong to a specific clinical theme
+\item Building dashboards or reports based on grouped indicators
+\item Understanding how indicators are organised within the CVDPREVENT framework
+}
+
+To find valid \code{indicator_group_id} values, use \code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}.
+}
+\section{API Documentation}{
+
+See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#\%2Findicator\%2FindicatorGroup\%2F\%3Cindicator_group_ID\%3E}{CVDPREVENT API documentation: indicator group}
+}
+
 \examples{
 #  list the indicators under Indicator Group ID 13 (Monitoring) which lists
 # 'Key Question' Indicator Group indicators:
 cvd_indicator_group(indicator_group_id = 13) |>
   dplyr::select(IndicatorGroupID, IndicatorGroupName, IndicatorGroupTypeName,
   IndicatorID, IndicatorName)
+
 }
 \seealso{
-\code{\link[=cvd_indicator_list]{cvd_indicator_list()}}, \code{\link[=cvd_indicator_metric_list]{cvd_indicator_metric_list()}}, \code{\link[=cvd_indicator]{cvd_indicator()}},
-\code{\link[=cvd_indicator_tags]{cvd_indicator_tags()}}, \code{\link[=cvd_indicator_details]{cvd_indicator_details()}}, \code{\link[=cvd_indicator_sibling]{cvd_indicator_sibling()}},
-\code{\link[=cvd_indicator_child_data]{cvd_indicator_child_data()}}, \code{\link[=cvd_indicator_data]{cvd_indicator_data()}}, \code{\link[=cvd_indicator_metric_data]{cvd_indicator_metric_data()}},
-\code{\link[=cvd_indicator_raw_data]{cvd_indicator_raw_data()}}, \code{\link[=cvd_indicator_nationalarea_metric_data]{cvd_indicator_nationalarea_metric_data()}},
-\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}}, \code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}}, #
-\code{\link[=cvd_indicator_metric_timeseries]{cvd_indicator_metric_timeseries()}},
-\code{\link[=cvd_indicator_person_timeseries]{cvd_indicator_person_timeseries()}}, \code{\link[=cvd_indicator_metric_systemlevel_comparison]{cvd_indicator_metric_systemlevel_comparison()}},
-\code{\link[=cvd_indicator_metric_area_breakdown]{cvd_indicator_metric_area_breakdown()}}
+\code{\link[=cvd_indicator_priority_groups]{cvd_indicator_priority_groups()}} to browse available indicator groups,
+\code{\link[=cvd_indicator_list]{cvd_indicator_list()}} to view all indicators,
+\code{\link[=cvd_indicator_data]{cvd_indicator_data()}} to retrieve metric values,
+\code{\link[=cvd_indicator_details]{cvd_indicator_details()}} for indicator metadata,
+\code{\link[=cvd_indicator_pathway_group]{cvd_indicator_pathway_group()}} for pathway-based groupings
 }

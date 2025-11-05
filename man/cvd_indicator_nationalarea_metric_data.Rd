@@ -16,10 +16,28 @@ cvd_indicator_nationalarea_metric_data(time_period_id, area_id, metric_id)
 \value{
 A named list with up to two tibbles:
 \describe{
-\item{area}{Tibble with one or more rows, summarising the metric for the specified area and the England aggregate (AreaID = 1). Typical columns include \code{AreaID}, \code{AreaName}, \code{MetricID}, \code{Value}, \code{Numerator}, \code{Denominator}, \code{LowerConfidenceLimit}, \code{UpperConfidenceLimit}, \code{MetricCategoryName}, \code{CategoryAttribute}, etc.}
-\item{target}{Tibble (if available) with target-setting details for the area, including columns such as: \code{TargetValue} (target as a percentage up to 100, integer), and \code{TargetPatients} (number of additional patients required to reach the target).}
+\item{area}{Tibble with one or more rows, summarising the metric for the specified area and the England aggregate (AreaID = 1).}
+\item{target}{Tibble (if available) with target-setting details for the area}
 }
 If no data exists for both the area and the national aggregate for the given parameters, returns a tibble describing the error.
+
+\strong{area} contains the following columns:
+\describe{
+\item{AreaCode}{Character. Code for the NHS area (e.g., "U68943" for Chester South PCN, "E92000001" for England).}
+\item{AreaID}{Integer. Unique identifier for the NHS area.}
+\item{AreaName}{Character. Name of the NHS area (e.g., "Chester South PCN", "England").}
+\item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Red"). Often blank.}
+\item{NationalLevel}{Character. Indicates whether the area represents national-level data ("Y" or "N").}
+\item{NotificationCount}{Integer. Count of notifications associated with the area for the given metric.}
+\item{Value}{Numeric. Final calculated value for the metric in the specified area.}
+}
+
+\strong{target} contains the following columns:
+\describe{
+\item{TargetLabel}{Character. Descriptive label for the target (e.g., "Upper threshold for QOF").}
+\item{TargetPatients}{Integer. Number of additional patients needed to achieve the target threshold.}
+\item{TargetValue}{Numeric. Target value or threshold to be achieved (e.g., 95).}
+}
 }
 \description{
 Returns a named list of tibbles containing: (1) metric data for the specified NHS area and the national (England, AreaID = 1) aggregate, and (2) details achieving the target value (if defined), including the target percentage and the additional number of patients needed to reach the target. This function supports benchmarking local performance vs. the national average, and helps quantify gaps to clinical targets.
@@ -38,21 +56,21 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 # Compare performance against metric 150  (AF: treatment with anticoagulants
 # - all people) in 'Chester South PCN' (area ID 553) with national
 # performance:
-return_list <- cvd_indicator_nationalarea_metric_data(
+returned_list <- cvd_indicator_nationalarea_metric_data(
     metric_id = 150,
     time_period_id = 17,
     area_id = 553
 )
 
 # See what the list contains
-return_list |> summary()
+returned_list |> summary()
 
 # Extract the `area` details
-area_data <- return_list$area
+area_data <- returned_list$area
 area_data
 
 # Extract `target` details
-target_data <- return_list$target
+target_data <- returned_list$target
 target_data
 
 }

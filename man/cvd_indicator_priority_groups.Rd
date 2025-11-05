@@ -7,7 +7,24 @@
 cvd_indicator_priority_groups()
 }
 \value{
-A tibble with one row per indicator / priority group. Key columns typically include \code{PriorityGroupID}, \code{PriorityGroup} (the display name), \code{PriorityGroupDisplayOrder}, and \code{IndicatorName}. Other columns may be present to support specialised reporting or grouping.
+A tibble with one row per indicator / priority group containing the following columns:
+\describe{
+\item{PriorityGroup}{Character. High-level grouping label for the indicator (e.g., "CKD", "Prevalence", "ABC").}
+\item{AxisCharacter}{Character. Symbol used to represent the metric axis (e.g., "\%").}
+\item{FormatDisplayName}{Character. Display format for the metric (e.g., "Proportion \%", "Rate per 10,000 patients").}
+\item{HighestPriorityNotificationType}{Character. Notification priority level, if applicable (e.g., "Blue"). Often blank.}
+\item{IndicatorCode}{Character. Unique code for the indicator (e.g., "CVDP002AF").}
+\item{IndicatorFormatID}{Integer. Internal ID for the indicator's format type.}
+\item{IndicatorID}{Integer. Unique identifier for the indicator.}
+\item{IndicatorName}{Character. Full descriptive name of the indicator.}
+\item{MetricID}{Integer. Unique identifier for the specific metric instance.}
+\item{NotificationCount}{Integer. Count of notifications associated with the indicator.}
+\item{PathwayGroupID}{Integer. Unique identifier for the clinical pathway group.}
+\item{PathwayGroupName}{Character. Name of the clinical pathway group (e.g., "Chronic Kidney Disease", "Hypertension").}
+\item{PriorityGroupDisplayOrder}{Integer. Display order for the priority group within its pathway.}
+\item{PriorityGroupID}{Integer. Unique identifier for the priority group.}
+\item{QuestionGroupName}{Character. Thematic label for the indicator's clinical focus (e.g., "Diagnosis", "Management", "Monitoring").}
+}
 If no priority groups are found, returns a tibble describing the error.
 }
 \description{
