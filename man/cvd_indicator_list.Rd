@@ -4,7 +4,7 @@
 \alias{cvd_indicator_list}
 \title{List indicators}
 \usage{
-cvd_indicator_list(time_period_id = NULL, system_level_id = NULL)
+cvd_indicator_list(time_period_id, system_level_id)
 }
 \arguments{
 \item{time_period_id}{integer - time period to reutrn data for (compulsory)}

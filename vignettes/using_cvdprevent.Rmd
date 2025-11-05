@@ -2,7 +2,7 @@
 title: "Using CVD Prevent"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{using_cvdprevent}
+  %\VignetteIndexEntry{Using CVD Prevent}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -292,8 +292,8 @@ Here we look at '3 Centres PCN' (area ID 1103) for time period 17:
 
 ```{r}
 #| label: list all indicator data for a given area
-return_list <- cvd_indicator(time_period_id = 17, area_id = 1103)
-return_list |> summary()
+returned_list <- cvd_indicator(time_period_id = 17, area_id = 1103)
+returned_list |> summary()
 ```
 
 ### Indicators
@@ -302,7 +302,7 @@ We can extract the tibbles using the list\$object notation. To illustrate, we ob
 
 ```{r}
 #| label: indicators
-return_list$indicators |>
+returned_list$indicators |>
   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
   dplyr::arrange(IndicatorID) |>
   dplyr::slice_head(n = 4) |>
@@ -319,7 +319,7 @@ Here we access category details for:
 
 ```{r}
 #| label: category
-return_list$metric_categories |>
+returned_list$metric_categories |>
   dplyr::filter(IndicatorID == 7, MetricCategoryID %in% c(7, 8)) |>
   dplyr::select(
     IndicatorID,
@@ -337,7 +337,7 @@ Here we access the data for each of the above categories:
 
 ```{r}
 #| label: category data
-return_list$metric_data |>
+returned_list$metric_data |>
   dplyr::filter(MetricID %in% c(126, 132)) |>
   dplyr::select(MetricID, Value, Numerator, Denominator) |>
   gt::gt()
@@ -351,7 +351,7 @@ Here we show the time-series for the two categories of metric shown above as a p
 
 ```{r}
 #| label: time series
-return_list$timeseries_data |>
+returned_list$timeseries_data |>
   dplyr::filter(MetricID %in% c(126, 132), !is.na(Value)) |>
   # prepare for plotting
   dplyr::mutate(
@@ -374,14 +374,18 @@ Indicators are searchable by one or more *Tag*, supplied by the optional argumen
 
 ```{r}
 #| label: tags
-return_list <-
+returned_list <-
   cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
+```
 
-return_list$indicators |>
-  dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
-  dplyr::arrange(IndicatorID) |>
-  dplyr::slice_head(n = 4) |>
-  gt::gt()
+```{r}
+if (!is.null(returned_list$indicators)) {
+  returned_list$indicators |>
+    dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
+    dplyr::arrange(IndicatorID) |>
+    dplyr::slice_head(n = 4) |>
+    gt::gt()
+}
 ```
 
 See also [List indicator tags].
@@ -448,45 +452,74 @@ cvd_indicator_child_data(time_period_id = 17, area_id = 74, metric_id = 126) |>
   gt::gt()
 ```
 
-## All indicator data for a given time and area
+## All metric data for a given time, area and indicator
 
-Use function `cvd_indicator_data()` along with the indicator ID and specifying the time period and area to get all metric data. The return includes national level data as comparison.
+To access all metric data for a given area, time period and indicator you can use the `cvd_indicator_data()` function. The return from the API includes three sets of data which are grouped together as three tibbles within a named list object. The three tibbles include:
+
+-   indicator metrics,
+
+-   area data,
+
+-   national data,
 
 Here we look at 'AF: treatment with anticoagulants' (indicator ID 7) in time period 17 for 'Leicester Central PCN' (area_id 701) focussed on metrics by gender:
 
 ```{r}
 #| label: all indicator data for a given time and area
-cvd_indicator_data(time_period_id = 17, indicator_id = 7, area_id = 701) |>
-  dplyr::filter(MetricCategoryTypeName == 'Sex') |>
-  dplyr::select(
-    MetricID,
-    MetricCategoryName,
-    AreaData.AreaName,
-    AreaData.Value,
-    NationalData.AreaName,
-    NationalData.Value
-  ) |>
-  gt::gt()
+returned_list <- cvd_indicator_data(
+  time_period_id = 17,
+  indicator_id = 7,
+  area_id = 701
+)
+returned_list |> summary()
 ```
 
-## All metric data for a given time and area
+### Indicator metrics
 
-Use function `cvd_indicator_metric_data()` along with the metric ID and specifying the time period and area to get all data. The return includes national level data as comparison.
-
-Here we retrieve metric data for AF: treatment with anticoagulants for 'Alliance PCN' (area ID 399) in time period 1 for metric 126 (breakdown by age group- males aged 40-59):
+We can extract the tibbles using the list\$object notation. Here we can see definitions for the indicator and its associated metrics.
 
 ```{r}
-#| label: all metric data for a given time and area
-cvd_indicator_metric_data(metric_id = 126, time_period_id = 1, area_id = 399) |>
+#| label: all indicator metrics
+returned_list$indicator_metrics |> dplyr::glimpse()
+```
+
+### Area data
+
+Here we can obtain rates of treatment with anticoagulants broken down by sex for Leicester Central PCN:
+
+```{r}
+#| label: indicator area data
+returned_list$area_data |>
+  dplyr::filter(MetricCategoryTypeName == "Sex") |>
   dplyr::select(
-    IndicatorShortName,
+    AreaID,
     CategoryAttribute,
-    MetricCategoryName,
-    AreaData.Value,
-    NationalData.Value
+    Value,
+    LowerConfidenceLimit,
+    UpperConfidenceLimit
   ) |>
   gt::gt()
 ```
+
+### National data
+
+And we can also obtain the same breakdown for national (England-wide):
+
+```{r}
+#| label: indicator national data
+returned_list$national_data |>
+  dplyr::filter(MetricCategoryTypeName == "Sex") |>
+  dplyr::select(
+    AreaID,
+    CategoryAttribute,
+    Value,
+    LowerConfidenceLimit,
+    UpperConfidenceLimit
+  ) |>
+  gt::gt()
+```
+
+These splits by local and national level allow for fine-grained benchmarking.
 
 ## All indicator metric data for system level and time period
 
@@ -526,13 +559,13 @@ Here we compare performance against metric 150 (AF: treatment with anticoagulant
 
 ```{r}
 #| label: benchmark metric data with national results
-return_list <- cvd_indicator_nationalarea_metric_data(
+returned_list <- cvd_indicator_nationalarea_metric_data(
   metric_id = 150,
   time_period_id = 17,
   area_id = 553
 )
 
-return_list |> summary()
+returned_list |> summary()
 ```
 
 ### Area data
@@ -540,8 +573,8 @@ return_list |> summary()
 We can extract the tibbles using the `list$object` notation. Here we extract the area metric comparison with national data:
 
 ```{r}
-#| label: area data
-area_data <- return_list$area
+#| label: benchmark area data
+area_data <- returned_list$area
 area_data |> gt::gt()
 ```
 
@@ -550,8 +583,8 @@ area_data |> gt::gt()
 Here we extract the target details:
 
 ```{r}
-#| label: target data
-target_data <- return_list$target
+#| label: benchmark target data
+target_data <- returned_list$target
 target_data |> gt::gt()
 ```
 

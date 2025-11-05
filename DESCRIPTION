@@ -24,7 +24,6 @@ Imports:
     dplyr,
     glue,
     httr2,
-    jsonlite,
     memoise,
     purrr,
     rappdirs,
@@ -34,6 +33,7 @@ Suggests:
     ggplot2,
     gt,
     knitr,
+    mockery,
     rmarkdown,
     testthat (>= 3.0.0)
 VignetteBuilder: 

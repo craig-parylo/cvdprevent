@@ -4,7 +4,7 @@
 \alias{cvd_time_period_list}
 \title{List time periods}
 \usage{
-cvd_time_period_list(indicator_type_id)
+cvd_time_period_list(indicator_type_id = NULL)
 }
 \arguments{
 \item{indicator_type_id}{integer - Indicator type ID, e.g. standard or outcome indicator type. If passed will show time periods containing data of the given type (optional)}
