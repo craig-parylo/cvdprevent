@@ -2,7 +2,7 @@
 title: "Using CVD Prevent"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{using_cvdprevent}
+  %\VignetteIndexEntry{Using CVD Prevent}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -376,12 +376,16 @@ Indicators are searchable by one or more *Tag*, supplied by the optional argumen
 #| label: tags
 returned_list <-
   cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
+```
 
-returned_list$indicators |>
-  dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
-  dplyr::arrange(IndicatorID) |>
-  dplyr::slice_head(n = 4) |>
-  gt::gt()
+```{r}
+if (!is.null(returned_list$indicators)) {
+  returned_list$indicators |>
+    dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
+    dplyr::arrange(IndicatorID) |>
+    dplyr::slice_head(n = 4) |>
+    gt::gt()
+}
 ```
 
 See also [List indicator tags].
