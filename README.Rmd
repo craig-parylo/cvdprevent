@@ -91,10 +91,10 @@ vignette("using_cvdprevent", package = "cvdprevent")
 
 ## Dependencies
 
-`cvdprevent` is designed to work seamlessly with the [tidyverse](https://www.tidyverse.org/), and depends on:  
+`cvdprevent` is designed to work seamlessly with the [tidyverse](https://tidyverse.org/), and depends on:  
 
 - [httr2](https://httr2.r-lib.org/)
-- [jsonlite](https://cran.r-project.org/web/packages/jsonlite/)
+- [jsonlite](https://cran.r-project.org/package=jsonlite)
 - [dplyr](https://dplyr.tidyverse.org/)
 - [purrr](https://purrr.tidyverse.org/)
 - [tidyr](https://tidyr.tidyverse.org/)
