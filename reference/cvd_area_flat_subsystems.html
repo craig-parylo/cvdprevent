@@ -9,7 +9,7 @@ The output is a tibble where each row represents an area or sub-area, and child 
 
     <a class="navbar-brand me-2" href="../index.html">cvdprevent</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@ The output is a tibble where each row represents an area or sub-area, and child 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Retieve flat sub-systems for an NHS area, grouped by system level</h1>
-      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/v0.2.3/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
       <div class="d-none name"><code>cvd_area_flat_subsystems.Rd</code></div>
     </div>
 
@@ -110,10 +110,6 @@ The output is a tibble where each row represents an area or sub-area, and child 
     <p>This function is useful for quickly listing all areas beneath a parent, grouped by system level, for reporting or selection purposes. For a fully nested view, see <code><a href="cvd_area_nested_subsystems.html">cvd_area_nested_subsystems()</a></code>.</p>
     </div>
     <div class="section level2">
-    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>This function may take longer than 5 seconds to complete due to API response time.</p>
-    </div>
-    <div class="section level2">
     <h2 id="api-documentation">API Documentation<a class="anchor" aria-label="anchor" href="#api-documentation"></a></h2>
 
 
@@ -126,8 +122,7 @@ The output is a tibble where each row represents an area or sub-area, and child 
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="co"># View flat sub-systems for Somerset STP (area_id = 5)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># View flat sub-systems for Somerset STP (area_id = 5)</span></span></span>
 <span class="r-in"><span><span class="fu">cvd_area_flat_subsystems</span><span class="op">(</span>area_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 74</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 14</span>
@@ -164,7 +159,6 @@ The output is a tibble where each row represents an area or sub-area, and child 
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ SubSystems_SystemLevelName <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "PCN"<span style="color: #949494;">, </span>"PCN"<span style="color: #949494;">, </span>"PCN"<span style="color: #949494;">, </span>"PCN"<span style="color: #949494;">, </span>"PCN"<span style="color: #949494;">, </span>"PCN"<span style="color: #949494;">, </span>"…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelID              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>7…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ SystemLevelName            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "ICB"<span style="color: #949494;">, </span>"ICB"<span style="color: #949494;">, </span>"ICB"<span style="color: #949494;">, </span>"ICB"<span style="color: #949494;">, </span>"ICB"<span style="color: #949494;">, </span>"ICB"<span style="color: #949494;">, </span>"…</span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
