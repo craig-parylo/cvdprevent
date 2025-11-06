@@ -9,7 +9,7 @@ Only the selected metric is returned for each sibling area."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">cvdprevent</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@ Only the selected metric is returned for each sibling area."><meta property="og:
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Indicator sibling data</h1>
-      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/v0.2.3/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
       <div class="d-none name"><code>cvd_indicator_sibling.Rd</code></div>
     </div>
 
@@ -182,6 +182,10 @@ Only the selected metric is returned for each sibling area."><meta property="og:
     <p>Use this function to compare a metric across all areas at the same hierarchical level (e.g., compare all practices in a PCN or all PCNs in an ICB) for benchmarking and visualisation purposes.</p>
     </div>
     <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>This function may take longer than 5 seconds to complete due to API response time.</p>
+    </div>
+    <div class="section level2">
     <h2 id="api-documentation">API Documentation<a class="anchor" aria-label="anchor" href="#api-documentation"></a></h2>
 
 
@@ -194,7 +198,8 @@ Only the selected metric is returned for each sibling area."><meta property="og:
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Compare the value of metric 126 for area 1103 and all its siblings in time period 17</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Compare the value of metric 126 for area 1103 and all its siblings in time period 17</span></span></span>
 <span class="r-in"><span><span class="fu">cvd_indicator_sibling</span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, area_id <span class="op">=</span> <span class="fl">1103</span>, metric_id <span class="op">=</span> <span class="fl">126</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AreaID</span>, <span class="va">AreaName</span>, <span class="va">Value</span>, <span class="va">LowerConfidenceLimit</span>, <span class="va">UpperConfidenceLimit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 9 × 5</span></span>
@@ -233,6 +238,7 @@ Only the selected metric is returned for each sibling area."><meta property="og:
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   HighestPriorityNotificationType &lt;lgl&gt;, LowerConfidenceLimit &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Max &lt;dbl&gt;, Median &lt;dbl&gt;, Min &lt;dbl&gt;, NotificationCount &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Numerator &lt;dbl&gt;, Q20 &lt;dbl&gt;, Q40 &lt;dbl&gt;, Q60 &lt;dbl&gt;, Q80 &lt;dbl&gt;, …</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

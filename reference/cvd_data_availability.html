@@ -15,7 +15,7 @@ IsAvailable - Y for data is available, N for data is unavailable, and NULL for u
 
     <a class="navbar-brand me-2" href="../index.html">cvdprevent</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,7 @@ IsAvailable - Y for data is available, N for data is unavailable, and NULL for u
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Data availability</h1>
-      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/v0.2.3/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
       <div class="d-none name"><code>cvd_data_availability.Rd</code></div>
     </div>
 
@@ -92,13 +92,18 @@ Response:
 <a href="https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation#%2FdataAvailability" class="external-link">Data availability</a></p>
     </div>
     <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>This function may take longer than 5 seconds to complete due to API response time.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="cvd_external_resource.html">cvd_external_resource()</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">cvd_data_availability</span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">3</span>, system_level_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu">cvd_data_availability</span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">3</span>, system_level_id <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 132 × 15</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    DataAvailabilityID DataAvailabilityName  HighestPriorityNotif…¹ IndicatorCode</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span>
@@ -118,6 +123,8 @@ Response:
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   IndicatorOrder &lt;int&gt;, IndicatorShortName &lt;chr&gt;, IsAvailable &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MetricCategoryTypeID &lt;int&gt;, NotificationCount &lt;int&gt;, SystemLevelID &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   SystemLevelName &lt;chr&gt;, TimePeriodID &lt;int&gt;, TimePeriodName &lt;chr&gt;</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

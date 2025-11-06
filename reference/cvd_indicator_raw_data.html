@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">cvdprevent</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,7 +32,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Retrieve raw metric values for multiple metrics, a specified area and time period</h1>
-      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/v0.2.3/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
       <div class="d-none name"><code>cvd_indicator_raw_data.Rd</code></div>
     </div>
 
@@ -124,6 +124,10 @@
     <p>Use this function to retrieve a wide set of metric breakdowns for a given indicator in a single area and time period - useful for broad data extractions, dashboards or advanced analytics.</p>
     </div>
     <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>This function may take longer than 5 seconds to complete due to API response time.</p>
+    </div>
+    <div class="section level2">
     <h2 id="api-documentation">API Documentation<a class="anchor" aria-label="anchor" href="#api-documentation"></a></h2>
 
 
@@ -132,7 +136,8 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Retrieve metric data for 'CVD: All-cause mortality' (IndicatorID = 35) across</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Retrieve metric data for 'CVD: All-cause mortality' (IndicatorID = 35) across</span></span></span>
 <span class="r-in"><span><span class="co"># NHS Regions (SystemLevelID = 6) in the period April 2024 to</span></span></span>
 <span class="r-in"><span><span class="co"># March 2025 (TimePeriodID = 27) and view a sample of 4 rows:</span></span></span>
 <span class="r-in"><span><span class="fu">cvd_indicator_raw_data</span><span class="op">(</span></span></span>
@@ -183,6 +188,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MetricCategoryName &lt;chr&gt;, MetricCategoryTypeName &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   NotificationCount &lt;int&gt;, Numerator &lt;dbl&gt;, TimePeriodName &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   UpperConfidenceLimit &lt;dbl&gt;, Value &lt;dbl&gt;, ValueNote &lt;chr&gt;</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

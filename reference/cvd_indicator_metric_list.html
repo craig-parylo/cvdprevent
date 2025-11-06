@@ -9,7 +9,7 @@ Only indicators with available data for the specified time period and system lev
 
     <a class="navbar-brand me-2" href="../index.html">cvdprevent</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@ Only indicators with available data for the specified time period and system lev
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>List indicators and associated metrics for a system level and time period</h1>
-      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/v0.2.3/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craig-parylo/cvdprevent/blob/main/R/cvd_api_functions.R" class="external-link"><code>R/cvd_api_functions.R</code></a></small>
       <div class="d-none name"><code>cvd_indicator_metric_list.Rd</code></div>
     </div>
 
@@ -112,6 +112,10 @@ Only indicators with available data for the specified time period and system lev
     <p>Use this function to explore the detailed metric breakdowns available for each indicator before performing data extraction or analysis. The <code>MetricList</code> column is unnested for convenience, so each row represents a single metric linked to an indicator.</p>
     </div>
     <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>This function may take longer than 5 seconds to complete due to API response time.</p>
+    </div>
+    <div class="section level2">
     <h2 id="api-documentation">API Documentation<a class="anchor" aria-label="anchor" href="#api-documentation"></a></h2>
 
 
@@ -120,7 +124,8 @@ Only indicators with available data for the specified time period and system lev
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># List metrics for the prevalence of atrial fibrillation (indicator ID 1),</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># List metrics for the prevalence of atrial fibrillation (indicator ID 1),</span></span></span>
 <span class="r-in"><span><span class="co"># focusing on metrics for the 40-59 years age group at the national level:</span></span></span>
 <span class="r-in"><span><span class="fu">cvd_indicator_metric_list</span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">17</span>, system_level_id <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">IndicatorID</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">MetricCategoryName</span> <span class="op">==</span> <span class="st">"40-59"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -153,6 +158,7 @@ Only indicators with available data for the specified time period and system lev
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   IndicatorName &lt;chr&gt;, IndicatorOrder &lt;int&gt;, IndicatorShortName &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   NotificationCount &lt;int&gt;, CategoryAttribute &lt;chr&gt;, MetricCategoryName &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MetricCategoryTypeName &lt;chr&gt;, MetricID &lt;int&gt;</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
