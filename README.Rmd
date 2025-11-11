@@ -60,7 +60,13 @@ pak::pak("cvdprevent")
 library(cvdprevent)
 
 # List all available indicators (first 4 shown)
-cvd_indicator_list() |> head(4)
+cvd_indicator_list(time_period_id = 22, system_level_id = 1) |>
+  dplyr::select(dplyr::any_of(c(
+    "IndicatorID",
+    "IndicatorCode",
+    "IndicatorShortName"
+  ))) |>
+  dplyr::slice_head(n = 4)
 ```
 
 Typical outputs are [tibble](https://tibble.tidyverse.org/)s, making them easy to filter and manipulate: 

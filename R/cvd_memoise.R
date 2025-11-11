@@ -41,8 +41,8 @@ m_cache <- if (is_persistent_cache_ok()) {
     max_age = 60 * 60 * 24 * 7 # 1 week in seconds
   )
 } else {
-  # otherwise use in-memory cache
-  memoise::cache_memory()
+  # otherwise use in-memory cache set to invalidate after 15 minutes
+  cachem::cache_mem(max_age = 60 * 15)
 }
 
 # Helper to memoise a lookup with the shared cache

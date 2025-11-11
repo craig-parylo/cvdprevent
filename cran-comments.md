@@ -2,4 +2,4 @@
 
 0 errors | 0 warnings | 1 note
 
-* This update removes all internet access during examples, tests, and vignettes to comply with CRAN policies.
+* This update switches to in-memory cache creation when running non-interactively to address issues detected by CRAN checks.
