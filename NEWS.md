@@ -1,4 +1,4 @@
-# cvdprevent (development version)
+# cvdprevent 0.2.4
 
 # Version 0.2.4 (2025-11-11)
 
