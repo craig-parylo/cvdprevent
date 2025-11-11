@@ -1,5 +1,26 @@
 # Shared cache ----------------------------------------------------------------
 
+#' Check if a persistent cache is OK to use
+#'
+#' @returns Logical. TRUE = persistent cache is OK to use. FALSE = persistent cache is not OK.
+#'
+#' @noRd
+is_persistent_cache_ok <- function() {
+  # allow user override
+  if (nzchar(Sys.getenv("CVDPREVENT_PERSISTENT_CACHE"))) {
+    return(TRUE)
+  }
+
+  # avoid persistent cache on CRAN or non-interactive sessions
+  if (!interactive()) {
+    return(FALSE)
+  }
+  if (identical(tolower(Sys.getenv("NOT_CRAN")), "true")) {
+    return(TRUE)
+  }
+  FALSE
+}
+
 #' Create a persistent cache for memoisation
 #'
 #' @description
@@ -10,18 +31,47 @@
 #' @import cachem
 #' @import rappdirs
 #' @noRd
-m_cache <- cachem::cache_disk(
-  dir = rappdirs::user_cache_dir("R_cvdprevent"),
-  max_age = 60 * 60 * 24 * 7 # 1 week in seconds
-)
+# m_cache <- cachem::cache_disk(
+#   dir = rappdirs::user_cache_dir("R_cvdprevent"),
+#   max_age = 60 * 60 * 24 * 7 # 1 week in seconds
+# )
+m_cache <- if (is_persistent_cache_ok()) {
+  cachem::cache_disk(
+    dir = rappdirs::user_cache_dir("R_cvdprevent"),
+    max_age = 60 * 60 * 24 * 7 # 1 week in seconds
+  )
+} else {
+  # otherwise use in-memory cache
+  memoise::cache_memory()
+}
 
 # Helper to memoise a lookup with the shared cache
 memoise_lookup <- function(fn) {
   memoise::memoise(fn, cache = m_cache)
 }
 
-#' Clear all cached results
-#' @noRd
+#' Clear package cache
+#'
+#' @description
+#' Remove all entries from the memoise cache used by cvdprevent.
+#'
+#' @details
+#' This function forces the package cache to be emptied. It is safe to call from interactive sessions, non-interactive checks and tests. Clearing the cache does not change any package options or remove the cache directory; it only removes the stored key/value entries so subsequent calls will re-query the API.
+#'
+#' Use this when you want to:
+#' - force fresh API requests or recomputation during development
+#' - clear stale or corrupted cache contents before running checks
+#' - free disc space used by the cache
+#'
+#' @return Invisibly returns TRUE on success
+#'
+#' @examples
+#' \dontrun{
+#' # Clear cache
+#' cvd_clear_cache()
+#' }
+#'
+#' @export
 cvd_clear_cache <- function() {
   m_cache$reset()
   invisible(TRUE)
