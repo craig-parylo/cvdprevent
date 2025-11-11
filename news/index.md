@@ -1,6 +1,33 @@
 # Changelog
 
-## cvdprevent (development version)
+## cvdprevent 0.2.4
+
+CRAN release: 2025-11-11
+
+## Version 0.2.4 (2025-11-11)
+
+CRAN release: 2025-11-11
+
+### Added
+
+- None in this release.
+
+### Changed
+
+- [`cvd_clear_cache()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_clear_cache.md)
+  is exported for end-users to access, for example to clear stale values
+  from the cache.
+
+### Fixed
+
+- Cache defaults to in-memory when the package is used non-interatively,
+  which should resolve CRAN test issues on certain builds. When used
+  interactively (most use-cases) will use persistent disc-based cache
+  that is more convenient for users.
+
+### Deprecated
+
+- None in this release.
 
 ## Version 0.2.3 (2025-11-05)
 

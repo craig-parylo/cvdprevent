@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">cvdprevent</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,12 +100,20 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craig-parylo/cvdprevent" class="external-link">cvdprevent</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># List all available indicators (first 4 shown)</span></span>
-<span><span class="fu"><a href="reference/cvd_indicator_list.html">cvd_indicator_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✖ Validation error: time_period_id - time_period_id is required but missing</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 7</span></span>
-<span><span class="co">#&gt;   context           error          status url   params resp  timestamp          </span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;             &lt;chr&gt;           &lt;int&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;dttm&gt;             </span></span>
-<span><span class="co">#&gt; 1 validate_input_id time_period_i…     NA &lt;NA&gt;  &lt;NA&gt;   &lt;NA&gt;  2025-11-05 19:46:25</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/cvd_indicator_list.html">cvd_indicator_list</a></span><span class="op">(</span>time_period_id <span class="op">=</span> <span class="fl">22</span>, system_level_id <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">any_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"IndicatorID"</span>,</span>
+<span>    <span class="st">"IndicatorCode"</span>,</span>
+<span>    <span class="st">"IndicatorShortName"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 3</span></span>
+<span><span class="co">#&gt;   IndicatorID IndicatorCode IndicatorShortName                                  </span></span>
+<span><span class="co">#&gt;         &lt;int&gt; &lt;chr&gt;         &lt;chr&gt;                                               </span></span>
+<span><span class="co">#&gt; 1           1 CVDP001AF     AF: Prevalence (CVDP001AF)                          </span></span>
+<span><span class="co">#&gt; 2           2 CVDP002HYP    Hypertension: Treated to appropriate threshold (age…</span></span>
+<span><span class="co">#&gt; 3           3 CVDP003HYP    Hypertension: Treated to appropriate threshold (age…</span></span>
+<span><span class="co">#&gt; 4           4 CVDP004HYP    Hypertension: BP monitoring (CVDP004HYP)</span></span></code></pre></div>
 <p>Typical outputs are <a href="https://tibble.tidyverse.org/" class="external-link">tibble</a>s, making them easy to filter and manipulate:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># List the latest four time periods for 'Standard' indicators</span></span>

@@ -55,12 +55,20 @@ pak::pak("cvdprevent")
 library(cvdprevent)
 
 # List all available indicators (first 4 shown)
-cvd_indicator_list() |> head(4)
-#> ✖ Validation error: time_period_id - time_period_id is required but missing
-#> # A tibble: 1 × 7
-#>   context           error          status url   params resp  timestamp          
-#>   <chr>             <chr>           <int> <chr> <chr>  <chr> <dttm>             
-#> 1 validate_input_id time_period_i…     NA <NA>  <NA>   <NA>  2025-11-05 19:46:25
+cvd_indicator_list(time_period_id = 22, system_level_id = 1) |>
+  dplyr::select(dplyr::any_of(c(
+    "IndicatorID",
+    "IndicatorCode",
+    "IndicatorShortName"
+  ))) |>
+  dplyr::slice_head(n = 4)
+#> # A tibble: 4 × 3
+#>   IndicatorID IndicatorCode IndicatorShortName                                  
+#>         <int> <chr>         <chr>                                               
+#> 1           1 CVDP001AF     AF: Prevalence (CVDP001AF)                          
+#> 2           2 CVDP002HYP    Hypertension: Treated to appropriate threshold (age…
+#> 3           3 CVDP003HYP    Hypertension: Treated to appropriate threshold (age…
+#> 4           4 CVDP004HYP    Hypertension: BP monitoring (CVDP004HYP)
 ```
 
 Typical outputs are [tibble](https://tibble.tidyverse.org/)s, making
