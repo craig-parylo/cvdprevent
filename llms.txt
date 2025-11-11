@@ -1,0 +1,246 @@
+# CVD Prevent
+
+**CVD Prevent** is an R package that provides a user-friendly interface
+to the [NHS CVDPREVENT API](https://www.cvdprevent.nhs.uk/home). This
+enables analysts, researchers and healthcare professionals to access and
+work with England-wide primary care cardiovascular disease (CVD) audit
+data directly from R.
+
+The [Cardiovascular Disease Prevention Audit
+(CVDPREVENT)](https://www.cvdprevent.nhs.uk/home) automatically extracts
+routinely held GP data. The Data & Improvement Tool provides open access
+to the data, with clear, actionable insights for those tasked with
+improving cardiovascular health.
+
+------------------------------------------------------------------------
+
+## Features
+
+- Simple R functions to make API requests and retrieve CVD indicator and
+  area data  
+- Tidyverse-friendly outputs (mostly
+  [tibble](https://tibble.tidyverse.org/)s)  
+- Support for listing indicators, metrics, time periods, areas and
+  more  
+- Helper functions for searching and exploring heirarchical NHS area
+  structures  
+- See [full API
+  documentation](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)
+  for endpoints and reference
+
+------------------------------------------------------------------------
+
+## Installation
+
+You can install the latest **development version** from
+[GitHub](https://github.com/craig-parylo/cvdprevent) with:
+
+``` r
+# install.packages("pak")
+pak::pak("craig-parylo/cvdprevent")
+```
+
+Or install the **latest stable release** from
+[CRAN](https://cran.r-project.org/package=cvdprevent):
+
+``` r
+pak::pak("cvdprevent")
+```
+
+------------------------------------------------------------------------
+
+## Getting started
+
+``` r
+library(cvdprevent)
+
+# List all available indicators (first 4 shown)
+cvd_indicator_list() |> head(4)
+#> ✖ Validation error: time_period_id - time_period_id is required but missing
+#> # A tibble: 1 × 7
+#>   context           error          status url   params resp  timestamp          
+#>   <chr>             <chr>           <int> <chr> <chr>  <chr> <dttm>             
+#> 1 validate_input_id time_period_i…     NA <NA>  <NA>   <NA>  2025-11-05 19:46:25
+```
+
+Typical outputs are [tibble](https://tibble.tidyverse.org/)s, making
+them easy to filter and manipulate:
+
+``` r
+# List the latest four time periods for 'Standard' indicators
+cvd_time_period_list() |>
+  dplyr::filter(IndicatorTypeName == "Standard") |>
+  dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
+  dplyr::select(TimePeriodID, TimePeriodName)
+#> # A tibble: 4 × 2
+#>   TimePeriodID TimePeriodName   
+#>          <int> <chr>            
+#> 1           26 To June 2025     
+#> 2           24 To March 2025    
+#> 3           22 To December 2024 
+#> 4           20 To September 2024
+```
+
+See the package vignette for more examples and guidance:
+
+``` r
+vignette("using_cvdprevent", package = "cvdprevent")
+```
+
+------------------------------------------------------------------------
+
+## Documentation
+
+- **Function reference:** [CVD Prevent
+  Reference](https://craig-parylo.github.io/cvdprevent/reference/index.html)  
+- **API details:** [CVDPREVENT API
+  Docs](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)  
+- **See also:** [Detailed function
+  overview](https://craig-parylo.github.io/cvdprevent/articles/using_cvdprevent.html)
+
+------------------------------------------------------------------------
+
+## Dependencies
+
+`cvdprevent` is designed to work seamlessly with the
+[tidyverse](https://tidyverse.org/), and depends on:
+
+- [httr2](https://httr2.r-lib.org/)
+- [jsonlite](https://cran.r-project.org/package=jsonlite)
+- [dplyr](https://dplyr.tidyverse.org/)
+- [purrr](https://purrr.tidyverse.org/)
+- [tidyr](https://tidyr.tidyverse.org/)
+- [tibble](https://tibble.tidyverse.org/)
+- [cli](https://cli.r-lib.org/)
+- [glue](https://glue.tidyverse.org/)
+
+Install these with:
+
+``` r
+# install the packages
+pak::pak(c(
+  "httr2",
+  "jsonlite",
+  "dplyr",
+  "purrr",
+  "tidyr",
+  "tibble",
+  "cli",
+  "glue"
+))
+```
+
+------------------------------------------------------------------------
+
+## Contributing
+
+Contributions, suggestions or bug reports are welcome! Please:
+
+- Submit issues or pull requests via [GitHub
+  Issues](https://github.com/craig-parylo/cvdprevent/issues)  
+- Follow the function documentation style (see source files)  
+- Add examples and tests for new functionality
+
+------------------------------------------------------------------------
+
+## License
+
+This package is licensed under the MIT License. See
+[LICENSE](https://craig-parylo.github.io/cvdprevent/LICENSE) for
+details.
+
+------------------------------------------------------------------------
+
+## Acknowledgements
+
+- NHS England - CVDPREVENT Audit Team  
+- [CVDPREVENT API
+  Documentation](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)
+
+------------------------------------------------------------------------
+
+*For more information, see the [package
+website](https://craig-parylo.github.io/cvdprevent/) or the [API
+documentation](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation).*
+
+# Package index
+
+## All functions
+
+- [`cvd_area_details()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_details.md)
+  : Retrieve details for a specific NHS area and time period
+- [`cvd_area_flat_subsystems()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_flat_subsystems.md)
+  : Retieve flat sub-systems for an NHS area, grouped by system level
+- [`cvd_area_list()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_list.md)
+  : List NHS areas for a given time period and parent or system level
+- [`cvd_area_nested_subsystems()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_nested_subsystems.md)
+  : Retrieve nested sub-systems for an NHS area
+- [`cvd_area_search()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_search.md)
+  : Search for NHS areas by partial name and time period
+- [`cvd_area_system_level()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_system_level.md)
+  : List system levels available for a specific time period
+- [`cvd_area_system_level_time_periods()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_system_level_time_periods.md)
+  : List all system levels and their available time periods
+- [`cvd_area_unassigned()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_unassigned.md)
+  : List NHS areas without parent assignments for a given time period
+- [`cvd_clear_cache()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_clear_cache.md)
+  : Clear package cache
+- [`cvd_data_availability()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_data_availability.md)
+  : Data availability
+- [`cvd_external_resource()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_external_resource.md)
+  : Retrieve metadata for external resources linked to CVDPREVENT
+- [`cvd_indicator()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator.md)
+  : Retrieve all indicators and their data for a given time period and
+  area
+- [`cvd_indicator_child_data()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_child_data.md)
+  : Retrieve child area data for a specific metric, time period and area
+- [`cvd_indicator_data()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_data.md)
+  : Retrieve CVD indicator data for a specific area and time period
+- [`cvd_indicator_details()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_details.md)
+  : Retrieve details for a specific indicator
+- [`cvd_indicator_group()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_group.md)
+  : Retrieve indicators for a specified indicator group
+- [`cvd_indicator_list()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_list.md)
+  : List available indicators for a system level and time period
+- [`cvd_indicator_metric_area_breakdown()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_metric_area_breakdown.md)
+  : Compare metric performance for an area against national and
+  system-level peers
+- [`cvd_indicator_metric_data()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_metric_data.md)
+  : Retrieve metric data for a specific metric, time period and area
+- [`cvd_indicator_metric_list()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_metric_list.md)
+  : List indicators and associated metrics for a system level and time
+  period
+- [`cvd_indicator_metric_systemlevel_comparison()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_metric_systemlevel_comparison.md)
+  : Compare metric performance across system-level areas
+- [`cvd_indicator_metric_timeseries()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_metric_timeseries.md)
+  : Retrieve time series data for a specific metric and area
+- [`cvd_indicator_nationalarea_metric_data()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_nationalarea_metric_data.md)
+  : Retrieve metric data for a specific area and for national (England)
+  comparison
+- [`cvd_indicator_pathway_group()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_pathway_group.md)
+  : Retrieve indicators for a specified pathway group
+- [`cvd_indicator_person_timeseries()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_person_timeseries.md)
+  : Retrieve inequality time series data for a specific indicator and
+  area
+- [`cvd_indicator_priority_groups()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_priority_groups.md)
+  : List all indicator priority groups
+- [`cvd_indicator_raw_data()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_raw_data.md)
+  : Retrieve raw metric values for multiple metrics, a specified area
+  and time period
+- [`cvd_indicator_sibling()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_sibling.md)
+  : Indicator sibling data
+- [`cvd_indicator_tags()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_tags.md)
+  : List all available indicator tags
+- [`cvd_indicator_types()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_types.md)
+  : Retrieve available indicator types
+- [`cvd_time_period_list()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_time_period_list.md)
+  : List available time periods for CVD indicators
+- [`cvd_time_period_system_levels()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_time_period_system_levels.md)
+  : List available time periods and associated system levels
+
+# Articles
+
+### All vignettes
+
+- [Using CVD
+  Prevent](https://craig-parylo.github.io/cvdprevent/articles/using_cvdprevent.md):

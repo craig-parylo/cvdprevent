@@ -1,0 +1,164 @@
+# CVD Prevent
+
+**CVD Prevent** is an R package that provides a user-friendly interface
+to the [NHS CVDPREVENT API](https://www.cvdprevent.nhs.uk/home). This
+enables analysts, researchers and healthcare professionals to access and
+work with England-wide primary care cardiovascular disease (CVD) audit
+data directly from R.
+
+The [Cardiovascular Disease Prevention Audit
+(CVDPREVENT)](https://www.cvdprevent.nhs.uk/home) automatically extracts
+routinely held GP data. The Data & Improvement Tool provides open access
+to the data, with clear, actionable insights for those tasked with
+improving cardiovascular health.
+
+------------------------------------------------------------------------
+
+## Features
+
+- Simple R functions to make API requests and retrieve CVD indicator and
+  area data  
+- Tidyverse-friendly outputs (mostly
+  [tibble](https://tibble.tidyverse.org/)s)  
+- Support for listing indicators, metrics, time periods, areas and
+  more  
+- Helper functions for searching and exploring heirarchical NHS area
+  structures  
+- See [full API
+  documentation](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)
+  for endpoints and reference
+
+------------------------------------------------------------------------
+
+## Installation
+
+You can install the latest **development version** from
+[GitHub](https://github.com/craig-parylo/cvdprevent) with:
+
+``` r
+# install.packages("pak")
+pak::pak("craig-parylo/cvdprevent")
+```
+
+Or install the **latest stable release** from
+[CRAN](https://cran.r-project.org/package=cvdprevent):
+
+``` r
+pak::pak("cvdprevent")
+```
+
+------------------------------------------------------------------------
+
+## Getting started
+
+``` r
+library(cvdprevent)
+
+# List all available indicators (first 4 shown)
+cvd_indicator_list() |> head(4)
+#> ✖ Validation error: time_period_id - time_period_id is required but missing
+#> # A tibble: 1 × 7
+#>   context           error          status url   params resp  timestamp          
+#>   <chr>             <chr>           <int> <chr> <chr>  <chr> <dttm>             
+#> 1 validate_input_id time_period_i…     NA <NA>  <NA>   <NA>  2025-11-05 19:46:25
+```
+
+Typical outputs are [tibble](https://tibble.tidyverse.org/)s, making
+them easy to filter and manipulate:
+
+``` r
+# List the latest four time periods for 'Standard' indicators
+cvd_time_period_list() |>
+  dplyr::filter(IndicatorTypeName == "Standard") |>
+  dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
+  dplyr::select(TimePeriodID, TimePeriodName)
+#> # A tibble: 4 × 2
+#>   TimePeriodID TimePeriodName   
+#>          <int> <chr>            
+#> 1           26 To June 2025     
+#> 2           24 To March 2025    
+#> 3           22 To December 2024 
+#> 4           20 To September 2024
+```
+
+See the package vignette for more examples and guidance:
+
+``` r
+vignette("using_cvdprevent", package = "cvdprevent")
+```
+
+------------------------------------------------------------------------
+
+## Documentation
+
+- **Function reference:** [CVD Prevent
+  Reference](https://craig-parylo.github.io/cvdprevent/reference/index.html)  
+- **API details:** [CVDPREVENT API
+  Docs](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)  
+- **See also:** [Detailed function
+  overview](https://craig-parylo.github.io/cvdprevent/articles/using_cvdprevent.html)
+
+------------------------------------------------------------------------
+
+## Dependencies
+
+`cvdprevent` is designed to work seamlessly with the
+[tidyverse](https://tidyverse.org/), and depends on:
+
+- [httr2](https://httr2.r-lib.org/)
+- [jsonlite](https://cran.r-project.org/package=jsonlite)
+- [dplyr](https://dplyr.tidyverse.org/)
+- [purrr](https://purrr.tidyverse.org/)
+- [tidyr](https://tidyr.tidyverse.org/)
+- [tibble](https://tibble.tidyverse.org/)
+- [cli](https://cli.r-lib.org/)
+- [glue](https://glue.tidyverse.org/)
+
+Install these with:
+
+``` r
+# install the packages
+pak::pak(c(
+  "httr2",
+  "jsonlite",
+  "dplyr",
+  "purrr",
+  "tidyr",
+  "tibble",
+  "cli",
+  "glue"
+))
+```
+
+------------------------------------------------------------------------
+
+## Contributing
+
+Contributions, suggestions or bug reports are welcome! Please:
+
+- Submit issues or pull requests via [GitHub
+  Issues](https://github.com/craig-parylo/cvdprevent/issues)  
+- Follow the function documentation style (see source files)  
+- Add examples and tests for new functionality
+
+------------------------------------------------------------------------
+
+## License
+
+This package is licensed under the MIT License. See
+[LICENSE](https://craig-parylo.github.io/cvdprevent/LICENSE) for
+details.
+
+------------------------------------------------------------------------
+
+## Acknowledgements
+
+- NHS England - CVDPREVENT Audit Team  
+- [CVDPREVENT API
+  Documentation](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)
+
+------------------------------------------------------------------------
+
+*For more information, see the [package
+website](https://craig-parylo.github.io/cvdprevent/) or the [API
+documentation](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation).*
