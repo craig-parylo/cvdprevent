@@ -1,6 +1,19 @@
 # Package index
 
-## All functions
+## 📅 Time periods
+
+Functions for listing and working with available time periods used in
+indicator reporting and analysis.
+
+- [`cvd_time_period_list()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_time_period_list.md)
+  : List available time periods for CVD indicators
+- [`cvd_time_period_system_levels()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_time_period_system_levels.md)
+  : List available time periods and associated system levels
+
+## 📍 Areas
+
+Functions for retrieving and searching area-level information, including
+geographic details and system-level classifications.
 
 - [`cvd_area_details()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_details.md)
   : Retrieve details for a specific NHS area and time period
@@ -18,12 +31,12 @@
   : List all system levels and their available time periods
 - [`cvd_area_unassigned()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_unassigned.md)
   : List NHS areas without parent assignments for a given time period
-- [`cvd_clear_cache()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_clear_cache.md)
-  : Clear package cache
-- [`cvd_data_availability()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_data_availability.md)
-  : Data availability
-- [`cvd_external_resource()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_external_resource.md)
-  : Retrieve metadata for external resources linked to CVDPREVENT
+
+## 📏 Indicators
+
+Functions for accessing and analysing cardiovascular disease indicators,
+including metadata, tags and associated datasets.
+
 - [`cvd_indicator()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator.md)
   : Retrieve all indicators and their data for a given time period and
   area
@@ -68,7 +81,15 @@
   : List all available indicator tags
 - [`cvd_indicator_types()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_types.md)
   : Retrieve available indicator types
-- [`cvd_time_period_list()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_time_period_list.md)
-  : List available time periods for CVD indicators
-- [`cvd_time_period_system_levels()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_time_period_system_levels.md)
-  : List available time periods and associated system levels
+
+## 🧰 Supporting functions
+
+Utility functions for checking data availability and accessing external
+resources linked to the indicator framework.
+
+- [`cvd_clear_cache()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_clear_cache.md)
+  : Clear package cache
+- [`cvd_data_availability()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_data_availability.md)
+  : Data availability
+- [`cvd_external_resource()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_external_resource.md)
+  : Retrieve metadata for external resources linked to CVDPREVENT

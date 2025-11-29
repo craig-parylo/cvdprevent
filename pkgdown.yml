@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   articles/functions_by_argument: functions_by_argument.html
   using_cvdprevent: using_cvdprevent.html
-last_built: 2025-11-29T20:57Z
+last_built: 2025-11-29T21:42Z
 urls:
   reference: https://craig-parylo.github.io/cvdprevent/reference
   article: https://craig-parylo.github.io/cvdprevent/articles
