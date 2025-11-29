@@ -1,0 +1,99 @@
+---
+title: "Functions by argument"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+#| label: functions
+#| include: false
+
+# Collect arguments for exported functions only
+get_df_function_args <- function(pkg) {
+  # get a vector of exported functions
+  exports <- getNamespaceExports(pkg)
+
+  # get each function's arguments as part of a formatted tibble
+  dat <-
+    tibble::tibble(
+      function_name = exports,
+      args = purrr::map(
+        exports,
+        ~ {
+          obj <- get(.x, envir = asNamespace(pkg))
+          if (is.function(obj)) names(formals(obj)) else character(0)
+        }
+      )
+    )
+
+  # keep functions that have arguments
+  dat <-
+    dat |>
+    dplyr::filter(lengths(args) > 0)
+}
+
+# Invert mapping: argument -> functions
+get_df_args_functions <- function(pkg) {
+  get_df_function_args(pkg) |>
+    tidyr::unnest(args) |>
+    dplyr::group_by(args) |>
+    dplyr::summarise(functions = list(function_name), .groups = "drop")
+}
+
+# convert a function name to a html-enabled link to the function documentation
+make_function_links <- function(funs) {
+  stringr::str_c(
+    "<a href='../reference/",
+    funs,
+    ".html'>",
+    funs,
+    "</a>",
+    collapse = "<br>"
+  )
+}
+
+# get a single tibble containing arguments and a list of functions where these are used
+get_tibble_of_arguments_and_their_functions <- function(pkg = "cvdprevent") {
+  # group functions by their arguments
+  groups <- get_df_args_functions(pkg = pkg)
+
+  # build a tidy df with clickable links
+  tbl <-
+    groups |>
+    dplyr::mutate(Functions = purrr::map_chr(functions, make_function_links)) |>
+    dplyr::select(Argument = args, Functions)
+}
+
+```
+
+This article provides an interactive index of the exported functions in **cvdprevent**, grouped by their arguments. The searchable table makes it easy to see whcih functions share common parameters and to jump directly to their documentation.
+
+```{r setup}
+#| echo: false
+
+library(cvdprevent)
+
+# get a list of functions by their arguments
+df_funcs_by_arg <-
+  get_tibble_of_arguments_and_their_functions()
+
+# display as an interactive table
+df_funcs_by_arg |>
+  reactable::reactable(
+    searchable = FALSE,
+    filterable = TRUE,
+    highlight = TRUE,
+    columns = list(
+      Argument = reactable::colDef(maxWidth = 250),
+      Functions = reactable::colDef(html = TRUE)
+    ),
+    defaultPageSize = 5
+  )
+```
+
+Use this index as a quick way to explore the package's API, discover related functions and navigate to detailed reference pages. Whether you're learning the package, teaching others or debugging code, the table offers a practical shortcut to understanding how arguments connect across functions.
