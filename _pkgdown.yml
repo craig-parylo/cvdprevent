@@ -1,4 +1,29 @@
 url: https://craig-parylo.github.io/cvdprevent/
 template:
   bootstrap: 5
+reference:
+  - title: "📅 Time periods"
+    desc: >
+      Functions for listing and working with available time periods used in indicator reporting and analysis.
+    contents:
+      - starts_with("cvd_time")
+  
+  - title: "📍 Areas"
+    desc: >
+      Functions for retrieving and searching area-level information, including geographic details and system-level classifications.
+    contents:
+      - starts_with("cvd_area")
 
+  - title: "📏 Indicators"
+    desc: >
+      Functions for accessing and analysing cardiovascular disease indicators, including metadata, tags and associated datasets.
+    contents:
+      - starts_with("cvd_indicator")
+  
+  - title: "🧰 Supporting functions"
+    desc: >
+      Utility functions for checking data availability and accessing external resources linked to the indicator framework.
+    contents:
+      - cvd_clear_cache
+      - cvd_data_availability
+      - cvd_external_resource
