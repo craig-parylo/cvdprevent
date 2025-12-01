@@ -75,9 +75,9 @@
 concepts:</p>
 <table class="table">
 <colgroup>
-<col width="23%">
-<col width="38%">
-<col width="38%">
+<col width="25%">
+<col width="37%">
+<col width="37%">
 </colgroup>
 <thead><tr class="header">
 <th>Term</th>
@@ -966,7 +966,7 @@ instance, the annual report covering <strong>Jan 2022 - Dec
 Practice or Sub-ICB level data.</p></li>
 </ul>
 <p>To explore available areas, a recommended function is
-[<code>cvd_area_list</code>]. This requires you to specify both the
+<code><a href="../reference/cvd_area_list.html">cvd_area_list()</a></code>. This requires you to specify both the
 <strong>time period</strong> and either a <code>system_level_id</code>
 or a <code>parent_area_id</code>.</p>
 <p>Using <code>system_level_id</code> will return all areas within the
@@ -1477,7 +1477,7 @@ available in <em>time period 22</em>:</p>
 </table>
 </div>
 <p>Alternatively, if you already know the area you’re interested in, you
-can use [<code>cvd_area_search</code>]. This function searches by
+can use <code><a href="../reference/cvd_area_search.html">cvd_area_search()</a></code>. This function searches by
 partial area name and returns all matches for the specified time
 period.</p>
 <p>For example, to find all areas containing the word “acorn” in
@@ -1969,12 +1969,12 @@ period.</p>
 <div class="section level2">
 <h2 id="listing-indicators">Listing indicators<a class="anchor" aria-label="anchor" href="#listing-indicators"></a>
 </h2>
-<p>To working with indicators, you first need to identify both tthe
+<p>To work with indicators, you first need to identify both the
 <strong>time period</strong> and the <strong>system level</strong> of
 interest. This is important because not all indicators are available at
 every system level. For example, some indicators are not reported for
 PCN or Practice levels.</p>
-<p>The following example dmonstrates how to list indicators available
+<p>The following example demonstrates how to list indicators available
 for each system level in <em>time period 26</em>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get details for system levels and time periods</span></span>
@@ -2890,7 +2890,7 @@ for each system level in <em>time period 26</em>.</p>
 <p>What this does:</p>
 <ul>
 <li><p>Retrieve all system levels and time periods</p></li>
-<li><p>Filter the system levels avialable in <em>time period
+<li><p>Filter the system levels available in <em>time period
 26</em></p></li>
 <li><p>For each system level, collect the list of indicators</p></li>
 <li><p>Pivot the results into a table that clearly shows which
@@ -2906,10 +2906,10 @@ across system levels, making it easy to spot where gaps exist.</p>
 by demographic categories such as sex, age group or ethnicity. They
 allow you to explore how an indicator varies across different population
 subgroups.</p>
-<p>The function [<code>cvd_indicator_metric_list</code>] retrieves
+<p>The function <code><a href="../reference/cvd_indicator_metric_list.html">cvd_indicator_metric_list()</a></code> retrieves
 metrics for all indicators within a specified <em>time period</em> and
 <em>system level</em>.</p>
-<p>The example below shows how to list all metrics available fro the
+<p>The example below shows how to list all metrics available for the
 indicator <strong>AF: Prevalence (CVDP01AF)</strong> (Indicator ID = 1)
 in <em>time period 26</em> at the <em>England</em> system level:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -3563,7 +3563,7 @@ subgroups.</p>
 <p>Together, these terms form the foundation of the CVDPrevent API and
 provide a consistent language for working with cardiovascular data. By
 clearly defining system levels, areas, time periods, indicators and
-metrics the API enables users to navigate complex dataset with
+metrics the API enables users to navigate complex datasets with
 confidence, compare performance across different contexts and explore
 meaningful demographic breakdowns. Understanding these concepts is an
 essential first step before making use of the wider functionality

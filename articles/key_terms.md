@@ -109,8 +109,9 @@ period** you are interested in. This is important because:
   period id = 11*) does not include PCN, Practice or Sub-ICB level data.
 
 To explore available areas, a recommended function is
-\[`cvd_area_list`\]. This requires you to specify both the **time
-period** and either a `system_level_id` or a `parent_area_id`.
+[`cvd_area_list()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_list.md).
+This requires you to specify both the **time period** and either a
+`system_level_id` or a `parent_area_id`.
 
 Using `system_level_id` will return all areas within the chosen
 `time_period_id` that share the same system level. For example, to list
@@ -138,8 +139,10 @@ cvd_area_list(time_period_id = 22, system_level_id = 6) |>
 | 6             | Region          | South West               |
 
 Alternatively, if you already know the area you’re interested in, you
-can use \[`cvd_area_search`\]. This function searches by partial area
-name and returns all matches for the specified time period.
+can use
+[`cvd_area_search()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_search.md).
+This function searches by partial area name and returns all matches for
+the specified time period.
 
 For example, to find all areas containing the word “acorn” in *time
 period 22*:
@@ -161,12 +164,12 @@ cvd_area_search(partial_area_name = "acorn", time_period_id = 22) |>
 
 ## Listing indicators
 
-To working with indicators, you first need to identify both tthe **time
+To work with indicators, you first need to identify both the **time
 period** and the **system level** of interest. This is important because
 not all indicators are available at every system level. For example,
 some indicators are not reported for PCN or Practice levels.
 
-The following example dmonstrates how to list indicators available for
+The following example demonstrates how to list indicators available for
 each system level in *time period 26*.
 
 ``` r
@@ -261,7 +264,7 @@ What this does:
 
 - Retrieve all system levels and time periods
 
-- Filter the system levels avialable in *time period 26*
+- Filter the system levels available in *time period 26*
 
 - For each system level, collect the list of indicators
 
@@ -277,10 +280,12 @@ Metrics provide **breakdowns of indicator performance** by demographic
 categories such as sex, age group or ethnicity. They allow you to
 explore how an indicator varies across different population subgroups.
 
-The function \[`cvd_indicator_metric_list`\] retrieves metrics for all
-indicators within a specified *time period* and *system level*.
+The function
+[`cvd_indicator_metric_list()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_metric_list.md)
+retrieves metrics for all indicators within a specified *time period*
+and *system level*.
 
-The example below shows how to list all metrics available fro the
+The example below shows how to list all metrics available for the
 indicator **AF: Prevalence (CVDP01AF)** (Indicator ID = 1) in *time
 period 26* at the *England* system level:
 
@@ -361,7 +366,7 @@ separately for *Male* and *Female* subgroups.
 Together, these terms form the foundation of the CVDPrevent API and
 provide a consistent language for working with cardiovascular data. By
 clearly defining system levels, areas, time periods, indicators and
-metrics the API enables users to navigate complex dataset with
+metrics the API enables users to navigate complex datasets with
 confidence, compare performance across different contexts and explore
 meaningful demographic breakdowns. Understanding these concepts is an
 essential first step before making use of the wider functionality
