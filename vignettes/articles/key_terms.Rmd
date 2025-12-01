@@ -18,13 +18,12 @@ library(cvdprevent)
 The following terms are used in the CVDPrevent API to describe key concepts:
 
 | Term | Description | Example |
-|-----------------|----------------------------|----------------------------|
+|------------------|---------------------------|---------------------------|
 | System Level | Grouping of Areas into comparable levels | England, Region, ICB, sub-ICB |
 | Area | Geographical locality for which data was recorded | Bedfordshire, Luton and Milton Keynes ICB |
 | Time Period | Time span in which data was recorded | To June 2024 |
 | Indicator | High-level performance measure | CVDP001AF is short reference for "Prevalence of GP recorded atrial fibrillation" indicator |
 | Metric | Category breakdown of Indicator | CVDP001AF - Male, Aged 18-39 |
-
 
 # System Levels by Time Period
 
@@ -74,11 +73,11 @@ What this does:
 
 When working with areas, the first step is to identify the **time period** you are interested in. This is important because:
 
-- areas can change over time. For example, an area reported in *time period 1* may no longer exist in *time period 21* (such as `STP` in the above table).
+-   areas can change over time. For example, an area reported in *time period 1* may no longer exist in *time period 21* (such as `STP` in the above table).
 
-- certain system levels are excluded from specific reports. For instance, the annual report covering **Jan 2022 - Dec 2022** (*time period id = 11*) does not include PCN, Practice or Sub-ICB level data.
+-   certain system levels are excluded from specific reports. For instance, the annual report covering **Jan 2022 - Dec 2022** (*time period id = 11*) does not include PCN, Practice or Sub-ICB level data.
 
-To explore available areas, a recommended function is [`cvd_area_list`]. This requires you to specify both the **time period** and either a `system_level_id` or a `parent_area_id`.
+To explore available areas, a recommended function is `cvd_area_list()`. This requires you to specify both the **time period** and either a `system_level_id` or a `parent_area_id`.
 
 Using `system_level_id` will return all areas within the chosen `time_period_id` that share the same system level. For example, to list all NHS Regions (`system_level_id = 6`) available in *time period 22*:
 
@@ -94,7 +93,7 @@ cvd_area_list(time_period_id = 22, system_level_id = 6) |>
   gt::tab_options(quarto.disable_processing = TRUE)
 ```
 
-Alternatively, if you already know the area you're interested in, you can use [`cvd_area_search`]. This function searches by partial area name and returns all matches for the specified time period.
+Alternatively, if you already know the area you're interested in, you can use `cvd_area_search()`. This function searches by partial area name and returns all matches for the specified time period.
 
 For example, to find all areas containing the word "acorn" in *time period 22*:
 
@@ -108,9 +107,9 @@ cvd_area_search(partial_area_name = "acorn", time_period_id = 22) |>
 
 # Listing indicators
 
-To working with indicators, you first need to identify both tthe **time period** and the **system level** of interest. This is important because not all indicators are available at every system level. For example, some indicators are not reported for PCN or Practice levels.
+To work with indicators, you first need to identify both the **time period** and the **system level** of interest. This is important because not all indicators are available at every system level. For example, some indicators are not reported for PCN or Practice levels.
 
-The following example dmonstrates how to list indicators available for each system level in *time period 26*.
+The following example demonstrates how to list indicators available for each system level in *time period 26*.
 
 ```{r}
 #| label: indicators by system level
@@ -163,7 +162,7 @@ What this does:
 
 -   Retrieve all system levels and time periods
 
--   Filter the system levels avialable in *time period 26*
+-   Filter the system levels available in *time period 26*
 
 -   For each system level, collect the list of indicators
 
@@ -175,10 +174,9 @@ The resulting table provides a quick overview of indicator coverage across syste
 
 Metrics provide **breakdowns of indicator performance** by demographic categories such as sex, age group or ethnicity. They allow you to explore how an indicator varies across different population subgroups.
 
-The function [`cvd_indicator_metric_list`] retrieves metrics for all indicators within a specified *time period* and *system level*.
+The function `cvd_indicator_metric_list()` retrieves metrics for all indicators within a specified *time period* and *system level*.
 
-The example below shows how to list all metrics available fro the indicator **AF: Prevalence (CVDP01AF)** (Indicator ID = 1) in *time period 26* at the *England* system level:
-
+The example below shows how to list all metrics available for the indicator **AF: Prevalence (CVDP01AF)** (Indicator ID = 1) in *time period 26* at the *England* system level:
 
 ```{r}
 #| label: metrics for indicator 1
@@ -208,11 +206,11 @@ cvd_indicator_metric_list(time_period_id = 26, system_level_id = 1) |>
 
 *Common categories* include:
 
-- Age group
+-   Age group
 
-- Deprivation quintile
+-   Deprivation quintile
 
-- Sex
+-   Sex
 
 *Age-standardised metrics*: for some indicators, age-standardised versions of these categories are also available.
 
@@ -220,4 +218,4 @@ cvd_indicator_metric_list(time_period_id = 26, system_level_id = 1) |>
 
 # Summary
 
-Together, these terms form the foundation of the CVDPrevent API and provide a consistent language for working with cardiovascular data. By clearly defining system levels, areas, time periods, indicators and metrics the API enables users to navigate complex dataset with confidence, compare performance across different contexts and explore meaningful demographic breakdowns. Understanding these concepts is an essential first step before making use of the wider functionality demonstrated in this vignette.
+Together, these terms form the foundation of the CVDPrevent API and provide a consistent language for working with cardiovascular data. By clearly defining system levels, areas, time periods, indicators and metrics the API enables users to navigate complex datasets with confidence, compare performance across different contexts and explore meaningful demographic breakdowns. Understanding these concepts is an essential first step before making use of the wider functionality demonstrated in this vignette.
