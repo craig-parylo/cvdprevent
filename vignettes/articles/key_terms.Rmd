@@ -1,0 +1,223 @@
+---
+title: "Key terms"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(cvdprevent)
+```
+
+# Terms
+
+The following terms are used in the CVDPrevent API to describe key concepts:
+
+| Term | Description | Example |
+|-----------------|----------------------------|----------------------------|
+| System Level | Grouping of Areas into comparable levels | England, Region, ICB, sub-ICB |
+| Area | Geographical locality for which data was recorded | Bedfordshire, Luton and Milton Keynes ICB |
+| Time Period | Time span in which data was recorded | To June 2024 |
+| Indicator | High-level performance measure | CVDP001AF is short reference for "Prevalence of GP recorded atrial fibrillation" indicator |
+| Metric | Category breakdown of Indicator | CVDP001AF - Male, Aged 18-39 |
+
+
+# System Levels by Time Period
+
+You can use `cvd_time_period_system_levels()` to explore which system levels are reported in each time period. These levels may vary over time due to changes in NHS geography - for example, **Sustainability and Transformation Partnerships (STPs)** were later replaced by **Integrated Care Systems (ICS / ICBs)**.[^1]
+
+[^1]: See <https://navigator.health.org.uk/theme/sustainability-and-transformation-plans-later-partnerships> for more details about the evolution of STPs
+
+The following code snippet creates a table showing which system levels are available for each reporting time period. A ✔️ indicates that data for that system level is available in the corresponding period.
+
+```{r}
+#| label: system levels by time period
+#| code-fold: true
+cvd_time_period_system_levels() |>
+  dplyr::select(dplyr::any_of(c(
+    "TimePeriodID",
+    "TimePeriodName",
+    "SystemLevelName"
+  ))) |>
+  dplyr::mutate(value_show = "✔️") |>
+  tidyr::pivot_wider(
+    names_from = dplyr::any_of("SystemLevelName"),
+    values_from = dplyr::any_of("value_show"),
+    values_fill = ""
+  ) |>
+  gt::gt() |>
+  gt::tab_options(quarto.disable_processing = TRUE) |>
+  gt::cols_align(
+    align = "center",
+    columns = c(
+      dplyr::everything(),
+      -dplyr::any_of(c("TimePeriodName"))
+    )
+  )
+```
+
+What this does:
+
+-   Selects relevant columns: Time period and system level names
+
+-   Adds a marker: A check-mark to indicate presence
+
+-   Reshapes the data: Converts long format to wide, with system levels as columns
+
+-   Displays the result: Uses {gt} to render a clean, readable table
+
+# Listing areas
+
+When working with areas, the first step is to identify the **time period** you are interested in. This is important because:
+
+- areas can change over time. For example, an area reported in *time period 1* may no longer exist in *time period 21* (such as `STP` in the above table).
+
+- certain system levels are excluded from specific reports. For instance, the annual report covering **Jan 2022 - Dec 2022** (*time period id = 11*) does not include PCN, Practice or Sub-ICB level data.
+
+To explore available areas, a recommended function is [`cvd_area_list`]. This requires you to specify both the **time period** and either a `system_level_id` or a `parent_area_id`.
+
+Using `system_level_id` will return all areas within the chosen `time_period_id` that share the same system level. For example, to list all NHS Regions (`system_level_id = 6`) available in *time period 22*:
+
+```{r}
+#| label: area listing
+cvd_area_list(time_period_id = 22, system_level_id = 6) |>
+  dplyr::select(dplyr::any_of(c(
+    "SystemLevelID",
+    "SystemLevelName",
+    "AreaName"
+  ))) |>
+  gt::gt() |>
+  gt::tab_options(quarto.disable_processing = TRUE)
+```
+
+Alternatively, if you already know the area you're interested in, you can use [`cvd_area_search`]. This function searches by partial area name and returns all matches for the specified time period.
+
+For example, to find all areas containing the word "acorn" in *time period 22*:
+
+```{r}
+#| label: area search
+cvd_area_search(partial_area_name = "acorn", time_period_id = 22) |>
+  dplyr::select(dplyr::any_of(c("AreaID", "AreaName"))) |>
+  gt::gt() |>
+  gt::tab_options(quarto.disable_processing = TRUE)
+```
+
+# Listing indicators
+
+To working with indicators, you first need to identify both tthe **time period** and the **system level** of interest. This is important because not all indicators are available at every system level. For example, some indicators are not reported for PCN or Practice levels.
+
+The following example dmonstrates how to list indicators available for each system level in *time period 26*.
+
+```{r}
+#| label: indicators by system level
+#| code-fold: true
+
+# get details for system levels and time periods
+syst_levels <- cvd_area_system_level_time_periods()
+
+# get a summary of system level ids and names
+df_syst_levels <-
+  syst_levels |>
+  dplyr::filter(TimePeriodID == 26) |>
+  dplyr::select(dplyr::any_of(c("SystemLevelID", "SystemLevelName")))
+
+# iterate over all system levels available at time period id 26 and gather the indicators
+df_indicators_syst_level <-
+  purrr::map2_df(
+    .x = df_syst_levels$SystemLevelID,
+    .y = df_syst_levels$SystemLevelName,
+    .f = \(.x, .y) {
+      cvd_indicator_list(time_period_id = 26, system_level_id = .x) |>
+        dplyr::select(dplyr::any_of(c("IndicatorID", "IndicatorShortName"))) |>
+        dplyr::mutate(SystemLevelName = .y)
+    }
+  )
+
+# pivot the table to list system level
+df_indicators_syst_level |>
+  dplyr::mutate(value_show = "✔️") |>
+  tidyr::pivot_wider(
+    names_from = dplyr::any_of("SystemLevelName"),
+    values_from = dplyr::any_of("value_show"),
+    values_fill = ""
+  ) |>
+  gt::gt() |>
+  gt::tab_options(quarto.disable_processing = TRUE) |>
+  gt::cols_align(
+    align = "center",
+    columns = c(
+      gt::everything(),
+      -gt::any_of(c("IndicatorShortName"))
+    )
+  ) |>
+  gt::tab_header(
+    title = gt::md("Indicators for *Time Period 26* by system level")
+  )
+```
+
+What this does:
+
+-   Retrieve all system levels and time periods
+
+-   Filter the system levels avialable in *time period 26*
+
+-   For each system level, collect the list of indicators
+
+-   Pivot the results into a table that clearly shows which indicators are available at each system level
+
+The resulting table provides a quick overview of indicator coverage across system levels, making it easy to spot where gaps exist.
+
+# Listing metrics
+
+Metrics provide **breakdowns of indicator performance** by demographic categories such as sex, age group or ethnicity. They allow you to explore how an indicator varies across different population subgroups.
+
+The function [`cvd_indicator_metric_list`] retrieves metrics for all indicators within a specified *time period* and *system level*.
+
+The example below shows how to list all metrics available fro the indicator **AF: Prevalence (CVDP01AF)** (Indicator ID = 1) in *time period 26* at the *England* system level:
+
+
+```{r}
+#| label: metrics for indicator 1
+#| code-fold: true
+cvd_indicator_metric_list(time_period_id = 26, system_level_id = 1) |>
+  dplyr::filter(IndicatorID == 1) |>
+  dplyr::select(dplyr::any_of(c(
+    "MetricCategoryTypeName",
+    "Indicator",
+    "MetricCategoryName",
+    "CategoryAttribute",
+    "MetricID"
+  ))) |>
+  dplyr::group_by(MetricCategoryTypeName) |>
+  dplyr::arrange(MetricCategoryName, .by_group = TRUE) |>
+  gt::gt(row_group_as_column = TRUE) |>
+  gt::tab_options(quarto.disable_processing = TRUE) |>
+  gt::tab_stubhead(label = "MetricCategoryTypeName") |>
+  gt::tab_header(
+    title = gt::md(
+      "**Metrics** for *Indicator 1 (AF: Prevalence)* in *Time Period 26* and for the *England* system level"
+    )
+  )
+```
+
+**Understanding Metric Categories**
+
+*Common categories* include:
+
+- Age group
+
+- Deprivation quintile
+
+- Sex
+
+*Age-standardised metrics*: for some indicators, age-standardised versions of these categories are also available.
+
+*Sex disaggregation*: certain metrics are further broken down by sex. For example, in the table above, the age group *18-39* is reported both for all persons in that group (*CategoryAttribute = Person*) and separately for *Male* and *Female* subgroups.
+
+# Summary
+
+Together, these terms form the foundation of the CVDPrevent API and provide a consistent language for working with cardiovascular data. By clearly defining system levels, areas, time periods, indicators and metrics the API enables users to navigate complex dataset with confidence, compare performance across different contexts and explore meaningful demographic breakdowns. Understanding these concepts is an essential first step before making use of the wider functionality demonstrated in this vignette.
