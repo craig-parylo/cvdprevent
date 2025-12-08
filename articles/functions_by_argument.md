@@ -2,7 +2,7 @@
 
 This article provides an interactive index of the exported functions in
 **cvdprevent**, grouped by their arguments. The searchable table makes
-it easy to see whcih functions share common parameters and to jump
+it easy to see which functions share common parameters and to jump
 directly to their documentation.
 
 Use this index as a quick way to explore the package’s API, discover
