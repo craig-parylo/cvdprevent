@@ -14,7 +14,7 @@ articles:
     desc: "Step-by-step tutorials and applied workflows."
     contents:
       - using_cvdprevent
-      - articles/example_workflows
+      # - articles/example_workflows
 
 reference:
   - title: "📅 Time periods"
