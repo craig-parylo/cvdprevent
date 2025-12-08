@@ -1,6 +1,21 @@
 url: https://craig-parylo.github.io/cvdprevent/
 template:
   bootstrap: 5
+
+articles:
+  - title: "📖 Reference"
+    navbar: "📖 Reference"
+    desc: "Backgoround concepts and function reference guides."
+    contents:
+      - articles/key_terms
+      - articles/functions_by_argument
+  - title: "🚀 Guides"
+    navbar: "🚀 Guides"
+    desc: "Step-by-step tutorials and applied workflows."
+    contents:
+      - using_cvdprevent
+      - articles/example_workflows
+
 reference:
   - title: "📅 Time periods"
     desc: >
