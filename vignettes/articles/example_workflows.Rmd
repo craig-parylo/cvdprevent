@@ -1,0 +1,339 @@
+---
+title: "Example workflows"
+---
+
+```{r, include = FALSE}
+#| label: knitr opts
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+#| label: setup
+#| context: setup
+library(cvdprevent)
+
+# We will also be usng the following packages in this article.
+# These will be fully namespaced, e.g. dplyr::select() throughout.
+
+# library(dplyr)
+# library(stringr)
+# library(reactable)
+# library(tidyr)
+# library(gt)
+```
+
+# Regional inequality analysis across NHS areas
+
++----------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| 🎯 Goal              | Identify variation in CVD indicators (e.g., AF prevalence, hypertension treatment) across a geography, such as ICS, PCN or practice to target interventions. |
++----------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| 📋 Steps             | 1.  Identify time period and geography.                                                                                                                      |
+|                      | 2.  Explore available indicators                                                                                                                             |
+|                      | 3.  Select an appropriate indicator                                                                                                                          |
+|                      | 4.  Retrieve and interpret results                                                                                                                           |
++----------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| 🪧 Why {cvdprevent}? | Tidyverse-friendly outputs and helper functions for indicators, time periods and areas simplify pulling and comparing NHS CVDPREVENT audit data.             |
++----------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+## Step 1: Select our system level and time period
+
+Data are published quarterly, each with a unique numeric ID. The first step is to identify the relevant time period and system level. Here we filter for NHS Region-level data.
+
+```{r}
+#| label: regional inequality - time period and system level
+cvd_time_period_system_levels() |>
+  # keep time periods where regional data is available
+  dplyr::filter(SystemLevelName == "Region") |>
+  # order the time periods most recent first
+  dplyr::arrange(dplyr::desc(TimePeriodID)) |>
+  # select variables that appear interesting
+  dplyr::select(dplyr::any_of(c(
+    "TimePeriodID",
+    "TimePeriodName",
+    "SystemLevelID",
+    "SystemLevelName"
+  ))) |>
+  # display in an interactive table
+  reactable::reactable()
+```
+
+From this table, *TimePeriodID* value `26` ("To June 2025") is appropriate. NHS Region corresponds to *SystemLevelID* `6`.
+
+## Step 2: Identifying available indicators
+
+We next explore which indicators are reported for this time period and system level:
+
+```{r}
+#| label: regional inequality - indicator selection
+
+inds <-
+  cvd_indicator_list(time_period_id = 26, system_level_id = 6) |>
+  # select relevant columns to help
+  dplyr::select(dplyr::any_of(c(
+    "IndicatorID",
+    "IndicatorCode",
+    "IndicatorShortName",
+    "IndicatorOrder"
+  )))
+
+inds |>
+  # display in an interactive table
+  reactable::reactable(searchable = TRUE, defaultPageSize = 5)
+```
+
+This returns `r nrow(inds)` indicators - too many to review manually. To focus, we filter for hypertension-related measures:
+
+```{r}
+#| label: regional inequality - filter for hypertension indicators
+
+# show hypertension-related indicators
+inds |>
+  dplyr::filter(stringr::str_starts(
+    string = IndicatorShortName,
+    pattern = "Hypertension"
+  )) |>
+  # sort them by the IndicatorOrder
+  dplyr::arrange(IndicatorOrder) |>
+  # display in a table and remove default row shading
+  gt::gt() |> gt::tab_options(quarto.disable_processing = TRUE)
+```
+
+## Step 3: Obtain indicator metadata
+
+Hypertension indicators include prevalence, monitoring, treatment to threshold and potential over-treatment. Suppose we are interested in treatment to appropriate threshold (*IndicatorID* = `32`). To understand its definition and calculation:
+
+```{r}
+#| label: regional inequality - indicator details
+
+# gather some details about this indicator
+ind_details <- cvd_indicator_details(indicator_id = 32)
+
+# nest the details to break up into useful chunks
+ind_details <-
+  ind_details |>
+  dplyr::select(dplyr::any_of(c(
+    "MetaDataCategoryID",
+    "MetaDataTitle",
+    "MetaData"
+  ))) |>
+  tidyr::nest(data = dplyr::any_of(c("MetaDataTitle", "MetaData")))
+```
+
+::: panel-tabset
+## Meta data 1
+
+```{r}
+#| label: regional inequality - indicator details - p1
+ind_details[[2]][[1]] |>
+  gt::gt() |>
+  gt::tab_options(quarto.disable_processing = TRUE)
+```
+
+## Meta data 2
+
+```{r}
+#| label: regional inequality - indicator details - p2
+ind_details[[2]][[2]] |>
+  gt::gt() |>
+  gt::tab_options(quarto.disable_processing = TRUE)
+```
+
+## Meta data 3
+
+```{r}
+#| label: regional inequality - indicator details - p3
+ind_details[[2]][[3]] |>
+  gt::gt() |>
+  gt::tab_options(quarto.disable_processing = TRUE)
+```
+
+## Meta data 4
+
+```{r}
+#| label: regional inequality - indicator details - p4
+ind_details[[2]][[4]] |>
+  gt::gt() |>
+  gt::tab_options(quarto.disable_processing = TRUE)
+```
+:::
+
+From the *Definition* section, this indicator measures the percentage of people with hypertension whose blood pressure is controlled to recommended thresholds, varying by age and setting. Metadata also explains:
+
+-   Purpose and interpretation
+
+-   Numerator and denominator definitions
+
+-   Suppression rules
+
+-   Guidance for use in dashboards
+
+## Step 4: Gather performance measures
+
+We now have the key components:
+
+-   **System level:** NHS Region (`system_level_id = 6`)
+
+-   **Time period:** To June 2025 (`time_period_id = 26`)
+
+-   **Indicator:** Hypertension treatment to threshold (`indicator_id = 32`)
+
+-   **Metadata:** Definitions and interpretation guidance
+
+With these, we can retrieve the raw data:
+
+```{r}
+#| label: regional inequality - indicator data - gather
+ind_data <- 
+  cvd_indicator_raw_data(time_period_id = 26, system_level_id = 6, indicator_id = 32)
+```
+
+This dataset provides the values needed to compare NHS Regions and assess inequality in hypertension management.
+
+```{r}
+#| label: regional inequality - indicator data - visualise
+#| code-fold: true
+
+ind_data |> 
+  # get the overall performance metric
+  dplyr::filter(MetricCategoryName == "Persons") |> 
+  # wrangle data
+  dplyr::mutate(
+    # sort areas by their value
+    AreaName = AreaName |> forcats::fct_infreq(w = Value),
+    # prepare some labels
+    lbl_value = scales::percent(Value, accuracy = 0.1, scale = 1),
+    lbl_lcl = scales::percent(LowerConfidenceLimit, accuracy = 0.1, scale = 1),
+    lbl_ucl = scales::percent(UpperConfidenceLimit, accuracy = 0.1, scale = 1),
+    lbl_num = scales::comma(Numerator),
+    lbl_denom = scales::comma(Denominator),
+    # create text to show the overall value on the bar
+    Text = lbl_value |> as.character(),
+    # create some text to include in the context box when you hover over the plot
+    HoverText = glue::glue(
+      "{AreaName}
+      {lbl_value} (CI: {lbl_lcl} to {lbl_ucl})
+      {lbl_num} out of a total of {lbl_denom} people
+      "
+    )
+  ) |> 
+  # plot as an interactive chart
+  plotly::plot_ly(
+    x = ~Value,
+    y = ~AreaName,
+    # name = ~AreaName,
+    text = ~Text,
+    hovertext = ~HoverText,
+    hoverinfo = "text",
+    type = "bar",
+    marker = list(color = "#16a085")
+  ) |> 
+    plotly::layout(
+      # set the title to the indicator name
+      title = ind_data |> dplyr::pull(IndicatorShortName) |> unique(),
+      # clear the y-axis title as its unecessary
+      yaxis = list(title = ""),
+      # set the x-axis range and title
+      xaxis = list(range = c(0, 100), title = "Indicator performance (percent)"),
+      # set the font
+      font = list(family = "sans-serif", size = 14),
+      # adjust the margin to avoid the title getting clipped
+      margin = list(t = 80),
+      # change the colour of the hovertext box to add some contrast
+      hoverlabel = list(bgcolor = "#ecf0f1")
+    ) |> 
+      # hide the mode bar
+    plotly::config(displayModeBar = FALSE)
+```
+
+Why this matters:
+
+- **Clear comparison:** Regions are ordered by performance, making inequality visible at a glance.
+
+- **Actionable insight:** Regions with lower rates can be targeted for intervention.
+
+- **Reusable workflow:** Swap out `indicator_id = 32` for AF, cholesterol or other conditions to replicate the analysis.
+
+# Time-series monitoring for key CVD indicators
+
+## Goal
+
+Track progress quarter-to-quarter (e.g., BP monitoring, cholesterol management) and detect improving or declining trends.
+
+## Steps
+
+-   Enumerate periods: Use cvd_time_period_list() to find available reporting windows.
+-   Collect values: Pull the same indicator across multiple time periods for selected areas.
+-   Visualize trends: Reshape with tidyr and chart with ggplot2 to reveal trajectories.
+
+## Why
+
+The package exposes time period metadata and returns tibbles, making longitudinal analysis straightforward
+
+```{r}
+# library(cvdprevent)
+# library(dplyr)
+# library(tidyr)
+# library(ggplot2)
+
+# tp <- cvd_time_period_list() %>%
+#   filter(IndicatorTypeName == "Standard") %>%
+#   slice_max(order_by = TimePeriodID, n = 6) %>%
+#   arrange(TimePeriodID)
+
+# Example: iterate over time periods and bind results (pseudo; see function reference)
+# data_list <- lapply(tp$TimePeriodID, function(id) get_indicator_values(id, area_level = "ICS"))
+# ts <- bind_rows(data_list) %>% pivot_longer(...)
+# ggplot(ts, aes(TimePeriodName, value, color = area)) + geom_line()
+```
+
+# Performance benchmarking and dashboarding
+
+## Goal
+
+-   Build a Shiny or R Markdown dashboard that benchmarks local systems against national averages and flags outliers for action.
+
+## Steps
+
+-   Pull national baseline: Use England-wide (system_level_id = 1) values as benchmarks.
+-   Compare local: Compute differences, percent gaps, or z-scores for ICS/PCN/practice results.
+-   Publish insights: Surface priorities, trend arrows, and variance from target in an interactive dashboard.
+
+```{r}
+# library(cvdprevent)
+# library(dplyr)
+
+# eng <- cvd_indicator_list(time_period_id = 26, system_level_id = 1)
+# local <- cvd_indicator_list(time_period_id = 26, system_level_id = <local_id>)
+# bench <- local %>%
+#   left_join(eng, by = "IndicatorID", suffix = c("_local", "_eng")) %>%
+#   mutate(pct_gap = (Value_local - Value_eng) / Value_eng * 100)
+# Use in Shiny modules for tables and charts
+```
+
+# Service planning for targeted intervention cohorts
+
+-   Goal: Identify specific practices or PCNs with the largest gaps on priority CVD indicators to target outreach, clinics, or funding.
+-   Steps:
+-   Select priority indicators: Use package functions to list and filter indicators relevant to blood pressure control, AF prevalence, or statin use.
+-   Pull local area performance: Retrieve values by practice/PCN/ICS, then compute gaps to England benchmarks to rank where the need is greatest.
+-   Build actionable cohorts: Flag areas below threshold, attach population denominators, and create lists for clinical engagement and targeted recall.
+
+```{r}
+# library(cvdprevent)
+# library(dplyr)
+
+# inds <- cvd_indicator_list(time_period_id = 26, system_level_id = 1) %>%
+#   filter(grepl("Hypertension|AF|Cholesterol", IndicatorShortName))
+
+# local_area_values <- ... # retrieve ICS/PCN/practice values for these indicators
+# gaps <- local_area_values %>% left_join(inds, by = "IndicatorID") %>%
+#   mutate(pct_gap = (Value_local - Value_england) / Value_england * 100) %>%
+#   arrange(pct_gap)
+```
+
+-   This workflow leverages the package’s ability to list indicators and work with NHS area hierarchies using tidy tibbles.
+
+# Automated quarterly audit and exception reporting
