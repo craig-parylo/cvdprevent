@@ -2,10 +2,12 @@ pandoc: 3.1.11
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
+  articles/ex_1_regional: ex_1_regional.html
+  articles/ex_2_timeseries: ex_2_timeseries.html
   articles/functions_by_argument: functions_by_argument.html
   articles/key_terms: key_terms.html
   using_cvdprevent: using_cvdprevent.html
-last_built: 2025-12-08T11:03Z
+last_built: 2025-12-12T14:45Z
 urls:
   reference: https://craig-parylo.github.io/cvdprevent/reference
   article: https://craig-parylo.github.io/cvdprevent/articles
