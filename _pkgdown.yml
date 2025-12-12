@@ -11,10 +11,15 @@ articles:
       - articles/functions_by_argument
   - title: "🚀 Guides"
     navbar: "🚀 Guides"
-    desc: "Step-by-step tutorials and applied workflows."
+    desc: "Detailed tutorials."
     contents:
       - using_cvdprevent
-      # - articles/example_workflows
+  - title: "🧩 Example workflows"
+    navbar: "🧩 Example workflows"
+    desc: "Applied workflows."
+    contents:
+      - articles/ex_1_regional
+      - articles/ex_2_timeseries
 
 reference:
   - title: "📅 Time periods"

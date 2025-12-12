@@ -35,12 +35,15 @@ Imports:
     tibble,
     tidyr
 Suggests:
+    forcats,
     ggplot2,
     gt,
     knitr,
     mockery,
+    plotly,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    zoo
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
@@ -49,3 +52,4 @@ LazyData: true
 NeedsCompilation: no
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+Config/Needs/website: rmarkdown
