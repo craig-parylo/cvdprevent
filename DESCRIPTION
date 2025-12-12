@@ -35,6 +35,7 @@ Imports:
     tibble,
     tidyr
 Suggests:
+    forcats,
     ggplot2,
     gt,
     knitr,
