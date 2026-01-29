@@ -94,10 +94,10 @@ cvd_time_period_list() |>
 #> # A tibble: 4 × 2
 #>   TimePeriodID TimePeriodName   
 #>          <int> <chr>            
-#> 1           26 To June 2025     
-#> 2           24 To March 2025    
-#> 3           22 To December 2024 
-#> 4           20 To September 2024
+#> 1           28 To September 2025
+#> 2           26 To June 2025     
+#> 3           24 To March 2025    
+#> 4           22 To December 2024
 ```
 
 See the package vignette for more examples and guidance:

@@ -300,7 +300,7 @@ cvd_time_period_system_levels <- function() {
 #'
 #' # Find valid time period IDs, then get system levels for the latest one
 #' latest_period <-
-#'   cvd_time_period_list() |>
+#'   cvd_time_period_system_levels() |>
 #'   dplyr::pull(TimePeriodID) |>
 #'   max()
 #'

@@ -53,7 +53,8 @@ get_random_ids <- function(
 get_valid_time_period_ids <- function() {
   # get a tibble containing valid time periods from the API (cached)
   # df_time_periods <- cvd_time_period_list()
-  df_time_periods <- cvd_time_period_system_levels()
+  # df_time_periods <- cvd_time_period_system_levels()
+  df_time_periods <- cvd_time_period_list() # this is a little slower on first run but seems to return slightly more time period ids
 
   # check the tibble contains a column called 'TimePeriodID'
   if (!"TimePeriodID" %in% names(df_time_periods)) {
