@@ -93,14 +93,11 @@ periods_levels <- cvd_time_period_system_levels()
 periods_levels |>
   dplyr::slice_max(order_by = TimePeriodID) |>
   dplyr::select(TimePeriodID, TimePeriodName, SystemLevelID, SystemLevelName)
-#> # A tibble: 6 × 4
-#>   TimePeriodID TimePeriodName    SystemLevelID SystemLevelName
-#>          <int> <chr>                     <int> <chr>          
-#> 1           28 To September 2025             1 England        
-#> 2           28 To September 2025             4 PCN            
-#> 3           28 To September 2025             5 Practice       
-#> 4           28 To September 2025             6 Region         
-#> 5           28 To September 2025             7 ICB            
-#> 6           28 To September 2025             8 Sub-ICB        
+#> # A tibble: 3 × 4
+#>   TimePeriodID TimePeriodName      SystemLevelID SystemLevelName
+#>          <int> <chr>                       <int> <chr>          
+#> 1           29 Jul 2024 - Jun 2025             1 England        
+#> 2           29 Jul 2024 - Jun 2025             6 Region         
+#> 3           29 Jul 2024 - Jun 2025             7 ICB            
 # }
 ```

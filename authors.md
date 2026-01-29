@@ -12,7 +12,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/craig-parylo/cvdprevent/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/craig-parylo/cvdprevent/blob/v0.2.5/DESCRIPTION)
 
 Parylo C (2026). *cvdprevent: Access and Analyse Data from the 'CVD
 Prevent' API*. R package version 0.2.4.9000,

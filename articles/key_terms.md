@@ -84,6 +84,7 @@ cvd_time_period_system_levels() |>
 | 26           | To June 2025        | ✔️      |     |     | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
 | 27           | Apr 2024 - Mar 2025 | ✔️      |     |     |     |          | ✔️     | ✔️  |         |
 | 28           | To September 2025   | ✔️      |     |     | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
+| 29           | Jul 2024 - Jun 2025 | ✔️      |     |     |     |          | ✔️     | ✔️  |         |
 
 What this does:
 

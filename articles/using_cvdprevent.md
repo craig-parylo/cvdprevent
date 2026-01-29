@@ -76,14 +76,11 @@ cvd_time_period_system_levels() |>
   gt::gt()
 ```
 
-| TimePeriodID | TimePeriodName    | SystemLevelID | SystemLevelName |
-|--------------|-------------------|---------------|-----------------|
-| 28           | To September 2025 | 1             | England         |
-| 28           | To September 2025 | 4             | PCN             |
-| 28           | To September 2025 | 5             | Practice        |
-| 28           | To September 2025 | 6             | Region          |
-| 28           | To September 2025 | 7             | ICB             |
-| 28           | To September 2025 | 8             | Sub-ICB         |
+| TimePeriodID | TimePeriodName      | SystemLevelID | SystemLevelName |
+|--------------|---------------------|---------------|-----------------|
+| 29           | Jul 2024 - Jun 2025 | 1             | England         |
+| 29           | Jul 2024 - Jun 2025 | 6             | Region          |
+| 29           | Jul 2024 - Jun 2025 | 7             | ICB             |
 
 ## Areas
 
