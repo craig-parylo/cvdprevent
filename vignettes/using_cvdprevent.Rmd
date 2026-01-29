@@ -480,7 +480,9 @@ We can extract the tibbles using the list\$object notation. Here we can see defi
 
 ```{r}
 #| label: all indicator metrics
-returned_list$indicator_metrics |> dplyr::glimpse()
+if ("indicator_metrics" %in% names(returned_list)) {
+  returned_list$indicator_metrics |> dplyr::glimpse()
+}
 ```
 
 ### Area data
@@ -489,16 +491,18 @@ Here we can obtain rates of treatment with anticoagulants broken down by sex for
 
 ```{r}
 #| label: indicator area data
-returned_list$area_data |>
-  dplyr::filter(MetricCategoryTypeName == "Sex") |>
-  dplyr::select(
-    AreaID,
-    CategoryAttribute,
-    Value,
-    LowerConfidenceLimit,
-    UpperConfidenceLimit
-  ) |>
-  gt::gt()
+if ("area_data" %in% names(returned_list)) {
+  returned_list$area_data |>
+    dplyr::filter(MetricCategoryTypeName == "Sex") |>
+    dplyr::select(
+      AreaID,
+      CategoryAttribute,
+      Value,
+      LowerConfidenceLimit,
+      UpperConfidenceLimit
+    ) |>
+    gt::gt()
+}
 ```
 
 ### National data
@@ -507,16 +511,18 @@ And we can also obtain the same breakdown for national (England-wide):
 
 ```{r}
 #| label: indicator national data
-returned_list$national_data |>
-  dplyr::filter(MetricCategoryTypeName == "Sex") |>
-  dplyr::select(
-    AreaID,
-    CategoryAttribute,
-    Value,
-    LowerConfidenceLimit,
-    UpperConfidenceLimit
-  ) |>
-  gt::gt()
+if ("national_data" %in% names(returned_list)) {
+  returned_list$national_data |>
+    dplyr::filter(MetricCategoryTypeName == "Sex") |>
+    dplyr::select(
+      AreaID,
+      CategoryAttribute,
+      Value,
+      LowerConfidenceLimit,
+      UpperConfidenceLimit
+    ) |>
+    gt::gt()
+}
 ```
 
 These splits by local and national level allow for fine-grained benchmarking.
