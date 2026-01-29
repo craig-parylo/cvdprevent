@@ -62,6 +62,7 @@ cvd_time_period_system_levels() |>
 | 22           | To December 2024  | PCN             |
 | 24           | To March 2025     | PCN             |
 | 26           | To June 2025      | PCN             |
+| 28           | To September 2025 | PCN             |
 
 From this table we can see that **TimePeriodID 26** is the most recent
 reporting window, so we will use that for our geography lookup.

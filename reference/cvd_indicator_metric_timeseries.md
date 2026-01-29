@@ -157,7 +157,7 @@ cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
     names_from = AreaName,
     values_from = Value
   )
-#> # A tibble: 16 × 4
+#> # A tibble: 17 × 4
 #>    TimePeriodName    TimePeriodID England `Salford South East PCN`
 #>    <chr>                    <int>   <dbl>                    <dbl>
 #>  1 To March 2020                1    88.2                     85.9
@@ -176,5 +176,6 @@ cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
 #> 14 To December 2024            22    92.0                     92.8
 #> 15 To March 2025               24    92.5                     94.6
 #> 16 To June 2025                26    92.4                     94.6
+#> 17 To September 2025           28    92.2                     94.3
 # }
 ```

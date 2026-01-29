@@ -129,7 +129,7 @@ subsystems](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/C
 # \donttest{
 # View flat sub-systems for Somerset STP (area_id = 5)
 cvd_area_flat_subsystems(area_id = 5) |> dplyr::glimpse()
-#> Rows: 74
+#> Rows: 73
 #> Columns: 14
 #> $ AreaCode                   <chr> "E54000038", "E54000038", "E54000038", "E54…
 #> $ AreaID                     <int> 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5…

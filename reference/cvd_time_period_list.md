@@ -82,43 +82,44 @@ for endpoint details.
 
 # List all available time periods
 cvd_time_period_list()
-#> # A tibble: 27 × 6
+#> # A tibble: 29 × 6
 #>    EndDate              IndicatorTypeID IndicatorTypeName StartDate TimePeriodID
 #>    <chr>                          <int> <chr>             <chr>            <int>
-#>  1 Mon, 30 Jun 2025 00…               1 Standard          Mon, 01 …           26
-#>  2 Mon, 30 Jun 2025 00…               2 Outcomes          Mon, 01 …           27
-#>  3 Mon, 31 Mar 2025 00…               2 Outcomes          Mon, 01 …           25
-#>  4 Mon, 31 Mar 2025 00…               1 Standard          Mon, 01 …           24
-#>  5 Tue, 31 Dec 2024 00…               2 Outcomes          Mon, 01 …           23
-#>  6 Tue, 31 Dec 2024 00…               1 Standard          Mon, 01 …           22
-#>  7 Mon, 30 Sep 2024 00…               1 Standard          Mon, 01 …           20
-#>  8 Mon, 30 Sep 2024 00…               2 Outcomes          Mon, 01 …           21
-#>  9 Sun, 30 Jun 2024 00…               1 Standard          Mon, 01 …           18
-#> 10 Sun, 30 Jun 2024 00…               2 Outcomes          Mon, 01 …           19
-#> # ℹ 17 more rows
+#>  1 Tue, 30 Sep 2025 00…               1 Standard          Mon, 01 …           28
+#>  2 Tue, 30 Sep 2025 00…               2 Outcomes          Mon, 01 …           29
+#>  3 Mon, 30 Jun 2025 00…               1 Standard          Mon, 01 …           26
+#>  4 Mon, 30 Jun 2025 00…               2 Outcomes          Mon, 01 …           27
+#>  5 Mon, 31 Mar 2025 00…               2 Outcomes          Mon, 01 …           25
+#>  6 Mon, 31 Mar 2025 00…               1 Standard          Mon, 01 …           24
+#>  7 Tue, 31 Dec 2024 00…               2 Outcomes          Mon, 01 …           23
+#>  8 Tue, 31 Dec 2024 00…               1 Standard          Mon, 01 …           22
+#>  9 Mon, 30 Sep 2024 00…               1 Standard          Mon, 01 …           20
+#> 10 Mon, 30 Sep 2024 00…               2 Outcomes          Mon, 01 …           21
+#> # ℹ 19 more rows
 #> # ℹ 1 more variable: TimePeriodName <chr>
 
 # List time periods with data for a specific indicator type (e.g., Standard)
 cvd_time_period_list(indicator_type_id = 1)
-#> # A tibble: 17 × 6
+#> # A tibble: 18 × 6
 #>    EndDate              IndicatorTypeID IndicatorTypeName StartDate TimePeriodID
 #>    <chr>                          <int> <chr>             <chr>            <int>
-#>  1 Mon, 30 Jun 2025 00…               1 Standard          Mon, 01 …           26
-#>  2 Mon, 31 Mar 2025 00…               1 Standard          Mon, 01 …           24
-#>  3 Tue, 31 Dec 2024 00…               1 Standard          Mon, 01 …           22
-#>  4 Mon, 30 Sep 2024 00…               1 Standard          Mon, 01 …           20
-#>  5 Sun, 30 Jun 2024 00…               1 Standard          Mon, 01 …           18
-#>  6 Sun, 31 Mar 2024 00…               1 Standard          Mon, 01 …           17
-#>  7 Sun, 31 Dec 2023 00…               1 Standard          Mon, 01 …           15
-#>  8 Sat, 30 Sep 2023 00…               1 Standard          Mon, 01 …           10
-#>  9 Fri, 30 Jun 2023 00…               1 Standard          Mon, 01 …            9
-#> 10 Fri, 31 Mar 2023 00…               1 Standard          Mon, 01 …            8
-#> 11 Sat, 31 Dec 2022 00…               1 Standard          Mon, 01 …            7
-#> 12 Fri, 30 Sep 2022 00…               1 Standard          Mon, 01 …            6
-#> 13 Thu, 30 Jun 2022 00…               1 Standard          Mon, 01 …            5
-#> 14 Thu, 31 Mar 2022 00…               1 Standard          Mon, 01 …            4
-#> 15 Thu, 30 Sep 2021 00…               1 Standard          Mon, 01 …            3
-#> 16 Wed, 31 Mar 2021 00…               1 Standard          Mon, 01 …            2
-#> 17 Tue, 31 Mar 2020 00…               1 Standard          Mon, 01 …            1
+#>  1 Tue, 30 Sep 2025 00…               1 Standard          Mon, 01 …           28
+#>  2 Mon, 30 Jun 2025 00…               1 Standard          Mon, 01 …           26
+#>  3 Mon, 31 Mar 2025 00…               1 Standard          Mon, 01 …           24
+#>  4 Tue, 31 Dec 2024 00…               1 Standard          Mon, 01 …           22
+#>  5 Mon, 30 Sep 2024 00…               1 Standard          Mon, 01 …           20
+#>  6 Sun, 30 Jun 2024 00…               1 Standard          Mon, 01 …           18
+#>  7 Sun, 31 Mar 2024 00…               1 Standard          Mon, 01 …           17
+#>  8 Sun, 31 Dec 2023 00…               1 Standard          Mon, 01 …           15
+#>  9 Sat, 30 Sep 2023 00…               1 Standard          Mon, 01 …           10
+#> 10 Fri, 30 Jun 2023 00…               1 Standard          Mon, 01 …            9
+#> 11 Fri, 31 Mar 2023 00…               1 Standard          Mon, 01 …            8
+#> 12 Sat, 31 Dec 2022 00…               1 Standard          Mon, 01 …            7
+#> 13 Fri, 30 Sep 2022 00…               1 Standard          Mon, 01 …            6
+#> 14 Thu, 30 Jun 2022 00…               1 Standard          Mon, 01 …            5
+#> 15 Thu, 31 Mar 2022 00…               1 Standard          Mon, 01 …            4
+#> 16 Thu, 30 Sep 2021 00…               1 Standard          Mon, 01 …            3
+#> 17 Wed, 31 Mar 2021 00…               1 Standard          Mon, 01 …            2
+#> 18 Tue, 31 Mar 2020 00…               1 Standard          Mon, 01 …            1
 #> # ℹ 1 more variable: TimePeriodName <chr>
 ```

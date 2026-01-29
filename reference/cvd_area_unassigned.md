@@ -99,12 +99,12 @@ cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
   dplyr::slice_head(n = 4) |>
   dplyr::select(SystemLevelName, AreaID, AreaName)
 #> # A tibble: 4 × 3
-#>   SystemLevelName AreaID AreaName                  
-#>   <chr>            <int> <chr>                     
-#> 1 Practice          6037 15 Sefton Road            
-#> 2 Practice          4877 27@Northgate              
-#> 3 Practice          1626 49 Marine Avenue Surgery  
-#> 4 Practice          3765 Aldersbrook Medical Centre
+#>   SystemLevelName AreaID AreaName                 
+#>   <chr>            <int> <chr>                    
+#> 1 Practice          6037 15 Sefton Road           
+#> 2 Practice          4877 27@Northgate             
+#> 3 Practice          1626 49 Marine Avenue Surgery 
+#> 4 Practice          3151 Acton Town Medical Centre
 
 # List unassigned top-level areas (system level ID = 1, England) for time period 17:
 cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>

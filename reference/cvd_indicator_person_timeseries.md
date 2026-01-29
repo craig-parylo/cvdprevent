@@ -158,7 +158,7 @@ cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
     names_from = MetricCategoryName,
     values_from = Value
   )
-#> # A tibble: 16 × 5
+#> # A tibble: 17 × 5
 #>    TimePeriodName    TimePeriodID `40-59` `60-79` `80+`
 #>    <chr>                    <int>   <dbl>   <dbl> <dbl>
 #>  1 To March 2020                1    78.3    82.3  85  
@@ -177,5 +177,6 @@ cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
 #> 14 To December 2024            22    85.7    91.4  91.6
 #> 15 To March 2025               24    85.7    93.3  91.9
 #> 16 To June 2025                26    85.7    92.9  92.2
+#> 17 To September 2025           28    89.8    92.2  92.0
 # }
 ```

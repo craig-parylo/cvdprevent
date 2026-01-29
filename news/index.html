@@ -46,10 +46,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="cvdprevent-development-version">cvdprevent (development version)<a class="anchor" aria-label="anchor" href="#cvdprevent-development-version"></a></h2>
-</div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.4" id="cvdprevent-024">cvdprevent 0.2.4<a class="anchor" aria-label="anchor" href="#cvdprevent-024"></a></h2><p class="text-muted">CRAN release: 2025-11-11</p>
+<h2 class="pkg-version" data-toc-text="0.2.5" id="version-025-2026-01-29">Version 0.2.5 (2026-01-29)<a class="anchor" aria-label="anchor" href="#version-025-2026-01-29"></a></h2><p class="text-muted">CRAN release: 2026-01-29</p>
+<div class="section level3">
+<h3 id="added-0-2-5">Added<a class="anchor" aria-label="anchor" href="#added-0-2-5"></a></h3>
+<ul><li>Additional defensive code in the vignette to better handle unexpected conditions and improve overall robustness.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changed-0-2-5">Changed<a class="anchor" aria-label="anchor" href="#changed-0-2-5"></a></h3>
+<ul><li>The validation function <code>get_valid_time_period_ids()</code> was updated to ensure it retrieves <em>all</em> valid time periods from the API. Although this introduces a slight performance slowdown, it provides greater long-term stability against future API changes.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fixed-0-2-5">Fixed<a class="anchor" aria-label="anchor" href="#fixed-0-2-5"></a></h3>
+<ul><li>Corrected an issue in the example <code><a href="../reference/cvd_area_system_level.html">cvd_area_system_level()</a></code> where an incompatible <code>TimePeriodID</code> was being produced. The example has been updated to prevent recurrence and the underlying validation logic has been strengthened.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.4" id="version-024-2025-11-11">Version 0.2.4 (2025-11-11)<a class="anchor" aria-label="anchor" href="#version-024-2025-11-11"></a></h2><p class="text-muted">CRAN release: 2025-11-11</p>

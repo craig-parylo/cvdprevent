@@ -28,10 +28,10 @@ cvd_time_period_list() |>
 
 | TimePeriodID | TimePeriodName    |
 |--------------|-------------------|
+| 28           | To September 2025 |
 | 26           | To June 2025      |
 | 24           | To March 2025     |
 | 22           | To December 2024  |
-| 20           | To September 2024 |
 
 There are two main types of indicator reported: - “Standard”
 (IndicatorTypeID = 1)
@@ -55,10 +55,10 @@ cvd_time_period_list(indicator_type_id = 2) |>
 
 | IndicatorTypeID | IndicatorTypeName | TimePeriodID | TimePeriodName      |
 |-----------------|-------------------|--------------|---------------------|
+| 2               | Outcomes          | 29           | Jul 2024 - Jun 2025 |
 | 2               | Outcomes          | 27           | Apr 2024 - Mar 2025 |
 | 2               | Outcomes          | 25           | Jan 2024 - Dec 2024 |
 | 2               | Outcomes          | 23           | Oct 2023 - Sep 2024 |
-| 2               | Outcomes          | 21           | Jul 2023 - Jun 2024 |
 
 ### Listing system levels by time period
 
@@ -76,11 +76,14 @@ cvd_time_period_system_levels() |>
   gt::gt()
 ```
 
-| TimePeriodID | TimePeriodName      | SystemLevelID | SystemLevelName |
-|--------------|---------------------|---------------|-----------------|
-| 27           | Apr 2024 - Mar 2025 | 1             | England         |
-| 27           | Apr 2024 - Mar 2025 | 6             | Region          |
-| 27           | Apr 2024 - Mar 2025 | 7             | ICB             |
+| TimePeriodID | TimePeriodName    | SystemLevelID | SystemLevelName |
+|--------------|-------------------|---------------|-----------------|
+| 28           | To September 2025 | 1             | England         |
+| 28           | To September 2025 | 4             | PCN             |
+| 28           | To September 2025 | 5             | Practice        |
+| 28           | To September 2025 | 6             | Region          |
+| 28           | To September 2025 | 7             | ICB             |
+| 28           | To September 2025 | 8             | Sub-ICB         |
 
 ## Areas
 
@@ -125,10 +128,10 @@ cvd_area_system_level_time_periods() |>
 
 | SystemLevelID | SystemLevelName | TimePeriodID | TimePeriodName    |
 |---------------|-----------------|--------------|-------------------|
+| 5             | Practice        | 28           | To September 2025 |
 | 5             | Practice        | 26           | To June 2025      |
 | 5             | Practice        | 24           | To March 2025     |
 | 5             | Practice        | 22           | To December 2024  |
-| 5             | Practice        | 20           | To September 2024 |
 
 ### List areas for a time period and system level or parent area
 
@@ -234,12 +237,12 @@ cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
   gt::gt()
 ```
 
-| SystemLevelName | AreaID | AreaName                   |
-|-----------------|--------|----------------------------|
-| Practice        | 6037   | 15 Sefton Road             |
-| Practice        | 4877   | 27@Northgate               |
-| Practice        | 1626   | 49 Marine Avenue Surgery   |
-| Practice        | 3765   | Aldersbrook Medical Centre |
+| SystemLevelName | AreaID | AreaName                  |
+|-----------------|--------|---------------------------|
+| Practice        | 6037   | 15 Sefton Road            |
+| Practice        | 4877   | 27@Northgate              |
+| Practice        | 1626   | 49 Marine Avenue Surgery  |
+| Practice        | 3151   | Acton Town Medical Centre |
 
 The top system_level (England) does not have a parent either:
 
@@ -334,7 +337,7 @@ using the `cvd_area_flat_subsystem()` function:
 ``` r
 cvd_area_flat_subsystems(area_id = 5) |>
   dplyr::glimpse()
-#> Rows: 74
+#> Rows: 73
 #> Columns: 14
 #> $ AreaCode                   <chr> "E54000038", "E54000038", "E54000038", "E54…
 #> $ AreaID                     <int> 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5…
@@ -740,7 +743,9 @@ We can extract the tibbles using the list\$object notation. Here we can
 see definitions for the indicator and its associated metrics.
 
 ``` r
-returned_list$indicator_metrics |> dplyr::glimpse()
+if ("indicator_metrics" %in% names(returned_list)) {
+  returned_list$indicator_metrics |> dplyr::glimpse()
+}
 #> Rows: 22
 #> Columns: 17
 #> $ AxisCharacter          <chr> "%", "%", "%", "%", "%", "%", "%", "%", "%", "%…
@@ -768,16 +773,18 @@ Here we can obtain rates of treatment with anticoagulants broken down by
 sex for Leicester Central PCN:
 
 ``` r
-returned_list$area_data |>
-  dplyr::filter(MetricCategoryTypeName == "Sex") |>
-  dplyr::select(
-    AreaID,
-    CategoryAttribute,
-    Value,
-    LowerConfidenceLimit,
-    UpperConfidenceLimit
-  ) |>
-  gt::gt()
+if ("area_data" %in% names(returned_list)) {
+  returned_list$area_data |>
+    dplyr::filter(MetricCategoryTypeName == "Sex") |>
+    dplyr::select(
+      AreaID,
+      CategoryAttribute,
+      Value,
+      LowerConfidenceLimit,
+      UpperConfidenceLimit
+    ) |>
+    gt::gt()
+}
 ```
 
 | AreaID | CategoryAttribute | Value | LowerConfidenceLimit | UpperConfidenceLimit |
@@ -791,16 +798,18 @@ returned_list$area_data |>
 And we can also obtain the same breakdown for national (England-wide):
 
 ``` r
-returned_list$national_data |>
-  dplyr::filter(MetricCategoryTypeName == "Sex") |>
-  dplyr::select(
-    AreaID,
-    CategoryAttribute,
-    Value,
-    LowerConfidenceLimit,
-    UpperConfidenceLimit
-  ) |>
-  gt::gt()
+if ("national_data" %in% names(returned_list)) {
+  returned_list$national_data |>
+    dplyr::filter(MetricCategoryTypeName == "Sex") |>
+    dplyr::select(
+      AreaID,
+      CategoryAttribute,
+      Value,
+      LowerConfidenceLimit,
+      UpperConfidenceLimit
+    ) |>
+    gt::gt()
+}
 ```
 
 | AreaID | CategoryAttribute | Value | LowerConfidenceLimit | UpperConfidenceLimit |
@@ -1073,6 +1082,7 @@ cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
 | To December 2024  | 22           | 92.05   | 92.75                  |
 | To March 2025     | 24           | 92.52   | 94.65                  |
 | To June 2025      | 26           | 92.41   | 94.65                  |
+| To September 2025 | 28           | 92.16   | 94.27                  |
 
 ### Return time series data for an indicator and area - inequalities
 
@@ -1146,6 +1156,7 @@ cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
 | To December 2024  | 22           | 85.71 | 91.38 | 91.64 |
 | To March 2025     | 24           | 85.71 | 93.31 | 91.90 |
 | To June 2025      | 26           | 85.71 | 92.87 | 92.16 |
+| To September 2025 | 28           | 89.80 | 92.23 | 92.04 |
 
 ### Return system level comparisons for a metric
 

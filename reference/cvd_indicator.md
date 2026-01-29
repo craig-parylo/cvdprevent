@@ -373,7 +373,7 @@ metric_data |>
 timeseries_data <- return_list$timeseries_data
 timeseries_data |>
   dplyr::filter(MetricID %in% c(126, 132), !is.na(Value))
-#> # A tibble: 28 × 7
+#> # A tibble: 30 × 7
 #>    MetricID EndDate           Median StartDate TimePeriodID TimePeriodName Value
 #>       <int> <chr>              <dbl> <chr>            <int> <chr>          <dbl>
 #>  1      126 Tue, 31 Mar 2020…   84.6 Mon, 01 …            1 To March 2020  100  
@@ -386,7 +386,7 @@ timeseries_data |>
 #>  8      126 Fri, 31 Mar 2023…   89.5 Mon, 01 …            8 To March 2023   94.7
 #>  9      126 Fri, 30 Jun 2023…   89.2 Mon, 01 …            9 To June 2023    94.7
 #> 10      126 Sun, 31 Dec 2023…   90   Mon, 01 …           15 To December 2…  94.1
-#> # ℹ 18 more rows
+#> # ℹ 20 more rows
 
 # Filter by tags: get indicators tagged with either tag 3 or 4 in area 3, time period 17
 return_list <- cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))

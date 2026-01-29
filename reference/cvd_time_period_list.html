@@ -112,44 +112,45 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># List all available time periods</span></span></span>
 <span class="r-in"><span><span class="fu">cvd_time_period_list</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 27 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 29 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    EndDate              IndicatorTypeID IndicatorTypeName StartDate TimePeriodID</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Mon, 30 Jun 2025 00…               1 Standard          Mon, 01 …           26</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Mon, 30 Jun 2025 00…               2 Outcomes          Mon, 01 …           27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Mon, 31 Mar 2025 00…               2 Outcomes          Mon, 01 …           25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Mon, 31 Mar 2025 00…               1 Standard          Mon, 01 …           24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Tue, 31 Dec 2024 00…               2 Outcomes          Mon, 01 …           23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Tue, 31 Dec 2024 00…               1 Standard          Mon, 01 …           22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Mon, 30 Sep 2024 00…               1 Standard          Mon, 01 …           20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Mon, 30 Sep 2024 00…               2 Outcomes          Mon, 01 …           21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Sun, 30 Jun 2024 00…               1 Standard          Mon, 01 …           18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Sun, 30 Jun 2024 00…               2 Outcomes          Mon, 01 …           19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 17 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Tue, 30 Sep 2025 00…               1 Standard          Mon, 01 …           28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Tue, 30 Sep 2025 00…               2 Outcomes          Mon, 01 …           29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Mon, 30 Jun 2025 00…               1 Standard          Mon, 01 …           26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Mon, 30 Jun 2025 00…               2 Outcomes          Mon, 01 …           27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Mon, 31 Mar 2025 00…               2 Outcomes          Mon, 01 …           25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Mon, 31 Mar 2025 00…               1 Standard          Mon, 01 …           24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Tue, 31 Dec 2024 00…               2 Outcomes          Mon, 01 …           23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Tue, 31 Dec 2024 00…               1 Standard          Mon, 01 …           22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Mon, 30 Sep 2024 00…               1 Standard          Mon, 01 …           20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Mon, 30 Sep 2024 00…               2 Outcomes          Mon, 01 …           21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 19 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: TimePeriodName &lt;chr&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># List time periods with data for a specific indicator type (e.g., Standard)</span></span></span>
 <span class="r-in"><span><span class="fu">cvd_time_period_list</span><span class="op">(</span>indicator_type_id <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 17 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 18 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    EndDate              IndicatorTypeID IndicatorTypeName StartDate TimePeriodID</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Mon, 30 Jun 2025 00…               1 Standard          Mon, 01 …           26</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Mon, 31 Mar 2025 00…               1 Standard          Mon, 01 …           24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Tue, 31 Dec 2024 00…               1 Standard          Mon, 01 …           22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Mon, 30 Sep 2024 00…               1 Standard          Mon, 01 …           20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Sun, 30 Jun 2024 00…               1 Standard          Mon, 01 …           18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Sun, 31 Mar 2024 00…               1 Standard          Mon, 01 …           17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Sun, 31 Dec 2023 00…               1 Standard          Mon, 01 …           15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Sat, 30 Sep 2023 00…               1 Standard          Mon, 01 …           10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Fri, 30 Jun 2023 00…               1 Standard          Mon, 01 …            9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Fri, 31 Mar 2023 00…               1 Standard          Mon, 01 …            8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> Sat, 31 Dec 2022 00…               1 Standard          Mon, 01 …            7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> Fri, 30 Sep 2022 00…               1 Standard          Mon, 01 …            6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> Thu, 30 Jun 2022 00…               1 Standard          Mon, 01 …            5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> Thu, 31 Mar 2022 00…               1 Standard          Mon, 01 …            4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> Thu, 30 Sep 2021 00…               1 Standard          Mon, 01 …            3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> Wed, 31 Mar 2021 00…               1 Standard          Mon, 01 …            2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> Tue, 31 Mar 2020 00…               1 Standard          Mon, 01 …            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Tue, 30 Sep 2025 00…               1 Standard          Mon, 01 …           28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Mon, 30 Jun 2025 00…               1 Standard          Mon, 01 …           26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Mon, 31 Mar 2025 00…               1 Standard          Mon, 01 …           24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Tue, 31 Dec 2024 00…               1 Standard          Mon, 01 …           22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Mon, 30 Sep 2024 00…               1 Standard          Mon, 01 …           20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Sun, 30 Jun 2024 00…               1 Standard          Mon, 01 …           18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Sun, 31 Mar 2024 00…               1 Standard          Mon, 01 …           17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Sun, 31 Dec 2023 00…               1 Standard          Mon, 01 …           15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Sat, 30 Sep 2023 00…               1 Standard          Mon, 01 …           10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Fri, 30 Jun 2023 00…               1 Standard          Mon, 01 …            9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> Fri, 31 Mar 2023 00…               1 Standard          Mon, 01 …            8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> Sat, 31 Dec 2022 00…               1 Standard          Mon, 01 …            7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> Fri, 30 Sep 2022 00…               1 Standard          Mon, 01 …            6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> Thu, 30 Jun 2022 00…               1 Standard          Mon, 01 …            5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> Thu, 31 Mar 2022 00…               1 Standard          Mon, 01 …            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> Thu, 30 Sep 2021 00…               1 Standard          Mon, 01 …            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> Wed, 31 Mar 2021 00…               1 Standard          Mon, 01 …            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> Tue, 31 Mar 2020 00…               1 Standard          Mon, 01 …            1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: TimePeriodName &lt;chr&gt;</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

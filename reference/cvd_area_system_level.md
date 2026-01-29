@@ -103,11 +103,7 @@ latest_period <-
 
 cvd_area_system_level(time_period_id = latest_period) |>
   dplyr::select(SystemLevelID, SystemLevelName)
-#> # A tibble: 3 × 2
-#>   SystemLevelID SystemLevelName
-#>           <int> <chr>          
-#> 1             1 England        
-#> 2             6 Region         
-#> 3             7 ICB            
+#> Error in dplyr::select(cvd_area_system_level(time_period_id = latest_period),     SystemLevelID, SystemLevelName): Can't select columns that don't exist.
+#> ✖ Column `SystemLevelID` doesn't exist.
 # }
 ```

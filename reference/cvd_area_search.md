@@ -107,7 +107,7 @@ search](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPR
 # Search for areas containing "practice" in their name for time period 17
 cvd_area_search(partial_area_name = "practice", time_period_id = 17) |>
   dplyr::select(AreaID, AreaName, AreaCode)
-#> # A tibble: 1,447 × 3
+#> # A tibble: 1,446 × 3
 #>    AreaID AreaName                             AreaCode
 #>     <int> <chr>                                <chr>   
 #>  1   7735 1/Monton Medical Practice            P87620  
@@ -120,7 +120,7 @@ cvd_area_search(partial_area_name = "practice", time_period_id = 17) |>
 #>  8   2327 Abbey Medical Practice               C83051  
 #>  9   3607 Abbey Road Medical Practice          F84111  
 #> 10   5927 Abercromby Family Practice           N82054  
-#> # ℹ 1,437 more rows
+#> # ℹ 1,436 more rows
 
 # Search for areas containing "PCN" for time period 17
 cvd_area_search(partial_area_name = "PCN", time_period_id = 17) |>

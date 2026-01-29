@@ -98,14 +98,14 @@ cvd_area_system_level_time_periods() |>
 #> # A tibble: 4 × 3
 #>   SystemLevelName TimePeriodID TimePeriodName   
 #>   <chr>                  <int> <chr>            
-#> 1 Practice                  26 To June 2025     
-#> 2 Practice                  24 To March 2025    
-#> 3 Practice                  22 To December 2024 
-#> 4 Practice                  20 To September 2024
+#> 1 Practice                  28 To September 2025
+#> 2 Practice                  26 To June 2025     
+#> 3 Practice                  24 To March 2025    
+#> 4 Practice                  22 To December 2024 
 
 # Explore all system levels and their available time periods
 cvd_area_system_level_time_periods()
-#> # A tibble: 130 × 8
+#> # A tibble: 136 × 8
 #>    IsVisible NationalLevel SystemLevelID SystemLevelName EndDate       StartDate
 #>    <chr>     <chr>                 <int> <chr>           <chr>         <chr>    
 #>  1 Y         Y                         1 England         Tue, 31 Mar … Mon, 01 …
@@ -118,7 +118,7 @@ cvd_area_system_level_time_periods()
 #>  8 Y         Y                         1 England         Fri, 31 Mar … Mon, 01 …
 #>  9 Y         Y                         1 England         Fri, 30 Jun … Mon, 01 …
 #> 10 Y         Y                         1 England         Sat, 30 Sep … Mon, 01 …
-#> # ℹ 120 more rows
+#> # ℹ 126 more rows
 #> # ℹ 2 more variables: TimePeriodID <int>, TimePeriodName <chr>
 # }
 ```

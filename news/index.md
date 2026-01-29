@@ -1,10 +1,28 @@
 # Changelog
 
-## cvdprevent (development version)
+## Version 0.2.5 (2026-01-29)
 
-## cvdprevent 0.2.4
+CRAN release: 2026-01-29
 
-CRAN release: 2025-11-11
+### Added
+
+- Additional defensive code in the vignette to better handle unexpected
+  conditions and improve overall robustness.
+
+### Changed
+
+- The validation function `get_valid_time_period_ids()` was updated to
+  ensure it retrieves *all* valid time periods from the API. Although
+  this introduces a slight performance slowdown, it provides greater
+  long-term stability against future API changes.
+
+### Fixed
+
+- Corrected an issue in the example
+  [`cvd_area_system_level()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_area_system_level.md)
+  where an incompatible `TimePeriodID` was being produced. The example
+  has been updated to prevent recurrence and the underlying validation
+  logic has been strengthened.
 
 ## Version 0.2.4 (2025-11-11)
 
