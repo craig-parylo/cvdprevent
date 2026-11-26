@@ -12,6 +12,13 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+# function to load example data
+load_example <- function(name) {
+  readRDS(
+    file = here::here("inst", "extdata", glue::glue("{name}.rds"))
+  )
+}
 ```
 
 ```{r setup}
@@ -20,13 +27,6 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 
 # load the package library
 library(cvdprevent)
-
-# function to load example data
-load_example <- function(name) {
-  readRDS(
-    file = here::here("inst", "extdata", glue::glue("{name}.rds"))
-  )
-}
 ```
 
 # Time periods
