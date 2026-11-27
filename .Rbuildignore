@@ -12,4 +12,6 @@
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
 ^scratchpad\.R$
+^R\scratchpad.R
 ^vignettes/articles$
+^data-raw$
