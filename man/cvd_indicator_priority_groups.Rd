@@ -42,7 +42,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # List all available priority group display names and their IDs
 cvd_indicator_priority_groups() |>
   dplyr::select(PriorityGroupID, PriorityGroup)

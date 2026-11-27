@@ -24,7 +24,7 @@ This function may take longer than 5 seconds to complete due to API response tim
 # expected to return the results
 
 # List available indicator types
-\donttest{cvd_indicator_types()}
+\dontrun{cvd_indicator_types()}
 
 }
 \seealso{

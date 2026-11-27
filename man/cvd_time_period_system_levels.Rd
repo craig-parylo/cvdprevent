@@ -39,7 +39,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # Retrieve all time periods and associated system levels
 periods_levels <- cvd_time_period_system_levels()
 

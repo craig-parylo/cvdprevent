@@ -48,7 +48,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # View flat sub-systems for Somerset STP (area_id = 5)
 cvd_area_flat_subsystems(area_id = 5) |> dplyr::glimpse()
 

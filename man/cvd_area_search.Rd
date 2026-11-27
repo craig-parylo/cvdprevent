@@ -45,7 +45,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # Search for areas containing "practice" in their name for time period 17
 cvd_area_search(partial_area_name = "practice", time_period_id = 17) |>
   dplyr::select(AreaID, AreaName, AreaCode)

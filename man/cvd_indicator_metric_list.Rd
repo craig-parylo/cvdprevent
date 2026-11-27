@@ -48,7 +48,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # List metrics for the prevalence of atrial fibrillation (indicator ID 1),
 # focusing on metrics for the 40-59 years age group at the national level:
 cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>

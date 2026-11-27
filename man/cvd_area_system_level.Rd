@@ -37,14 +37,14 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # List all system levels available for time period 4 (activity to March 2022)
 cvd_area_system_level(time_period_id = 4) |>
   dplyr::select(SystemLevelID, SystemLevelName)
 
 # Find valid time period IDs, then get system levels for the latest one
 latest_period <-
-  cvd_time_period_list() |>
+  cvd_time_period_system_levels() |>
   dplyr::pull(TimePeriodID) |>
   max()
 

@@ -38,7 +38,7 @@ CVD Prevent API documentation:
 This function may take longer than 5 seconds to complete due to API response time.
 }
 \examples{
-\donttest{
+\dontrun{
 cvd_data_availability(time_period_id = 3, system_level_id = 5)
 }
 

@@ -60,7 +60,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # List data for Salford South East PCN (area ID 705) for 'AF: treatment with
 # anticoagulants' for women people aged 60-79 years (metric ID 130):
 cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>

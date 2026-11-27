@@ -40,10 +40,10 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 # expected to return the results
 
 # List all available time periods
-\donttest{cvd_time_period_list()}
+\dontrun{cvd_time_period_list()}
 
 # List time periods with data for a specific indicator type (e.g., Standard)
-\donttest{cvd_time_period_list(indicator_type_id = 1)}
+\dontrun{cvd_time_period_list(indicator_type_id = 1)}
 
 }
 \seealso{

@@ -37,7 +37,7 @@ This function may take longer than 5 seconds to complete due to API response tim
 }
 
 \examples{
-\donttest{
+\dontrun{
 # List the latest four reporting periods at GP practice level
 cvd_area_system_level_time_periods() |>
   dplyr::filter(SystemLevelName == "Practice") |>

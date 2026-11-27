@@ -51,7 +51,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # Retrieve metric data for 'CVD: All-cause mortality' (IndicatorID = 35) across
 # NHS Regions (SystemLevelID = 6) in the period April 2024 to
 # March 2025 (TimePeriodID = 27) and view a sample of 4 rows:

@@ -41,7 +41,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # View the nested structure for Somerset STP (area_id = 5)
 returned_list <- cvd_area_nested_subsystems(area_id = 5)
 returned_list |> summary()

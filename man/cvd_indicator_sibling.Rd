@@ -74,7 +74,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # Compare the value of metric 126 for area 1103 and all its siblings in time period 17
 cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = 126) |>
   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit)
