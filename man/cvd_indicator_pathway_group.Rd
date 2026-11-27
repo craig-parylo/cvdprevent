@@ -41,7 +41,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # Return indicators for the 'Chronic Kidney Disease' Pathway Group (ID 9):
 cvd_indicator_pathway_group(pathway_group_id = 9) |>
   dplyr::select(

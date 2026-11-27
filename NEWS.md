@@ -1,5 +1,25 @@
 # cvdprevent
 
+# Version 0.2.6 (2026-11-27)
+
+## Added
+- New script `create_vignette_data.R` to generate and store example datasets used when building package vignettes.
+- Stored example API responses in `inst/exdata` for use during vignette rendering, removing the need for live API calls during package builds.
+
+## Changed
+- The `using_cvdprevent` vignette now uses pre-generated example data instead of making live API requests during rendering. This improves reproducibility and reduces the risk of build failures caused by upstream API changes.
+- Documentation examples have been moved from `\donttest{}` to `\dontrun{}` to prevent execution during automated testing and package checks.
+- Vignette build process updated so that example data are loaded from a single hidden setup chunk.
+- Package metadata updated, including the addition of `{here}` to `Suggests` and updates to the roxygen2 version requirement.
+- Updated `.Rbuildignore` and `.gitignore` to support the revised vignette workflow and package build process.
+
+## Fixed
+- Resolved vignette and package build issues caused by dependence on live API responses that could change over time.
+- Reduced the likelihood of CRAN test failures resulting from API drift or temporary API unavailability.
+
+## Deprecated
+- None in this release.
+
 # Version 0.2.5 (2026-01-29)
 
 ## Added

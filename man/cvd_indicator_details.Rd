@@ -41,7 +41,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # Retrieve details for indicator with ID 7
 cvd_indicator_details(indicator_id = 7) |>
   dplyr::select(IndicatorID, MetaDataTitle, MetaData) |>

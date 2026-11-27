@@ -31,7 +31,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # List the first five indicator tags
 cvd_indicator_tags() |>
   dplyr::arrange(IndicatorTagID) |>

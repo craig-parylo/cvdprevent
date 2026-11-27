@@ -52,7 +52,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # List four PCNs (system level 4) with data available at time period 17
 cvd_area_list(time_period_id = 17, system_level_id = 4) |>
   dplyr::select(SystemLevelName, AreaID, AreaCode, AreaName) |>

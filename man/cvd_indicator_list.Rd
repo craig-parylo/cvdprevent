@@ -44,7 +44,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # List four indicators for time period 17 and GP practice level (system level 5)
 cvd_indicator_list(time_period_id = 17, system_level_id = 5) |>
   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>

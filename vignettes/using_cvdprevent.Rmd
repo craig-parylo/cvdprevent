@@ -12,6 +12,13 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+# function to load example data
+load_example <- function(name) {
+  readRDS(
+    file = here::here("inst", "extdata", glue::glue("{name}.rds"))
+  )
+}
 ```
 
 ```{r setup}
@@ -28,9 +35,18 @@ library(cvdprevent)
 
 The CVD Prevent audit publishes data approximately four times per year. To view the four most recent reporting periods for **standard indicators**, use the `cvd_time_period_list()` function:
 
+```r
+cvd_time_period_list() |>
+  dplyr::filter(IndicatorTypeName == 'Standard') |>
+  dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
+  dplyr::select(TimePeriodID, TimePeriodName) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: listing time periods 1
-cvd_time_period_list() |>
+#| echo: false
+load_example("cvd_time_period_list_noarg") |> 
   dplyr::filter(IndicatorTypeName == 'Standard') |>
   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
   dplyr::select(TimePeriodID, TimePeriodName) |>
@@ -44,9 +60,22 @@ There are two main types of indicator reported:
 
 To retrieve time periods specific to an indicator type, pass the relevant ID to the optional `indicator_type_id` parameter:
 
+```r
+cvd_time_period_list(indicator_type_id = 2) |>
+  dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
+  dplyr::select(
+    IndicatorTypeID,
+    IndicatorTypeName,
+    TimePeriodID,
+    TimePeriodName
+  ) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: listing time periods 2
-cvd_time_period_list(indicator_type_id = 2) |>
+#| echo: false
+load_example("cvd_time_period_list_2") |> 
   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
   dplyr::select(
     IndicatorTypeID,
@@ -61,9 +90,17 @@ cvd_time_period_list(indicator_type_id = 2) |>
 
 Audit data is reported across multiple geographic levels (referred to as **System Levels**), ranging from individual GP practices to national-level aggregates (e.g., England). To view which system levels are available for each time period, use the `cvd_time_period_system_levels()` function:
 
+```r
+cvd_time_period_system_levels() |>
+  dplyr::slice_max(order_by = TimePeriodID) |>
+  dplyr::select(TimePeriodID, TimePeriodName, SystemLevelID, SystemLevelName) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: listing system levels per period 1
-cvd_time_period_system_levels() |>
+#| echo: false
+load_example("cvd_time_period_system_levels") |> 
   dplyr::slice_max(order_by = TimePeriodID) |>
   dplyr::select(TimePeriodID, TimePeriodName, SystemLevelID, SystemLevelName) |>
   gt::gt()
@@ -75,9 +112,16 @@ cvd_time_period_system_levels() |>
 
 To find out which system levels are reported for a specific time period you can use the `cvd_area_system_level()` function, providing the required time_period_id, (NB, time_period_id defaults to the first time period if not supplied).
 
+```r
+cvd_area_system_level(time_period_id = 17) |>
+  dplyr::select(SystemLevelID, SystemLevelName) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: list available system levels for a given time period
-cvd_area_system_level(time_period_id = 17) |>
+#| echo: false
+load_example("cvd_area_system_level_17") |> 
   dplyr::select(SystemLevelID, SystemLevelName) |>
   gt::gt()
 ```
@@ -86,9 +130,18 @@ cvd_area_system_level(time_period_id = 17) |>
 
 Use the `cvd_area_system_level_time_periods()` function to show a list of all reporting periods for each system level. Here we show the latest four reporting periods at the GP practice system level.
 
+```r
+cvd_area_system_level_time_periods() |>
+  dplyr::filter(SystemLevelName == 'Practice') |>
+  dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
+  dplyr::select(SystemLevelID, SystemLevelName, TimePeriodID, TimePeriodName) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: list all available reporting periods for each system level
-cvd_area_system_level_time_periods() |>
+#| echo: false
+load_example("cvd_area_system_level_time_periods")|>
   dplyr::filter(SystemLevelName == 'Practice') |>
   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
   dplyr::select(SystemLevelID, SystemLevelName, TimePeriodID, TimePeriodName) |>
@@ -99,9 +152,17 @@ cvd_area_system_level_time_periods() |>
 
 To list four of the Primary Care Networks (PCN) (SystemLevelID = 4) for which data is available at time period 17 use the `cvd_area_list()` function.
 
+```r
+cvd_area_list(time_period_id = 17, system_level_id = 4) |>
+  dplyr::select(SystemLevelName, AreaID, AreaCode, AreaName) |>
+  dplyr::slice_head(n = 4) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: list areas for a time period and system level or parent area
-cvd_area_list(time_period_id = 17, system_level_id = 4) |>
+#| echo: false
+load_example("cvd_area_list_17_4") |> 
   dplyr::select(SystemLevelName, AreaID, AreaCode, AreaName) |>
   dplyr::slice_head(n = 4) |>
   gt::gt()
@@ -119,10 +180,15 @@ To view details for a specific area use `cvd_area_details()` with the required p
 
 -   `area_parent_details` (where appropriate).
 
-```{r}
-#| label: view details for a specific area 1
+```r
 # get the list from the function
 returned_list <- cvd_area_details(time_period_id = 17, area_id = 7922)
+```
+
+```{r}
+#| label: view details for a specific area 1
+#| echo: false
+returned_list <- load_example("cvd_area_details_17_7922")
 ```
 
 The tibbles first need extracting from the returned list object, done here using the `list$object` notation. To view area details:
@@ -158,9 +224,17 @@ Some areas do *not* have parent details but *do* have data reported in a given p
 
 Here we report four GP practices without any parent PCN:
 
+```r
+cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
+  dplyr::slice_head(n = 4) |>
+  dplyr::select(SystemLevelName, AreaID, AreaName) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: list areas without parent details 1
-cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
+#| echo: false
+load_example("cvd_area_unassigned_17_5") |>
   dplyr::slice_head(n = 4) |>
   dplyr::select(SystemLevelName, AreaID, AreaName) |>
   gt::gt()
@@ -168,9 +242,16 @@ cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
 
 The top system_level (England) does not have a parent either:
 
+```r
+cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>
+  dplyr::select(SystemLevelName, AreaID, AreaName) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: list areas without parent details 2
-cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>
+#| echo: false
+load_example("cvd_area_unassigned_17_1") |>
   dplyr::select(SystemLevelName, AreaID, AreaName) |>
   gt::gt()
 ```
@@ -179,9 +260,16 @@ cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>
 
 To find details for an area where you don't know its ID number you can perform a partial name search using `cvd_area_search()` and specify a time period to search.
 
+```r
+cvd_area_search(partial_area_name = 'foo', time_period_id = 17) |>
+  dplyr::select(AreaID, AreaName, AreaCode) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: search for area by keyword
-cvd_area_search(partial_area_name = 'foo', time_period_id = 17) |>
+#| echo: false
+load_example("cvd_area_search_foo_17") |>
   dplyr::select(AreaID, AreaName, AreaCode) |>
   gt::gt()
 ```
@@ -194,9 +282,15 @@ To retrieve details for a specific area, including all nested system areas withi
 
 In the example below, we request details for Greater Manchester ICB (`area_id = 8030`), which returns a named list of tibbles representing heirarchical levels:
 
+```r
+return_list <- cvd_area_nested_subsystems(area_id = 8030)
+return_list |> summary()
+```
+
 ```{r}
 #| label: area details - nested 1
-return_list <- cvd_area_nested_subsystems(area_id = 8030)
+#| echo: false
+return_list <- load_example("cvd_area_nested_subsystems_8030")
 return_list |> summary()
 ```
 
@@ -204,8 +298,7 @@ The tibble `level_1` provides details about our requested area itself. you can v
 
 ```{r}
 #| label: area details - nested 2
-return_list$level_1 |>
-  gt::gt()
+return_list$level_1 |> gt::gt()
 ```
 
 The next level, `level_2`, contains areas that are direct children of the requested area. Here, we display hte first four entries:
@@ -223,10 +316,15 @@ Subsequent levels (`level_3`, `level_4`, etc.) represent further nested areas - 
 
 Alternatively, you can request a flat output grouped on system level using the `cvd_area_flat_subsystem()` function:
 
-```{r}
-#| label: area details - flat
+```r
 cvd_area_flat_subsystems(area_id = 5) |>
   dplyr::glimpse()
+```
+
+```{r}
+#| label: area details - flat
+#| echo: false
+load_example("cvd_area_flat_subsystems_5") |> dplyr::glimpse()
 ```
 
 # Indicators
@@ -247,9 +345,17 @@ To get a list of all available indicators for a given time period and system lev
 
 Here we access the first four indicators for time point 17 and GP practice level (system level 5).
 
+```r
+cvd_indicator_list(time_period_id = 17, system_level_id = 5) |>
+  dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
+  dplyr::slice_head(n = 4) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: listing indicators
-cvd_indicator_list(time_period_id = 17, system_level_id = 5) |>
+#| echo: false
+load_example("cvd_indicator_list_17_5") |>
   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
   dplyr::slice_head(n = 4) |>
   gt::gt()
@@ -261,9 +367,24 @@ To list all metrics for each indicator you can use the `cvd_indicator_metric_lis
 
 Here we access the metrics for the prevalence of atrial fibrillation (Indicator ID 1) and focussing on just those metrics available for the 40-59 years age group:
 
+```r
+cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
+  dplyr::filter(IndicatorID == 1, MetricCategoryName == "40-59") |>
+  dplyr::count(
+    IndicatorID,
+    IndicatorShortName,
+    MetricID,
+    MetricCategoryName,
+    CategoryAttribute
+  ) |>
+  dplyr::select(-n) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: listing metrics for each indicator
-cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
+#| echo: false
+load_example("cvd_indicator_metric_list_17_1") |>
   dplyr::filter(IndicatorID == 1, MetricCategoryName == '40-59') |>
   dplyr::count(
     IndicatorID,
@@ -290,9 +411,15 @@ To access all indicator data for a given area and time period you can use the `c
 
 Here we look at '3 Centres PCN' (area ID 1103) for time period 17:
 
+```r
+returned_list <- cvd_indicator(time_period_id = 17, area_id = 1103)
+returned_list |> summary()
+```
+
 ```{r}
 #| label: list all indicator data for a given area
-returned_list <- cvd_indicator(time_period_id = 17, area_id = 1103)
+#| echo: false
+returned_list <- load_example("cvd_indicator_17_1103")
 returned_list |> summary()
 ```
 
@@ -365,27 +492,31 @@ returned_list$timeseries_data |>
     colour = MetricID
   )) +
   ggplot2::geom_point() +
-  ggplot2::geom_line()
+  ggplot2::geom_line() + 
+  ggplot2::theme_minimal(base_size = 16)
 ```
 
 ### Tags
 
 Indicators are searchable by one or more *Tag*, supplied by the optional argument tag_id. Tag ID can be a single ID number or a vector or IDs, shown here as a vector of IDs 12 and 13 (hypertension and blood pressure measures).
 
-```{r}
-#| label: tags
-returned_list <-
-  cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
+```r
+returned_list <- cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
 ```
 
 ```{r}
-if (!is.null(returned_list$indicators)) {
-  returned_list$indicators |>
-    dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
-    dplyr::arrange(IndicatorID) |>
-    dplyr::slice_head(n = 4) |>
-    gt::gt()
-}
+#| label: tags
+#| echo: false
+returned_list <- load_example("cvd_indicator_17_3_34")
+```
+
+```{r}
+#| label: tags_display
+returned_list$indicators |>
+  dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
+  dplyr::arrange(IndicatorID) |>
+  dplyr::slice_head(n = 4) |>
+  gt::gt()
 ```
 
 See also [List indicator tags].
@@ -394,10 +525,17 @@ See also [List indicator tags].
 
 Indicators have one or more tags that can be used to filter related indicators. To get a list of these tags you can use the `cvd_indicator_tags()` function
 
-```{r}
-#| label: indicator tags
+```r
 cvd_indicator_tags() |>
   dplyr::arrange(IndicatorTagID) |>
+  dplyr::slice_head(n = 5) |>
+  gt::gt()
+```
+
+```{r}
+#| label: indicator tags
+#| echo: false
+load_example("cvd_indicator_tags") |>
   dplyr::slice_head(n = 5) |>
   gt::gt()
 ```
@@ -406,9 +544,17 @@ cvd_indicator_tags() |>
 
 To get details and meta-data for a specific indicator, use the `cvd_indicator_details()` function, specifying the indicator ID of interest. Meta-data includes details such as copyright information, source of the data, definitions and method of calculating confidence intervals.
 
+```r
+cvd_indicator_details(indicator_id = 7) |>
+  dplyr::select(IndicatorID, MetaDataTitle, MetaData) |>
+  dplyr::slice_head(n = 5) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: meta-data for an indicator
-cvd_indicator_details(indicator_id = 7) |>
+#| echo: false
+load_example("cvd_indicator_details_7") |>
   dplyr::select(IndicatorID, MetaDataTitle, MetaData) |>
   dplyr::slice_head(n = 5) |>
   gt::gt()
@@ -420,9 +566,22 @@ To find performance for sibling areas (areas that share a common parent area, su
 
 Here we get data for Metric 126 (relating to indicator 2- Hypertension treatment) for siblings to '3 Centres PCN' (ID 1103):
 
+```r
+cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = 126) |>
+  dplyr::select(
+    AreaID,
+    AreaName,
+    Value,
+    LowerConfidenceLimit,
+    UpperConfidenceLimit
+  ) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: sibling area data
-cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = 126) |>
+#| echo: false
+load_example("cvd_indicator_sibling_17_1103_126") |>
   dplyr::select(
     AreaID,
     AreaName,
@@ -439,9 +598,22 @@ To find performance for child areas (areas that are organisationally one level l
 
 Here we get data for Metric 126 (relating to indicator 17 - Hypertension treatment) for the children of 'NHS Shropshire, Telford and Wrekin CCG' (ID 126):
 
+```r
+cvd_indicator_child_data(time_period_id = 17, area_id = 74, metric_id = 126) |>
+  dplyr::select(
+    AreaID,
+    AreaName,
+    Value,
+    LowerConfidenceLimit,
+    UpperConfidenceLimit
+  ) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: child area data
-cvd_indicator_child_data(time_period_id = 17, area_id = 74, metric_id = 126) |>
+#| echo: false
+load_example("cvd_indicator_child_data_17_74_126") |>
   dplyr::select(
     AreaID,
     AreaName,
@@ -464,8 +636,7 @@ To access all metric data for a given area, time period and indicator you can us
 
 Here we look at 'AF: treatment with anticoagulants' (indicator ID 7) in time period 17 for 'Leicester Central PCN' (area_id 701) focussed on metrics by gender:
 
-```{r}
-#| label: all indicator data for a given time and area
+```r
 returned_list <- cvd_indicator_data(
   time_period_id = 17,
   indicator_id = 7,
@@ -474,15 +645,20 @@ returned_list <- cvd_indicator_data(
 returned_list |> summary()
 ```
 
+```{r}
+#| label: all indicator data for a given time and area
+#| echo: false
+returned_list <- load_example("cvd_indicator_data_17_7_701")
+returned_list |> summary()
+```
+
 ### Indicator metrics
 
-We can extract the tibbles using the list\$object notation. Here we can see definitions for the indicator and its associated metrics.
+We can extract the tibbles using the `list$object` notation. Here we can see definitions for the indicator and its associated metrics.
 
 ```{r}
 #| label: all indicator metrics
-if ("indicator_metrics" %in% names(returned_list)) {
-  returned_list$indicator_metrics |> dplyr::glimpse()
-}
+returned_list$indicator_metrics |> dplyr::glimpse()
 ```
 
 ### Area data
@@ -491,18 +667,16 @@ Here we can obtain rates of treatment with anticoagulants broken down by sex for
 
 ```{r}
 #| label: indicator area data
-if ("area_data" %in% names(returned_list)) {
-  returned_list$area_data |>
-    dplyr::filter(MetricCategoryTypeName == "Sex") |>
-    dplyr::select(
-      AreaID,
-      CategoryAttribute,
-      Value,
-      LowerConfidenceLimit,
-      UpperConfidenceLimit
-    ) |>
-    gt::gt()
-}
+returned_list$area_data |>
+  dplyr::filter(MetricCategoryTypeName == "Sex") |>
+  dplyr::select(
+    AreaID,
+    CategoryAttribute,
+    Value,
+    LowerConfidenceLimit,
+    UpperConfidenceLimit
+  ) |>
+  gt::gt()
 ```
 
 ### National data
@@ -511,18 +685,16 @@ And we can also obtain the same breakdown for national (England-wide):
 
 ```{r}
 #| label: indicator national data
-if ("national_data" %in% names(returned_list)) {
-  returned_list$national_data |>
-    dplyr::filter(MetricCategoryTypeName == "Sex") |>
-    dplyr::select(
-      AreaID,
-      CategoryAttribute,
-      Value,
-      LowerConfidenceLimit,
-      UpperConfidenceLimit
-    ) |>
-    gt::gt()
-}
+returned_list$national_data |>
+  dplyr::filter(MetricCategoryTypeName == "Sex") |>
+  dplyr::select(
+    AreaID,
+    CategoryAttribute,
+    Value,
+    LowerConfidenceLimit,
+    UpperConfidenceLimit
+  ) |>
+  gt::gt()
 ```
 
 These splits by local and national level allow for fine-grained benchmarking.
@@ -533,13 +705,22 @@ Perhaps one of the most useful functions when looking to do a cross-sectional sy
 
 Here we return all metric data for indicator 'AF: treatment with anticoagulants' (indicator ID 7) in time period 17 at GP practice level (system level ID 5):
 
-```{r}
-#| label: all indicator metric data for system level and time period
+```r
 cvd_indicator_raw_data(
   indicator_id = 7,
   time_period_id = 17,
   system_level_id = 5
 ) |>
+  dplyr::slice_head(n = 5) |>
+  dplyr::select(AreaCode, AreaName, Value) |>
+  gt::gt()
+```
+
+```{r}
+#| label: all indicator metric data for system level and time period
+#| echo: false
+
+load_example("cvd_indicator_raw_data_17_7_5") |>
   dplyr::slice_head(n = 5) |>
   dplyr::select(AreaCode, AreaName, Value) |>
   gt::gt()
@@ -563,14 +744,21 @@ Note that the `target` tibble is only provided if data is available for both nat
 
 Here we compare performance against metric 150 (AF: treatment with anticoagulants - all people) in 'Chester South PCN' (area ID 553) with national performance:
 
-```{r}
-#| label: benchmark metric data with national results
+```r
 returned_list <- cvd_indicator_nationalarea_metric_data(
   metric_id = 150,
   time_period_id = 17,
   area_id = 553
 )
 
+returned_list |> summary()
+```
+
+```{r}
+#| label: benchmark metric data with national results
+#| echo: false
+
+returned_list <- load_example("cvd_indicator_nationalarea_metric_data_17_553_150")
 returned_list |> summary()
 ```
 
@@ -604,8 +792,7 @@ Priority groups are collections of *Indicators* which are displayed in the [Regi
 
 Here we return one indicator from each of the priority groups:
 
-```{r}
-#| label: list priority group indicators
+```r
 cvd_indicator_priority_groups() |>
   dplyr::select(
     PriorityGroup,
@@ -615,18 +802,49 @@ cvd_indicator_priority_groups() |>
     IndicatorName
   ) |>
   dplyr::slice_head(by = PathwayGroupID) |>
-  gt::gt(row_group_as_column = T)
+  gt::gt(row_group_as_column = TRUE)
+```
+
+```{r}
+#| label: list priority group indicators
+#| echo: false
+
+load_example("cvd_indicator_priority_groups") |>
+  dplyr::select(
+    PriorityGroup,
+    PathwayGroupName,
+    PathwayGroupID,
+    IndicatorID,
+    IndicatorName
+  ) |>
+  dplyr::slice_head(by = PathwayGroupID) |>
+  gt::gt(row_group_as_column = TRUE)
 ```
 
 ## List pathway group indicators
 
 Pathway groups are sub-groupings of Priority Groups visible in the [Regional & ICS insights](https://data.cvdprevent.nhs.uk/insights) page of the CVD PREVENT website and can be accessed from the API using the `cvd_indicator_pathway_group()` function.
 
-Here we return the indicators within the 'Chronic Kidney Disease' pathway group (ID 9):
+Here we return the indicators within the 'Atrial Fibrillation' pathway group (ID 51):
+
+```r
+cvd_indicator_pathway_group(pathway_group_id = 51) |>
+  dplyr::select(
+    PathwayGroupName,
+    PathwayGroupID,
+    IndicatorCode,
+    IndicatorID,
+    IndicatorName
+  ) |>
+  dplyr::group_by(PathwayGroupName) |>
+  gt::gt(row_group_as_column = T)
+```
 
 ```{r}
 #| label: list pathway group indicators
-cvd_indicator_pathway_group(pathway_group_id = 9) |>
+#| echo: false
+
+load_example("cvd_indicator_pathway_group_51") |>
   dplyr::select(
     PathwayGroupName,
     PathwayGroupID,
@@ -642,11 +860,26 @@ cvd_indicator_pathway_group(pathway_group_id = 9) |>
 
 Indicator Groups are further groups of indicators which are classified by `IndicatorGroupTypeID` which indicates what *type* of indicator, e.g. Priority Group.
 
-Here we list the indicators under Indicator Group ID 13 (Monitoring) which lists 'Key Question' Indicator Group indicators:
+Here we list the indicators under Indicator Group ID 51 (Atrial Fibrillation):
+
+```r
+cvd_indicator_group(indicator_group_id = 51) |>
+  dplyr::select(
+    IndicatorGroupID,
+    IndicatorGroupName,
+    IndicatorGroupTypeName,
+    IndicatorID,
+    IndicatorName
+  ) |>
+  dplyr::group_by(IndicatorGroupID, IndicatorGroupName) |>
+  gt::gt()
+```
 
 ```{r}
 #| label: list indicator group indicators
-cvd_indicator_group(indicator_group_id = 13) |>
+#| echo: false
+
+load_example("cvd_indicator_group_51") |>
   dplyr::select(
     IndicatorGroupID,
     IndicatorGroupName,
@@ -664,8 +897,7 @@ To get data over all available time points for a given metric use the `cvd_indic
 
 Here we visualise data for Salford South East PCN (area ID 705) for 'AF: treatment with anticoagulants' for women people aged 60-79 years (metric ID 130):
 
-```{r}
-#| label: return time series data for a metric and area 1
+```r
 cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
   # prepare for plotting
   dplyr::mutate(
@@ -679,16 +911,54 @@ cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
   )) +
   ggplot2::geom_point() +
   ggplot2::geom_line() +
+  ggplot2::theme_minimal(base_size = 16) +
   ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
+  )
+```
+
+```{r}
+#| label: return time series data for a metric and area 1
+#| echo: false
+
+load_example("cvd_indicator_metric_timeseries_130_705") |>
+  # prepare for plotting
+  dplyr::mutate(
+    TimePeriodName = stats::reorder(TimePeriodName, TimePeriodID)
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(
+    x = TimePeriodName,
+    y = Value,
+    group = AreaName,
+    colour = AreaName
+  )) +
+  ggplot2::geom_point() +
+  ggplot2::geom_line() +
+  ggplot2::theme_minimal(base_size = 16) +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
   )
 ```
 
 Or we can view the details of the time-series performance for this metric:
 
+```r
+cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
+  dplyr::select(AreaName, TimePeriodName, TimePeriodID, Value) |>
+  tidyr::pivot_wider(
+    names_from = AreaName,
+    values_from = Value
+  ) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: return time series data for a metric and area 2
-cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
+#| echo: false
+
+load_example("cvd_indicator_metric_timeseries_130_705") |>
   dplyr::select(AreaName, TimePeriodName, TimePeriodID, Value) |>
   tidyr::pivot_wider(
     names_from = AreaName,
@@ -703,8 +973,7 @@ To see time series data for all metric breakdowns for an indicator use the `cvd_
 
 Here we view time-series metric data for indicator 'AF: treatment with anticoagulants' (ID 7) in Salford South East PCN (area ID 705), focussed just on the age group inequalities metrics:
 
-```{r}
-#| label: return time series data for an indicator and area - inequalities 1
+```r
 cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
   dplyr::filter(
     MetricCategoryTypeName == 'Age group',
@@ -723,16 +992,63 @@ cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
   ) +
   ggplot2::geom_point() +
   ggplot2::geom_line() +
+  ggplot2::theme_minimal(base_size = 16) +
   ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
+  )
+```
+
+```{r}
+#| label: return time series data for an indicator and area - inequalities 1
+#| echo: false
+
+load_example("cvd_indicator_person_timeseries_7_705") |>
+  dplyr::filter(
+    MetricCategoryTypeName == 'Age group',
+    !is.na(Value)
+  ) |>
+  dplyr::mutate(
+    TimePeriodName = stats::reorder(TimePeriodName, TimePeriodID)
+  ) |>
+  ggplot2::ggplot(
+    ggplot2::aes(
+      x = TimePeriodName,
+      y = Value,
+      group = MetricCategoryName,
+      colour = MetricCategoryName
+    )
+  ) +
+  ggplot2::geom_point() +
+  ggplot2::geom_line() +
+  ggplot2::theme_minimal(base_size = 16) +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
   )
 ```
 
 Or we can view the details of the time-series performance for these metrics:
 
+```r
+cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
+  dplyr::filter(
+    MetricCategoryTypeName == 'Age group',
+    !is.na(Value)
+  ) |>
+  dplyr::select(MetricCategoryName, TimePeriodName, TimePeriodID, Value) |>
+  tidyr::pivot_wider(
+    names_from = MetricCategoryName,
+    values_from = Value
+  ) |>
+  gt::gt()
+```
+
 ```{r}
 #| label: return time series data for an indicator and area - inequalities 2
-cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
+#| echo: false
+
+load_example("cvd_indicator_person_timeseries_7_705") |>
   dplyr::filter(
     MetricCategoryTypeName == 'Age group',
     !is.na(Value)
@@ -751,8 +1067,7 @@ Use the `cvd_indicator_metric_systemlevel_comparison()` function to return metri
 
 Here we return performance for metric 'AF: DOAC & VitK' in people aged 40-59 years (metric ID 1270) in time period 17 for Salford South East PCN (area ID 705) *and all other* PCNs - truncated to a sample of four PCN performances:
 
-```{r}
-#| label: return system level comparisons for a metric
+```r
 cvd_indicator_metric_systemlevel_comparison(
   metric_id = 1270,
   time_period_id = 17,
@@ -763,19 +1078,37 @@ cvd_indicator_metric_systemlevel_comparison(
   gt::gt()
 ```
 
+```{r}
+#| label: return system level comparisons for a metric
+#| echo: false
+
+load_example("cvd_indicator_metric_systemlevel_comparison_17_1270_705") |>
+  dplyr::filter(AreaID %in% c(705:709), !is.na(Value)) |>
+  dplyr::select(SystemLevelName, AreaID, AreaName, Value) |>
+  gt::gt()
+```
+
 ## Metric area breakdown
 
-Use `cvd_indicator_metric_area_breakdown()` function to return the data Area Breakdown chart.
+Use `cvd_indicator_metric_area_breakdown()` function to return the data Area Breakdown data.
 
 Here we return performance for metric 'AF: DOAC & VitK' in men aged 60-79 years (metric ID 128) in time period 17 for Salford South East PCN (area ID 705):
 
-```{r}
-#| label: metric area breakdown
+```r
 cvd_indicator_metric_area_breakdown(
   metric_id = 128,
   time_period_id = 17,
   area_id = 705
 ) |>
+  dplyr::select(SystemLevelName, AreaID, AreaName, Value) |>
+  gt::gt()
+```
+
+```{r}
+#| label: metric area breakdown
+#| echo: false
+
+load_example("cvd_indicator_metric_area_breakdown_17_128_705") |>
   dplyr::select(SystemLevelName, AreaID, AreaName, Value) |>
   gt::gt()
 ```
@@ -786,8 +1119,7 @@ cvd_indicator_metric_area_breakdown(
 
 To return a list of all external resources used by the API use function `cvd_external_resource()`. Here we show the first five external resources:
 
-```{r}
-#| label: list external resources
+```r
 cvd_external_resource() |>
   dplyr::filter(ExternalResourceID < 10) |>
   dplyr::select(
@@ -796,7 +1128,22 @@ cvd_external_resource() |>
     ExternalResourceTitle
   ) |>
   dplyr::group_by(ExternalResourceCategory) |>
-  gt::gt(row_group_as_column = T)
+  gt::gt(row_group_as_column = TRUE)
+```
+
+```{r}
+#| label: list external resources
+#| echo: false
+
+load_example("cvd_external_resource") |>
+  dplyr::filter(ExternalResourceID < 10) |>
+  dplyr::select(
+    ExternalResourceCategory,
+    ExternalResourceSource,
+    ExternalResourceTitle
+  ) |>
+  dplyr::group_by(ExternalResourceCategory) |>
+  gt::gt(row_group_as_column = TRUE)
 ```
 
 ## Show data availability
@@ -805,8 +1152,7 @@ To show data availability for a given system level in a given time period then u
 
 NB, data appears to be only available up to time period 6 (to September 2022).
 
-```{r}
-#| label: show data availability
+```r
 cvd_data_availability(time_period_id = 6, system_level_id = 5) |>
   dplyr::select(
     IndicatorShortName,
@@ -816,4 +1162,19 @@ cvd_data_availability(time_period_id = 6, system_level_id = 5) |>
   ) |>
   dplyr::slice_head(n = 5) |>
   gt::gt()
+```
+
+```{r}
+#| label: show data availability
+#| echo: false
+load_example("cvd_data_availability_6_5") |>
+  dplyr::select(
+    IndicatorShortName,
+    IsAvailable,
+    SystemLevelName,
+    MetricCategoryTypeID
+  ) |>
+  dplyr::slice_head(n = 5) |>
+  gt::gt()
+
 ```

@@ -60,7 +60,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # View age group inequalities for indicator ID 7 in Salford South East PCN (area ID 705)
 cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
   dplyr::filter(

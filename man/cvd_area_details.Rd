@@ -45,7 +45,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # Retrieve details for 'Leicester, Leicestershire and Rutland ICB' (area_id = 8037)
 # in time period 17
 returned_list <- cvd_area_details(time_period_id = 17, area_id = 8037)

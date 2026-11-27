@@ -103,7 +103,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # Get all indicator data for area_id = 1103 in time period 17
 return_list <- cvd_indicator(time_period_id = 17, area_id = 1103)
 

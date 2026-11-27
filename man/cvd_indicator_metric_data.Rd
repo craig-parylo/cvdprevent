@@ -89,7 +89,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # Retrieve  a single metric breakdown showing how men aged 40-59 years
 # are treated with anticoagulants (MetricID = 126) for 3 Centres PCN
 # (AreaID = 1103) to March 2020 (TimePeriodID = 1)

@@ -56,7 +56,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # Compare performance against metric 150  (AF: treatment with anticoagulants
 # - all people) in 'Chester South PCN' (area ID 553) with national
 # performance:

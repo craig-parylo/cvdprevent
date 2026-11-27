@@ -56,10 +56,9 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
-#  list the indicators under Indicator Group ID 13 (Monitoring) which lists
-# 'Key Question' Indicator Group indicators:
-cvd_indicator_group(indicator_group_id = 13) |>
+\dontrun{
+#  list the indicators under Indicator Group ID 13 (Atrial Fibrillation):
+cvd_indicator_group(indicator_group_id = 51) |>
   dplyr::select(IndicatorGroupID, IndicatorGroupName, IndicatorGroupTypeName,
   IndicatorID, IndicatorName)
 }

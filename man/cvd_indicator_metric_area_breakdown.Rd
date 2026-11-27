@@ -62,7 +62,7 @@ See the \href{https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369
 }
 
 \examples{
-\donttest{
+\dontrun{
 # Compare performance for metric ID 128 in time period 17 for
 # Salford South East PCN (area ID 705)
 cvd_indicator_metric_area_breakdown(
