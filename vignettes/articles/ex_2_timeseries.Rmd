@@ -23,6 +23,7 @@ library(cvdprevent)
 # library(tidyr)
 # library(gt)
 # library(plotly)
+# library(glue)
 ```
 
 Monitoring cardiovascular disease (CVD) indicators over time is essential for understanding whether prevention activity is improving, stagnating or declining. The {cvdprevent} package makes this process reproducible and transparent by exposing time-period metadata, indicator definitions and tidy tibbles that can be reshaped and visualised with ease.
