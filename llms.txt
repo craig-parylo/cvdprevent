@@ -36,6 +36,7 @@ You can install the latest **development version** from
 [GitHub](https://github.com/craig-parylo/cvdprevent) with:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("craig-parylo/cvdprevent")
 ```
@@ -44,6 +45,7 @@ Or install the **latest stable release** from
 [CRAN](https://cran.r-project.org/package=cvdprevent):
 
 ``` r
+
 pak::pak("cvdprevent")
 ```
 
@@ -52,6 +54,7 @@ pak::pak("cvdprevent")
 ## Getting started
 
 ``` r
+
 library(cvdprevent)
 
 # List all available indicators (first 4 shown)
@@ -75,6 +78,7 @@ Typical outputs are [tibble](https://tibble.tidyverse.org/)s, making
 them easy to filter and manipulate:
 
 ``` r
+
 # List the latest four time periods for 'Standard' indicators
 cvd_time_period_list() |>
   dplyr::filter(IndicatorTypeName == "Standard") |>
@@ -83,15 +87,16 @@ cvd_time_period_list() |>
 #> # A tibble: 4 × 2
 #>   TimePeriodID TimePeriodName   
 #>          <int> <chr>            
-#> 1           28 To September 2025
-#> 2           26 To June 2025     
-#> 3           24 To March 2025    
-#> 4           22 To December 2024
+#> 1           34 To June 2026     
+#> 2           33 To March 2026    
+#> 3           31 To December 2025 
+#> 4           28 To September 2025
 ```
 
 See the package vignette for more examples and guidance:
 
 ``` r
+
 vignette("using_cvdprevent", package = "cvdprevent")
 ```
 
@@ -125,6 +130,7 @@ vignette("using_cvdprevent", package = "cvdprevent")
 Install these with:
 
 ``` r
+
 # install the packages
 pak::pak(c(
   "httr2",

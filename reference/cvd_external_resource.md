@@ -94,20 +94,11 @@ for checking data coverage across indicators
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Show the first five external resources grouped by category
 cvd_external_resource() |>
   dplyr::filter(ExternalResourceID < 10) |>
   dplyr::select(ExternalResourceCategory, ExternalResourceSource, ExternalResourceTitle) |>
   dplyr::group_by(ExternalResourceCategory)
-#> # A tibble: 5 × 3
-#> # Groups:   ExternalResourceCategory [3]
-#>   ExternalResourceCategory ExternalResourceSource          ExternalResourceTitle
-#>   <chr>                    <chr>                           <chr>                
-#> 1 Data Packs               Public Health England           Cardiovascular Disea…
-#> 2 Data Packs               NHS England                     Equality and Health …
-#> 3 Toolkits                 NHS Digital                     Weight Management Pr…
-#> 4 Toolkits                 Primary Care Cardiovascular So… CVD – identification…
-#> 5 Stratification tools     UCL Partners                    Search and risk stra…
-# }
+} # }
 ```

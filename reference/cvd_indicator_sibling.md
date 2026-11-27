@@ -231,45 +231,14 @@ data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREV
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Compare the value of metric 126 for area 1103 and all its siblings in time period 17
 cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = 126) |>
   dplyr::select(AreaID, AreaName, Value, LowerConfidenceLimit, UpperConfidenceLimit)
-#> # A tibble: 9 × 5
-#>   AreaID AreaName                Value LowerConfidenceLimit UpperConfidenceLimit
-#>    <int> <chr>                   <dbl>                <dbl>                <dbl>
-#> 1   1103 3 Centres PCN           100                   84.2                100  
-#> 2   1023 The Valleys Health & S…  93.8                 73.7                100  
-#> 3    315 Tolson Care Partnershi…  90.9                 64.3                100  
-#> 4    709 Spen Health & Wellbein…  90.9                 72                   96  
-#> 5    523 Dewsbury & Thornhill P…  88.9                 58.3                100  
-#> 6    607 The Mast PCN             88.9                 58.3                100  
-#> 7    606 Batley Birstall PCN      86.7                 61.1                 94.4
-#> 8   1055 Greenwood PCN            86.7                 61.1                 94.4
-#> 9   1334 Viaduct Care PCN         69.2                 43.8                 87.5
 
 # Find a valid metric ID for an indicator, then get sibling data
 metrics <- cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
 metric_id <- metrics$MetricID[1]
 cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = metric_id)
-#> # A tibble: 9 × 35
-#>   CategoryAttribute IndicatorCode IndicatorID IndicatorName       IndicatorOrder
-#>   <chr>             <chr>               <int> <chr>                        <int>
-#> 1 Persons           CVDP002CKD             13 "Patients whose la…              1
-#> 2 Persons           CVDP002CKD             13 "Patients whose la…              1
-#> 3 Persons           CVDP002CKD             13 "Patients whose la…              1
-#> 4 Persons           CVDP002CKD             13 "Patients whose la…              1
-#> 5 Persons           CVDP002CKD             13 "Patients whose la…              1
-#> 6 Persons           CVDP002CKD             13 "Patients whose la…              1
-#> 7 Persons           CVDP002CKD             13 "Patients whose la…              1
-#> 8 Persons           CVDP002CKD             13 "Patients whose la…              1
-#> 9 Persons           CVDP002CKD             13 "Patients whose la…              1
-#> # ℹ 30 more variables: IndicatorShortName <chr>, MetricCategoryID <int>,
-#> #   MetricCategoryName <chr>, MetricCategoryOrder <int>,
-#> #   MetricCategoryTypeName <chr>, AreaCode <chr>, AreaID <int>, AreaName <chr>,
-#> #   Count <dbl>, DataID <int>, Denominator <dbl>, Factor <lgl>,
-#> #   HighestPriorityNotificationType <lgl>, LowerConfidenceLimit <dbl>,
-#> #   Max <dbl>, Median <dbl>, Min <dbl>, NotificationCount <int>,
-#> #   Numerator <dbl>, Q20 <dbl>, Q40 <dbl>, Q60 <dbl>, Q80 <dbl>, …
-# }
+} # }
 ```

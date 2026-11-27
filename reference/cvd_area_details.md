@@ -103,32 +103,18 @@ details](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDP
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Retrieve details for 'Leicester, Leicestershire and Rutland ICB' (area_id = 8037)
 # in time period 17
 returned_list <- cvd_area_details(time_period_id = 17, area_id = 8037)
 
 # View details for the area
 returned_list$area_details |> dplyr::select(AreaCode, AreaName)
-#> # A tibble: 1 × 2
-#>   AreaCode  AreaName                                                       
-#>   <chr>     <chr>                                                          
-#> 1 E54000015 NHS Leicester, Leicestershire and Rutland Integrated Care Board
 
 # View details for the parent area(s)
 returned_list$area_parent_details |> dplyr::select(AreaID, AreaName, SystemLevelID)
-#> # A tibble: 1 × 3
-#>   AreaID AreaName SystemLevelID
-#>    <int> <chr>            <int>
-#> 1   7922 Midlands             6
 
 # View details for the child area(s)
 returned_list$area_child_details |> dplyr::select(AreaID, AreaName, SystemLevelID)
-#> # A tibble: 3 × 3
-#>   AreaID AreaName                                            SystemLevelID
-#>    <int> <chr>                                                       <int>
-#> 1   7994 NHS Leicester, Leicestershire and Rutland ICB - 03W             8
-#> 2   8009 NHS Leicester, Leicestershire and Rutland ICB - 04C             8
-#> 3   8014 NHS Leicester, Leicestershire and Rutland ICB - 04V             8
-# }
+} # }
 ```

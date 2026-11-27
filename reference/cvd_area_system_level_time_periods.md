@@ -89,36 +89,14 @@ for details.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # List the latest four reporting periods at GP practice level
 cvd_area_system_level_time_periods() |>
   dplyr::filter(SystemLevelName == "Practice") |>
   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
   dplyr::select(SystemLevelName, TimePeriodID, TimePeriodName)
-#> # A tibble: 4 × 3
-#>   SystemLevelName TimePeriodID TimePeriodName   
-#>   <chr>                  <int> <chr>            
-#> 1 Practice                  28 To September 2025
-#> 2 Practice                  26 To June 2025     
-#> 3 Practice                  24 To March 2025    
-#> 4 Practice                  22 To December 2024 
 
 # Explore all system levels and their available time periods
 cvd_area_system_level_time_periods()
-#> # A tibble: 139 × 8
-#>    IsVisible NationalLevel SystemLevelID SystemLevelName EndDate       StartDate
-#>    <chr>     <chr>                 <int> <chr>           <chr>         <chr>    
-#>  1 Y         Y                         1 England         Tue, 31 Mar … Mon, 01 …
-#>  2 Y         Y                         1 England         Wed, 31 Mar … Mon, 01 …
-#>  3 Y         Y                         1 England         Thu, 30 Sep … Mon, 01 …
-#>  4 Y         Y                         1 England         Thu, 31 Mar … Mon, 01 …
-#>  5 Y         Y                         1 England         Thu, 30 Jun … Mon, 01 …
-#>  6 Y         Y                         1 England         Fri, 30 Sep … Mon, 01 …
-#>  7 Y         Y                         1 England         Sat, 31 Dec … Mon, 01 …
-#>  8 Y         Y                         1 England         Fri, 31 Mar … Mon, 01 …
-#>  9 Y         Y                         1 England         Fri, 30 Jun … Mon, 01 …
-#> 10 Y         Y                         1 England         Sat, 30 Sep … Mon, 01 …
-#> # ℹ 129 more rows
-#> # ℹ 2 more variables: TimePeriodID <int>, TimePeriodName <chr>
-# }
+} # }
 ```

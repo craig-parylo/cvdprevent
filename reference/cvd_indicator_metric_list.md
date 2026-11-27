@@ -118,39 +118,15 @@ list](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREV
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # List metrics for the prevalence of atrial fibrillation (indicator ID 1),
 # focusing on metrics for the 40-59 years age group at the national level:
 cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
   dplyr::filter(IndicatorID == 1, MetricCategoryName == "40-59") |>
   dplyr::count(IndicatorID, IndicatorShortName, MetricID, MetricCategoryName, CategoryAttribute) |>
   dplyr::select(-n)
-#> # A tibble: 3 × 5
-#>   IndicatorID IndicatorShortName   MetricID MetricCategoryName CategoryAttribute
-#>         <int> <chr>                   <int> <chr>              <chr>            
-#> 1           1 AF: Prevalence (CVD…      173 40-59              Female           
-#> 2           1 AF: Prevalence (CVD…      175 40-59              Male             
-#> 3           1 AF: Prevalence (CVD…      187 40-59              Persons          
 
 # Get all indicator-metric pairs for GP practice level (system level 5) in a given period
 cvd_indicator_metric_list(time_period_id = 17, system_level_id = 5)
-#> # A tibble: 32 × 14
-#>    AxisCharacter FormatDisplayName HighestPriorityNotificationType IndicatorCode
-#>    <chr>         <chr>             <chr>                           <chr>        
-#>  1 %             Proportion %      NA                              CVDP002CKD   
-#>  2 %             Proportion %      NA                              CVDP005HYP   
-#>  3 %             Proportion %      NA                              CVDP010CHOL  
-#>  4 %             Proportion %      NA                              CVDP001SMOK  
-#>  5 %             Proportion %      NA                              CVDP002NDH   
-#>  6 %             Proportion %      NA                              CVDP009HYP   
-#>  7 %             Proportion %      NA                              CVDP002AF    
-#>  8 %             Proportion %      NA                              CVDP003CKD   
-#>  9 %             Proportion %      NA                              CVDP002SMOK  
-#> 10 %             Proportion %      NA                              CVDP003DM    
-#> # ℹ 22 more rows
-#> # ℹ 10 more variables: IndicatorFormatID <int>, IndicatorID <int>,
-#> #   IndicatorName <chr>, IndicatorOrder <int>, IndicatorShortName <chr>,
-#> #   NotificationCount <int>, CategoryAttribute <chr>, MetricCategoryName <chr>,
-#> #   MetricCategoryTypeName <chr>, MetricID <int>
-# }
+} # }
 ```

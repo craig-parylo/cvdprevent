@@ -117,7 +117,7 @@ group](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPRE
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Return indicators for the 'Chronic Kidney Disease' Pathway Group (ID 9):
 cvd_indicator_pathway_group(pathway_group_id = 9) |>
   dplyr::select(
@@ -127,14 +127,5 @@ cvd_indicator_pathway_group(pathway_group_id = 9) |>
     IndicatorID,
     IndicatorName
   )
-#> # A tibble: 6 × 5
-#>   PathwayGroupName       PathwayGroupID IndicatorCode IndicatorID IndicatorName 
-#>   <chr>                           <int> <chr>               <int> <chr>         
-#> 1 Chronic Kidney Disease              9 CVDP002CKD             13 "Patients who…
-#> 2 Chronic Kidney Disease              9 CVDP001CKD              8 "Prevalence o…
-#> 3 Chronic Kidney Disease              9 CVDP006CKD             29 "Patients wit…
-#> 4 Chronic Kidney Disease              9 CVDP005CKD             19 "Patients wit…
-#> 5 Chronic Kidney Disease              9 CVDP007CKD             31 "Patients wit…
-#> 6 Chronic Kidney Disease              9 CVDP010CHOL            23 "Patients wit…
-# }
+} # }
 ```

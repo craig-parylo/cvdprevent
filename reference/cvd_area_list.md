@@ -120,31 +120,17 @@ lists](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPRE
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # List four PCNs (system level 4) with data available at time period 17
 cvd_area_list(time_period_id = 17, system_level_id = 4) |>
   dplyr::select(SystemLevelName, AreaID, AreaCode, AreaName) |>
   dplyr::slice_head(n = 4)
-#> # A tibble: 4 × 4
-#>   SystemLevelName AreaID AreaCode AreaName       
-#>   <chr>            <int> <chr>    <chr>          
-#> 1 PCN               1103 U60176   3 Centres PCN  
-#> 2 PCN               1103 U60176   3 Centres PCN  
-#> 3 PCN                920 U72999   4 Doncaster PCN
-#> 4 PCN                920 U72999   4 Doncaster PCN
 
 # List all child areas of parent area 8037 (e.g., an ICB) in time period 17
 cvd_area_list(time_period_id = 17, parent_area_id = 8037)
-#> # A tibble: 3 × 9
-#>   AreaCode  AreaID AreaName         AreaOdsCode ParticipationRate PopulationRate
-#>   <chr>      <int> <chr>            <chr>       <lgl>             <lgl>         
-#> 1 E38000051   7994 NHS Leicester, … 03W         NA                NA            
-#> 2 E38000097   8009 NHS Leicester, … 04C         NA                NA            
-#> 3 E38000201   8014 NHS Leicester, … 04V         NA                NA            
-#> # ℹ 3 more variables: SystemLevelID <int>, SystemLevelName <chr>, Parents <int>
 
 # Attempting to call without either optional argument will result in a
 # tibble explaining the error.
 # cvd_area_list(time_period_id = 17)
-# }
+} # }
 ```

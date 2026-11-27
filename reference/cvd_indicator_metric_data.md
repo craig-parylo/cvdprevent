@@ -286,7 +286,7 @@ data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREV
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Retrieve  a single metric breakdown showing how men aged 40-59 years
 # are treated with anticoagulants (MetricID = 126) for 3 Centres PCN
 # (AreaID = 1103) to March 2020 (TimePeriodID = 1)
@@ -298,101 +298,9 @@ returned_list <- cvd_indicator_metric_data(
 
 # See the structure of this data
 returned_list |> dplyr::glimpse()
-#> List of 3
-#>  $ metrics      : tibble [1 × 17] (S3: tbl_df/tbl/data.frame)
-#>   ..$ AxisCharacter         : chr "%"
-#>   ..$ FormatDisplayName     : chr "Proportion %"
-#>   ..$ IndicatorCode         : chr "CVDP002AF"
-#>   ..$ IndicatorFormatID     : int 1
-#>   ..$ IndicatorID           : int 7
-#>   ..$ IndicatorName         : chr "Patients with GP recorded atrial fibrillation and with a CHADS2 or CHA2DS2-VASc score of 2 or more, who are cur"| __truncated__
-#>   ..$ IndicatorOrder        : int 2
-#>   ..$ IndicatorShortName    : chr "AF: Treated with anticoagulants (CVDP002AF)"
-#>   ..$ NotificationCount     : int 0
-#>   ..$ TimePeriodID          : int 1
-#>   ..$ TimePeriodName        : chr "To March 2020"
-#>   ..$ CategoryAttribute     : chr "Male"
-#>   ..$ MetricCategoryID      : int 7
-#>   ..$ MetricCategoryName    : chr "40-59"
-#>   ..$ MetricCategoryOrder   : int 10
-#>   ..$ MetricCategoryTypeName: chr "Age group"
-#>   ..$ MetricID              : int 126
-#>  $ area_data    : tibble [1 × 26] (S3: tbl_df/tbl/data.frame)
-#>   ..$ MetricID                       : int 126
-#>   ..$ MetricCategoryTypeName         : chr "Age group"
-#>   ..$ MetricCategoryName             : chr "40-59"
-#>   ..$ CategoryAttribute              : chr "Male"
-#>   ..$ AreaCode                       : chr "U60176"
-#>   ..$ AreaID                         : int 1103
-#>   ..$ AreaName                       : chr "3 Centres PCN"
-#>   ..$ Count                          : num 1214
-#>   ..$ DataID                         : int 150416
-#>   ..$ Denominator                    : num 20
-#>   ..$ Factor                         : num 1
-#>   ..$ HighestPriorityNotificationType: logi NA
-#>   ..$ LowerConfidenceLimit           : num 85.7
-#>   ..$ Max                            : num 100
-#>   ..$ Median                         : num 84.6
-#>   ..$ Min                            : num 60
-#>   ..$ NotificationCount              : int 0
-#>   ..$ Numerator                      : num 20
-#>   ..$ Q20                            : num 60
-#>   ..$ Q40                            : num 78.4
-#>   ..$ Q60                            : num 84.6
-#>   ..$ Q80                            : num 91.2
-#>   ..$ TimePeriodID                   : int 1
-#>   ..$ UpperConfidenceLimit           : num 100
-#>   ..$ Value                          : num 100
-#>   ..$ ValueNote                      : chr ""
-#>  $ national_data: tibble [1 × 26] (S3: tbl_df/tbl/data.frame)
-#>   ..$ MetricID                       : int 126
-#>   ..$ MetricCategoryTypeName         : chr "Age group"
-#>   ..$ MetricCategoryName             : chr "40-59"
-#>   ..$ CategoryAttribute              : chr "Male"
-#>   ..$ AreaCode                       : chr "E92000001"
-#>   ..$ AreaID                         : int 1
-#>   ..$ AreaName                       : chr "England"
-#>   ..$ Count                          : logi NA
-#>   ..$ DataID                         : int 126
-#>   ..$ Denominator                    : num 14028
-#>   ..$ Factor                         : num 1
-#>   ..$ HighestPriorityNotificationType: logi NA
-#>   ..$ LowerConfidenceLimit           : num 81.9
-#>   ..$ Max                            : logi NA
-#>   ..$ Median                         : logi NA
-#>   ..$ Min                            : logi NA
-#>   ..$ NotificationCount              : int 0
-#>   ..$ Numerator                      : num 11576
-#>   ..$ Q20                            : logi NA
-#>   ..$ Q40                            : logi NA
-#>   ..$ Q60                            : logi NA
-#>   ..$ Q80                            : logi NA
-#>   ..$ TimePeriodID                   : int 1
-#>   ..$ UpperConfidenceLimit           : num 83.1
-#>   ..$ Value                          : num 82.5
-#>   ..$ ValueNote                      : chr ""
 
 # See the definition for this metric
 returned_list$metrics |> dplyr::glimpse()
-#> Rows: 1
-#> Columns: 17
-#> $ AxisCharacter          <chr> "%"
-#> $ FormatDisplayName      <chr> "Proportion %"
-#> $ IndicatorCode          <chr> "CVDP002AF"
-#> $ IndicatorFormatID      <int> 1
-#> $ IndicatorID            <int> 7
-#> $ IndicatorName          <chr> "Patients with GP recorded atrial fibrillation …
-#> $ IndicatorOrder         <int> 2
-#> $ IndicatorShortName     <chr> "AF: Treated with anticoagulants (CVDP002AF)"
-#> $ NotificationCount      <int> 0
-#> $ TimePeriodID           <int> 1
-#> $ TimePeriodName         <chr> "To March 2020"
-#> $ CategoryAttribute      <chr> "Male"
-#> $ MetricCategoryID       <int> 7
-#> $ MetricCategoryName     <chr> "40-59"
-#> $ MetricCategoryOrder    <int> 10
-#> $ MetricCategoryTypeName <chr> "Age group"
-#> $ MetricID               <int> 126
 
 # Compare performance between our area and the national average
 dplyr::bind_rows(
@@ -400,33 +308,5 @@ dplyr::bind_rows(
   returned_list$national_data
 ) |>
 dplyr::glimpse()
-#> Rows: 2
-#> Columns: 26
-#> $ MetricID                        <int> 126, 126
-#> $ MetricCategoryTypeName          <chr> "Age group", "Age group"
-#> $ MetricCategoryName              <chr> "40-59", "40-59"
-#> $ CategoryAttribute               <chr> "Male", "Male"
-#> $ AreaCode                        <chr> "U60176", "E92000001"
-#> $ AreaID                          <int> 1103, 1
-#> $ AreaName                        <chr> "3 Centres PCN", "England"
-#> $ Count                           <dbl> 1214, NA
-#> $ DataID                          <int> 150416, 126
-#> $ Denominator                     <dbl> 20, 14028
-#> $ Factor                          <dbl> 1, 1
-#> $ HighestPriorityNotificationType <lgl> NA, NA
-#> $ LowerConfidenceLimit            <dbl> 85.7, 81.9
-#> $ Max                             <dbl> 100, NA
-#> $ Median                          <dbl> 84.6, NA
-#> $ Min                             <dbl> 60, NA
-#> $ NotificationCount               <int> 0, 0
-#> $ Numerator                       <dbl> 20, 11576
-#> $ Q20                             <dbl> 60, NA
-#> $ Q40                             <dbl> 78.4, NA
-#> $ Q60                             <dbl> 84.6, NA
-#> $ Q80                             <dbl> 91.2, NA
-#> $ TimePeriodID                    <int> 1, 1
-#> $ UpperConfidenceLimit            <dbl> 100.0, 83.1
-#> $ Value                           <dbl> 100.0, 82.5
-#> $ ValueNote                       <chr> "", ""
-# }
+} # }
 ```

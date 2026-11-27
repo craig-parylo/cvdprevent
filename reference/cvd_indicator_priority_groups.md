@@ -111,36 +111,13 @@ groups](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPR
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # List all available priority group display names and their IDs
 cvd_indicator_priority_groups() |>
   dplyr::select(PriorityGroupID, PriorityGroup)
-#>    PriorityGroupID   PriorityGroup
-#> 1                1             ABC
-#> 2                1             ABC
-#> 3                1             ABC
-#> 4                1             ABC
-#> 5                1             ABC
-#> 6                1             ABC
-#> 7                1             ABC
-#> 8                1             ABC
-#> 9                4             CKD
-#> 10               4             CKD
-#> 11               4             CKD
-#> 12               4             CKD
-#> 13               2      Prevalence
-#> 14               2      Prevalence
-#> 15               2      Prevalence
-#> 16               2      Prevalence
-#> 17               2      Prevalence
-#> 18               2      Prevalence
-#> 19               3 Smoking and BMI
-#> 20               3 Smoking and BMI
-#> 21               3 Smoking and BMI
 
 # Preview group names for a sidebar filter in a dashboard
 groups <- cvd_indicator_priority_groups()
 unique(groups$PriorityGroup)
-#> [1] "ABC"             "CKD"             "Prevalence"      "Smoking and BMI"
-# }
+} # }
 ```

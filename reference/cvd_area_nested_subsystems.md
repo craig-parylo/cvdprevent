@@ -93,41 +93,19 @@ subsystems](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/C
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # View the nested structure for Somerset STP (area_id = 5)
 returned_list <- cvd_area_nested_subsystems(area_id = 5)
 returned_list |> summary()
-#>         Length Class  Mode
-#> level_1 7      tbl_df list
-#> level_2 7      tbl_df list
-#> level_3 7      tbl_df list
-#> level_4 7      tbl_df list
 
 # See details for the first five immediate children of Somerset STP
 returned_list$level_2 |> dplyr::slice_head(n = 5)
-#> # A tibble: 1 × 7
-#>   AreaCode  AreaID AreaName         AreaOdsCode ParentAreaID SystemLevelID
-#>   <chr>      <int> <chr>            <chr>              <int>         <int>
-#> 1 E38000150    105 NHS Somerset CCG 11X                    5             3
-#> # ℹ 1 more variable: SystemLevelName <chr>
 
 # View the nested structure for Leicester Central PCN (area_id = 701)
 returned_list <- cvd_area_nested_subsystems(area_id = 701)
 returned_list |> summary()
-#>         Length Class  Mode
-#> level_1 6      tbl_df list
-#> level_2 7      tbl_df list
 
 # See the GP practice children of the PCN
 returned_list$level_2
-#> # A tibble: 5 × 7
-#>   AreaCode AreaID AreaName                AreaOdsCode ParentAreaID SystemLevelID
-#>   <chr>     <int> <chr>                   <lgl>              <int>         <int>
-#> 1 C82642     2278 Highfields Medical Cen… NA                   701             5
-#> 2 C82643     2279 Community Health Centr… NA                   701             5
-#> 3 Y02469     6621 Heron Gp Practice       NA                   701             5
-#> 4 Y02686     6653 Bowling Green Street S… NA                   701             5
-#> 5 C82080     7323 SHEFA MEDICAL PRACTICE  NA                   701             5
-#> # ℹ 1 more variable: SystemLevelName <chr>
-# }
+} # }
 ```

@@ -142,7 +142,7 @@ for grouped indicator metadata
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Compare performance for metric ID 1270 in time period 17 for Salford South East PCN (area ID 705)
 cvd_indicator_metric_systemlevel_comparison(
   metric_id = 1270,
@@ -151,12 +151,5 @@ cvd_indicator_metric_systemlevel_comparison(
 ) |>
   dplyr::filter(AreaID %in% c(705:709), !is.na(Value)) |>
   dplyr::select(SystemLevelName, AreaID, AreaName, Value)
-#> # A tibble: 4 × 4
-#>   SystemLevelName AreaID AreaName                    Value
-#>   <chr>            <int> <chr>                       <dbl>
-#> 1 PCN                705 Salford South East PCN       80.5
-#> 2 PCN                707 Haringey - North East PCN    88  
-#> 3 PCN                708 Teesdale PCN                100  
-#> 4 PCN                709 Spen Health & Wellbeing PCN  85.7
-# }
+} # }
 ```

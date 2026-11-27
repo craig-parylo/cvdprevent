@@ -127,17 +127,10 @@ for pathway-based groupings
 ## Examples
 
 ``` r
-# \donttest{
-#  list the indicators under Indicator Group ID 13 (Monitoring) which lists
-# 'Key Question' Indicator Group indicators:
-cvd_indicator_group(indicator_group_id = 13) |>
+if (FALSE) { # \dontrun{
+#  list the indicators under Indicator Group ID 13 (Atrial Fibrillation):
+cvd_indicator_group(indicator_group_id = 51) |>
   dplyr::select(IndicatorGroupID, IndicatorGroupName, IndicatorGroupTypeName,
   IndicatorID, IndicatorName)
-#> # A tibble: 2 × 5
-#>   IndicatorGroupID IndicatorGroupName IndicatorGroupTypeName IndicatorID
-#>              <int> <chr>              <chr>                        <int>
-#> 1               13 Monitoring         Key Question                     4
-#> 2               13 Monitoring         Key Question                    29
-#> # ℹ 1 more variable: IndicatorName <chr>
-# }
+} # }
 ```

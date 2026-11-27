@@ -137,7 +137,7 @@ data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREV
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Compare performance against metric 150  (AF: treatment with anticoagulants
 # - all people) in 'Chester South PCN' (area ID 553) with national
 # performance:
@@ -149,27 +149,13 @@ returned_list <- cvd_indicator_nationalarea_metric_data(
 
 # See what the list contains
 returned_list |> summary()
-#>        Length Class  Mode
-#> area   7      tbl_df list
-#> target 3      tbl_df list
 
 # Extract the `area` details
 area_data <- returned_list$area
 area_data
-#> # A tibble: 2 × 7
-#>   AreaCode  AreaID AreaName          HighestPriorityNotification…¹ NationalLevel
-#>   <chr>      <int> <chr>             <lgl>                         <chr>        
-#> 1 E92000001      1 England           NA                            Y            
-#> 2 U68943       553 Chester South PCN NA                            N            
-#> # ℹ abbreviated name: ¹​HighestPriorityNotificationType
-#> # ℹ 2 more variables: NotificationCount <int>, Value <dbl>
 
 # Extract `target` details
 target_data <- returned_list$target
 target_data
-#> # A tibble: 1 × 3
-#>   TargetLabel             TargetPatients TargetValue
-#>   <chr>                            <int>       <dbl>
-#> 1 Upper threshold for QOF             45          95
-# }
+} # }
 ```

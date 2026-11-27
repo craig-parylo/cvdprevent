@@ -15,13 +15,13 @@ Source:
 [`DESCRIPTION`](https://github.com/craig-parylo/cvdprevent/blob/main/DESCRIPTION)
 
 Parylo C (2026). *cvdprevent: Access and Analyse Data from the 'CVD
-Prevent' API*. R package version 0.2.5,
+Prevent' API*. R package version 0.2.6,
 <https://github.com/craig-parylo/cvdprevent>.
 
     @Manual{,
       title = {cvdprevent: Access and Analyse Data from the 'CVD Prevent' API},
       author = {Craig Parylo},
       year = {2026},
-      note = {R package version 0.2.5},
+      note = {R package version 0.2.6},
       url = {https://github.com/craig-parylo/cvdprevent},
     }

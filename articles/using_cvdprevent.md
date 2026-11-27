@@ -1,6 +1,7 @@
 # Using CVD Prevent
 
 ``` r
+
 # avoid warnings about the different heading
 options(rmarkdown.html_vignette.check_title = FALSE)
 
@@ -19,6 +20,7 @@ indicators**, use the
 function:
 
 ``` r
+
 cvd_time_period_list() |>
   dplyr::filter(IndicatorTypeName == 'Standard') |>
   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
@@ -28,10 +30,10 @@ cvd_time_period_list() |>
 
 | TimePeriodID | TimePeriodName    |
 |--------------|-------------------|
+| 34           | To June 2026      |
+| 33           | To March 2026     |
+| 31           | To December 2025  |
 | 28           | To September 2025 |
-| 26           | To June 2025      |
-| 24           | To March 2025     |
-| 22           | To December 2024  |
 
 There are two main types of indicator reported: - “Standard”
 (IndicatorTypeID = 1)
@@ -42,6 +44,7 @@ To retrieve time periods specific to an indicator type, pass the
 relevant ID to the optional `indicator_type_id` parameter:
 
 ``` r
+
 cvd_time_period_list(indicator_type_id = 2) |>
   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
   dplyr::select(
@@ -55,10 +58,10 @@ cvd_time_period_list(indicator_type_id = 2) |>
 
 | IndicatorTypeID | IndicatorTypeName | TimePeriodID | TimePeriodName      |
 |-----------------|-------------------|--------------|---------------------|
+| 2               | Outcomes          | 35           | Apr 2025 - Mar 2026 |
+| 2               | Outcomes          | 32           | Jan 2025 - Dec 2025 |
+| 2               | Outcomes          | 30           | Oct 2024 - Sep 2025 |
 | 2               | Outcomes          | 29           | Jul 2024 - Jun 2025 |
-| 2               | Outcomes          | 27           | Apr 2024 - Mar 2025 |
-| 2               | Outcomes          | 25           | Jan 2024 - Dec 2024 |
-| 2               | Outcomes          | 23           | Oct 2023 - Sep 2024 |
 
 ### Listing system levels by time period
 
@@ -70,6 +73,7 @@ are available for each time period, use the
 function:
 
 ``` r
+
 cvd_time_period_system_levels() |>
   dplyr::slice_max(order_by = TimePeriodID) |>
   dplyr::select(TimePeriodID, TimePeriodName, SystemLevelID, SystemLevelName) |>
@@ -78,9 +82,9 @@ cvd_time_period_system_levels() |>
 
 | TimePeriodID | TimePeriodName      | SystemLevelID | SystemLevelName |
 |--------------|---------------------|---------------|-----------------|
-| 29           | Jul 2024 - Jun 2025 | 1             | England         |
-| 29           | Jul 2024 - Jun 2025 | 6             | Region          |
-| 29           | Jul 2024 - Jun 2025 | 7             | ICB             |
+| 35           | Apr 2025 - Mar 2026 | 1             | England         |
+| 35           | Apr 2025 - Mar 2026 | 6             | Region          |
+| 35           | Apr 2025 - Mar 2026 | 7             | ICB             |
 
 ## Areas
 
@@ -93,6 +97,7 @@ function, providing the required time_period_id, (NB, time_period_id
 defaults to the first time period if not supplied).
 
 ``` r
+
 cvd_area_system_level(time_period_id = 17) |>
   dplyr::select(SystemLevelID, SystemLevelName) |>
   gt::gt()
@@ -116,6 +121,7 @@ Here we show the latest four reporting periods at the GP practice system
 level.
 
 ``` r
+
 cvd_area_system_level_time_periods() |>
   dplyr::filter(SystemLevelName == 'Practice') |>
   dplyr::slice_max(order_by = TimePeriodID, n = 4) |>
@@ -125,10 +131,10 @@ cvd_area_system_level_time_periods() |>
 
 | SystemLevelID | SystemLevelName | TimePeriodID | TimePeriodName    |
 |---------------|-----------------|--------------|-------------------|
+| 5             | Practice        | 34           | To June 2026      |
+| 5             | Practice        | 33           | To March 2026     |
+| 5             | Practice        | 31           | To December 2025  |
 | 5             | Practice        | 28           | To September 2025 |
-| 5             | Practice        | 26           | To June 2025      |
-| 5             | Practice        | 24           | To March 2025     |
-| 5             | Practice        | 22           | To December 2024  |
 
 ### List areas for a time period and system level or parent area
 
@@ -138,6 +144,7 @@ which data is available at time period 17 use the
 function.
 
 ``` r
+
 cvd_area_list(time_period_id = 17, system_level_id = 4) |>
   dplyr::select(SystemLevelName, AreaID, AreaCode, AreaName) |>
   dplyr::slice_head(n = 4) |>
@@ -167,6 +174,7 @@ return from this function is a list of three named tibbles:
 - `area_parent_details` (where appropriate).
 
 ``` r
+
 # get the list from the function
 returned_list <- cvd_area_details(time_period_id = 17, area_id = 7922)
 ```
@@ -175,6 +183,7 @@ The tibbles first need extracting from the returned list object, done
 here using the `list$object` notation. To view area details:
 
 ``` r
+
 returned_list$area_details |>
   dplyr::select(AreaCode, AreaName, SystemLevelID) |>
   gt::gt()
@@ -187,6 +196,7 @@ returned_list$area_details |>
 View details for the parent of this area:
 
 ``` r
+
 returned_list$area_parent_details |>
   dplyr::select(AreaID, AreaName, SystemLevelID) |>
   gt::gt()
@@ -199,24 +209,25 @@ returned_list$area_parent_details |>
 View details for the children of this area:
 
 ``` r
+
 returned_list$area_child_details |>
   dplyr::select(AreaID, AreaName, SystemLevelID) |>
   gt::gt()
 ```
 
-| AreaID | AreaName                                                        | SystemLevelID |
-|--------|-----------------------------------------------------------------|---------------|
-| 8032   | NHS Herefordshire and Worcestershire Integrated Care Board      | 7             |
-| 8033   | NHS Staffordshire and Stoke-on-Trent Integrated Care Board      | 7             |
-| 8037   | NHS Leicester, Leicestershire and Rutland Integrated Care Board | 7             |
-| 8039   | NHS Shropshire, Telford and Wrekin Integrated Care Board        | 7             |
-| 8042   | NHS Lincolnshire Integrated Care Board                          | 7             |
-| 8043   | NHS Nottingham and Nottinghamshire Integrated Care Board        | 7             |
-| 8044   | NHS Coventry and Warwickshire Integrated Care Board             | 7             |
-| 8045   | NHS Northamptonshire Integrated Care Board                      | 7             |
-| 8052   | NHS Birmingham and Solihull Integrated Care Board               | 7             |
-| 8053   | NHS Derby and Derbyshire Integrated Care Board                  | 7             |
-| 8056   | NHS Black Country Integrated Care Board                         | 7             |
+| AreaID | AreaName | SystemLevelID |
+|----|----|----|
+| 8032 | NHS Herefordshire and Worcestershire Integrated Care Board | 7 |
+| 8033 | NHS Staffordshire and Stoke-on-Trent Integrated Care Board | 7 |
+| 8037 | NHS Leicester, Leicestershire and Rutland Integrated Care Board | 7 |
+| 8039 | NHS Shropshire, Telford and Wrekin Integrated Care Board | 7 |
+| 8042 | NHS Lincolnshire Integrated Care Board | 7 |
+| 8043 | NHS Nottingham and Nottinghamshire Integrated Care Board | 7 |
+| 8044 | NHS Coventry and Warwickshire Integrated Care Board | 7 |
+| 8045 | NHS Northamptonshire Integrated Care Board | 7 |
+| 8052 | NHS Birmingham and Solihull Integrated Care Board | 7 |
+| 8053 | NHS Derby and Derbyshire Integrated Care Board | 7 |
+| 8056 | NHS Black Country Integrated Care Board | 7 |
 
 ### List areas without parent details
 
@@ -228,6 +239,7 @@ given ‘time_period_id’ and ‘system_level_id’.
 Here we report four GP practices without any parent PCN:
 
 ``` r
+
 cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
   dplyr::slice_head(n = 4) |>
   dplyr::select(SystemLevelName, AreaID, AreaName) |>
@@ -244,6 +256,7 @@ cvd_area_unassigned(time_period_id = 17, system_level_id = 5) |>
 The top system_level (England) does not have a parent either:
 
 ``` r
+
 cvd_area_unassigned(time_period_id = 17, system_level_id = 1) |>
   dplyr::select(SystemLevelName, AreaID, AreaName) |>
   gt::gt()
@@ -261,6 +274,7 @@ perform a partial name search using
 and specify a time period to search.
 
 ``` r
+
 cvd_area_search(partial_area_name = 'foo', time_period_id = 17) |>
   dplyr::select(AreaID, AreaName, AreaCode) |>
   gt::gt()
@@ -286,42 +300,45 @@ In the example below, we request details for Greater Manchester ICB
 heirarchical levels:
 
 ``` r
+
 return_list <- cvd_area_nested_subsystems(area_id = 8030)
 return_list |> summary()
-#>         Length Class  Mode
-#> level_1 7      tbl_df list
-#> level_2 7      tbl_df list
-#> level_3 7      tbl_df list
-#> level_4 7      tbl_df list
 ```
+
+    #>         Length Class  Mode
+    #> level_1 7      tbl_df list
+    #> level_2 7      tbl_df list
+    #> level_3 7      tbl_df list
+    #> level_4 7      tbl_df list
 
 The tibble `level_1` provides details about our requested area itself.
 you can view it using:
 
 ``` r
-return_list$level_1 |>
-  gt::gt()
+
+return_list$level_1 |> gt::gt()
 ```
 
-| AreaCode  | AreaID | AreaName                                     | AreaOdsCode | ParentAreaID | SystemLevelID | SystemLevelName |
-|-----------|--------|----------------------------------------------|-------------|--------------|---------------|-----------------|
-| E54000057 | 8030   | NHS Greater Manchester Integrated Care Board | QOP         | 8152         | 7             | ICB             |
+| AreaCode | AreaID | AreaName | AreaOdsCode | ParentAreaID | SystemLevelID | SystemLevelName |
+|----|----|----|----|----|----|----|
+| E54000057 | 8030 | NHS Greater Manchester Integrated Care Board | QOP | 8152 | 7 | ICB |
 
 The next level, `level_2`, contains areas that are direct children of
 the requested area. Here, we display hte first four entries:
 
 ``` r
+
 return_list$level_2 |>
   dplyr::slice_head(n = 4) |>
   gt::gt()
 ```
 
-| AreaCode  | AreaID | AreaName          | AreaOdsCode | ParentAreaID | SystemLevelID | SystemLevelName |
-|-----------|--------|-------------------|-------------|--------------|---------------|-----------------|
-| E38000174 | 58     | NHS Stockport CCG | 01W         | 8030         | 3             | CCG             |
-| E38000135 | 60     | NHS Oldham CCG    | 00Y         | 8030         | 3             | CCG             |
-| E38000187 | 71     | NHS Trafford CCG  | 02A         | 8030         | 3             | CCG             |
-| E38000143 | 73     | NHS Salford CCG   | 01G         | 8030         | 3             | CCG             |
+| AreaCode | AreaID | AreaName | AreaOdsCode | ParentAreaID | SystemLevelID | SystemLevelName |
+|----|----|----|----|----|----|----|
+| E38000174 | 58 | NHS Stockport CCG | 01W | 8030 | 3 | CCG |
+| E38000135 | 60 | NHS Oldham CCG | 00Y | 8030 | 3 | CCG |
+| E38000187 | 71 | NHS Trafford CCG | 02A | 8030 | 3 | CCG |
+| E38000143 | 73 | NHS Salford CCG | 01G | 8030 | 3 | CCG |
 
 Subsequent levels (`level_3`, `level_4`, etc.) represent further nested
 areas - children of children - and can be explored in the same way.
@@ -332,25 +349,27 @@ Alternatively, you can request a flat output grouped on system level
 using the `cvd_area_flat_subsystem()` function:
 
 ``` r
+
 cvd_area_flat_subsystems(area_id = 5) |>
   dplyr::glimpse()
-#> Rows: 73
-#> Columns: 14
-#> $ AreaCode                   <chr> "E54000038", "E54000038", "E54000038", "E54…
-#> $ AreaID                     <int> 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5…
-#> $ AreaName                   <chr> "Somerset", "Somerset", "Somerset", "Somers…
-#> $ AreaOdsCode                <chr> "QSL", "QSL", "QSL", "QSL", "QSL", "QSL", "…
-#> $ ParentAreaID               <int> 7670, 7670, 7670, 7670, 7670, 7670, 7670, 7…
-#> $ SubSystems_AreaCode        <chr> "E38000150", "U47425", "U17153", "U84175", …
-#> $ SubSystems_AreaID          <int> 105, 528, 613, 677, 688, 743, 786, 868, 963…
-#> $ SubSystems_AreaName        <chr> "NHS Somerset CCG", "West Somerset PCN", "W…
-#> $ SubSystems_AreaOdsCode     <chr> "11X", NA, NA, NA, NA, NA, NA, NA, NA, NA, …
-#> $ SubSystems_ParentAreaID    <int> 5, 105, 105, 105, 105, 105, 105, 105, 105, …
-#> $ SubSystems_SystemLevelID   <int> 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5…
-#> $ SubSystems_SystemLevelName <chr> "CCG", "PCN", "PCN", "PCN", "PCN", "PCN", "…
-#> $ SystemLevelID              <int> 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
-#> $ SystemLevelName            <chr> "STP", "STP", "STP", "STP", "STP", "STP", "…
 ```
+
+    #> Rows: 73
+    #> Columns: 14
+    #> $ AreaCode                   <chr> "E54000038", "E54000038", "E54000038", "E54…
+    #> $ AreaID                     <int> 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5…
+    #> $ AreaName                   <chr> "Somerset", "Somerset", "Somerset", "Somers…
+    #> $ AreaOdsCode                <chr> "QSL", "QSL", "QSL", "QSL", "QSL", "QSL", "…
+    #> $ ParentAreaID               <int> 7670, 7670, 7670, 7670, 7670, 7670, 7670, 7…
+    #> $ SubSystems_AreaCode        <chr> "E38000150", "U47425", "U17153", "U84175", …
+    #> $ SubSystems_AreaID          <int> 105, 528, 613, 677, 688, 743, 786, 868, 963…
+    #> $ SubSystems_AreaName        <chr> "NHS Somerset CCG", "West Somerset PCN", "W…
+    #> $ SubSystems_AreaOdsCode     <chr> "11X", NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+    #> $ SubSystems_ParentAreaID    <int> 5, 105, 105, 105, 105, 105, 105, 105, 105, …
+    #> $ SubSystems_SystemLevelID   <int> 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5…
+    #> $ SubSystems_SystemLevelName <chr> "CCG", "PCN", "PCN", "PCN", "PCN", "PCN", "…
+    #> $ SystemLevelID              <int> 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+    #> $ SystemLevelName            <chr> "STP", "STP", "STP", "STP", "STP", "STP", "…
 
 ## Indicators
 
@@ -392,18 +411,19 @@ Here we access the first four indicators for time point 17 and GP
 practice level (system level 5).
 
 ``` r
+
 cvd_indicator_list(time_period_id = 17, system_level_id = 5) |>
   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
   dplyr::slice_head(n = 4) |>
   gt::gt()
 ```
 
-| IndicatorID | IndicatorCode | IndicatorShortName                                                       |
-|-------------|---------------|--------------------------------------------------------------------------|
-| 2           | CVDP002HYP    | Hypertension: Treated to appropriate threshold (age \< 80) (CVDP002HYP)  |
-| 3           | CVDP003HYP    | Hypertension: Treated to appropriate threshold (age \>= 80) (CVDP003HYP) |
-| 4           | CVDP004HYP    | Hypertension: BP monitoring (CVDP004HYP)                                 |
-| 7           | CVDP002AF     | AF: Treated with anticoagulants (CVDP002AF)                              |
+| IndicatorID | IndicatorCode | IndicatorShortName |
+|----|----|----|
+| 2 | CVDP002HYP | Hypertension: Treated to appropriate threshold (age \< 80) (CVDP002HYP) |
+| 3 | CVDP003HYP | Hypertension: Treated to appropriate threshold (age \>= 80) (CVDP003HYP) |
+| 4 | CVDP004HYP | Hypertension: BP monitoring (CVDP004HYP) |
+| 7 | CVDP002AF | AF: Treated with anticoagulants (CVDP002AF) |
 
 ### Listing metrics for each indicator
 
@@ -417,8 +437,9 @@ Here we access the metrics for the prevalence of atrial fibrillation
 40-59 years age group:
 
 ``` r
+
 cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
-  dplyr::filter(IndicatorID == 1, MetricCategoryName == '40-59') |>
+  dplyr::filter(IndicatorID == 1, MetricCategoryName == "40-59") |>
   dplyr::count(
     IndicatorID,
     IndicatorShortName,
@@ -430,11 +451,11 @@ cvd_indicator_metric_list(time_period_id = 17, system_level_id = 1) |>
   gt::gt()
 ```
 
-| IndicatorID | IndicatorShortName         | MetricID | MetricCategoryName | CategoryAttribute |
-|-------------|----------------------------|----------|--------------------|-------------------|
-| 1           | AF: Prevalence (CVDP001AF) | 173      | 40-59              | Female            |
-| 1           | AF: Prevalence (CVDP001AF) | 175      | 40-59              | Male              |
-| 1           | AF: Prevalence (CVDP001AF) | 187      | 40-59              | Persons           |
+| IndicatorID | IndicatorShortName | MetricID | MetricCategoryName | CategoryAttribute |
+|----|----|----|----|----|
+| 1 | AF: Prevalence (CVDP001AF) | 173 | 40-59 | Female |
+| 1 | AF: Prevalence (CVDP001AF) | 175 | 40-59 | Male |
+| 1 | AF: Prevalence (CVDP001AF) | 187 | 40-59 | Persons |
 
 ### List all indicator data for a given area
 
@@ -456,14 +477,16 @@ tibbles include:
 Here we look at ‘3 Centres PCN’ (area ID 1103) for time period 17:
 
 ``` r
+
 returned_list <- cvd_indicator(time_period_id = 17, area_id = 1103)
 returned_list |> summary()
-#>                   Length Class  Mode
-#> indicators        14     tbl_df list
-#> metric_categories  7     tbl_df list
-#> metric_data       19     tbl_df list
-#> timeseries_data    7     tbl_df list
 ```
+
+    #>                   Length Class  Mode
+    #> indicators        14     tbl_df list
+    #> metric_categories  7     tbl_df list
+    #> metric_data       19     tbl_df list
+    #> timeseries_data   10     tbl_df list
 
 #### Indicators
 
@@ -472,6 +495,7 @@ illustrate, we obtain the first four indicators from the
 `return_list$indicators` list item:
 
 ``` r
+
 returned_list$indicators |>
   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
   dplyr::arrange(IndicatorID) |>
@@ -479,12 +503,12 @@ returned_list$indicators |>
   gt::gt()
 ```
 
-| IndicatorID | IndicatorCode | IndicatorShortName                                                       |
-|-------------|---------------|--------------------------------------------------------------------------|
-| 2           | CVDP002HYP    | Hypertension: Treated to appropriate threshold (age \< 80) (CVDP002HYP)  |
-| 3           | CVDP003HYP    | Hypertension: Treated to appropriate threshold (age \>= 80) (CVDP003HYP) |
-| 4           | CVDP004HYP    | Hypertension: BP monitoring (CVDP004HYP)                                 |
-| 7           | CVDP002AF     | AF: Treated with anticoagulants (CVDP002AF)                              |
+| IndicatorID | IndicatorCode | IndicatorShortName |
+|----|----|----|
+| 2 | CVDP002HYP | Hypertension: Treated to appropriate threshold (age \< 80) (CVDP002HYP) |
+| 3 | CVDP003HYP | Hypertension: Treated to appropriate threshold (age \>= 80) (CVDP003HYP) |
+| 4 | CVDP004HYP | Hypertension: BP monitoring (CVDP004HYP) |
+| 7 | CVDP002AF | AF: Treated with anticoagulants (CVDP002AF) |
 
 #### Category
 
@@ -495,6 +519,7 @@ Here we access category details for:
 - metric categories 7 & 8 (people aged 40-59 years by gender)
 
 ``` r
+
 returned_list$metric_categories |>
   dplyr::filter(IndicatorID == 7, MetricCategoryID %in% c(7, 8)) |>
   dplyr::select(
@@ -508,15 +533,16 @@ returned_list$metric_categories |>
 ```
 
 | IndicatorID | MetricCategoryTypeName | CategoryAttribute | MetricCategoryName | MetricID |
-|-------------|------------------------|-------------------|--------------------|----------|
-| 7           | Age group              | Male              | 40-59              | 126      |
-| 7           | Age group              | Female            | 40-59              | 132      |
+|----|----|----|----|----|
+| 7 | Age group | Male | 40-59 | 126 |
+| 7 | Age group | Female | 40-59 | 132 |
 
 #### Category data
 
 Here we access the data for each of the above categories:
 
 ``` r
+
 returned_list$metric_data |>
   dplyr::filter(MetricID %in% c(126, 132)) |>
   dplyr::select(MetricID, Value, Numerator, Denominator) |>
@@ -538,6 +564,7 @@ Here we show the time-series for the two categories of metric shown
 above as a plot.
 
 ``` r
+
 returned_list$timeseries_data |>
   dplyr::filter(MetricID %in% c(126, 132), !is.na(Value)) |>
   # prepare for plotting
@@ -552,7 +579,8 @@ returned_list$timeseries_data |>
     colour = MetricID
   )) +
   ggplot2::geom_point() +
-  ggplot2::geom_line()
+  ggplot2::geom_line() + 
+  ggplot2::theme_minimal(base_size = 16)
 ```
 
 ![](using_cvdprevent_files/figure-html/time%20series-1.png)
@@ -565,26 +593,25 @@ shown here as a vector of IDs 12 and 13 (hypertension and blood pressure
 measures).
 
 ``` r
-returned_list <-
-  cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
+
+returned_list <- cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
 ```
 
 ``` r
-if (!is.null(returned_list$indicators)) {
-  returned_list$indicators |>
-    dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
-    dplyr::arrange(IndicatorID) |>
-    dplyr::slice_head(n = 4) |>
-    gt::gt()
-}
+
+returned_list$indicators |>
+  dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
+  dplyr::arrange(IndicatorID) |>
+  dplyr::slice_head(n = 4) |>
+  gt::gt()
 ```
 
-| IndicatorID | IndicatorCode | IndicatorShortName                                                       |
-|-------------|---------------|--------------------------------------------------------------------------|
-| 2           | CVDP002HYP    | Hypertension: Treated to appropriate threshold (age \< 80) (CVDP002HYP)  |
-| 3           | CVDP003HYP    | Hypertension: Treated to appropriate threshold (age \>= 80) (CVDP003HYP) |
-| 4           | CVDP004HYP    | Hypertension: BP monitoring (CVDP004HYP)                                 |
-| 11          | CVDP001HYP    | Hypertension: Prevalence (CVDP001HYP)                                    |
+| IndicatorID | IndicatorCode | IndicatorShortName |
+|----|----|----|
+| 2 | CVDP002HYP | Hypertension: Treated to appropriate threshold (age \< 80) (CVDP002HYP) |
+| 3 | CVDP003HYP | Hypertension: Treated to appropriate threshold (age \>= 80) (CVDP003HYP) |
+| 4 | CVDP004HYP | Hypertension: BP monitoring (CVDP004HYP) |
+| 11 | CVDP001HYP | Hypertension: Prevalence (CVDP001HYP) |
 
 See also [List indicator tags](#list-indicator-tags).
 
@@ -596,6 +623,7 @@ indicators. To get a list of these tags you can use the
 function
 
 ``` r
+
 cvd_indicator_tags() |>
   dplyr::arrange(IndicatorTagID) |>
   dplyr::slice_head(n = 5) |>
@@ -619,19 +647,20 @@ details such as copyright information, source of the data, definitions
 and method of calculating confidence intervals.
 
 ``` r
+
 cvd_indicator_details(indicator_id = 7) |>
   dplyr::select(IndicatorID, MetaDataTitle, MetaData) |>
   dplyr::slice_head(n = 5) |>
   gt::gt()
 ```
 
-| IndicatorID | MetaDataTitle         | MetaData                                                                                                                                                                                                                                             |
-|-------------|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 7           | Copyright             | Produced by Office for Health Improvement and Disparities, and NHS Benchmarking Network. © Copyright NHS England. All rights reserved.                                                                                                               |
-| 7           | Data source           | Cardiovascular Disease Prevention Audit (CVDPREVENT)                                                                                                                                                                                                 |
-| 7           | Definition            | Percentage of patients aged 18 and over with GP recorded atrial fibrillation (AF) and a record of a CHADS2 or CHA2DS2-VASc score of 2 or more, who have received a prescription for any oral anticoagulation drug therapy in the preceding 6 months. |
-| 7           | Indicator ID          | CVDP002AF                                                                                                                                                                                                                                            |
-| 7           | Indicator short title | AF: Treated with anticoagulants (CVDP002AF)                                                                                                                                                                                                          |
+| IndicatorID | MetaDataTitle | MetaData |
+|----|----|----|
+| 7 | Copyright | Produced by Arden & GEM Comissioning Support Unit, and NHS Benchmarking Network. © Copyright NHS England. All rights reserved. |
+| 7 | Data source | Cardiovascular Disease Prevention Audit (CVDPREVENT) |
+| 7 | Definition | Percentage of patients aged 18 and over with GP recorded atrial fibrillation (AF) and a record of a CHADS2 or CHA2DS2-VASc score of 2 or more, who have received a prescription for any oral anticoagulation drug therapy in the preceding 6 months. |
+| 7 | Indicator ID | CVDP002AF |
+| 7 | Indicator short title | AF: Treated with anticoagulants (CVDP002AF) |
 
 ### Sibling area data
 
@@ -645,6 +674,7 @@ Here we get data for Metric 126 (relating to indicator 2- Hypertension
 treatment) for siblings to ‘3 Centres PCN’ (ID 1103):
 
 ``` r
+
 cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = 126) |>
   dplyr::select(
     AreaID,
@@ -656,17 +686,17 @@ cvd_indicator_sibling(time_period_id = 17, area_id = 1103, metric_id = 126) |>
   gt::gt()
 ```
 
-| AreaID | AreaName                             | Value  | LowerConfidenceLimit | UpperConfidenceLimit |
-|--------|--------------------------------------|--------|----------------------|----------------------|
-| 1103   | 3 Centres PCN                        | 100.00 | 84.21                | 100.00               |
-| 1023   | The Valleys Health & Social Care PCN | 93.75  | 73.68                | 100.00               |
-| 315    | Tolson Care Partnership PCN          | 90.91  | 64.29                | 100.00               |
-| 709    | Spen Health & Wellbeing PCN          | 90.91  | 72.00                | 96.00                |
-| 523    | Dewsbury & Thornhill PCN             | 88.89  | 58.33                | 100.00               |
-| 607    | The Mast PCN                         | 88.89  | 58.33                | 100.00               |
-| 606    | Batley Birstall PCN                  | 86.67  | 61.11                | 94.44                |
-| 1055   | Greenwood PCN                        | 86.67  | 61.11                | 94.44                |
-| 1334   | Viaduct Care PCN                     | 69.23  | 43.75                | 87.50                |
+| AreaID | AreaName | Value | LowerConfidenceLimit | UpperConfidenceLimit |
+|----|----|----|----|----|
+| 1103 | 3 Centres PCN | 100.00 | 84.21 | 100.00 |
+| 1023 | The Valleys Health & Social Care PCN | 93.75 | 73.68 | 100.00 |
+| 315 | Tolson Care Partnership PCN | 90.91 | 64.29 | 100.00 |
+| 709 | Spen Health & Wellbeing PCN | 90.91 | 72.00 | 96.00 |
+| 523 | Dewsbury & Thornhill PCN | 88.89 | 58.33 | 100.00 |
+| 607 | The Mast PCN | 88.89 | 58.33 | 100.00 |
+| 606 | Batley Birstall PCN | 86.67 | 61.11 | 94.44 |
+| 1055 | Greenwood PCN | 86.67 | 61.11 | 94.44 |
+| 1334 | Viaduct Care PCN | 69.23 | 43.75 | 87.50 |
 
 ### Child area data
 
@@ -680,6 +710,7 @@ treatment) for the children of ‘NHS Shropshire, Telford and Wrekin CCG’
 (ID 126):
 
 ``` r
+
 cvd_indicator_child_data(time_period_id = 17, area_id = 74, metric_id = 126) |>
   dplyr::select(
     AreaID,
@@ -691,16 +722,16 @@ cvd_indicator_child_data(time_period_id = 17, area_id = 74, metric_id = 126) |>
   gt::gt()
 ```
 
-| AreaID | AreaName                | Value  | LowerConfidenceLimit | UpperConfidenceLimit |
-|--------|-------------------------|--------|----------------------|----------------------|
-| 226    | Wrekin PCN              | 100.00 | 80.00                | 100.00               |
-| 899    | Se Shropshire PCN       | 100.00 | 88.00                | 100.00               |
-| 435    | Newport And Central PCN | 93.33  | 72.22                | 100.00               |
-| 1373   | Shrewsbury PCN          | 92.31  | 75.86                | 96.55                |
-| 1201   | North Shropshire PCN    | 91.30  | 73.08                | 96.15                |
-| 848    | Sw Shropshire PCN       | 90.91  | 64.29                | 100.00               |
-| 1338   | Teldoc PCN              | 80.00  | 60.71                | 89.29                |
-| 731    | South East Telford PCN  | 77.78  | 57.14                | 90.48                |
+| AreaID | AreaName | Value | LowerConfidenceLimit | UpperConfidenceLimit |
+|----|----|----|----|----|
+| 226 | Wrekin PCN | 100.00 | 80.00 | 100.00 |
+| 899 | Se Shropshire PCN | 100.00 | 88.00 | 100.00 |
+| 435 | Newport And Central PCN | 93.33 | 72.22 | 100.00 |
+| 1373 | Shrewsbury PCN | 92.31 | 75.86 | 96.55 |
+| 1201 | North Shropshire PCN | 91.30 | 73.08 | 96.15 |
+| 848 | Sw Shropshire PCN | 90.91 | 64.29 | 100.00 |
+| 1338 | Teldoc PCN | 80.00 | 60.71 | 89.29 |
+| 731 | South East Telford PCN | 77.78 | 57.14 | 90.48 |
 
 ### All metric data for a given time, area and indicator
 
@@ -722,27 +753,28 @@ time period 17 for ‘Leicester Central PCN’ (area_id 701) focussed on
 metrics by gender:
 
 ``` r
+
 returned_list <- cvd_indicator_data(
   time_period_id = 17,
   indicator_id = 7,
   area_id = 701
 )
 returned_list |> summary()
-#>                   Length Class  Mode
-#> indicator_metrics 17     tbl_df list
-#> area_data         27     tbl_df list
-#> national_data     26     tbl_df list
 ```
+
+    #>                   Length Class  Mode
+    #> indicator_metrics 17     tbl_df list
+    #> area_data         27     tbl_df list
+    #> national_data     26     tbl_df list
 
 #### Indicator metrics
 
-We can extract the tibbles using the list\$object notation. Here we can
+We can extract the tibbles using the `list$object` notation. Here we can
 see definitions for the indicator and its associated metrics.
 
 ``` r
-if ("indicator_metrics" %in% names(returned_list)) {
-  returned_list$indicator_metrics |> dplyr::glimpse()
-}
+
+returned_list$indicator_metrics |> dplyr::glimpse()
 #> Rows: 22
 #> Columns: 17
 #> $ AxisCharacter          <chr> "%", "%", "%", "%", "%", "%", "%", "%", "%", "%…
@@ -770,18 +802,17 @@ Here we can obtain rates of treatment with anticoagulants broken down by
 sex for Leicester Central PCN:
 
 ``` r
-if ("area_data" %in% names(returned_list)) {
-  returned_list$area_data |>
-    dplyr::filter(MetricCategoryTypeName == "Sex") |>
-    dplyr::select(
-      AreaID,
-      CategoryAttribute,
-      Value,
-      LowerConfidenceLimit,
-      UpperConfidenceLimit
-    ) |>
-    gt::gt()
-}
+
+returned_list$area_data |>
+  dplyr::filter(MetricCategoryTypeName == "Sex") |>
+  dplyr::select(
+    AreaID,
+    CategoryAttribute,
+    Value,
+    LowerConfidenceLimit,
+    UpperConfidenceLimit
+  ) |>
+  gt::gt()
 ```
 
 | AreaID | CategoryAttribute | Value | LowerConfidenceLimit | UpperConfidenceLimit |
@@ -795,18 +826,17 @@ if ("area_data" %in% names(returned_list)) {
 And we can also obtain the same breakdown for national (England-wide):
 
 ``` r
-if ("national_data" %in% names(returned_list)) {
-  returned_list$national_data |>
-    dplyr::filter(MetricCategoryTypeName == "Sex") |>
-    dplyr::select(
-      AreaID,
-      CategoryAttribute,
-      Value,
-      LowerConfidenceLimit,
-      UpperConfidenceLimit
-    ) |>
-    gt::gt()
-}
+
+returned_list$national_data |>
+  dplyr::filter(MetricCategoryTypeName == "Sex") |>
+  dplyr::select(
+    AreaID,
+    CategoryAttribute,
+    Value,
+    LowerConfidenceLimit,
+    UpperConfidenceLimit
+  ) |>
+  gt::gt()
 ```
 
 | AreaID | CategoryAttribute | Value | LowerConfidenceLimit | UpperConfidenceLimit |
@@ -831,6 +861,7 @@ anticoagulants’ (indicator ID 7) in time period 17 at GP practice level
 (system level ID 5):
 
 ``` r
+
 cvd_indicator_raw_data(
   indicator_id = 7,
   time_period_id = 17,
@@ -875,6 +906,7 @@ anticoagulants - all people) in ‘Chester South PCN’ (area ID 553) with
 national performance:
 
 ``` r
+
 returned_list <- cvd_indicator_nationalarea_metric_data(
   metric_id = 150,
   time_period_id = 17,
@@ -882,10 +914,11 @@ returned_list <- cvd_indicator_nationalarea_metric_data(
 )
 
 returned_list |> summary()
-#>        Length Class  Mode
-#> area   7      tbl_df list
-#> target 3      tbl_df list
 ```
+
+    #>        Length Class  Mode
+    #> area   10     tbl_df list
+    #> target  3     tbl_df list
 
 #### Area data
 
@@ -893,20 +926,22 @@ We can extract the tibbles using the `list$object` notation. Here we
 extract the area metric comparison with national data:
 
 ``` r
+
 area_data <- returned_list$area
 area_data |> gt::gt()
 ```
 
-| AreaCode  | AreaID | AreaName          | HighestPriorityNotificationType | NationalLevel | NotificationCount | Value |
-|-----------|--------|-------------------|---------------------------------|---------------|-------------------|-------|
-| E92000001 | 1      | England           | NA                              | Y             | 0                 | 91.48 |
-| U68943    | 553    | Chester South PCN | NA                              | N             | 0                 | 88.57 |
+| AreaCode | AreaID | AreaName | Denominator | Factor | HighestPriorityNotificationType | NationalLevel | NotificationCount | Numerator | Value |
+|----|----|----|----|----|----|----|----|----|----|
+| E92000001 | 1 | England | 1012168 | 1 | NA | Y | 0 | 925978 | 91.48 |
+| U68943 | 553 | Chester South PCN | 700 | 1 | NA | N | 0 | 620 | 88.57 |
 
 #### Target data
 
 Here we extract the target details:
 
 ``` r
+
 target_data <- returned_list$target
 target_data |> gt::gt()
 ```
@@ -934,6 +969,7 @@ function.
 Here we return one indicator from each of the priority groups:
 
 ``` r
+
 cvd_indicator_priority_groups() |>
   dplyr::select(
     PriorityGroup,
@@ -943,18 +979,21 @@ cvd_indicator_priority_groups() |>
     IndicatorName
   ) |>
   dplyr::slice_head(by = PathwayGroupID) |>
-  gt::gt(row_group_as_column = T)
+  gt::gt(row_group_as_column = TRUE)
 ```
 
-| PriorityGroup   | PathwayGroupName               | PathwayGroupID | IndicatorID | IndicatorName                                                                                                                                                                                                                        |
-|-----------------|--------------------------------|----------------|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ABC             | Hypertension                   | 5              | 4           | Patients with GP recorded hypertension, with a record of a blood pressure reading in the preceding 12 months.                                                                                                                        |
-| ABC             | Cholesterol                    | 6              | 22          | Patients with no GP recorded CVD and a GP recorded QRISK score of 10% or more, who are currently treated with lipid lowering therapy                                                                                                 |
-| ABC             | Atrial Fibrilation             | 7              | 7           | Patients with GP recorded atrial fibrillation and with a CHADS2 or CHA2DS2-VASc score of 2 or more, who are currently treated with any oral anticoagulant.                                                                           |
-| ABC             | NA                             | NA             | 54          | Patients with GP recorded CVD (narrow definition), whose most recent blood cholesterol level is LDL-cholesterol less than or equal to 2.0 mmol/l or non-HDL cholesterol less than or equal to 2.6 mmol/l, in the preceding 12 months |
-| CKD             | Chronic Kidney Disease         | 9              | 29          | Patients with GP recorded CKD (G3a to G5), with a record of an eGFR test in the preceding 12 months.                                                                                                                                 |
-| Prevalence      | Familial Hypercholesterolaemia | 8              | 9           | Prevalence of GP recorded possible, probable or genetically confirmed familial hypercholesterolaemia, in patients all ages, calculated as a crude rate per 10,000 patients.                                                          |
-| Smoking and BMI | Smoking                        | 10             | 24          | Patients with GP recorded CVD or CVD risk factors who are GP recorded current smokers or have no smoking status recorded, whose notes record smoking status in the preceding 12 months.                                              |
+| PriorityGroup | PathwayGroupName | PathwayGroupID | IndicatorID | IndicatorName |
+|----|----|----|----|----|
+| Atrial Fibrillation | Atrial Fibrillation | 51 | 1 | Prevalence of GP recorded atrial fibrillation |
+| Body Mass Index | NA | NA | 45 | Patients with GP recorded CVD or CVD risk factors, with GP recorded body mass index status in the preceding 12 months. |
+| Cardiovascular, and kidney metabolic | Cardiovascular, and kidney metabolic | 56 | 60 | Patients with GP recorded CKD (G3a to G5), heart failure or type 2 Diabetes Mellitus who are currently treated with an SGLT2 inhibitor |
+| Cholesterol | Cholesterol | 54 | 14 | Patients with no GP recorded CVD and a GP recorded QRISK score of 20% or more, who are currently treated with lipid lowering therapy |
+| Chronic Kidney Disease | Chronic Kidney Disease | 55 | 8 | Prevalence of GP recorded CKD (G3a to G5) |
+| Diabetes | Diabetes | 58 | 25 | Patients whose last HbA1c record is between 42 and 48 mmol/mol (at high risk of NDH), without a GP record of non-diabetic hyperglycaemia or diabetes mellitus. |
+| Familial Hypercholesterolaemia | Familial Hypercholesterolaemia | 53 | 9 | Prevalence of GP recorded possible, probable or genetically confirmed familial hypercholesterolaemia, in patients all ages, calculated as a crude rate per 10,000 patients. |
+| Heart Failure | Heart Failure | 59 | 46 | Prevalence of GP recorded heart failure |
+| Hypertension | Hypertension | 52 | 11 | Prevalence of GP recorded hypertension |
+| Smoking | Smoking | 57 | 24 | Patients with GP recorded CVD or CVD risk factors who are GP recorded current smokers or have no smoking status recorded, whose notes record smoking status in the preceding 12 months. |
 
 ### List pathway group indicators
 
@@ -964,11 +1003,12 @@ of the CVD PREVENT website and can be accessed from the API using the
 [`cvd_indicator_pathway_group()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_pathway_group.md)
 function.
 
-Here we return the indicators within the ‘Chronic Kidney Disease’
-pathway group (ID 9):
+Here we return the indicators within the ‘Atrial Fibrillation’ pathway
+group (ID 51):
 
 ``` r
-cvd_indicator_pathway_group(pathway_group_id = 9) |>
+
+cvd_indicator_pathway_group(pathway_group_id = 51) |>
   dplyr::select(
     PathwayGroupName,
     PathwayGroupID,
@@ -980,14 +1020,12 @@ cvd_indicator_pathway_group(pathway_group_id = 9) |>
   gt::gt(row_group_as_column = T)
 ```
 
-|                        | PathwayGroupID | IndicatorCode | IndicatorID | IndicatorName                                                                                                                                               |
-|------------------------|----------------|---------------|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Chronic Kidney Disease | 9              | CVDP002CKD    | 13          | Patients whose last two eGFRs are less than 60ml/min/1.73m2 (uncoded CKD), who do not have a record of GP recorded CKD (G3a to G5)                          |
-|                        | 9              | CVDP001CKD    | 8           | Prevalence of GP recorded CKD (G3a to G5)                                                                                                                   |
-|                        | 9              | CVDP006CKD    | 29          | Patients with GP recorded CKD (G3a to G5), with a record of an eGFR test in the preceding 12 months.                                                        |
-|                        | 9              | CVDP005CKD    | 19          | Patients with GP recorded CKD (G3a to G5) and hypertension and proteinuria, who are currently treated with renin-angiotensin system antagonists             |
-|                        | 9              | CVDP007CKD    | 31          | Patients with GP recorded CKD (G3a to G5) with an ACR of less than 70 mg/mmol, whose last blood pressure reading is to the appropriate treatment threshold. |
-|                        | 9              | CVDP010CHOL   | 23          | Patients with GP recorded chronic kidney disease (G3a to G5), who are currently treated with lipid lowering therapy.                                        |
+|  | PathwayGroupID | IndicatorCode | IndicatorID | IndicatorName |
+|----|----|----|----|----|
+| Atrial Fibrillation | 51 | CVDP001AF | 1 | Prevalence of GP recorded atrial fibrillation |
+|  | 51 | CVDP004AF | 50 | Patients with GP recorded atrial fibrillation and with a CHADS2 or CHA2DS2-VASc score of less than 2 or no CHADS2 or CHA2DS2-VASc score, whose stroke risk has been assessed using the CHA2DS2-VASc scoring system in the preceding 12 months. |
+|  | 51 | CVDP002AF | 7 | Patients with GP recorded atrial fibrillation and with a CHADS2 or CHA2DS2-VASc score of 2 or more, who are currently treated with any oral anticoagulant.  |
+|  | 51 | CVDP005AF | 51 | Patients with GP recorded atrial fibrillation and with a CHADS2 or CHA2DS2-VASc score of 2 or more, who are currently treated with a direct-acting oral anticoagulant or vitamin K antagonist.  |
 
 ### List Indicator Group indicators
 
@@ -995,11 +1033,12 @@ Indicator Groups are further groups of indicators which are classified
 by `IndicatorGroupTypeID` which indicates what *type* of indicator,
 e.g. Priority Group.
 
-Here we list the indicators under Indicator Group ID 13 (Monitoring)
-which lists ‘Key Question’ Indicator Group indicators:
+Here we list the indicators under Indicator Group ID 51 (Atrial
+Fibrillation):
 
 ``` r
-cvd_indicator_group(indicator_group_id = 13) |>
+
+cvd_indicator_group(indicator_group_id = 51) |>
   dplyr::select(
     IndicatorGroupID,
     IndicatorGroupName,
@@ -1011,11 +1050,13 @@ cvd_indicator_group(indicator_group_id = 13) |>
   gt::gt()
 ```
 
-| IndicatorGroupTypeName | IndicatorID | IndicatorName                                                                                                 |
-|------------------------|-------------|---------------------------------------------------------------------------------------------------------------|
-| 13 - Monitoring        |             |                                                                                                               |
-| Key Question           | 4           | Patients with GP recorded hypertension, with a record of a blood pressure reading in the preceding 12 months. |
-| Key Question           | 29          | Patients with GP recorded CKD (G3a to G5), with a record of an eGFR test in the preceding 12 months.          |
+| IndicatorGroupTypeName | IndicatorID | IndicatorName |
+|----|----|----|
+| 51 - Atrial Fibrillation |  |  |
+| Pathway | 1 | Prevalence of GP recorded atrial fibrillation |
+| Pathway | 50 | Patients with GP recorded atrial fibrillation and with a CHADS2 or CHA2DS2-VASc score of less than 2 or no CHADS2 or CHA2DS2-VASc score, whose stroke risk has been assessed using the CHA2DS2-VASc scoring system in the preceding 12 months. |
+| Pathway | 7 | Patients with GP recorded atrial fibrillation and with a CHADS2 or CHA2DS2-VASc score of 2 or more, who are currently treated with any oral anticoagulant.  |
+| Pathway | 51 | Patients with GP recorded atrial fibrillation and with a CHADS2 or CHA2DS2-VASc score of 2 or more, who are currently treated with a direct-acting oral anticoagulant or vitamin K antagonist.  |
 
 ### Return time series data for a metric and area
 
@@ -1028,6 +1069,7 @@ treatment with anticoagulants’ for women people aged 60-79 years (metric
 ID 130):
 
 ``` r
+
 cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
   # prepare for plotting
   dplyr::mutate(
@@ -1041,8 +1083,10 @@ cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
   )) +
   ggplot2::geom_point() +
   ggplot2::geom_line() +
+  ggplot2::theme_minimal(base_size = 16) +
   ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
   )
 ```
 
@@ -1052,6 +1096,7 @@ Or we can view the details of the time-series performance for this
 metric:
 
 ``` r
+
 cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
   dplyr::select(AreaName, TimePeriodName, TimePeriodID, Value) |>
   tidyr::pivot_wider(
@@ -1080,6 +1125,9 @@ cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
 | To March 2025     | 24           | 92.52   | 94.65                  |
 | To June 2025      | 26           | 92.41   | 94.65                  |
 | To September 2025 | 28           | 92.16   | 94.27                  |
+| To December 2025  | 31           | 92.16   | 94.39                  |
+| To March 2026     | 33           | 92.47   | 93.00                  |
+| To June 2026      | 34           | 92.34   | 93.50                  |
 
 ### Return time series data for an indicator and area - inequalities
 
@@ -1093,6 +1141,7 @@ anticoagulants’ (ID 7) in Salford South East PCN (area ID 705), focussed
 just on the age group inequalities metrics:
 
 ``` r
+
 cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
   dplyr::filter(
     MetricCategoryTypeName == 'Age group',
@@ -1111,8 +1160,10 @@ cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
   ) +
   ggplot2::geom_point() +
   ggplot2::geom_line() +
+  ggplot2::theme_minimal(base_size = 16) +
   ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
   )
 ```
 
@@ -1122,6 +1173,7 @@ Or we can view the details of the time-series performance for these
 metrics:
 
 ``` r
+
 cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
   dplyr::filter(
     MetricCategoryTypeName == 'Age group',
@@ -1154,6 +1206,9 @@ cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
 | To March 2025     | 24           | 85.71 | 93.31 | 91.90 |
 | To June 2025      | 26           | 85.71 | 92.87 | 92.16 |
 | To September 2025 | 28           | 89.80 | 92.23 | 92.04 |
+| To December 2025  | 31           | 91.84 | 91.67 | 92.04 |
+| To March 2026     | 33           | 89.36 | 91.30 | 91.72 |
+| To June 2026      | 34           | 93.18 | 91.28 | 91.56 |
 
 ### Return system level comparisons for a metric
 
@@ -1169,6 +1224,7 @@ Salford South East PCN (area ID 705) *and all other* PCNs - truncated to
 a sample of four PCN performances:
 
 ``` r
+
 cvd_indicator_metric_systemlevel_comparison(
   metric_id = 1270,
   time_period_id = 17,
@@ -1190,13 +1246,14 @@ cvd_indicator_metric_systemlevel_comparison(
 
 Use
 [`cvd_indicator_metric_area_breakdown()`](https://craig-parylo.github.io/cvdprevent/reference/cvd_indicator_metric_area_breakdown.md)
-function to return the data Area Breakdown chart.
+function to return the data Area Breakdown data.
 
 Here we return performance for metric ‘AF: DOAC & VitK’ in men aged
 60-79 years (metric ID 128) in time period 17 for Salford South East PCN
 (area ID 705):
 
 ``` r
+
 cvd_indicator_metric_area_breakdown(
   metric_id = 128,
   time_period_id = 17,
@@ -1220,6 +1277,7 @@ To return a list of all external resources used by the API use function
 Here we show the first five external resources:
 
 ``` r
+
 cvd_external_resource() |>
   dplyr::filter(ExternalResourceID < 10) |>
   dplyr::select(
@@ -1228,16 +1286,16 @@ cvd_external_resource() |>
     ExternalResourceTitle
   ) |>
   dplyr::group_by(ExternalResourceCategory) |>
-  gt::gt(row_group_as_column = T)
+  gt::gt(row_group_as_column = TRUE)
 ```
 
-|                      | ExternalResourceSource              | ExternalResourceTitle                                     |
-|----------------------|-------------------------------------|-----------------------------------------------------------|
-| Data Packs           | Public Health England               | Cardiovascular Disease Prevention Data Packs              |
-|                      | NHS England                         | Equality and Health Inequality Packs                      |
-| Toolkits             | NHS Digital                         | Weight Management Programme General Practice Toolkit      |
-|                      | Primary Care Cardiovascular Society | CVD – identification and treatment of people at high risk |
-| Stratification tools | UCL Partners                        | Search and risk stratification tools                      |
+|  | ExternalResourceSource | ExternalResourceTitle |
+|----|----|----|
+| Data Packs | Public Health England | Cardiovascular Disease Prevention Data Packs |
+|  | NHS England | Equality and Health Inequality Packs |
+| Toolkits | NHS Digital | Weight Management Programme General Practice Toolkit |
+|  | Primary Care Cardiovascular Society | CVD – identification and treatment of people at high risk |
+| Stratification tools | UCL Partners | Search and risk stratification tools |
 
 ### Show data availability
 
@@ -1250,6 +1308,7 @@ NB, data appears to be only available up to time period 6 (to September
 2022).
 
 ``` r
+
 cvd_data_availability(time_period_id = 6, system_level_id = 5) |>
   dplyr::select(
     IndicatorShortName,
@@ -1261,10 +1320,10 @@ cvd_data_availability(time_period_id = 6, system_level_id = 5) |>
   gt::gt()
 ```
 
-| IndicatorShortName                                                      | IsAvailable | SystemLevelName | MetricCategoryTypeID |
-|-------------------------------------------------------------------------|-------------|-----------------|----------------------|
-| AF: Prevalence (CVDP001AF)                                              | N           | Practice        | 4                    |
-| AF: Prevalence (CVDP001AF)                                              | N           | Practice        | 2                    |
-| AF: Prevalence (CVDP001AF)                                              | N           | Practice        | 1                    |
-| AF: Prevalence (CVDP001AF)                                              | N           | Practice        | 3                    |
-| Hypertension: Treated to appropriate threshold (age \< 80) (CVDP002HYP) | Y           | Practice        | 4                    |
+| IndicatorShortName | IsAvailable | SystemLevelName | MetricCategoryTypeID |
+|----|----|----|----|
+| AF: Prevalence (CVDP001AF) | N | Practice | 4 |
+| AF: Prevalence (CVDP001AF) | N | Practice | 2 |
+| AF: Prevalence (CVDP001AF) | N | Practice | 1 |
+| AF: Prevalence (CVDP001AF) | N | Practice | 3 |
+| Hypertension: Treated to appropriate threshold (age \< 80) (CVDP002HYP) | Y | Practice | 4 |

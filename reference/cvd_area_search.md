@@ -103,41 +103,13 @@ search](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPR
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Search for areas containing "practice" in their name for time period 17
 cvd_area_search(partial_area_name = "practice", time_period_id = 17) |>
   dplyr::select(AreaID, AreaName, AreaCode)
-#> # A tibble: 1,446 × 3
-#>    AreaID AreaName                             AreaCode
-#>     <int> <chr>                                <chr>   
-#>  1   7735 1/Monton Medical Practice            P87620  
-#>  2   7788 1/SALFORD MEDICAL PRACTICE           P87004  
-#>  3   6396 3/Springfield House Medical Practice P87024  
-#>  4   6794 ABBEY GRANGE MEDICAL PRACTICE        B86068  
-#>  5   4804 Abbey House Medical Practice         K83032  
-#>  6   4814 Abbey Medical Practice               K83047  
-#>  7   5262 Abbey Medical Practice               M81094  
-#>  8   2327 Abbey Medical Practice               C83051  
-#>  9   3607 Abbey Road Medical Practice          F84111  
-#> 10   5927 Abercromby Family Practice           N82054  
-#> # ℹ 1,436 more rows
 
 # Search for areas containing "PCN" for time period 17
 cvd_area_search(partial_area_name = "PCN", time_period_id = 17) |>
   dplyr::select(AreaID, AreaName, AreaCode)
-#> # A tibble: 1,275 × 3
-#>    AreaID AreaName                  AreaCode
-#>     <int> <chr>                     <chr>   
-#>  1   1103 3 Centres PCN             U60176  
-#>  2    920 4 Doncaster PCN           U72999  
-#>  3   1066 4PCN (Bnssg) PCN          U16600  
-#>  4    923 A1 Network PCN            U89554  
-#>  5    640 A31 Group PCN             U72748  
-#>  6   1038 A34 West Berkshire PCN    U16983  
-#>  7    471 Abbey Field PCN           U51488  
-#>  8    222 Abbey Health PCN          U06079  
-#>  9    174 Abc PCN                   U47228  
-#> 10    889 Abingdon And District PCN U57321  
-#> # ℹ 1,265 more rows
-# }
+} # }
 ```

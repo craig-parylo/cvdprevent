@@ -136,7 +136,7 @@ data](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREV
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Retrieve metric data for 'CVD: All-cause mortality' (IndicatorID = 35) across
 # NHS Regions (SystemLevelID = 6) in the period April 2024 to
 # March 2025 (TimePeriodID = 27) and view a sample of 4 rows:
@@ -146,19 +146,6 @@ cvd_indicator_raw_data(
   indicator_id = 35
 ) |>
   dplyr::slice_sample(n = 4)
-#> # A tibble: 4 × 18
-#>   AreaCode  AreaName CategoryAttribute Denominator Factor HighestPriorityNotif…¹
-#>   <chr>     <chr>    <chr>                   <dbl> <lgl>  <lgl>                 
-#> 1 E40000006 South W… Persons                 79430 NA     NA                    
-#> 2 E40000007 East of… Persons                369405 NA     NA                    
-#> 3 E40000010 North W… Persons                  4250 NA     NA                    
-#> 4 E40000011 Midlands Persons                148330 NA     NA                    
-#> # ℹ abbreviated name: ¹​HighestPriorityNotificationType
-#> # ℹ 12 more variables: IndicatorCode <chr>, IndicatorName <chr>,
-#> #   IndicatorShortName <chr>, LowerConfidenceLimit <dbl>,
-#> #   MetricCategoryName <chr>, MetricCategoryTypeName <chr>,
-#> #   NotificationCount <int>, Numerator <dbl>, TimePeriodName <chr>,
-#> #   UpperConfidenceLimit <dbl>, Value <dbl>, ValueNote <lgl>
 
 # Find a valid indicator IDs for a specified time period and system level,
 # then retrieve raw data for one of these
@@ -168,25 +155,5 @@ cvd_indicator_raw_data(
   system_level_id = 4,
   indicator_id = indicators$IndicatorID[1]
 )
-#> # A tibble: 24,349 × 18
-#>    AreaCode AreaName CategoryAttribute Denominator Factor HighestPriorityNotif…¹
-#>    <chr>    <chr>    <chr>                   <dbl> <lgl>  <chr>                 
-#>  1 U60176   3 Centr… Persons                  6080 NA     Red                   
-#>  2 U60176   3 Centr… Female                   2880 NA     Red                   
-#>  3 U60176   3 Centr… Male                     3200 NA     Red                   
-#>  4 U60176   3 Centr… Male                      105 NA     Red                   
-#>  5 U60176   3 Centr… Female                     80 NA     Red                   
-#>  6 U60176   3 Centr… Persons                   185 NA     Red                   
-#>  7 U60176   3 Centr… Male                     1110 NA     Red                   
-#>  8 U60176   3 Centr… Female                    905 NA     Red                   
-#>  9 U60176   3 Centr… Persons                  2015 NA     Red                   
-#> 10 U60176   3 Centr… Male                     1985 NA     Red                   
-#> # ℹ 24,339 more rows
-#> # ℹ abbreviated name: ¹​HighestPriorityNotificationType
-#> # ℹ 12 more variables: IndicatorCode <chr>, IndicatorName <chr>,
-#> #   IndicatorShortName <chr>, LowerConfidenceLimit <dbl>,
-#> #   MetricCategoryName <chr>, MetricCategoryTypeName <chr>,
-#> #   NotificationCount <int>, Numerator <dbl>, TimePeriodName <chr>,
-#> #   UpperConfidenceLimit <dbl>, Value <dbl>, ValueNote <chr>
-# }
+} # }
 ```

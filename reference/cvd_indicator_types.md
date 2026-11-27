@@ -40,5 +40,5 @@ response time.
 # expected to return the results
 
 # List available indicator types
-cvd_indicator_types()
+if (FALSE) cvd_indicator_types() # \dontrun{}
 ```

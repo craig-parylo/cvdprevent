@@ -146,7 +146,7 @@ for area-level comparisons
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # View age group inequalities for indicator ID 7 in Salford South East PCN (area ID 705)
 cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
   dplyr::filter(
@@ -158,25 +158,5 @@ cvd_indicator_person_timeseries(indicator_id = 7, area_id = 705) |>
     names_from = MetricCategoryName,
     values_from = Value
   )
-#> # A tibble: 17 × 5
-#>    TimePeriodName    TimePeriodID `40-59` `60-79` `80+`
-#>    <chr>                    <int>   <dbl>   <dbl> <dbl>
-#>  1 To March 2020                1    78.3    82.3  85  
-#>  2 To March 2021                2    91.3    82.3  84.8
-#>  3 To September 2021            3    78      86.9  87.2
-#>  4 To March 2022                4    76.6    86.8  90.2
-#>  5 To June 2022                 5    82.4    86.8  88.6
-#>  6 To September 2022            6    80      86.6  90.6
-#>  7 To December 2022             7    76.3    87.5  90.6
-#>  8 To March 2023                8    72.7    87.4  91.1
-#>  9 To June 2023                 9    71.1    88.5  91.3
-#> 10 To December 2023            15    74.4    88.9  90.6
-#> 11 To March 2024               17    80.5    91.5  92.4
-#> 12 To June 2024                18    82.9    91.6  92.2
-#> 13 To September 2024           20    80.4    91.6  91.9
-#> 14 To December 2024            22    85.7    91.4  91.6
-#> 15 To March 2025               24    85.7    93.3  91.9
-#> 16 To June 2025                26    85.7    92.9  92.2
-#> 17 To September 2025           28    89.8    92.2  92.0
-# }
+} # }
 ```

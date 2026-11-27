@@ -1,6 +1,7 @@
 # Example 2: Time-series monitoring
 
 ``` r
+
 library(cvdprevent)
 
 # We will also be usng the following packages in this article.
@@ -12,6 +13,7 @@ library(cvdprevent)
 # library(tidyr)
 # library(gt)
 # library(plotly)
+# library(glue)
 ```
 
 Monitoring cardiovascular disease (CVD) indicators over time is
@@ -36,6 +38,7 @@ System levels differ in which periods they support, so we begin by
 listing the periods associated with PCNs.
 
 ``` r
+
 cvd_time_period_system_levels() |> 
   dplyr::filter(SystemLevelName == "PCN") |> 
   dplyr::select(dplyr::any_of(c("TimePeriodID", "TimePeriodName", "SystemLevelName"))) |> 
@@ -63,6 +66,9 @@ cvd_time_period_system_levels() |>
 | 24           | To March 2025     | PCN             |
 | 26           | To June 2025      | PCN             |
 | 28           | To September 2025 | PCN             |
+| 31           | To December 2025  | PCN             |
+| 33           | To March 2026     | PCN             |
+| 34           | To June 2026      | PCN             |
 
 From this table we can see that **TimePeriodID 26** is the most recent
 reporting window, so we will use that for our geography lookup.
@@ -71,6 +77,7 @@ Next, we search for areas whose names contain “St Helens” within that
 time period:
 
 ``` r
+
 cvd_area_search(partial_area_name = "St Helens", time_period_id = 26) |> 
   dplyr::select(dplyr::any_of(c("AreaID", "AreaName", "SystemLevelID", "SystemLevelName"))) |> 
   gt::gt() |> 
@@ -94,6 +101,7 @@ Each system level and time period exposes a set of indicators. We now
 list all indicators available for PCNs in time period 26.
 
 ``` r
+
 inds <-
   cvd_indicator_list(time_period_id = 26, system_level_id = 5) |>
   # select relevant columns to help
@@ -119,6 +127,7 @@ time-series dataset. This includes values for several metric categories
 (overall, age groups, sex and ethnicity).
 
 ``` r
+
 ind_data <- cvd_indicator_person_timeseries(indicator_id = 4, area_id = 761)
 ```
 
@@ -134,6 +143,7 @@ The following chart shows the overall BP monitoring performance
 (“Persons” metric category) across all available periods.
 
 ``` r
+
 ind_data |> 
     # get the overall performance metric
   dplyr::filter(MetricCategoryName == "Persons") |> 
@@ -196,6 +206,7 @@ To support this, we define a helper function that produces a consistent
 time-series chart for any metric category type.
 
 ``` r
+
 # get the name of the indicator
 ind_name <- inds |> dplyr::filter(IndicatorID == 4) |> dplyr::pull(IndicatorShortName)
 
@@ -267,6 +278,7 @@ Age-group trends help identify whether improvements are consistent
 across the population or concentrated in specific cohorts.
 
 ``` r
+
 ind_data |> 
   # get the overall performance metric and plot
   dplyr::filter(MetricCategoryTypeName == "Age group") |> 
@@ -277,6 +289,7 @@ Examining performance by sex can highlight whether targeted
 interventions may be needed.
 
 ``` r
+
 ind_data |> 
   # get the overall performance metric and plot
   dplyr::filter(MetricCategoryTypeName == "Sex") |> 
@@ -287,6 +300,7 @@ Ethnicity-level trends can reveal inequalities and support more
 equitable service planning.
 
 ``` r
+
 ind_data |> 
   # get the overall performance metric and plot
   dplyr::filter(MetricCategoryTypeName == "Ethnicity") |> 

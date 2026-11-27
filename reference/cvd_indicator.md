@@ -314,17 +314,12 @@ Indicator](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CV
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Get all indicator data for area_id = 1103 in time period 17
 return_list <- cvd_indicator(time_period_id = 17, area_id = 1103)
 
 # See what data tables are available
 summary(return_list)
-#>                   Length Class  Mode
-#> indicators        14     tbl_df list
-#> metric_categories  7     tbl_df list
-#> metric_data       19     tbl_df list
-#> timeseries_data    7     tbl_df list
 
 # Extract and examine indicators
 indicators <- return_list$indicators
@@ -332,13 +327,6 @@ indicators |>
   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
   dplyr::arrange(IndicatorID) |>
   dplyr::slice_head(n = 4)
-#> # A tibble: 4 × 3
-#>   IndicatorID IndicatorCode IndicatorShortName                                  
-#>         <int> <chr>         <chr>                                               
-#> 1           2 CVDP002HYP    Hypertension: Treated to appropriate threshold (age…
-#> 2           3 CVDP003HYP    Hypertension: Treated to appropriate threshold (age…
-#> 3           4 CVDP004HYP    Hypertension: BP monitoring (CVDP004HYP)            
-#> 4           7 CVDP002AF     AF: Treated with anticoagulants (CVDP002AF)         
 
 # Extract metric categories for a specific indicator and categories
 categories <- return_list$metric_categories
@@ -351,44 +339,19 @@ categories |>
     MetricCategoryName,
     MetricID
   )
-#> # A tibble: 2 × 5
-#>   IndicatorID MetricCategoryTypeName CategoryAttribute MetricCategoryName
-#>         <int> <chr>                  <chr>             <chr>             
-#> 1           7 Age group              Male              40-59             
-#> 2           7 Age group              Female            40-59             
-#> # ℹ 1 more variable: MetricID <int>
 
 # Extract metric data for specific metrics
 metric_data <- return_list$metric_data
 metric_data |>
   dplyr::filter(MetricID %in% c(126, 132)) |>
   dplyr::select(MetricID, Value, Numerator, Denominator)
-#> # A tibble: 2 × 4
-#>   MetricID Value Numerator Denominator
-#>      <int> <dbl>     <dbl>       <dbl>
-#> 1      126   100        15          15
-#> 2      132   100        10          10
 
 # Extract time series data for selected metrics
 timeseries_data <- return_list$timeseries_data
 timeseries_data |>
   dplyr::filter(MetricID %in% c(126, 132), !is.na(Value))
-#> # A tibble: 30 × 7
-#>    MetricID EndDate           Median StartDate TimePeriodID TimePeriodName Value
-#>       <int> <chr>              <dbl> <chr>            <int> <chr>          <dbl>
-#>  1      126 Tue, 31 Mar 2020…   84.6 Mon, 01 …            1 To March 2020  100  
-#>  2      126 Wed, 31 Mar 2021…   85.7 Mon, 01 …            2 To March 2021  100  
-#>  3      126 Thu, 30 Sep 2021…   86.7 Mon, 01 …            3 To September …  94.7
-#>  4      126 Thu, 31 Mar 2022…   87.0 Mon, 01 …            4 To March 2022   94.7
-#>  5      126 Thu, 30 Jun 2022…   86.7 Mon, 01 …            5 To June 2022    88.9
-#>  6      126 Fri, 30 Sep 2022…   87.5 Mon, 01 …            6 To September …  90  
-#>  7      126 Sat, 31 Dec 2022…   88.2 Mon, 01 …            7 To December 2…  94.1
-#>  8      126 Fri, 31 Mar 2023…   89.5 Mon, 01 …            8 To March 2023   94.7
-#>  9      126 Fri, 30 Jun 2023…   89.2 Mon, 01 …            9 To June 2023    94.7
-#> 10      126 Sun, 31 Dec 2023…   90   Mon, 01 …           15 To December 2…  94.1
-#> # ℹ 20 more rows
 
 # Filter by tags: get indicators tagged with either tag 3 or 4 in area 3, time period 17
 return_list <- cvd_indicator(time_period_id = 17, area_id = 3, tag_id = c(3, 4))
-# }
+} # }
 ```

@@ -126,40 +126,15 @@ list](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREV
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # List four indicators for time period 17 and GP practice level (system level 5)
 cvd_indicator_list(time_period_id = 17, system_level_id = 5) |>
   dplyr::select(IndicatorID, IndicatorCode, IndicatorShortName) |>
   dplyr::slice_head(n = 4)
-#> # A tibble: 4 × 3
-#>   IndicatorID IndicatorCode IndicatorShortName                                  
-#>         <int> <chr>         <chr>                                               
-#> 1           2 CVDP002HYP    Hypertension: Treated to appropriate threshold (age…
-#> 2           3 CVDP003HYP    Hypertension: Treated to appropriate threshold (age…
-#> 3           4 CVDP004HYP    Hypertension: BP monitoring (CVDP004HYP)            
-#> 4           7 CVDP002AF     AF: Treated with anticoagulants (CVDP002AF)         
 
 # Find valid time period and system level IDs, then list all available indicators
 valid_periods <- cvd_time_period_list()
 valid_levels <- cvd_area_system_level(time_period_id = 17)
 cvd_indicator_list(time_period_id = 17, system_level_id = valid_levels$SystemLevelID[1])
-#> # A tibble: 40 × 12
-#>    AxisCharacter DataUpdateInterval FormatDisplayName     HighestPriorityNotif…¹
-#>    <chr>         <lgl>              <chr>                 <chr>                 
-#>  1 "%"           NA                 Proportion %          NA                    
-#>  2 "%"           NA                 Proportion %          Red                   
-#>  3 "%"           NA                 Proportion %          Red                   
-#>  4 "%"           NA                 Proportion %          NA                    
-#>  5 "%"           NA                 Proportion %          NA                    
-#>  6 "%"           NA                 Proportion %          NA                    
-#>  7 " "           NA                 Rate per 10,000 pati… Blue                  
-#>  8 " "           NA                 Rate per 10,000 pati… Blue                  
-#>  9 "%"           NA                 Proportion %          NA                    
-#> 10 "%"           NA                 Proportion %          NA                    
-#> # ℹ 30 more rows
-#> # ℹ abbreviated name: ¹​HighestPriorityNotificationType
-#> # ℹ 8 more variables: IndicatorCode <chr>, IndicatorFormatID <int>,
-#> #   IndicatorID <int>, IndicatorName <chr>, IndicatorOrder <int>,
-#> #   IndicatorShortName <chr>, IndicatorStatus <lgl>, NotificationCount <int>
-# }
+} # }
 ```

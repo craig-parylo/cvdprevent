@@ -55,26 +55,7 @@ response time.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 cvd_data_availability(time_period_id = 3, system_level_id = 5)
-#> # A tibble: 132 × 15
-#>    DataAvailabilityID DataAvailabilityName  HighestPriorityNotif…¹ IndicatorCode
-#>                 <int> <chr>                 <chr>                  <chr>        
-#>  1                 93 Inequality breakdown… NA                     CVDP001AF    
-#>  2                 94 Inequality breakdown… NA                     CVDP001AF    
-#>  3                 95 Inequality breakdown… NA                     CVDP001AF    
-#>  4                 96 Inequality breakdown… NA                     CVDP001AF    
-#>  5               1245 Indicators not avail… Red                    CVDP002HYP   
-#>  6               1246 Indicators not avail… Red                    CVDP002HYP   
-#>  7               1247 Indicators not avail… Red                    CVDP002HYP   
-#>  8               1248 Indicators not avail… Red                    CVDP002HYP   
-#>  9               1389 Indicators not avail… Red                    CVDP003HYP   
-#> 10               1390 Indicators not avail… Red                    CVDP003HYP   
-#> # ℹ 122 more rows
-#> # ℹ abbreviated name: ¹​HighestPriorityNotificationType
-#> # ℹ 11 more variables: IndicatorID <int>, IndicatorName <chr>,
-#> #   IndicatorOrder <int>, IndicatorShortName <chr>, IsAvailable <chr>,
-#> #   MetricCategoryTypeID <int>, NotificationCount <int>, SystemLevelID <int>,
-#> #   SystemLevelName <chr>, TimePeriodID <int>, TimePeriodName <chr>
-# }
+} # }
 ```

@@ -148,7 +148,7 @@ for person-level time series data
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # List data for Salford South East PCN (area ID 705) for 'AF: treatment with
 # anticoagulants' for women people aged 60-79 years (metric ID 130):
 cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
@@ -157,25 +157,5 @@ cvd_indicator_metric_timeseries(metric_id = 130, area_id = 705) |>
     names_from = AreaName,
     values_from = Value
   )
-#> # A tibble: 17 × 4
-#>    TimePeriodName    TimePeriodID England `Salford South East PCN`
-#>    <chr>                    <int>   <dbl>                    <dbl>
-#>  1 To March 2020                1    88.2                     85.9
-#>  2 To March 2021                2    88.6                     86  
-#>  3 To September 2021            3    88.9                     88.8
-#>  4 To March 2022                4    89.3                     90  
-#>  5 To June 2022                 5    89.4                     90.2
-#>  6 To September 2022            6    89.6                     90.6
-#>  7 To December 2022             7    90.0                     91.7
-#>  8 To March 2023                8    91.0                     90.1
-#>  9 To June 2023                 9    91.0                     91.0
-#> 10 To December 2023            15    91.2                     92.2
-#> 11 To March 2024               17    92.2                     93.9
-#> 12 To June 2024                18    92.2                     92.9
-#> 13 To September 2024           20    92                       93.1
-#> 14 To December 2024            22    92.0                     92.8
-#> 15 To March 2025               24    92.5                     94.6
-#> 16 To June 2025                26    92.4                     94.6
-#> 17 To September 2025           28    92.2                     94.3
-# }
+} # }
 ```

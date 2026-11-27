@@ -81,33 +81,18 @@ period](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPR
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # List all system levels available for time period 4 (activity to March 2022)
 cvd_area_system_level(time_period_id = 4) |>
   dplyr::select(SystemLevelID, SystemLevelName)
-#> # A tibble: 6 × 2
-#>   SystemLevelID SystemLevelName
-#>           <int> <chr>          
-#> 1             1 England        
-#> 2             6 Region         
-#> 3             2 STP            
-#> 4             3 CCG            
-#> 5             4 PCN            
-#> 6             5 Practice       
 
 # Find valid time period IDs, then get system levels for the latest one
 latest_period <-
-  cvd_time_period_list() |>
+  cvd_time_period_system_levels() |>
   dplyr::pull(TimePeriodID) |>
   max()
 
 cvd_area_system_level(time_period_id = latest_period) |>
   dplyr::select(SystemLevelID, SystemLevelName)
-#> # A tibble: 3 × 2
-#>   SystemLevelID SystemLevelName
-#>           <int> <chr>          
-#> 1             1 England        
-#> 2             6 Region         
-#> 3             7 ICB            
-# }
+} # }
 ```

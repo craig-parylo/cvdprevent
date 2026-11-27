@@ -1,6 +1,7 @@
 # Key terms
 
 ``` r
+
 library(cvdprevent)
 ```
 
@@ -9,13 +10,13 @@ library(cvdprevent)
 The following terms are used in the CVDPrevent API to describe key
 concepts:
 
-| Term         | Description                                       | Example                                                                                    |
-|--------------|---------------------------------------------------|--------------------------------------------------------------------------------------------|
-| System Level | Grouping of Areas into comparable levels          | England, Region, ICB, sub-ICB                                                              |
-| Area         | Geographical locality for which data was recorded | Bedfordshire, Luton and Milton Keynes ICB                                                  |
-| Time Period  | Time span in which data was recorded              | To June 2024                                                                               |
-| Indicator    | High-level performance measure                    | CVDP001AF is short reference for “Prevalence of GP recorded atrial fibrillation” indicator |
-| Metric       | Category breakdown of Indicator                   | CVDP001AF - Male, Aged 18-39                                                               |
+| Term | Description | Example |
+|----|----|----|
+| System Level | Grouping of Areas into comparable levels | England, Region, ICB, sub-ICB |
+| Area | Geographical locality for which data was recorded | Bedfordshire, Luton and Milton Keynes ICB |
+| Time Period | Time span in which data was recorded | To June 2024 |
+| Indicator | High-level performance measure | CVDP001AF is short reference for “Prevalence of GP recorded atrial fibrillation” indicator |
+| Metric | Category breakdown of Indicator | CVDP001AF - Male, Aged 18-39 |
 
 ## System Levels by Time Period
 
@@ -24,13 +25,14 @@ You can use
 to explore which system levels are reported in each time period. These
 levels may vary over time due to changes in NHS geography - for example,
 **Sustainability and Transformation Partnerships (STPs)** were later
-replaced by **Integrated Care Systems (ICS / ICBs)**.[¹](#fn1)
+replaced by **Integrated Care Systems (ICS / ICBs)**.[^1]
 
 The following code snippet creates a table showing which system levels
 are available for each reporting time period. A ✔️ indicates that data
 for that system level is available in the corresponding period.
 
 ``` r
+
 cvd_time_period_system_levels() |>
   dplyr::select(dplyr::any_of(c(
     "TimePeriodID",
@@ -85,6 +87,12 @@ cvd_time_period_system_levels() |>
 | 27           | Apr 2024 - Mar 2025 | ✔️      |     |     |     |          | ✔️     | ✔️  |         |
 | 28           | To September 2025   | ✔️      |     |     | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
 | 29           | Jul 2024 - Jun 2025 | ✔️      |     |     |     |          | ✔️     | ✔️  |         |
+| 30           | Oct 2024 - Sep 2025 | ✔️      |     |     |     |          | ✔️     | ✔️  |         |
+| 31           | To December 2025    | ✔️      |     |     | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
+| 32           | Jan 2025 - Dec 2025 | ✔️      |     |     |     |          | ✔️     | ✔️  |         |
+| 33           | To March 2026       | ✔️      |     |     | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
+| 34           | To June 2026        | ✔️      |     |     | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
+| 35           | Apr 2025 - Mar 2026 | ✔️      |     |     |     |          | ✔️     | ✔️  |         |
 
 What this does:
 
@@ -120,6 +128,7 @@ Using `system_level_id` will return all areas within the chosen
 all NHS Regions (`system_level_id = 6`) available in *time period 22*:
 
 ``` r
+
 cvd_area_list(time_period_id = 22, system_level_id = 6) |>
   dplyr::select(dplyr::any_of(c(
     "SystemLevelID",
@@ -150,6 +159,7 @@ For example, to find all areas containing the word “acorn” in *time
 period 22*:
 
 ``` r
+
 cvd_area_search(partial_area_name = "acorn", time_period_id = 22) |>
   dplyr::select(dplyr::any_of(c("AreaID", "AreaName"))) |>
   gt::gt() |>
@@ -175,6 +185,7 @@ The following example demonstrates how to list indicators available for
 each system level in *time period 26*.
 
 ``` r
+
 # get details for system levels and time periods
 syst_levels <- cvd_area_system_level_time_periods()
 
@@ -218,49 +229,49 @@ df_indicators_syst_level |>
   )
 ```
 
-| Indicators for *Time Period 26* by system level |                                                                                    |         |     |          |        |     |         |
-|-------------------------------------------------|------------------------------------------------------------------------------------|---------|-----|----------|--------|-----|---------|
-| IndicatorID                                     | IndicatorShortName                                                                 | England | PCN | Practice | Region | ICB | Sub-ICB |
-| 1                                               | AF: Prevalence (CVDP001AF)                                                         | ✔️      |     |          | ✔️     | ✔️  | ✔️      |
-| 2                                               | Hypertension: Treated to appropriate threshold (age \< 80) (CVDP002HYP)            | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 3                                               | Hypertension: Treated to appropriate threshold (age \>= 80) (CVDP003HYP)           | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 4                                               | Hypertension: BP monitoring (CVDP004HYP)                                           | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 7                                               | AF: Treated with anticoagulants (CVDP002AF)                                        | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 8                                               | CKD: Prevalence (CVDP001CKD)                                                       | ✔️      |     |          | ✔️     | ✔️  | ✔️      |
-| 9                                               | FH: Possible, probable and confirmed prevalence (CVDP002FH)                        | ✔️      |     |          | ✔️     | ✔️  | ✔️      |
-| 10                                              | FH: Genetically confirmed prevalence (CVDP003FH)                                   | ✔️      |     |          | ✔️     | ✔️  |         |
-| 11                                              | Hypertension: Prevalence (CVDP001HYP)                                              | ✔️      |     |          | ✔️     | ✔️  | ✔️      |
-| 12                                              | CVD: Prevalence (CVDP001CVD)                                                       | ✔️      |     |          | ✔️     | ✔️  | ✔️      |
-| 13                                              | CKD: Uncoded - two low eGFRs with no recorded CKD (CVDP002CKD)                     | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 14                                              | Cholesterol: QRISK \>= 20% treated with LLT (CVDP003CHOL)                          | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 15                                              | CKD: High risk - one low eGFR with no recorded CKD (CVDP003CKD)                    | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 17                                              | CKD: Monitoring with ACR (CVDP004CKD)                                              | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 18                                              | FH: Cholesterol in at risk range for FH with no investigation for FH (CVDP004FH)   | ✔️      |     |          | ✔️     | ✔️  | ✔️      |
-| 19                                              | CKD: High risk treated with RAS antagonists (CVDP005CKD)                           | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 20                                              | Hypertension: High risk – one high BP with no recorded hypertension (CVDP005HYP)   | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 21                                              | Hypertension: Potential antihypertensive overtreatment (CVDP006HYP)                | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 22                                              | Cholesterol: QRISK \>= 10% treated with LLT (CVDP006CHOL)                          | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 23                                              | Cholesterol: CKD treated with LLT (CVDP010CHOL)                                    | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 24                                              | Smoking: Record of smoking status (CVDP001SMOK)                                    | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 25                                              | NDH: High risk – one HbA1c 42-48 mmol/mol, with no recorded NDH or DM (CVDP002NDH) | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 26                                              | Smoking: Current smokers offered support/treatment (CVDP002SMOK)                   | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 27                                              | DM: Uncoded - two high HbA1c with no recorded diabetes (CVDP003DM)                 | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 28                                              | DM: High risk - one high HbA1c with no recorded diabetes (CVDP005DM)               | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 29                                              | CKD: Monitoring with eGFR (CVDP006CKD)                                             | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 31                                              | CKD: ACR \< 70mg/mmol treated to appropriate BP threshold (CVDP007CKD)             | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 32                                              | Hypertension: Treated to appropriate threshold (all ages) (CVDP007HYP)             | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 33                                              | Cholesterol: Primary prevention of CVD treated with LLT (CVDP008CHOL)              | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 34                                              | Cholesterol: CVD treated with LLT (CVDP009CHOL)                                    | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 45                                              | BMI: Record of BMI status (CVDP001BMI)                                             | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 46                                              | HF: Prevalence (CVD001HF)                                                          | ✔️      |     |          | ✔️     | ✔️  | ✔️      |
-| 47                                              | HF: Monitoring with eGFR (CVD002HF)                                                | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 48                                              | CHD: Treated to BP threshold (CVDP002CHD)                                          | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 49                                              | Stroke: Treatment to BP threshold (CVDP002STRK)                                    | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 50                                              | AF: Low risk AF with recorded CHA2DS2-VASc score (CVDP004AF)                       | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 51                                              | AF: Treated with anticoagulants - DOAC prioritised (CVDP005AF)                     | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 52                                              | Hypertension: Monitoring with ACR (CVDP009HYP)                                     | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 53                                              | Cholesterol: CVD cholesterol monitoring (CVDP011CHOL)                              | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
-| 54                                              | Cholesterol: CVD treated to cholesterol threshold (CVDP012CHOL)                    | ✔️      | ✔️  | ✔️       | ✔️     | ✔️  | ✔️      |
+| Indicators for *Time Period 26* by system level |  |  |  |  |  |  |  |
+|----|----|----|----|----|----|----|----|
+| IndicatorID | IndicatorShortName | England | PCN | Practice | Region | ICB | Sub-ICB |
+| 1 | AF: Prevalence (CVDP001AF) | ✔️ |  |  | ✔️ | ✔️ | ✔️ |
+| 2 | Hypertension: Treated to appropriate threshold (age \< 80) (CVDP002HYP) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 3 | Hypertension: Treated to appropriate threshold (age \>= 80) (CVDP003HYP) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 4 | Hypertension: BP monitoring (CVDP004HYP) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 7 | AF: Treated with anticoagulants (CVDP002AF) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 8 | CKD: Prevalence (CVDP001CKD) | ✔️ |  |  | ✔️ | ✔️ | ✔️ |
+| 9 | FH: Possible, probable and confirmed prevalence (CVDP002FH) | ✔️ |  |  | ✔️ | ✔️ | ✔️ |
+| 10 | FH: Genetically confirmed prevalence (CVDP003FH) | ✔️ |  |  | ✔️ | ✔️ |  |
+| 11 | Hypertension: Prevalence (CVDP001HYP) | ✔️ |  |  | ✔️ | ✔️ | ✔️ |
+| 12 | CVD: Prevalence (CVDP001CVD) | ✔️ |  |  | ✔️ | ✔️ | ✔️ |
+| 13 | CKD: Uncoded - two low eGFRs with no recorded CKD (CVDP002CKD) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 14 | Cholesterol: QRISK \>= 20% treated with LLT (CVDP003CHOL) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 15 | CKD: High risk - one low eGFR with no recorded CKD (CVDP003CKD) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 17 | CKD: Monitoring with ACR (CVDP004CKD) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 18 | FH: Cholesterol in at risk range for FH with no investigation for FH (CVDP004FH) | ✔️ |  |  | ✔️ | ✔️ | ✔️ |
+| 19 | CKD: High risk treated with RAS antagonists (CVDP005CKD) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 20 | Hypertension: High risk – one high BP with no recorded hypertension (CVDP005HYP) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 21 | Hypertension: Potential antihypertensive overtreatment (CVDP006HYP) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 22 | Cholesterol: QRISK \>= 10% treated with LLT (CVDP006CHOL) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 23 | Cholesterol: CKD treated with LLT (CVDP010CHOL) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 24 | Smoking: Record of smoking status (CVDP001SMOK) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 25 | NDH: High risk – one HbA1c 42-48 mmol/mol, with no recorded NDH or DM (CVDP002NDH) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 26 | Smoking: Current smokers offered support/treatment (CVDP002SMOK) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 27 | DM: Uncoded - two high HbA1c with no recorded diabetes (CVDP003DM) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 28 | DM: High risk - one high HbA1c with no recorded diabetes (CVDP005DM) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 29 | CKD: Monitoring with eGFR (CVDP006CKD) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 31 | CKD: ACR \< 70mg/mmol treated to appropriate BP threshold (CVDP007CKD) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 32 | Hypertension: Treated to appropriate threshold (all ages) (CVDP007HYP) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 33 | Cholesterol: Primary prevention of CVD treated with LLT (CVDP008CHOL) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 34 | Cholesterol: CVD treated with LLT (CVDP009CHOL) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 45 | BMI: Record of BMI status (CVDP001BMI) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 46 | HF: Prevalence (CVD001HF) | ✔️ |  |  | ✔️ | ✔️ | ✔️ |
+| 47 | HF: Monitoring with eGFR (CVD002HF) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 48 | CHD: Treated to BP threshold (CVDP002CHD) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 49 | Stroke: Treatment to BP threshold (CVDP002STRK) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 50 | AF: Low risk AF with recorded CHA2DS2-VASc score (CVDP004AF) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 51 | AF: Treated with anticoagulants - DOAC prioritised (CVDP005AF) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 52 | Hypertension: Monitoring with ACR (CVDP009HYP) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 53 | Cholesterol: CVD cholesterol monitoring (CVDP011CHOL) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| 54 | Cholesterol: CVD treated to cholesterol threshold (CVDP012CHOL) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 
 What this does:
 
@@ -292,6 +303,7 @@ indicator **AF: Prevalence (CVDP01AF)** (Indicator ID = 1) in *time
 period 26* at the *England* system level:
 
 ``` r
+
 cvd_indicator_metric_list(time_period_id = 26, system_level_id = 1) |>
   dplyr::filter(IndicatorID == 1) |>
   dplyr::select(dplyr::any_of(c(
@@ -313,37 +325,37 @@ cvd_indicator_metric_list(time_period_id = 26, system_level_id = 1) |>
   )
 ```
 
-| **Metrics** for *Indicator 1 (AF: Prevalence)* in *Time Period 26* and for the *England* system level |                    |                   |          |
-|-------------------------------------------------------------------------------------------------------|--------------------|-------------------|----------|
-| MetricCategoryTypeName                                                                                | MetricCategoryName | CategoryAttribute | MetricID |
-| Age group                                                                                             | 18-39              | Male              | 177      |
-|                                                                                                       | 18-39              | Female            | 180      |
-|                                                                                                       | 18-39              | Persons           | 186      |
-|                                                                                                       | 40-59              | Female            | 173      |
-|                                                                                                       | 40-59              | Male              | 175      |
-|                                                                                                       | 40-59              | Persons           | 187      |
-|                                                                                                       | 60-79              | Female            | 176      |
-|                                                                                                       | 60-79              | Male              | 179      |
-|                                                                                                       | 60-79              | Persons           | 188      |
-|                                                                                                       | 80+                | Male              | 174      |
-|                                                                                                       | 80+                | Female            | 178      |
-|                                                                                                       | 80+                | Persons           | 189      |
-| Deprivation quintile                                                                                  | 1 - most deprived  | Persons           | 182      |
-|                                                                                                       | 2                  | Persons           | 183      |
-|                                                                                                       | 3                  | Persons           | 181      |
-|                                                                                                       | 4                  | Persons           | 184      |
-|                                                                                                       | 5 - least deprived | Persons           | 185      |
-| Deprivation quintile - Age Standardised                                                               | 1 - most deprived  | Persons           | 863      |
-|                                                                                                       | 2                  | Persons           | 864      |
-|                                                                                                       | 3                  | Persons           | 865      |
-|                                                                                                       | 4                  | Persons           | 866      |
-|                                                                                                       | 5 - least deprived | Persons           | 867      |
-| Sex                                                                                                   | Female             | Female            | 171      |
-|                                                                                                       | Male               | Male              | 172      |
-|                                                                                                       | Persons            | Persons           | 190      |
-| Sex - Age Standardised                                                                                | Female             | Female            | 862      |
-|                                                                                                       | Male               | Male              | 861      |
-|                                                                                                       | Persons            | Persons           | 868      |
+| **Metrics** for *Indicator 1 (AF: Prevalence)* in *Time Period 26* and for the *England* system level |  |  |  |
+|----|----|----|----|
+| MetricCategoryTypeName | MetricCategoryName | CategoryAttribute | MetricID |
+| Age group | 18-39 | Male | 177 |
+|  | 18-39 | Female | 180 |
+|  | 18-39 | Persons | 186 |
+|  | 40-59 | Female | 173 |
+|  | 40-59 | Male | 175 |
+|  | 40-59 | Persons | 187 |
+|  | 60-79 | Female | 176 |
+|  | 60-79 | Male | 179 |
+|  | 60-79 | Persons | 188 |
+|  | 80+ | Male | 174 |
+|  | 80+ | Female | 178 |
+|  | 80+ | Persons | 189 |
+| Deprivation quintile | 1 - most deprived | Persons | 182 |
+|  | 2 | Persons | 183 |
+|  | 3 | Persons | 181 |
+|  | 4 | Persons | 184 |
+|  | 5 - least deprived | Persons | 185 |
+| Deprivation quintile - Age Standardised | 1 - most deprived | Persons | 863 |
+|  | 2 | Persons | 864 |
+|  | 3 | Persons | 865 |
+|  | 4 | Persons | 866 |
+|  | 5 - least deprived | Persons | 867 |
+| Sex | Female | Female | 171 |
+|  | Male | Male | 172 |
+|  | Persons | Persons | 190 |
+| Sex - Age Standardised | Female | Female | 862 |
+|  | Male | Male | 861 |
+|  | Persons | Persons | 868 |
 
 **Understanding Metric Categories**
 
@@ -374,8 +386,6 @@ meaningful demographic breakdowns. Understanding these concepts is an
 essential first step before making use of the wider functionality
 demonstrated in this vignette.
 
-------------------------------------------------------------------------
-
-1.  See
+[^1]: See
     <https://navigator.health.org.uk/theme/sustainability-and-transformation-plans-later-partnerships>
     for more details about the evolution of STPs

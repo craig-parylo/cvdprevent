@@ -154,7 +154,7 @@ for grouped indicator metadata
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Compare performance for metric ID 128 in time period 17 for
 # Salford South East PCN (area ID 705)
 cvd_indicator_metric_area_breakdown(
@@ -163,10 +163,5 @@ cvd_indicator_metric_area_breakdown(
   area_id = 705
 ) |>
   dplyr::select(SystemLevelName, AreaID, AreaName, Value)
-#> # A tibble: 2 × 4
-#>   SystemLevelName AreaID AreaName               Value
-#>   <chr>            <int> <chr>                  <dbl>
-#> 1 England              1 England                 92.5
-#> 2 PCN                705 Salford South East PCN  90  
-# }
+} # }
 ```
