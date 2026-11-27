@@ -28,13 +28,12 @@ improving cardiovascular health.
 ## Features
 
 - Simple R functions to make API requests and retrieve CVD indicator and
-  area data  
+  area data\
 - Tidyverse-friendly outputs (mostly
-  [tibble](https://tibble.tidyverse.org/)s)  
-- Support for listing indicators, metrics, time periods, areas and
-  more  
+  [tibble](https://tibble.tidyverse.org/)s)\
+- Support for listing indicators, metrics, time periods, areas and more\
 - Helper functions for searching and exploring heirarchical NHS area
-  structures  
+  structures\
 - See [full API
   documentation](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)
   for endpoints and reference
@@ -94,10 +93,10 @@ cvd_time_period_list() |>
 #> # A tibble: 4 × 2
 #>   TimePeriodID TimePeriodName   
 #>          <int> <chr>            
-#> 1           28 To September 2025
-#> 2           26 To June 2025     
-#> 3           24 To March 2025    
-#> 4           22 To December 2024
+#> 1           34 To June 2026     
+#> 2           33 To March 2026    
+#> 3           31 To December 2025 
+#> 4           28 To September 2025
 ```
 
 See the package vignette for more examples and guidance:
@@ -111,9 +110,9 @@ vignette("using_cvdprevent", package = "cvdprevent")
 ## Documentation
 
 - **Function reference:** [CVD Prevent
-  Reference](https://craig-parylo.github.io/cvdprevent/reference/index.html)  
+  Reference](https://craig-parylo.github.io/cvdprevent/reference/index.html)\
 - **API details:** [CVDPREVENT API
-  Docs](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)  
+  Docs](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)\
 - **See also:** [Detailed function
   overview](https://craig-parylo.github.io/cvdprevent/articles/using_cvdprevent.html)
 
@@ -156,8 +155,8 @@ pak::pak(c(
 Contributions, suggestions or bug reports are welcome! Please:
 
 - Submit issues or pull requests via [GitHub
-  Issues](https://github.com/craig-parylo/cvdprevent/issues)  
-- Follow the function documentation style (see source files)  
+  Issues](https://github.com/craig-parylo/cvdprevent/issues)\
+- Follow the function documentation style (see source files)\
 - Add examples and tests for new functionality
 
 ------------------------------------------------------------------------
@@ -171,7 +170,7 @@ for details.
 
 ## Acknowledgements
 
-- NHS England - CVDPREVENT Audit Team  
+- NHS England - CVDPREVENT Audit Team\
 - [CVDPREVENT API
   Documentation](https://bmchealthdocs.atlassian.net/wiki/spaces/CP/pages/317882369/CVDPREVENT+API+Documentation)
 
